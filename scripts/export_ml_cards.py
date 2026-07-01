@@ -20,10 +20,15 @@ from cryoml.utils import device_tag  # noqa: E402
 
 
 def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--src", default=str(OUT_DIR / "pdk_ml"))
+    args = ap.parse_args()
+
     error = ensure_pdk77k()
     if error:
         raise RuntimeError(error)
-    result_dir = OUT_DIR / "pdk_ml"
+    result_dir = Path(args.src)
     card_dir = result_dir / "cards"
     card_dir.mkdir(parents=True, exist_ok=True)
 

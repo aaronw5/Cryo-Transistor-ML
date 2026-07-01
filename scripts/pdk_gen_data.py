@@ -39,7 +39,7 @@ OUT_SYNTH = PROCESSED_DIR / "pdk_synth"
 
 
 def gen_for_device(job):
-    spec, num_samples, seed = job
+    spec, num_samples, seed, extra_center, append = job
     import time
     from cryoml.pdk_extract import PARAMS7, theta_box_for
     from cryoml.spice_pdk import simulate_pdk
@@ -52,15 +52,45 @@ def gen_for_device(job):
     z0 = box.z_published
 
     rng = np.random.default_rng(seed)
-    n_tight = num_samples // 3
-    n_wide = num_samples // 3
-    n_box = num_samples - n_tight - n_wide
-    Z = np.concatenate([
-        z0 + rng.normal(0, 0.5, size=(n_tight, 7)),
-        z0 + rng.normal(0, 1.2, size=(n_wide, 7)),
-        rng.uniform(-3.5, 3.5, size=(n_box, 7)),
-    ], axis=0)
-    Z[0] = z0  # always include the published point
+    if append and extra_center is not None:
+        # Active densification: most samples in the current winner's basin,
+        # the rest uniform, appended to the existing dataset.
+        zc = box.params_to_z(extra_center)
+        n_tight = num_samples // 2
+        n_mid = num_samples // 4
+        n_box = num_samples - n_tight - n_mid
+        Z = np.concatenate([
+            zc + rng.normal(0, 0.25, size=(n_tight, 7)),
+            zc + rng.normal(0, 0.6, size=(n_mid, 7)),
+            rng.uniform(-3.5, 3.5, size=(n_box, 7)),
+        ], axis=0)
+        Z[0] = zc
+    elif extra_center is not None:
+        # Concentrate a quarter of the budget around a known-good basin
+        # (e.g. the FD-control winner) while keeping global coverage.
+        zc = box.params_to_z(extra_center)
+        n_tight = num_samples // 4
+        n_center = num_samples // 4
+        n_wide = num_samples // 4
+        n_box = num_samples - n_tight - n_center - n_wide
+        Z = np.concatenate([
+            z0 + rng.normal(0, 0.5, size=(n_tight, 7)),
+            zc + rng.normal(0, 0.5, size=(n_center, 7)),
+            z0 + rng.normal(0, 1.2, size=(n_wide, 7)),
+            rng.uniform(-3.5, 3.5, size=(n_box, 7)),
+        ], axis=0)
+        Z[1] = zc  # always include the extra center itself
+    else:
+        n_tight = num_samples // 3
+        n_wide = num_samples // 3
+        n_box = num_samples - n_tight - n_wide
+        Z = np.concatenate([
+            z0 + rng.normal(0, 0.5, size=(n_tight, 7)),
+            z0 + rng.normal(0, 1.2, size=(n_wide, 7)),
+            rng.uniform(-3.5, 3.5, size=(n_box, 7)),
+        ], axis=0)
+    if not (append and extra_center is not None):
+        Z[0] = z0  # always include the published point
 
     P = sum(len(c.Id) for c in curves)
     IDS = np.full((len(Z), P), np.nan, dtype=np.float64)
@@ -87,8 +117,18 @@ def gen_for_device(job):
         fixeds.append(c.fixed)
 
     OUT_SYNTH.mkdir(parents=True, exist_ok=True)
+    out_path = OUT_SYNTH / f"{tag}.npz"
+    if append and out_path.exists():
+        old = np.load(out_path, allow_pickle=True)
+        if old["IDS"].shape[1] == IDS.shape[1]:
+            Z = np.concatenate([old["Z"].astype(np.float64), Z])
+            THETA = np.concatenate([old["THETA"], THETA])
+            IDS = np.concatenate([old["IDS"], IDS])
+            ok = np.concatenate([old["ok"], ok])
+        else:
+            logger.warning("%s: layout changed, not appending", tag)
     np.savez_compressed(
-        OUT_SYNTH / f"{tag}.npz",
+        out_path,
         Z=Z.astype(np.float32), THETA=THETA.astype(np.float64),
         IDS=IDS.astype(np.float64), ok=ok,
         Vg=Vg, Vd=Vd, meas=meas,
@@ -106,16 +146,34 @@ def main() -> int:
     ap.add_argument("--num-samples", type=int, default=3000)
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--centers-from", default=None,
+                    help="directory of <prefix>_<tag>.json records whose "
+                         "'params' (or params_by_method[best_method]) become "
+                         "extra sampling centers (e.g. out/pdk_fd)")
+    ap.add_argument("--append", action="store_true",
+                    help="densify around the centers and append to the "
+                         "existing dataset instead of replacing it")
     args = ap.parse_args()
 
     ensure_dirs()
     bins = {r["device"]: int(r["bin_index"]) for r in json.load(
         open(OUT_DIR / "pdk_baseline" / "pdk_baseline.json"))["devices"]}
+    centers = {}
+    if args.centers_from:
+        for path in Path(args.centers_from).glob("*.json"):
+            rec = json.loads(path.read_text())
+            if not isinstance(rec, dict) or "device" not in rec:
+                continue
+            if "params" in rec:
+                centers[rec["device"]] = rec["params"]
+            elif "params_by_method" in rec and "best_method" in rec:
+                centers[rec["device"]] = rec["params_by_method"][rec["best_method"]]
     devices = parse_device_list(args.devices)
     jobs = []
     for i, d in enumerate(devices):
         tag = device_tag(d.dev_type, d.L_um, d.W_um)
-        jobs.append(((d, bins[tag]), args.num_samples, args.seed + 1000 * i))
+        jobs.append(((d, bins[tag]), args.num_samples, args.seed + 1000 * i,
+                     centers.get(tag), args.append))
 
     ctx = get_context("spawn")
     with ctx.Pool(processes=args.workers) as pool:

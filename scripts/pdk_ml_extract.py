@@ -109,7 +109,9 @@ def train_net(net, X, Y, device, epochs=1500, lr=1e-3, batch=None, wd=1e-5,
 
 
 def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
-                   n_polish=3, max_nfev=80, seed=0):
+                   n_polish=3, max_nfev=80, seed=0,
+                   emu_sizes=(256, 256, 256), inv_sizes=(512, 256),
+                   warm_starts=None, emu_save_path=None):
     from cryoml.pdk_extract import (PARAMS7, ThetaBox, eval_params,
                                     flatten_paper_curves, residual_fn)
     from scipy.optimize import least_squares
@@ -153,8 +155,15 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     P = Yt.shape[1]
 
     # ---------------- emulator E(z) -> slog Id ----------------
-    emu = mlp([7, 256, 256, 256, P]).to(dev)
-    emu_val = train_net(emu, Zt, Yt, dev, epochs=2000, lr=1e-3)
+    emu = mlp([7, *emu_sizes, P]).to(dev)
+    emu_val = train_net(emu, Zt, Yt, dev, epochs=2000, lr=1e-3,
+                        batch=4096 if len(Zt) > 4000 else None)
+    if emu_save_path is not None:
+        torch.save({
+            "state": emu.state_dict(), "emu_sizes": list(emu_sizes), "P": P,
+            "curve_layout": curve_layout, "n_curves": len(slices),
+            "meas_kept": meas[kept_mask], "emu_val": float(emu_val),
+        }, emu_save_path)
 
     # ---------------- inverse MLP G(slog Id) -> z ----------------
     # noise augmentation: additive 1 nA floor noise + 5% multiplicative
@@ -168,7 +177,7 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
         Ya.append(Zok)
     Xinv = torch.tensor(np.concatenate(Xa), dtype=torch.float32, device=dev)
     Yinv = torch.tensor(np.concatenate(Ya), dtype=torch.float32, device=dev)
-    inv = mlp([P, 512, 256, 7]).to(dev)
+    inv = mlp([P, *inv_sizes, 7]).to(dev)
     inv_val = train_net(inv, Xinv, Yinv, dev, epochs=1500, lr=1e-3, batch=4096)
 
     meas_slog_t = torch.tensor(slog(meas[kept_mask]), dtype=torch.float32,
@@ -180,10 +189,13 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     meas_t = torch.tensor(meas[kept_mask], dtype=torch.float32, device=dev)
     S = n_adam_starts
     z0 = box.z_published
+    warm = [(lbl, box.params_to_z(p)) for lbl, p in (warm_starts or [])]
+    warm_z = np.stack([z for _, z in warm]) if warm else np.empty((0, 7))
+    n_fixed = 2 + len(warm)
     starts = np.concatenate([
-        z0[None, :], z_inv[None, :],
+        z0[None, :], z_inv[None, :], warm_z,
         z0 + rng.normal(0, 0.7, size=(S // 2, 7)),
-        rng.uniform(-3.0, 3.0, size=(S - S // 2 - 2, 7)),
+        rng.uniform(-3.0, 3.0, size=(S - S // 2 - n_fixed, 7)),
     ], axis=0)
     zv = torch.tensor(starts, dtype=torch.float32, device=dev, requires_grad=True)
     opt = torch.optim.Adam([zv], lr=0.05)
@@ -235,6 +247,10 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
         if len(seen) >= n_validate:
             break
     cand.append(("inverse_mlp", z_inv))
+    # warm starts (e.g. classical-control winners) compete as candidates so
+    # the ML result can only match or beat them after polish
+    for lbl, z in warm:
+        cand.append((lbl, z))
 
     validated = []
     for lbl, z in cand:
@@ -311,7 +327,73 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     return rec, sims
 
 
-def enforce_shared_bin_cards(out_dir: Path, max_nfev: int) -> None:
+def joint_emulator_search(emu_paths, tdev, n_starts=1024, steps=500,
+                          extra_starts=None, seed=0, top_k=6):
+    """Adam multistart on the SUM of several devices' emulator losses.
+
+    All devices share one model bin (one z space), so a single z is searched
+    against every member's curves at once. Returns the top_k distinct z's.
+    """
+    dev = torch.device(tdev)
+    members = []
+    for path in emu_paths:
+        blob = torch.load(path, map_location=dev, weights_only=False)
+        emu = mlp([7, *blob["emu_sizes"], blob["P"]]).to(dev)
+        emu.load_state_dict(blob["state"])
+        emu.eval()
+        meas_t = torch.tensor(np.asarray(blob["meas_kept"], dtype=np.float64),
+                              dtype=torch.float32, device=dev)
+        members.append((emu, meas_t, blob["curve_layout"], blob["n_curves"]))
+
+    rng = np.random.default_rng(seed)
+    extra = np.stack(extra_starts) if extra_starts else np.empty((0, 7))
+    starts = np.concatenate([
+        extra,
+        rng.normal(0, 1.0, size=(n_starts // 2, 7)),
+        rng.uniform(-3.0, 3.0, size=(n_starts - n_starts // 2, 7)),
+    ], axis=0)
+    zv = torch.tensor(starts, dtype=torch.float32, device=dev,
+                      requires_grad=True)
+    opt = torch.optim.Adam([zv], lr=0.05)
+    best_loss = np.full(len(starts), np.inf)
+    best_z = starts.copy()
+    for _ in range(steps):
+        opt.zero_grad()
+        loss_per = 0.0
+        for emu, meas_t, layout, n_curves in members:
+            pred = inv_slog_t(emu(zv))
+            curve_rrms = []
+            for a, b, denominator in layout:
+                rmse = torch.sqrt(torch.mean(
+                    (pred[:, a:b] - meas_t[a:b].unsqueeze(0)) ** 2, dim=1))
+                curve_rrms.append(rmse / denominator)
+            loss_per = loss_per + torch.stack(curve_rrms, dim=1).sum(dim=1) / n_curves
+        loss_per.sum().backward()
+        opt.step()
+        with torch.no_grad():
+            zv.clamp_(-3.5, 3.5)
+        lv = loss_per.detach().cpu().numpy()
+        improved = lv < best_loss
+        if improved.any():
+            zc = zv.detach().cpu().numpy().astype(np.float64)
+            best_loss[improved] = lv[improved]
+            best_z[improved] = zc[improved]
+
+    order = np.argsort(best_loss)
+    out, seen = [], []
+    for i in order:
+        z = best_z[i]
+        if any(np.linalg.norm(z - s) < 0.5 for s in seen):
+            continue
+        seen.append(z)
+        out.append(z)
+        if len(out) >= top_k:
+            break
+    return out
+
+
+def enforce_shared_bin_cards(out_dir: Path, max_nfev: int,
+                             tdev: str = "cpu") -> None:
     """Jointly fit devices that NGspice maps to the same deployable model bin."""
     from scipy.optimize import least_squares
 
@@ -379,6 +461,18 @@ def enforce_shared_bin_cards(out_dir: Path, max_nfev: int) -> None:
                     (1.0 - alpha) * independent_best[0] + alpha * independent_best[1]
                 )
 
+        # joint emulator gradient search across all bin members (the same
+        # surrogate trick as per-device extraction, on the summed objective)
+        emu_paths = [out_dir / f"emu_{tag}.pt" for tag in tags]
+        if all(path.exists() for path in emu_paths):
+            try:
+                starts += joint_emulator_search(
+                    emu_paths, tdev,
+                    extra_starts=[np.asarray(s, dtype=np.float64)
+                                  for s in starts])
+            except Exception as e:  # noqa: BLE001
+                logger.warning("joint emulator search failed: %s", e)
+
         unique_starts = []
         for start in starts:
             if not any(np.linalg.norm(start - seen) < 1e-3 for seen in unique_starts):
@@ -433,6 +527,14 @@ def main() -> int:
     ap.add_argument("--n-polish", type=int, default=3)
     ap.add_argument("--max-nfev", type=int, default=80)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--emu-arch", default="256,256,256",
+                    help="comma-separated emulator hidden sizes")
+    ap.add_argument("--inv-arch", default="512,256",
+                    help="comma-separated inverse-MLP hidden sizes")
+    ap.add_argument("--starts-from", default=None,
+                    help="comma-separated dirs of *_<tag>.json records whose "
+                         "'params' become warm-start candidates (e.g. "
+                         "out/pdk_fd,out/pdk_cma)")
     ap.add_argument("--out-dir", default=None)
     ap.add_argument("--resume", action="store_true",
                     help="Skip devices with an existing finite result")
@@ -442,6 +544,18 @@ def main() -> int:
     out_dir = Path(args.out_dir) if args.out_dir else OUT_ML
     out_dir.mkdir(parents=True, exist_ok=True)
     devices = parse_device_list(args.devices)
+
+    emu_sizes = tuple(int(s) for s in args.emu_arch.split(","))
+    inv_sizes = tuple(int(s) for s in args.inv_arch.split(","))
+    warm_by_tag: dict[str, list] = defaultdict(list)
+    if args.starts_from:
+        for d_str in args.starts_from.split(","):
+            directory = Path(d_str.strip())
+            label = f"warm_{directory.name.removeprefix('pdk_')}"
+            for path in directory.glob("*.json"):
+                rec = json.loads(path.read_text())
+                if isinstance(rec, dict) and "device" in rec and "params" in rec:
+                    warm_by_tag[rec["device"]].append((label, rec["params"]))
 
     rows = []
     for d in devices:
@@ -455,7 +569,10 @@ def main() -> int:
         rec, sims = extract_device(
             d, args.device, n_adam_starts=args.n_adam_starts,
             adam_steps=args.adam_steps, n_validate=args.n_validate,
-            n_polish=args.n_polish, max_nfev=args.max_nfev, seed=args.seed)
+            n_polish=args.n_polish, max_nfev=args.max_nfev, seed=args.seed,
+            emu_sizes=emu_sizes, inv_sizes=inv_sizes,
+            warm_starts=warm_by_tag.get(tag),
+            emu_save_path=out_dir / f"emu_{tag}.pt")
         rows.append(rec)
         json.dump(rec, open(out_dir / f"ml_{rec['device']}.json", "w"), indent=2)
         np.savez(out_dir / f"sims_{rec['device']}.npz",
@@ -464,7 +581,7 @@ def main() -> int:
                     rec["device"], rec["start_rrms"], rec["rrms"],
                     rec["best_method"], rec["runtime_s"])
 
-    enforce_shared_bin_cards(out_dir, args.max_nfev)
+    enforce_shared_bin_cards(out_dir, args.max_nfev, args.device)
 
     # Always aggregate every completed result in the output directory. This
     # keeps subset/resume runs from replacing the full experiment summary.
@@ -496,8 +613,9 @@ def main() -> int:
         "wins_vs_baseline": int(np.sum(scores < base)),
     }
     # per-method means
-    for key in ("emu_search", "inverse_mlp", "emu_search+fd", "inverse_mlp+fd",
-                "shared_bin_ml+fd"):
+    method_keys = sorted({k for r in rows for k in r["methods"]
+                          if k != "published"})
+    for key in method_keys:
         vals = [r["methods"][key]["rrms"] for r in rows if key in r["methods"]]
         if vals:
             summary[f"mean_{key}"] = float(np.nanmean(vals))

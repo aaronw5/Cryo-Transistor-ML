@@ -1,0 +1,41 @@
+# --- Python / OS / build junk ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+.env
+.DS_Store
+.ipynb_checkpoints/
+bsim4.out
+
+# --- Slides / decks (regenerate locally with scripts/make_slides.py; not shipped) ---
+slides/
+*.pptx
+
+# --- Raw + heavy processed data (regenerate with scripts/setup_data.py) ---
+data/raw/
+data/processed/pdk_synth/*.npz
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/processed/pdk_synth/.gitkeep
+
+# --- Figures: commit all PNGs (the README embeds them); skip heavy PDFs ---
+figs/*.pdf
+
+# --- out/: keep only the human-readable result tables and the final exported
+#     card. Everything else (per-device sim data .npz, model checkpoints .pt,
+#     and intermediate/experimental runs) is regenerable via the documented
+#     pipeline, so it stays out of the repo. ---
+out/*
+!out/.gitkeep
+!out/tables/
+!out/pdk_ml_final/
+out/tables/*
+!out/tables/.gitkeep
+!out/tables/*.md
+out/pdk_ml_final/*
+!out/pdk_ml_final/cards/
+out/pdk_ml_final/cards/*
+!out/pdk_ml_final/cards/*.spice
+!out/pdk_ml_final/cards/manifest.json

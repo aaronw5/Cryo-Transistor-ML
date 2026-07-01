@@ -71,14 +71,23 @@ def main() -> int:
         rows.append(row)
 
     labels = list(methods)
+
+    def fam_mean(key, fam=None):
+        values = [r[key] for r in rows if key in r
+                  and (fam is None or r["device"].startswith(fam))]
+        return float(np.mean(values)) if values else float("nan")
+
     summary = {
-        "paper_reported_mean": float(np.mean([r["paper_reported"] for r in rows])),
-        "paper_params_ngspice_mean": float(np.mean(
-            [r["paper_params_ngspice"] for r in rows])),
+        "paper_reported_mean": fam_mean("paper_reported"),
+        "paper_params_ngspice_mean": fam_mean("paper_params_ngspice"),
     }
+    for key in ("paper_reported", "paper_params_ngspice"):
+        for fam in ("nmos", "pmos"):
+            summary[f"{key}_{fam}_mean"] = fam_mean(key, fam)
     for label in labels:
-        values = [r[label] for r in rows if label in r]
-        summary[f"{label}_mean"] = float(np.mean(values))
+        summary[f"{label}_mean"] = fam_mean(label)
+        for fam in ("nmos", "pmos"):
+            summary[f"{label}_{fam}_mean"] = fam_mean(label, fam)
         summary[f"{label}_wins_vs_paper_params_ngspice"] = sum(
             r[label] < r["paper_params_ngspice"] for r in rows if label in r)
 
@@ -96,12 +105,16 @@ def main() -> int:
                      "notebook RRMS. NGSpice does not reproduce the paper-reported "
                      "mean, so extracted cards are compared only with paper cards "
                      "in the identical NGSpice chain.\n\n")
-        handle.write("| reference / method | mean RRMS |\n|---|---:|\n")
-        handle.write(f"| paper reported | {summary['paper_reported_mean']:.3f} |\n")
-        handle.write("| paper parameters in NGSpice | "
-                     f"{summary['paper_params_ngspice_mean']:.3f} |\n")
-        for label in labels:
-            handle.write(f"| {label} | {summary[f'{label}_mean']:.3f} |\n")
+        handle.write("| reference / method | mean RRMS (all 18) | "
+                     "nMOS (8) | pMOS (10) |\n|---|---:|---:|---:|\n")
+        for key, name in (("paper_reported", "paper reported"),
+                          ("paper_params_ngspice",
+                           "paper parameters in NGSpice"),
+                          *[(label, label) for label in labels]):
+            handle.write(
+                f"| {name} | {summary[f'{key}_mean']:.3f} | "
+                f"{summary[f'{key}_nmos_mean']:.3f} | "
+                f"{summary[f'{key}_pmos_mean']:.3f} |\n")
         handle.write("\n| device | paper reported | paper params in NGSpice | "
                      + " | ".join(labels) + " |\n")
         handle.write("|---|---:|---:|" + "|".join(["---:"] * len(labels)) + "|\n")
