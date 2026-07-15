@@ -1,11 +1,196 @@
 # Research log
 
-Goal: beat the paper's extraction method (arXiv:2604.21625) with ML/DL,
-everything scored with the paper-exact all-curve RRMS in the identical
-corrected NGSpice chain. Headline metric: **mean RRMS over the 18 Table-6
-devices** (lower is better).
+Current goal: reproduce arXiv:2604.21625v1 in the authors' confirmed open
+setup and extract its seven parameters through a surrogate search, with a
+direct one-pass parameter MLP as the fixed comparison.
+Current headline metrics are the confirmed `rrmsCalc.py` family-combined RRMS
+and the all-device mean (lower is better). Entries dated June 2026 below are
+historical experiments under an incompatible old card/metric/binning setup.
 
-## Scoreboard
+## Current experiment revision (completed 2026-07-15)
+
+The user replaced the former inverse-network comparison with a direct MLP
+forward pass: 301 sampled currents in linear and signed-log form (602 inputs)
+map directly to the seven normalized parameters. This method uses one
+inference pass, real-NGSpice validation, and no search or FD polish.
+
+The surrogate extractor was rerun without the old inverse-network initializer.
+Primary reporting contains paper cards, direct MLP, surrogate raw, and
+surrogate + FD, each fixed across all 18 devices. Later fixed exploratory rows
+add the foundation emulator and high-voltage guard without changing the
+canonical export.
+
+A new independent FD experiment starts at the published parameter vector and
+compares published -> FD alone with surrogate raw -> surrogate + FD. It records
+RRMS gains, `nfev`, runtime, and all seven physical parameter movements.
+
+The fresh four-device scaling pilot completed all 56 unique cells. Emulator validation
+MSE showed power exponents 0.793 with training-set size and 0.996 with network
+weights. Search-start count had essentially zero exponent. Raw real-NGSpice
+RRMS improved modestly with data and capacity, but FD-polished RRMS stayed
+near 0.184 across all three axes on the four-device testbed. This is evidence
+that local real-simulator polish, rather than more starts, dominates the final
+pilot result. This is not the requested final scaling result: the same grid
+was initially planned to cover all 18 transistors (252 cells total). The final
+decision and completed all-device result are recorded below. The clean
+surrogate-only production extraction then started as the sole heavy job (PID
+31818, `out/pdk_surrogate_final`).
+
+The clean surrogate-only extraction subsequently completed all 18 devices in
+2,420.2 seconds total (median 94.3 seconds/device). Fixed raw surrogate search
+scored nMOS `0.0827710`, pMOS `0.3580934`, combined `0.2204322`, all-device
+`0.2357279`, with 17/18 wins over the published cards. The fixed surrogate+FD
+series scored nMOS `0.0788212`, pMOS `0.3491185`, combined `0.2139699`,
+all-device `0.2289864`, with 18/18 wins. These replace the nearly identical but
+methodologically contaminated mixed-run surrogate values below. The all-18
+scaling extension then started as the sole heavy job.
+
+### Scaling stop decision (2026-07-14 16:02 EDT)
+
+The completed all-18 data axis was sufficient to answer the scientific
+question. From 375 to 6,000 samples/transistor, held-out emulator signed-log
+MSE improved `0.0049619 -> 0.0005243` (about 9.5x), while raw real-NGSpice
+RRMS changed only `0.2497 -> 0.2398` and FD-polished real-NGSpice RRMS was
+flat/non-monotonic: `0.2280, 0.2270, 0.2273, 0.2280, 0.2294`. The best final
+mean occurred at only 750 samples. With user approval, the remaining all-18
+10,000/capacity/search cells were stopped. Final scaling uses the five complete
+data configurations for all 18 devices (90 cells), arithmetic means, and faded
+individual traces. Partial rows remain in `out/scaling/results.csv` for audit
+but are excluded by `make_scaling_fig.py`. Capacity/search remain the labeled
+four-device pilot.
+
+### Completed fixed comparisons and FD study (2026-07-15)
+
+| fixed method | nMOS | pMOS | combined | all-device | wins vs cards |
+|---|---:|---:|---:|---:|---:|
+| published cards | 0.1198250 | 0.3992356 | 0.2595303 | 0.2750531 | - |
+| direct MLP, one pass/no FD | 0.1283710 | 0.3873572 | 0.2578641 | 0.2722522 | 11/18 |
+| clean surrogate raw | 0.0827710 | 0.3580934 | 0.2204322 | 0.2357279 | 17/18 |
+| clean surrogate + FD | 0.0788212 | 0.3491185 | 0.2139699 | 0.2289864 | 18/18 |
+| foundation + FD (exploratory) | 0.0793719 | 0.3434197 | 0.2113958 | 0.2260651 | 18/18 |
+| high-voltage guarded (diagnostic) | 0.0806091 | 0.3544207 | 0.2175149 | 0.2327267 | 18/18 |
+
+The direct MLP is the requested ordinary I-V-to-parameter forward inference,
+not the retired inverse-network initializer. It makes one prediction, then its
+parameters are re-simulated in real NGSpice. The clean surrogate uses only its
+fixed 2,048-start differentiable emulator search, real-NGSpice candidate
+validation, and optional FD.
+
+FD was confirmed to optimize against measured data through fresh NGSpice
+parameter perturbations. Published-start FD was unchanged (`0.2750531 ->
+0.2750533`, 0/18 wins, `16.2 s`). The exact same raw surrogate winners improved
+`0.2357279 -> 0.2296494` on all 18; production top-five FD reached `0.2289864`.
+The nonzero published-start Jacobian plus unchanged endpoint establishes that
+the trust-region method needs a better basin, rather than FD being skipped.
+
+At the user's request, the fixed direct MLP was subsequently given the same
+measured-data FD treatment as a separate paired ablation. Each device used only
+its one-pass MLP prediction as the start; every residual evaluation generated
+fresh NGSpice curves, and no per-device initializer selection was allowed. It
+improved nMOS `0.1283710 -> 0.0876711`, pMOS `0.3873572 -> 0.3489002`, combined
+`0.2578641 -> 0.2182856`, and all-device `0.2722522 -> 0.2327984`, with 18/18
+accepted improvements. The all-device run took `373.5 s`. The raw MLP remains
+the primary one-pass comparison; MLP+FD appears only in the FD study and the
+paired FD-improvement slide. Artifacts are `out/pdk_direct_mlp_fd`,
+`out/tables/direct_mlp_fd_study.{md,json}`, and
+`slides/plots/fd_improvement_comparison.png`.
+
+### Foundation emulator (2026-07-15)
+
+One conditional parameter-to-I-V network was trained once across all 18 known
+geometries and reused for each fixed inverse search. Its validation MSE was
+`0.000242765`, close to the `0.000214598` mean of the 18 separate emulators.
+Foundation raw scored `0.2269044`; +FD scored `0.2260651`. Cache, training, and
+18-device search/validation/FD times were `14.5 s`, `189.5 s`, and `996.7 s`,
+or `1200.7 s` total versus `2420.2 s` for separate emulators. This is promising
+reuse on the trained geometry set, but the random within-geometry validation
+split does not prove unseen-L/W generalization. It remains excluded from the
+uniform surrogate+FD card export.
+
+### pMOS L=2/W=5 and high-voltage tradeoff (2026-07-15)
+
+The foundation card improves the pMOS L=2/W=5 device mean from paper `0.1907`
+to `0.1758`, but worsens high-output `idvd@1.85` from `0.0109` to `0.0470`.
+Allowing a different best 10k-LHC card for each voltage produces a nondeployable
+included-curve mean `0.1078` and high-output `0.0046`, proving a cross-bias
+compact-model compromise. No single sampled candidate improved every included
+curve in the seven-parameter +/-10% box.
+
+The guarded study keeps the paper RRMS exactly unchanged. It selects the best
+official-RRMS LHC candidate subject to strongest included output/transfer
+limits of `max(1.5 * paper curve RRMS, paper curve RRMS + 0.005)`. Every device
+had feasible candidates. It scored `0.2327267` all-device and 18/18 wins. For
+pMOS L=2/W=5 it traded some device mean (`0.1861`) to restore high-output RRMS
+to `0.0153`. It is a selection-policy diagnostic, not a new metric or export.
+
+Training a hybrid signed-log plus normalized-linear emulator could improve
+strong-current candidate ranking, but cannot create BSIM degrees of freedom
+absent from the chosen seven parameters. Widening the box or adding parameters
+would be a separately labeled extension to the reproduction protocol.
+
+### Final verification (2026-07-15)
+
+Twelve unit tests and `compileall` passed. Fresh simulator verification passed
+all 198 curves at the pinned ngspice-41 binary and reproduced the documented
+`1.0000001e-11 A` absolute and `0.0037594` peak-relative maxima. Setup-data
+validation and `git diff --check` passed. Structured artifact checks confirmed
+18 current `lhc10` records for direct, surrogate raw, surrogate+FD, foundation,
+and guarded series; 18 FD records; exactly 90 accepted scaling cells; and an
+18-bin uniform `emu_search+fd` manifest with zero saved-score difference.
+Final plots were inspected at original resolution and contain the required
+measured, paper-card, and real-NGSpice predicted-parameter curves.
+
+## Superseded mixed-run result (2026-07-14 earlier)
+
+The following result is retained as experiment history. Its surrogate search
+included an inverse-network initializer and its inverse rows are no longer
+part of current reporting. The clean replacement values are recorded above.
+
+Pinned inputs: `CryoPDK_Skywater130nm_ML@39b1e518`, conda-forge ngspice-41,
+updated pFET card, native bins, all 18 Table-6 devices, 10,000 LHC samples per
+device in the published +/-10% parameter box, and a faithful port of the
+upstream `rrmsCalc.py` scorer. Primary method scores freeze the baseline's
+included curves so candidates cannot game simulated-current exclusions.
+
+| fixed method | nMOS | pMOS | combined | all-device | wins vs cards |
+|---|---:|---:|---:|---:|---:|
+| published cards | 0.1198 | 0.3992 | 0.2595 | 0.2751 | - |
+| surrogate search, raw | 0.0828 | 0.3581 | 0.2205 | 0.2358 | 16/18 |
+| **surrogate search + FD** | **0.0788** | **0.3491** | **0.2139** | **0.2290** | **18/18** |
+| inverse MLP, raw | 0.1670 | 0.6534 | 0.4102 | 0.4372 | 4/18 |
+| inverse MLP + FD | 0.0853 | 0.3532 | 0.2192 | 0.2341 | 17/18 |
+
+No row selects a method per device. The extraction runner's diagnostic
+best-of chose surrogate+FD 13 times and inverse+FD 5 times, but that diagnostic
+is excluded from all headline tables, plots, and export. The selected library
+uses the globally best polished fixed method, surrogate+FD, for every device
+and native bin.
+
+### FD-polish ablation
+
+- Surrogate inverse search: `0.2357561 -> 0.2289597` all-device mean,
+  reduction `0.0067964`.
+- One-shot inverse MLP: `0.4372150 -> 0.2341032`, reduction `0.2031118`.
+
+The inverse network is a useful initializer but is poor without real-simulator
+polish. Surrogate search is already strong before polish and gains modestly.
+The dedicated paired table and plot are `out/tables/fd_polish_ablation.md`
+and `figs/fd_polish_ablation.png`.
+
+### Reproduction checks
+
+- All 198 local sweeps match the pinned upstream saved sweeps; worst absolute
+  difference `1.0000001e-11 A`. The worst peak-relative difference is
+  `0.0037594` on a tiny-current curve (`7.10543e-15 A` absolute).
+- Confirmed published-card baseline is `0.2595303` family-combined and
+  `0.2750531` all-device, close to the paper's `0.2629125` and `0.2787778`.
+- Four fixed-method directories contain all 18 current `lhc10` records.
+- Canonical card manifest reports `uniform_method=emu_search+fd`, 18/18 wins,
+  and zero difference when re-simulated from the written library.
+- A fresh schema-2 confirmed-setup scaling study was started on July 14; see
+  `docs/HANDOFF.md` for live status and resume commands.
+
+## Historical June scoreboard
 
 | date | method | mean RRMS | wins vs paper cards | notes |
 |---|---|---:|---:|---|

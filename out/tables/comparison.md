@@ -1,35 +1,34 @@
-# Paper-exact comparison
+# Confirmed-setup comparison
 
-All NGSpice columns use the corrected-repository deck convention, native geometry bin, and paper companion notebook RRMS. NGSpice does not reproduce the paper-reported mean, so extracted cards are compared only with paper cards in the identical NGSpice chain.
+All NGSpice columns use the confirmed-setup chain (CryoPDK_Skywater130nm_ML decks + updated pFET card, ngspice-41, native geometry bins) scored with the rrmsCalc metric; curve inclusion is frozen to the published-card baseline's included set for every method. combined = (nMOS mean + pMOS mean)/2, the upstream headline convention.
 
-| reference / method | mean RRMS (all 18) | nMOS (8) | pMOS (10) |
-|---|---:|---:|---:|
-| paper reported | 0.279 | 0.120 | 0.406 |
-| paper parameters in NGSpice | 0.692 | 0.436 | 0.896 |
-| fd | 0.501 | 0.378 | 0.599 |
-| cma_8500 | 0.498 | 0.378 | 0.594 |
-| ml_perdev | 0.491 | 0.373 | 0.586 |
-| fd_deploy | 0.550 | 0.378 | 0.687 |
-| cma_deploy | 0.541 | 0.378 | 0.671 |
-| ml_deploy | 0.536 | 0.373 | 0.667 |
+| reference / method | mean RRMS (all 18) | combined | nMOS (8) | pMOS (10) |
+|---|---:|---:|---:|---:|
+| paper reported | 0.279 | 0.263 | 0.120 | 0.406 |
+| paper parameters in NGSpice | 0.275 | 0.260 | 0.120 | 0.399 |
+| direct_mlp_forward_pass | 0.272 | 0.258 | 0.128 | 0.387 |
+| surrogate_search_raw | 0.236 | 0.220 | 0.083 | 0.358 |
+| surrogate_search_plus_fd | 0.229 | 0.214 | 0.079 | 0.349 |
+| foundation_plus_fd | 0.226 | 0.211 | 0.079 | 0.343 |
+| high_voltage_guarded | 0.233 | 0.218 | 0.081 | 0.354 |
 
-| device | paper reported | paper params in NGSpice | fd | cma_8500 | ml_perdev | fd_deploy | cma_deploy | ml_deploy |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| nmos_L0p15_W1p6 | 0.059 | 0.060 | 0.044 | 0.037 | 0.037 | 0.044 | 0.037 | 0.037 |
-| nmos_L0p19_W7 | 0.097 | 0.488 | 0.429 | 0.425 | 0.425 | 0.429 | 0.425 | 0.425 |
-| nmos_L0p25_W1p6 | 0.098 | 0.973 | 0.915 | 0.909 | 0.909 | 0.915 | 0.909 | 0.909 |
-| nmos_L1_W1p6 | 0.128 | 0.594 | 0.519 | 0.507 | 0.507 | 0.519 | 0.507 | 0.507 |
-| nmos_L1_W3 | 0.160 | 0.712 | 0.628 | 0.620 | 0.620 | 0.628 | 0.620 | 0.620 |
-| nmos_L8_W1p6 | 0.147 | 0.144 | 0.057 | 0.055 | 0.055 | 0.057 | 0.055 | 0.055 |
-| nmos_L20_W0p64 | 0.130 | 0.231 | 0.154 | 0.194 | 0.148 | 0.154 | 0.194 | 0.148 |
-| nmos_L100_W100 | 0.142 | 0.288 | 0.280 | 0.280 | 0.280 | 0.280 | 0.280 | 0.280 |
-| pmos_L0p35_W0p55 | 0.701 | 0.931 | 0.538 | 0.538 | 0.538 | 0.568 | 0.579 | 0.580 |
-| pmos_L0p35_W1p6 | 0.374 | 0.869 | 0.798 | 0.751 | 0.752 | 0.798 | 0.751 | 0.752 |
-| pmos_L0p35_W5 | 0.324 | 0.447 | 0.254 | 0.252 | 0.252 | 0.254 | 0.252 | 0.252 |
-| pmos_L0p5_W0p42 | 0.465 | 1.098 | 0.526 | 0.523 | 0.523 | 1.183 | 1.172 | 1.171 |
-| pmos_L0p5_W0p64 | 0.322 | 0.818 | 0.481 | 0.467 | 0.467 | 0.481 | 0.467 | 0.467 |
-| pmos_L2_W5 | 0.207 | 0.976 | 0.945 | 0.941 | 0.941 | 0.945 | 0.941 | 0.941 |
-| pmos_L4_W7 | 0.281 | 0.735 | 0.610 | 0.637 | 0.609 | 0.755 | 0.671 | 0.689 |
-| pmos_L8_W0p84 | 0.480 | 0.805 | 0.595 | 0.564 | 0.564 | 0.595 | 0.564 | 0.564 |
-| pmos_L8_W1p6 | 0.515 | 0.828 | 0.593 | 0.619 | 0.566 | 0.593 | 0.619 | 0.566 |
-| pmos_L8_W5 | 0.388 | 1.458 | 0.651 | 0.647 | 0.647 | 0.698 | 0.697 | 0.690 |
+| device | paper reported | paper params in NGSpice | direct_mlp_forward_pass | surrogate_search_raw | surrogate_search_plus_fd | foundation_plus_fd | high_voltage_guarded |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| nmos_L0p15_W1p6 | 0.059 | 0.059 | 0.110 | 0.035 | 0.035 | 0.034 | 0.036 |
+| nmos_L0p19_W7 | 0.097 | 0.097 | 0.176 | 0.044 | 0.043 | 0.043 | 0.048 |
+| nmos_L0p25_W1p6 | 0.098 | 0.098 | 0.099 | 0.052 | 0.050 | 0.050 | 0.052 |
+| nmos_L1_W1p6 | 0.128 | 0.128 | 0.122 | 0.067 | 0.065 | 0.064 | 0.068 |
+| nmos_L1_W3 | 0.160 | 0.160 | 0.140 | 0.137 | 0.110 | 0.110 | 0.113 |
+| nmos_L8_W1p6 | 0.147 | 0.147 | 0.122 | 0.080 | 0.080 | 0.081 | 0.081 |
+| nmos_L20_W0p64 | 0.130 | 0.128 | 0.123 | 0.115 | 0.115 | 0.120 | 0.116 |
+| nmos_L100_W100 | 0.142 | 0.140 | 0.135 | 0.133 | 0.132 | 0.134 | 0.132 |
+| pmos_L0p35_W0p55 | 0.701 | 0.727 | 0.738 | 0.664 | 0.639 | 0.631 | 0.641 |
+| pmos_L0p35_W1p6 | 0.374 | 0.378 | 0.380 | 0.346 | 0.329 | 0.328 | 0.335 |
+| pmos_L0p35_W5 | 0.324 | 0.329 | 0.321 | 0.339 | 0.317 | 0.289 | 0.288 |
+| pmos_L0p5_W0p42 | 0.465 | 0.456 | 0.437 | 0.362 | 0.361 | 0.359 | 0.389 |
+| pmos_L0p5_W0p64 | 0.322 | 0.350 | 0.390 | 0.340 | 0.329 | 0.325 | 0.328 |
+| pmos_L2_W5 | 0.207 | 0.191 | 0.230 | 0.190 | 0.190 | 0.176 | 0.186 |
+| pmos_L4_W7 | 0.281 | 0.270 | 0.242 | 0.224 | 0.223 | 0.223 | 0.238 |
+| pmos_L8_W0p84 | 0.480 | 0.434 | 0.380 | 0.376 | 0.374 | 0.374 | 0.397 |
+| pmos_L8_W1p6 | 0.515 | 0.543 | 0.482 | 0.478 | 0.470 | 0.470 | 0.477 |
+| pmos_L8_W5 | 0.388 | 0.315 | 0.274 | 0.261 | 0.260 | 0.259 | 0.266 |

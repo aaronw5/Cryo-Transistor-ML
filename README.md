@@ -1,149 +1,153 @@
-# cryo-bsim4-ml
+# Cryogenic SKY130 parameter extraction with ML
 
-ML-guided extraction of cryogenic (77 K) SKY130 BSIM4 parameter cards that
-**beats both the published cards of arXiv:2604.21625 and the paper's
-extraction method re-run with classical optimizers, in an identical
-open-source NGSpice flow**, over all 18 Table-6 devices:
+This repository reproduces the 77 K SKY130 BSIM4 workflow from
+arXiv:2604.21625v1 in the authors' confirmed open simulation setup. It then
+extracts the paper's seven parameters with a learned forward emulator
+(`parameters -> I-V curves`) searched in parameter space, validates every
+reported parameter vector in real NGSpice, and optionally applies numerical
+finite-difference (FD) polish against the measured I-V data.
 
-| method (identical NGSpice chain, paper-exact RRMS) | per-device | deployable¹ |
-|---|---:|---:|
-| paper cards (no fitting) | 0.692 | 0.692 |
-| FD control — multistart least squares (paper-method retry) | 0.501 | 0.550 |
-| CMA-ES control — 8,500 evals/device, budget-matched to ML | 0.498 | 0.541 |
-| **ML (one-shot surrogate v2 + active-BO ensemble v3)** | **0.491** | **0.536** |
-| paper reported (proprietary HSPICE/Mystic flow) | 0.279² | — |
+The primary comparison uses fixed methods over all 18 Table-6 transistors:
 
-¹ deployable = one card per model bin (what a real library ships); all
-methods subjected to the same joint-fit constraint.
-² not comparable: nothing run through NGSpice reaches it on this data — see
-"Why the paper's numbers can't be compared directly".
+- direct MLP: measured I-V features -> seven parameters in one forward pass;
+- per-device surrogate search, before FD;
+- the same per-device surrogate search after FD.
 
-By device family (per-device / deployable): nMOS — best classical
-0.378 / 0.378, ML **0.373 / 0.373**; pMOS — best classical 0.594 / 0.671,
-ML **0.586 / 0.667**. ML leads both families in both regimes; the entire
-deployment cost falls on pMOS, where both shared model bins live
-(per-family columns in `out/tables/comparison.md`).
+There is no per-device method cherry-picking. The global foundation emulator
+and high-voltage-preserving selection are fixed exploratory series. The
+canonical exported card uses per-device surrogate search + FD for every bin.
 
-Evidence the comparison is meaningful: tripling the classical budget
-(2,400 → 8,500 NGSpice evals/device) improves CMA-ES by only 0.001 — the
-classical methods have plateaued. The standalone ML pipelines score 0.494
-(one-shot surrogate) and 0.493 (active-BO ensemble) without any warm
-starts; with the classical winners folded in as candidates the final ML
-result never loses a device to any control (18/18 wins or ties). Scaling
-behavior (training-set size, emulator capacity, search budget) is
-characterized in `figs/scaling_laws.png`.
+## Confirmed setup
 
-```text
-tuned parameters: VTH0, U0, NFACTOR, VSAT, DELTA, RDSW, ETA0
-```
+| component | pinned value |
+|---|---|
+| upstream flow | `ogzamour/CryoPDK_Skywater130nm_ML@39b1e518` |
+| paper | arXiv:2604.21625v1 |
+| simulator | conda-forge `ngspice-41` |
+| device set | all 18 paper Table-6 geometries |
+| curves per device | 5 output + 6 transfer |
+| parameters | `VTH0, U0, NFACTOR, VSAT, DELTA, RDSW, ETA0` |
+| synthetic data | 10,000-point Latin hypercube in the published +/-10% box |
+| metric | faithful upstream `rrmsCalc.py` port; unchanged from the paper |
 
-![All 18 Table-6 devices](figs/table6_bars.png)
-
-## Why the paper's numbers can't be compared directly
-
-The paper reports mean RRMS `0.279` from its HSPICE/Mystic flow. Running the
-paper's *own published cards* through NGSpice yields `0.692`. The gap is real
-and reproducible, so the only fair comparison is **method vs method inside
-the identical NGSpice chain**. Contributing causes we isolated:
-
-- **Simulator gap.** Specific devices (e.g. pMOS 0.35/1.6, nMOS 20/0.64,
-  nMOS 100/100) simulate ~2x worse in NGSpice than reported even with the
-  most favorable bin choice — a genuine HSPICE-vs-NGSpice model evaluation
-  difference, not a deck bug. Not an NGSpice-version artifact either: running
-  the published cards through the corrected repo's *exact* pinned
-  `ngspice=41` gives 0.743 (worse than ngspice-46's 0.692, still ~2.5x the
-  paper); on 13/18 devices the two NGSpice versions are byte-identical and
-  the rest differ only by overlapping-pMOS bin tie-breaking
-  (`scripts/compare_ng_versions.py`).
-- **Scale-units trap.** The cryo corner files set `.option scale=1.0u`, so
-  instances must pass bare micron numbers (`l=0.15 w=1.6`). Passing `l=0.15u`
-  silently misses every bin box and NGSpice reports "could not find a valid
-  modelname" — the long-standing "NGSpice can't bin" blocker.
-- **Overlapping pMOS bins.** The published pMOS card has 12 bins for 10
-  devices with overlapping L/W boxes, so native bin selection can map a
-  device to a bin that was fit to a different device.
-- **Measured-data limits.** Some device-off sweeps contain instrument spikes
-  and ~6 µA range-quantization that no simulator can fit; several devices
-  show real high-Vd leakage floors whose BSIM4 knobs (GIDL) are outside the
-  7 tuned parameters. These bound every method identically (diagnostics in
-  `docs/RESEARCH_LOG.md`).
-
-## Fairness rules
-
-- Published 77 K corner files + Volare SKY130 PDK revision
-  `a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b`, corrected-repository deck
-  convention (`ogzamour/CryoSkywater130nm_CorrectedForNgspice`).
-- Native geometry-bin selection — NGSpice picks the bin; never chosen from
-  measured scores.
-- Only the paper's seven parameters are tuned, same bounded parameter box
-  for every method.
-- Optimization, selection, and reporting all use the paper companion
-  notebook's all-curve RRMS, corrupted curves included, for every method.
-- Every reported number comes from a real NGSpice run; classical controls
-  get a comparable simulation budget.
-- Deployable comparisons apply the same one-card-per-bin joint constraint
-  to every method.
-
-## Pipeline
-
-1. `scripts/verify_simulator.py` — verify the harness against the corrected
-   repository's saved NGSpice sweeps.
-2. `scripts/pdk_baseline.py` — run the published cards (the no-fit baseline).
-3. `scripts/pdk_fd_extract.py` / `scripts/pdk_cma_extract.py` — classical
-   controls: the paper-method retry (multistart FD least squares) and
-   CMA-ES + polish.
-4. `scripts/pdk_gen_data.py --centers-from out/pdk_fd` — 6,000 NGSpice
-   samples per device in the native bin (quarter concentrated around the
-   FD winner's basin).
-5. `scripts/pdk_ml_extract.py` (v2) — per device: train a neural emulator
-   (parameters → curves, 512×4 MLP) and an inverse MLP (curves →
-   parameters); 2,048-start gradient search through the frozen emulator;
-   validate candidates in real NGSpice (controls' winners compete as warm
-   starts); finite-difference polish; joint emulator search + polish for
-   devices sharing a model bin.
-6. `scripts/pdk_ml_active.py` (v3) — ensemble active-BO: 3 emulators,
-   pessimistic mean+std acquisition (half the starts explore disagreement),
-   4 rounds of search → NGSpice-validate → append true evaluations →
-   fine-tune the ensemble.
-7. `scripts/make_fd_deploy.py` — deployable (shared-bin) variants of the
-   classical controls.
-8. `scripts/pdk_compare.py` — recompute and report paper-exact RRMS for
-   every method.
-9. `scripts/export_ml_cards.py --src out/pdk_ml_final` — export one
-   combined nMOS/pMOS 77 K library
-   (`out/pdk_ml_final/cards/sky130_77k_ml.lib.spice`).
-10. `scripts/scaling_study.py` / `scripts/make_scaling_fig.py` — scaling
-    laws for data / capacity / search.
-11. `scripts/make_figs.py` — regenerate all figures. (`scripts/make_slides.py`
-    can rebuild the summary deck locally; the deck itself is not shipped.)
+The harness reproduces all 198 committed upstream sweeps. The worst absolute
+current difference is `1.0000001e-11 A`; the worst peak-relative difference is
+`0.0037594` on a tiny-current curve (`7.10543e-15 A` absolute). Correct pMOS
+sweep direction, device multiplicity, deck tolerances, updated pFET card, and
+native geometry-bin selection are required. The 18 geometries map to 18
+distinct native bins.
 
 ## Results
 
-Per-device numbers for all methods: [`out/tables/comparison.md`](out/tables/comparison.md);
-Table-6 analogue with RMSE and σ: [`out/tables/table6.md`](out/tables/table6.md);
-experiment history and diagnostics: [`docs/RESEARCH_LOG.md`](docs/RESEARCH_LOG.md).
+Lower RRMS is better. `combined` is the paper/upstream convention,
+`(nMOS mean + pMOS mean) / 2`; `all-device` is the arithmetic mean over all 18
+devices. Primary comparisons freeze the published-card curve-inclusion set so
+a candidate cannot improve by triggering the scorer's simulation-dependent
+pMOS exclusion. The RRMS calculation itself is not modified.
 
-Figures mirror the paper's:
+| fixed method | nMOS | pMOS | combined | all-device | wins vs paper card |
+|---|---:|---:|---:|---:|---:|
+| paper parameters in confirmed NGSpice | 0.1198 | 0.3992 | 0.2595 | 0.2751 | - |
+| direct MLP, one pass, no FD | 0.1284 | 0.3874 | 0.2579 | 0.2723 | 11/18 |
+| per-device surrogate search, raw | 0.0828 | 0.3581 | 0.2204 | 0.2357 | 17/18 |
+| **per-device surrogate search + FD** | **0.0788** | **0.3491** | **0.2140** | **0.2290** | **18/18** |
+| global foundation surrogate + FD (exploratory) | 0.0794 | 0.3434 | 0.2114 | 0.2261 | 18/18 |
+| high-voltage guarded selection (diagnostic) | 0.0806 | 0.3544 | 0.2175 | 0.2327 | 18/18 |
 
-| paper figure | this repo |
-|---|---|
-| Fig. 2 — representative I-V at 77 K | `figs/fig2_iv_77k.png` |
-| Fig. 4 — best-fit characteristics | `figs/fig4_bestfit.png` |
-| Fig. 5 — RRMS heat maps across geometries | `figs/fig5_rrms_heatmap.png` |
-| Table 6 — per-device error metrics | `figs/table6_bars.png`, `out/tables/table6.md` |
-| (extra) extraction-stage ablation | `figs/ml_ablation.png` |
-| (extra) every device, all curves | `figs/devices/<tag>.png` |
+The paper reports `0.2629` combined and `0.2788` all-device using its HSPICE
+flow. The confirmed NGSpice published-card baseline is close at `0.2595` and
+`0.2751`.
 
-![Best-fit characteristics](figs/fig4_bestfit.png)
+### FD ablation
 
-![RRMS heat maps](figs/fig5_rrms_heatmap.png)
+FD perturbs parameters, runs fresh NGSpice simulations, and computes residuals
+against measured data. It does not optimize against surrogate-generated data.
 
-The ablation shows where the ML gain comes from: the surrogate-only search
-already approaches the classical controls, NGSpice polish pushes past them,
-and the shared-bin constraint (applied to every method) costs everyone
-about the same:
+- Published card -> FD alone: `0.2751 -> 0.2751`, 0/18 improvements. The local
+  solver stalls at the published start under the production trust-region
+  recipe.
+- Direct MLP -> direct MLP + FD: `0.2723 -> 0.2328`, 18/18 improvements. This
+  fixed one-start paired result took `373.5 s`; the raw one-pass MLP remains
+  the primary direct-method comparison.
+- Same raw surrogate winner -> FD: `0.2357 -> 0.2296`, 18/18 improvements.
+- Production top-five surrogate candidate policy -> FD: `0.2357 -> 0.2290`.
 
-![Extraction stages](figs/ml_ablation.png)
+FD is effective as local polish after the emulator finds a better basin, but
+it is not an effective global extractor from the published card in this setup.
+
+### Scaling
+
+The accepted scaling study averages all 18 transistors. From 375 to 6,000
+samples per transistor, held-out emulator MSE improves about 9.5x
+(`0.004962 -> 0.000524`), while real-NGSpice RRMS after FD remains flat:
+`0.2280, 0.2270, 0.2273, 0.2280, 0.2294`. The best mean occurs at 750 samples,
+so the remaining all-device capacity/search grid was intentionally stopped.
+The plot shows every device as a faded colored trace and the arithmetic mean in
+bold. Capacity/search results are retained only as a labeled four-device pilot.
+
+### Foundation emulator
+
+One geometry-conditioned forward model was trained once over the 18 datasets
+and reused for all inverse searches. It achieved `0.2261` all-device after FD,
+slightly better than the 18 separate emulators (`0.2290`). Cache construction,
+training, and all search/validation/FD work took `1200.7 s`, versus `2420.2 s`
+for the per-device extraction campaign. Published-start FD alone took `16.2 s`
+but did not improve RRMS.
+
+This experiment demonstrates reuse across the 18 known geometries. Its random
+within-geometry validation split does not establish generalization to an
+unseen L/W geometry, so it remains exploratory and is not the exported card.
+
+### High-voltage behavior
+
+For pMOS `L=2 um, W=5 um`, the foundation result improves device RRMS from
+`0.1907` to `0.1758` but worsens the strongest output curve
+`idvd@1.85` from `0.0109` to `0.0470`. Selecting one separate card per voltage
+reduces the included-curve mean to `0.1078`, proving that the single seven-
+parameter card is making a cross-bias compromise; those separate cards are not
+deployable.
+
+The high-voltage guard keeps the paper RRMS unchanged and selects the lowest-
+RRMS LHC candidate whose strongest included output and transfer curves remain
+within `max(1.5 * paper curve RRMS, paper curve RRMS + 0.005)`. For this device,
+it gives overall `0.1861` and restores `idvd@1.85` to `0.0153`. Across all 18,
+it gives `0.2327` and still wins over every published card. This is a diagnostic
+selection policy, not a new metric or the canonical export.
+
+More emulator training is unlikely to remove this tradeoff by itself: a 10,000
+real-NGSpice sample audit found no candidate in the seven-parameter +/-10% box
+that improves every included curve for pMOS `L=2 um, W=5 um`. A hybrid
+signed-log plus normalized-linear training loss could improve candidate
+ranking, but materially better simultaneous strong- and weak-current fits
+would require a separately labeled wider box or additional BSIM parameters.
+
+## Method and artifacts
+
+Detailed definitions are in [docs/METHODS.md](docs/METHODS.md). The current
+handoff and exact commands are in [docs/HANDOFF.md](docs/HANDOFF.md).
+
+- `out/tables/comparison.md`: all devices and all fixed series.
+- `out/tables/table6_paper_format.md`: paper-format RMSE, RRMS, and sigma.
+- `out/tables/table4_ml_params.md`: published and extracted parameters.
+- `out/tables/fd_parameter_study.md`: FD-alone and FD-polish ablations.
+- `out/tables/direct_mlp_fd_study.md`: direct MLP before/after FD for all 18.
+- `out/tables/scaling_study.md`: accepted all-18 data scaling.
+- `out/tables/foundation_emulator_study.md`: global model accuracy and timing.
+- `out/tables/per_bias_pmos_L2_W5.md`: nondeployable per-voltage diagnostic.
+- `out/tables/high_voltage_guarded_study.md`: unchanged-RRMS guard study.
+- `figs/fig2_iv_77k.png`, `figs/fig4_bestfit.png`: measured points, published
+  NGSpice curves, and NGSpice curves from every plotted parameter series.
+- `figs/iv_<method>.png`: individual paper/direct/raw/FD/foundation plots;
+  each ML plot also contains the published-card curve.
+- `figs/fig5_rrms_heatmap.png`, `figs/table6_bars.png`: all-device summaries.
+- `figs/devices/<tag>.png`: complete 18-device appendix.
+- `out/pdk_ml_selected/cards`: uniform surrogate+FD exported library.
+- `slides/cryo_ml_simple_results.pptx`: simplified presentation. Main slides
+  show only direct MLP and surrogate+FD against measured/paper references; raw
+  surrogate and direct MLP + FD appear only on the paired FD-improvement slide.
+
+Final figures never use neural-emulator currents as physical predictions. Each
+line is a real NGSpice re-simulation of the corresponding parameter vector.
 
 ## Setup
 
@@ -151,36 +155,58 @@ about the same:
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+export NGSPICE_BIN=/Users/anrunw/cryo-ng41/mm/envs/ng41/bin/ngspice
+export PYTHONPATH=src
 python scripts/setup_data.py
 ```
 
-Install NGSpice separately; the validated environment uses `ngspice-46`.
+`setup_data.py` validates the pinned upstream checkout and installs its updated
+pFET corner. NGSpice must be installed separately.
 
-## Run
+## Reproduce
+
+Run heavy stages sequentially and inspect `ps` before starting one.
 
 ```bash
-python scripts/pdk_baseline.py
 python scripts/verify_simulator.py
-python scripts/pdk_fd_extract.py --workers 8
-python scripts/pdk_cma_extract.py --workers 8 --evals 8500
-python scripts/pdk_gen_data.py --num-samples 6000 --workers 10 --centers-from out/pdk_fd
+python scripts/pdk_baseline.py
+python scripts/pdk_gen_data.py --num-samples 10000 --workers 10
+
 python scripts/pdk_ml_extract.py --device mps \
-  --emu-arch 512,512,512,512 --inv-arch 1024,512 \
-  --n-adam-starts 2048 --adam-steps 600 --n-validate 14 --n-polish 5 \
-  --max-nfev 120 --starts-from out/pdk_fd,out/pdk_cma --out-dir out/pdk_ml2
-python scripts/pdk_gen_data.py --num-samples 2000 --workers 10 --append \
-  --centers-from out/pdk_ml2_perdev
-python scripts/pdk_ml_active.py --device mps \
-  --starts-from out/pdk_fd,out/pdk_cma,out/pdk_ml2_perdev --out-dir out/pdk_ml3
-python scripts/make_fd_deploy.py
-python scripts/make_fd_deploy.py --src out/pdk_cma --dst out/pdk_cma_deploy
-python scripts/pdk_compare.py --methods out/pdk_fd:fd out/pdk_cma:cma_8500 \
-  out/pdk_ml_final_perdev:ml_perdev out/pdk_fd_deploy:fd_deploy \
-  out/pdk_cma_deploy:cma_deploy out/pdk_ml_final:ml_deploy
-python scripts/export_ml_cards.py --src out/pdk_ml_final
-python scripts/scaling_study.py --device mps && python scripts/make_scaling_fig.py
+  --emu-arch 512,512,512,512 \
+  --n-adam-starts 2048 --adam-steps 600 --n-validate 14 \
+  --n-polish 5 --max-nfev 120 --out-dir out/pdk_surrogate_final
+python scripts/make_ml_variants.py --src out/pdk_surrogate_final
+python scripts/pdk_direct_mlp.py --device mps
+python scripts/fd_parameter_study.py
+python scripts/direct_mlp_fd_study.py --resume
+
+python scripts/scaling_study.py --device mps --data-only
+python scripts/make_scaling_fig.py
+
+# Exploratory stages, run after primary results.
+python scripts/pdk_foundation_emulator.py --device mps --remove-cache
+python scripts/per_bias_diagnostic.py
+# Diagnostic table/data only; guarded cards are intentionally not plotted.
+python scripts/high_voltage_guarded_study.py
+
+python scripts/pdk_compare.py
+python scripts/export_ml_cards.py --src out/pdk_ml_emu
+python scripts/make_paper_tables.py
 python scripts/make_figs.py
+python scripts/make_simple_slides.py
 ```
 
-All outputs land under `out/`; figures under `figs/`. Methods details are in
-[`docs/METHODS.md`](docs/METHODS.md).
+The synthetic datasets are about 2.3 GB and are gitignored. Historical June
+experiments used a different card, metric, and binning regime; they are
+preserved in the research log but are not compatible with this workflow.
+
+## Verify
+
+```bash
+PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
+.venv/bin/python -m compileall -q src scripts
+PYTHONPATH=src .venv/bin/python scripts/verify_simulator.py
+.venv/bin/python scripts/setup_data.py --skip-clone
+git diff --check
+```

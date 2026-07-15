@@ -1,0 +1,31 @@
+{
+  "policy": "fixed surrogate-search stages across all 18 devices; no per-device method selection in reporting",
+  "source_best_method_is_diagnostic_only": true,
+  "source_best_method_counts": {
+    "emu_search+fd": 18
+  },
+  "all_variants_complete": true,
+  "variants": {
+    "emu_search": {
+      "method": "emu_search",
+      "n_devices": 18,
+      "mean_rrms": 0.23572790633094115,
+      "nmos_mean": 0.08277098535341507,
+      "pmos_mean": 0.3580934431129621,
+      "selection_policy": "one fixed method across all 18 devices",
+      "combined_rrms": 0.2204322142331886
+    },
+    "emu_search+fd": {
+      "method": "emu_search+fd",
+      "n_devices": 18,
+      "mean_rrms": 0.22898636766706795,
+      "nmos_mean": 0.07882122060595045,
+      "pmos_mean": 0.34911848531596196,
+      "selection_policy": "one fixed method across all 18 devices",
+      "combined_rrms": 0.21396985296095622
+    }
+  },
+  "fd_polish_ablation_all_device_mean": {
+    "surrogate_delta": 0.006741538663873198
+  }
+}

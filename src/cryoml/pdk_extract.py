@@ -1,14 +1,15 @@
-"""Paper-exact BSIM4 7-parameter extraction against the corrected NGSpice chain.
+"""BSIM4 7-parameter extraction against the confirmed NGSpice-41 chain.
 
 Theta layout (order fixed): vth0, u0, nfactor, vsat, delta, rdsw, eta0.
 
-Bounds are built *around each bin's published values* (the published fits
-use wildly different scales per bin — e.g. pmos vsat up to 7e8 — so global
-boxes don't work). vth0/eta0 get additive windows (sign changes allowed);
-the positive scale-like params get log-space multiplicative windows.
+The current pipeline uses a linear +/-10% box around each bin's published
+effective parameter values, matching the confirmed upstream's Latin-hypercube
+multiplier perturbation. The legacy broad transform remains available only for
+historical experiments.
 
-The optimization objective includes every nonzero-denominator measured curve
-and matches the paper companion notebook's all-curve RRMS definition.
+The primary objective is the port of the confirmed upstream's ``rrmsCalc.py``
+with measured-current cleaning/trimming and curve inclusion frozen to the
+published-card baseline. The older all-curve objective remains for continuity.
 """
 
 from __future__ import annotations
@@ -24,9 +25,11 @@ import numpy as np
 from scipy.optimize import least_squares
 
 from .data_io import Curve
-from .metrics import device_rrms
-from .spice_pdk import (LIB_FILE, PDK77K_DIR, _CORNER_BASENAME, _MODEL, _SUBCKT,
-                        _force_bin, ensure_pdk77k, simulate_pdk)
+from .metrics import (curve_trim, device_rrms, score_device_new,
+                      tag_metric_curves)
+from .spice_pdk import (LIB_FILE, PDK77K_DIR, _CORNER_BASENAME, _MODEL,
+                        _NGSPICE_BIN, _SUBCKT, _force_bin, _instance_line,
+                        ensure_pdk77k, simulate_pdk)
 from .utils import get_logger
 
 logger = get_logger("cryoml.pdk_extract")
@@ -88,21 +91,17 @@ def read_bin_params(dev_type: str, L_um: float, W_um: float,
         lp = td / "lib.spice"
         lp.write_text(lib)
         sign = -1 if dev_type == "pmos" else 1
-        area_um2 = W_um * 0.24
-        perimeter_um = W_um + 2 * 0.24
         deck = td / "d.sp"
         deck.write_text(
             f'* showmod readback\n.options scale=1.0\n.lib "{lp.as_posix()}" tt_77k\n'
             ".options temp=-196.15\n"
-            f"Xm1 nd ng 0 0 {_SUBCKT[dev_type]} l={L_um:.6g}u w={W_um:.6g}u nf=1 "
-            f"ad={area_um2:.6g}p as={area_um2:.6g}p "
-            f"pd={perimeter_um:.6g}u ps={perimeter_um:.6g}u\n"
+            + _instance_line(dev_type, L_um, W_um) +
             f"VG ng 0 DC {1.0 * sign}\nVD nd 0 DC {1.0 * sign}\n.op\n"
             ".control\nrun\n"
             f"showmod m.xm1.m{_SUBCKT[dev_type]} : {' '.join(PARAMS7)}\n"
             "quit\n.endc\n.end\n")
-        out = subprocess.run(["ngspice", "-b", str(deck)], capture_output=True,
-                             text=True, timeout=30).stdout
+        out = subprocess.run([_NGSPICE_BIN, "-b", str(deck)],
+                             capture_output=True, text=True, timeout=30).stdout
     vals: dict[str, float] = {}
     for p in PARAMS7:
         m = re.search(rf"^\s*{p}\s+([0-9eE.+\-]+)\s*$", out, re.MULTILINE)
@@ -189,6 +188,58 @@ def theta_box_for(dev_type: str, L_um: float, W_um: float,
     return ThetaBox(dev_type=dev_type, bin_index=bin_index, published=pub)
 
 
+@dataclass
+class LhcBox:
+    """±10 % box around the published bin values — the confirmed-setup
+    Monte-Carlo box (nomSweep_latinHypercube.py). Sigmoid z <-> physical,
+    linear per param (the range is too narrow to need log spacing), sign-safe
+    for negative published values. z=0 is exactly the published card."""
+    dev_type: str
+    bin_index: int
+    published: dict[str, float]
+    frac: float = 0.10
+    lo: np.ndarray = field(init=False)
+    hi: np.ndarray = field(init=False)
+
+    def __post_init__(self) -> None:
+        v = np.array([float(self.published[p]) for p in PARAMS7],
+                     dtype=np.float64)
+        b1, b2 = (1.0 - self.frac) * v, (1.0 + self.frac) * v
+        self.lo = np.minimum(b1, b2)
+        self.hi = np.maximum(b1, b2)
+        degenerate = self.hi - self.lo < 1e-30
+        self.lo[degenerate] -= 1e-30
+        self.hi[degenerate] += 1e-30
+
+    def z_to_params(self, z: np.ndarray) -> dict[str, float]:
+        z = np.asarray(z, dtype=np.float64)
+        s = 1.0 / (1.0 + np.exp(-z))
+        x = self.lo + (self.hi - self.lo) * s
+        return {p: float(x[i]) for i, p in enumerate(PARAMS7)}
+
+    def params_to_z(self, params: dict[str, float]) -> np.ndarray:
+        x = np.array([float(params[p]) for p in PARAMS7], dtype=np.float64)
+        frac = (x - self.lo) / (self.hi - self.lo)
+        frac = np.clip(frac, 1e-6, 1 - 1e-6)
+        return np.clip(np.log(frac / (1 - frac)), -13.9, 13.9)
+
+    @property
+    def z_published(self) -> np.ndarray:
+        return self.params_to_z(self.published)
+
+
+def make_box(dev_type: str, L_um: float, W_um: float, bin_index: int,
+             mode: str = "lhc10"):
+    """Box factory: "lhc10" = confirmed-setup ±10 % LHC box (default),
+    "wide" = the legacy broad sigmoid box."""
+    if mode == "wide":
+        return theta_box_for(dev_type, L_um, W_um, bin_index)
+    if mode == "lhc10":
+        pub = read_bin_params(dev_type, L_um, W_um, bin_index)
+        return LhcBox(dev_type=dev_type, bin_index=bin_index, published=pub)
+    raise ValueError(f"unknown box mode {mode!r}")
+
+
 # ---------------------------------------------------------------------------
 # Metric evaluation + residual against the PDK backend
 # ---------------------------------------------------------------------------
@@ -198,6 +249,73 @@ def eval_params(dev_type: str, L_um: float, W_um: float, bin_index: int,
                         bin_index=bin_index)
     meas = [c.Id for c in curves]
     return device_rrms(sims, meas), sims
+
+
+# ---------------------------------------------------------------------------
+# Confirmed-setup metric: optimization layout, evaluation, residuals
+# ---------------------------------------------------------------------------
+@dataclass
+class NewMetricLayout:
+    """Per-curve preprocessing for the confirmed-setup objective: curve
+    index into the device curve list, trim start, cleaned measured array,
+    trimmed denominator, tag string. The inclusion set is FROZEN (typically
+    to the published-card baseline's included curves) so candidates can't
+    game the sim-dependent exclusion rules."""
+    entries: list[tuple[int, int, np.ndarray, float, str]]
+    include_tags: set[str]
+
+
+def new_metric_layout(dev_type: str, L_um: float, W_um: float,
+                      curves: list[Curve],
+                      include_tags: set[str]) -> NewMetricLayout:
+    tagged = tag_metric_curves(curves)
+    index = {id(c): i for i, c in enumerate(curves)}
+    entries = []
+    for (kind, bias), c in tagged.items():
+        tag = f"{kind}@{bias:g}"
+        if tag not in include_tags:
+            continue
+        start, cleaned, den = curve_trim(dev_type, L_um, W_um, kind,
+                                         np.asarray(c.Id, dtype=np.float64))
+        if den > 0 and np.isfinite(den):
+            entries.append((index[id(c)], start, cleaned, den, tag))
+    return NewMetricLayout(entries=entries, include_tags=set(include_tags))
+
+
+def eval_params_new(dev_type: str, L_um: float, W_um: float, bin_index: int,
+                    curves: list[Curve], params: dict[str, float],
+                    include_tags: set[str]):
+    """Simulate and score with the confirmed-setup metric. Returns
+    (fixed-inclusion score, official dynamic-inclusion score, sims)."""
+    sims = simulate_pdk(dev_type, L_um, W_um, curves, params=params,
+                        bin_index=bin_index)
+    fixed = score_device_new(dev_type, L_um, W_um, curves, sims,
+                             include_tags=include_tags)
+    official = score_device_new(dev_type, L_um, W_um, curves, sims)
+    return fixed, official, sims
+
+
+def residual_fn_new(z: np.ndarray, box, dev_type: str, L_um: float,
+                    W_um: float, bin_index: int, curves: list[Curve],
+                    layout: NewMetricLayout) -> np.ndarray:
+    """Least-squares residuals whose sum of squares equals the
+    fixed-inclusion confirmed-setup device RRMS."""
+    params = box.z_to_params(z)
+    sims = simulate_pdk(dev_type, L_um, W_um, curves, params=params,
+                        bin_index=bin_index)
+    n = max(len(layout.entries), 1)
+    out = np.empty(n, dtype=np.float64)
+    for oi, (ci, start, cleaned, den, _tag) in enumerate(layout.entries):
+        s = np.asarray(sims[ci], dtype=np.float64)
+        m = cleaned
+        k = min(len(s), len(m))
+        s, m = s[start:k], m[start:k]
+        rrms = float(np.sqrt(np.mean((s - m) ** 2)) / den) if len(m) else PENALTY
+        out[oi] = (np.sqrt(rrms / n)
+                   if np.isfinite(rrms) and rrms >= 0 else PENALTY)
+    if not layout.entries:
+        out[0] = 0.0
+    return out
 
 
 def residual_fn(z: np.ndarray, box: ThetaBox, dev_type: str, L_um: float,

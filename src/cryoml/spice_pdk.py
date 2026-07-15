@@ -1,4 +1,11 @@
-"""Corrected-repository NGSpice backend for the 77 K SKY130 model cards."""
+"""NGSpice backend for the 77 K SKY130 model cards.
+
+Deck and card conventions follow the confirmed setup in
+``ogzamour/CryoPDK_Skywater130nm_ML`` (per-device ``sweeps.spice`` decks):
+default simulator options + ``temp=-196.15``, drain current ``-i(VD)``,
+the updated pFET corner card, the sweeps.spice instance line
+(0.29-based ad/as/pd/ps, nrd/nrs, sa/sb/sd) and per-device ``mult``/``m``.
+"""
 
 from __future__ import annotations
 
@@ -11,13 +18,14 @@ from typing import Iterable
 
 import numpy as np
 
-from .config import CORRECTED_REPO_DIR, DATA_DIR, PROCESSED_DIR
+from .config import (CORRECTED_REPO_DIR, DATA_DIR, NEW_REPO_DIR,
+                     PROCESSED_DIR, resolve_ngspice_bin)
 from .data_io import Curve
 from .utils import get_logger
 
 logger = get_logger("cryoml.spice_pdk")
 
-_NGSPICE_BIN = os.environ.get("NGSPICE_BIN", "ngspice")
+_NGSPICE_BIN = resolve_ngspice_bin()
 _DEFAULT_TIMEOUT_S = float(os.environ.get("CRYOML_SPICE_TIMEOUT", "60"))
 
 PDK77K_DIR = PROCESSED_DIR / "pdk77k"
@@ -40,6 +48,32 @@ _CORNER_BASENAME = {
     "pmos": "sky130_fd_pr__pfet_01v8_lvt__tt_77k.corner.spice",
 }
 
+# Corner card sources for the confirmed setup: the nFET card is the original
+# published one (unchanged in the new repo); the pFET card is the new repo's
+# updated ("update_...") re-fit.
+_CORNER_SOURCE = {
+    "nmos": CORRECTED_CORNER_DIR / _CORNER_BASENAME["nmos"],
+    "pmos": NEW_REPO_DIR / ("update_" + _CORNER_BASENAME["pmos"]),
+}
+
+# Per-device parallel multiplicity (mult=m=...) from the new repo's
+# per-device sweeps.spice decks; every device not listed uses 1.
+_DEVICE_MULT: dict[tuple[str, float, float], int] = {
+    ("pmos", 0.35, 5.0): 3,
+    ("pmos", 0.5, 0.64): 2,
+    ("pmos", 4.0, 7.0): 3,
+    ("pmos", 8.0, 0.84): 3,
+    ("pmos", 8.0, 1.6): 3,
+    ("pmos", 8.0, 5.0): 3,
+}
+
+
+def device_mult(dev_type: str, L_um: float, W_um: float) -> int:
+    for (t, l, w), m in _DEVICE_MULT.items():
+        if t == dev_type and abs(l - L_um) < 1e-3 and abs(w - W_um) < 1e-3:
+            return m
+    return 1
+
 
 def ensure_pdk77k() -> str | None:
     """Create the patched corner copies + lib wrapper. Returns error or None."""
@@ -51,13 +85,13 @@ def ensure_pdk77k() -> str | None:
                 "with PDK_ROOT=data/raw/pdk")
     PDK77K_DIR.mkdir(parents=True, exist_ok=True)
     for dev, base in _CORNER_BASENAME.items():
-        src = CORRECTED_CORNER_DIR / base
+        src = _CORNER_SOURCE[dev]
         if not src.exists():
-            return f"missing corrected-repository corner {src}"
+            return f"missing corner card source {src}"
         dst = PDK77K_DIR / base
         text = src.read_text(errors="replace")
         text = re.sub(
-            r'^\.include\s+"\./skywater-pdk/[^"]*lod\.spice"',
+            r'^\.include\s+"[^"]*lod\.spice"',
             f'.include "{LOD_FILE.as_posix()}"',
             text, flags=re.MULTILINE)
         if not dst.exists() or dst.read_text() != text:
@@ -134,8 +168,6 @@ def find_bin_index(dev_type: str, L_um: float, W_um: float) -> int | None:
         patched = _patch_params_in_bin(patched, dev_type, idx, {"eta0": sentinel})
 
     subckt = _SUBCKT[dev_type]
-    area_um2 = W_um * 0.24
-    perimeter_um = W_um + 2 * 0.24
     with tempfile.TemporaryDirectory(prefix="cryoml_native_bin_") as td_s:
         td = Path(td_s)
         corner = td / _CORNER_BASENAME[dev_type]
@@ -149,9 +181,7 @@ def find_bin_index(dev_type: str, L_um: float, W_um: float) -> int | None:
             "* native NGspice bin selection\n"
             ".options scale=1.0 temp=-196.15\n"
             f'.lib "{lib.as_posix()}" tt_77k\n'
-            f"Xm1 nd ng 0 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u nf=1 "
-            f"ad={area_um2:.6g}p as={area_um2:.6g}p "
-            f"pd={perimeter_um:.6g}u ps={perimeter_um:.6g}u\n"
+            + _instance_line(dev_type, L_um, W_um) +
             "VG ng 0 DC 1\n"
             "VD nd 0 DC 1\n"
             ".op\n"
@@ -207,16 +237,36 @@ def _patch_params_in_bin(text: str, dev_type: str, bin_index: int,
     raise ValueError(f"bin {bin_index} not found for {dev_type}")
 
 
+# Devices whose upstream sweeps.spice uses a bare instance line (no parasitic
+# area/perimeter/resistance parameters) — mirrored for bit-faithfulness.
+_MINIMAL_INSTANCE = {("pmos", 0.35, 1.6), ("pmos", 2.0, 5.0)}
+
+
+def _instance_line(dev_type: str, L_um: float, W_um: float) -> str:
+    """sweeps.spice instance, with the primed µm expressions pre-evaluated
+    for our deck convention (deck scale=1.0, suffixed values): ad/as in µm²
+    (p), pd/ps in µm (u), nrd/nrs unitless, per-device mult=m."""
+    subckt = _SUBCKT[dev_type]
+    m = device_mult(dev_type, L_um, W_um)
+    if any(dev_type == t and abs(l - L_um) < 1e-3 and abs(w - W_um) < 1e-3
+           for t, l, w in _MINIMAL_INSTANCE):
+        return (f"Xm1 nd ng 0 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u "
+                f"mult={m} m={m}\n")
+    area_um2 = W_um * 0.29                 # floor((nf+1)/2)*w/nf*0.29, nf=1
+    perimeter_um = 2 * (W_um + 0.29)       # 2*floor((nf+1)/2)*(w/nf+0.29)
+    squares = 0.29 / W_um
+    return (
+        f"Xm1 nd ng 0 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u nf=1 "
+        f"ad={area_um2:.6g}p as={area_um2:.6g}p "
+        f"pd={perimeter_um:.6g}u ps={perimeter_um:.6g}u "
+        f"nrd={squares:.6g} nrs={squares:.6g} sa=0 sb=0 sd=0 "
+        f"mult={m} m={m}\n")
+
+
 def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
                 lib_path: Path, raw_dir: Path, temp_K: float) -> str:
     """One deck that runs every curve's DC sweep in a single ngspice process."""
-    subckt = _SUBCKT[dev_type]
-    area_um2 = W_um * 0.24
-    perimeter_um = W_um + 2 * 0.24
-    instance = (
-        f"Xm1 nd ng 0 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u nf=1 "
-        f"ad={area_um2:.6g}p as={area_um2:.6g}p "
-        f"pd={perimeter_um:.6g}u ps={perimeter_um:.6g}u\n")
+    instance = _instance_line(dev_type, L_um, W_um)
     lines = [
         "* corrected-repository batched DC sweeps\n",
         ".options scale=1.0\n",
@@ -239,9 +289,11 @@ def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
             v = np.asarray(c.Vd, dtype=np.float64)
             fixed = float(np.median(np.asarray(c.Vg, dtype=np.float64)))
             bias_src, sweep_src = "VG", "VD"
-        vs = np.sort(v)
-        v_start, v_stop = float(vs[0]), float(vs[-1])
-        v_step = (v_stop - v_start) / max(len(vs) - 1, 1)
+        # Sweep in the curve's own direction (upstream pMOS sweeps run
+        # 0 -> -1.85; direction changes the DC-continuation path and shifts
+        # weak-inversion currents at the nA level).
+        v_start, v_stop = float(v[0]), float(v[-1])
+        v_step = (v_stop - v_start) / max(len(v) - 1, 1)
         if v_step == 0:
             v_step = 0.05
         lines += [

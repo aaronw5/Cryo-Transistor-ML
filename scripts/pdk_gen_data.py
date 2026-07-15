@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Generate synthetic NGSpice training data per device (PDK chain).
 
-For each device: sample theta in z-space around the published bin values
-(mixture of tight/wide Gaussians + uniform box samples), simulate ALL the
-device's measured-bias curves with the PDK backend (same bin as the
-baseline), and store per-sample flattened curve vectors.
+The default confirmed-setup mode generates a 10,000-point Latin hypercube in
+the +/-10% physical box around each native bin's published parameter vector,
+then simulates all 11 measured-bias metric curves in NGSpice-41. The legacy
+wide z-space sampler remains available with ``--box wide``.
 
 Output: data/processed/pdk_synth/<tag>.npz with
   Z      (N, 7)  z-space theta samples
@@ -14,7 +14,7 @@ Output: data/processed/pdk_synth/<tag>.npz with
 plus the static curve layout (point voltages, slices, measured Id) needed
 to reconstruct curves.
 
-  python scripts/pdk_gen_data.py --num-samples 3000 --workers 8
+  python scripts/pdk_gen_data.py --num-samples 10000 --workers 10 --box lhc10
 """
 from __future__ import annotations
 
@@ -39,20 +39,32 @@ OUT_SYNTH = PROCESSED_DIR / "pdk_synth"
 
 
 def gen_for_device(job):
-    spec, num_samples, seed, extra_center, append = job
+    spec, num_samples, seed, extra_center, append, box_mode = job
     import time
-    from cryoml.pdk_extract import PARAMS7, theta_box_for
+    from cryoml.pdk_extract import PARAMS7, make_box
     from cryoml.spice_pdk import simulate_pdk
 
     d, bin_index = spec
     t0 = time.time()
     tag = device_tag(d.dev_type, d.L_um, d.W_um)
     curves = load_device_curves(d)
-    box = theta_box_for(d.dev_type, d.L_um, d.W_um, bin_index)
+    box = make_box(d.dev_type, d.L_um, d.W_um, bin_index, box_mode)
     z0 = box.z_published
 
     rng = np.random.default_rng(seed)
-    if append and extra_center is not None:
+    if box_mode == "lhc10":
+        # Confirmed-setup sampling: Latin hypercube over the ±10 % box
+        # around the published bin values (nomSweep_latinHypercube.py),
+        # with row 0 pinned to the published card itself.
+        from scipy.stats import qmc
+        sampler = qmc.LatinHypercube(d=7, seed=seed)
+        U = sampler.random(n=num_samples)
+        THETA = box.lo + U * (box.hi - box.lo)
+        THETA[0] = np.array([box.published[p] for p in PARAMS7])
+        Z = np.stack([
+            box.params_to_z({p: t[i] for i, p in enumerate(PARAMS7)})
+            for t in THETA])
+    elif append and extra_center is not None:
         # Active densification: most samples in the current winner's basin,
         # the rest uniform, appended to the existing dataset.
         zc = box.params_to_z(extra_center)
@@ -89,15 +101,18 @@ def gen_for_device(job):
             z0 + rng.normal(0, 1.2, size=(n_wide, 7)),
             rng.uniform(-3.5, 3.5, size=(n_box, 7)),
         ], axis=0)
-    if not (append and extra_center is not None):
-        Z[0] = z0  # always include the published point
+    if box_mode != "lhc10":
+        if not (append and extra_center is not None):
+            Z[0] = z0  # always include the published point
+        THETA = np.zeros((len(Z), 7), dtype=np.float64)
+        for i, z in enumerate(Z):
+            params = box.z_to_params(z)
+            THETA[i] = [params[p] for p in PARAMS7]
 
     P = sum(len(c.Id) for c in curves)
-    IDS = np.full((len(Z), P), np.nan, dtype=np.float64)
-    THETA = np.zeros((len(Z), 7), dtype=np.float64)
-    for i, z in enumerate(Z):
-        params = box.z_to_params(z)
-        THETA[i] = [params[p] for p in PARAMS7]
+    IDS = np.full((len(THETA), P), np.nan, dtype=np.float64)
+    for i, t in enumerate(THETA):
+        params = {p: float(t[j]) for j, p in enumerate(PARAMS7)}
         sims = simulate_pdk(d.dev_type, d.L_um, d.W_um, curves, params=params,
                             bin_index=bin_index)
         IDS[i] = np.concatenate([np.asarray(s, dtype=np.float64)[:len(c.Id)]
@@ -134,7 +149,7 @@ def gen_for_device(job):
         Vg=Vg, Vd=Vd, meas=meas,
         slices=np.array(slices, dtype=np.int64),
         kinds=np.array(kinds), fixeds=np.array(fixeds, dtype=np.float64),
-        bin_index=bin_index,
+        bin_index=bin_index, box_mode=np.array(box_mode),
         published=np.array([box.published[p] for p in PARAMS7], dtype=np.float64),
     )
     return tag, int(ok.sum()), len(Z), time.time() - t0
@@ -143,7 +158,7 @@ def gen_for_device(job):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--devices", default=None)
-    ap.add_argument("--num-samples", type=int, default=3000)
+    ap.add_argument("--num-samples", type=int, default=10000)
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--centers-from", default=None,
@@ -153,7 +168,15 @@ def main() -> int:
     ap.add_argument("--append", action="store_true",
                     help="densify around the centers and append to the "
                          "existing dataset instead of replacing it")
+    ap.add_argument("--box", default="lhc10", choices=("lhc10", "wide"),
+                    help="sampling box: 'lhc10' = confirmed-setup Latin "
+                         "hypercube ±10%% around the published bin values "
+                         "(default), 'wide' = legacy broad z-space sampling")
     args = ap.parse_args()
+    if args.box == "lhc10" and (args.centers_from or args.append):
+        ap.error("--centers-from/--append are legacy wide-box options; the "
+                 "confirmed lhc10 dataset must remain an unbiased Latin "
+                 "hypercube around the published vector")
 
     ensure_dirs()
     bins = {r["device"]: int(r["bin_index"]) for r in json.load(
@@ -173,7 +196,7 @@ def main() -> int:
     for i, d in enumerate(devices):
         tag = device_tag(d.dev_type, d.L_um, d.W_um)
         jobs.append(((d, bins[tag]), args.num_samples, args.seed + 1000 * i,
-                     centers.get(tag), args.append))
+                     centers.get(tag), args.append, args.box))
 
     ctx = get_context("spawn")
     with ctx.Pool(processes=args.workers) as pool:

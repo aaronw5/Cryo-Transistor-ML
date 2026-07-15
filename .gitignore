@@ -9,7 +9,7 @@ __pycache__/
 .ipynb_checkpoints/
 bsim4.out
 
-# --- Slides / decks (regenerate locally with scripts/make_slides.py; not shipped) ---
+# --- Locally generated presentation decks (not shipped) ---
 slides/
 *.pptx
 
@@ -30,12 +30,14 @@ figs/*.pdf
 out/*
 !out/.gitkeep
 !out/tables/
-!out/pdk_ml_final/
 out/tables/*
 !out/tables/.gitkeep
 !out/tables/*.md
-out/pdk_ml_final/*
-!out/pdk_ml_final/cards/
-out/pdk_ml_final/cards/*
-!out/pdk_ml_final/cards/*.spice
-!out/pdk_ml_final/cards/manifest.json
+!out/tables/*.json
+!out/tables/*.csv
+!out/pdk_ml_selected/
+out/pdk_ml_selected/*
+!out/pdk_ml_selected/cards/
+out/pdk_ml_selected/cards/*
+!out/pdk_ml_selected/cards/*.spice
+!out/pdk_ml_selected/cards/manifest.json

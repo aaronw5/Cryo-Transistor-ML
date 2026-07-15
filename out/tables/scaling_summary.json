@@ -1,0 +1,75 @@
+{
+  "status": "stopped after the complete all-18 data axis because lower emulator MSE did not improve real-NGSpice+FD RRMS",
+  "run_config": {
+    "schema_version": 2,
+    "setup": "CryoPDK_Skywater130nm_ML@39b1e518",
+    "metric": "confirmed rrmsCalc with fixed baseline inclusion",
+    "box": "lhc10",
+    "pool": 10000,
+    "reference": {
+      "n_data": 10000,
+      "arch": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "n_starts": 2048,
+      "steps": 600
+    },
+    "population": "all 18 paper Table-6 transistors",
+    "devices": "nmos:0.15:1.6,nmos:0.19:7,nmos:0.25:1.6,nmos:1:1.6,nmos:1:3,nmos:8:1.6,nmos:20:0.64,nmos:100:100,pmos:0.35:0.55,pmos:0.35:1.6,pmos:0.35:5,pmos:0.5:0.42,pmos:0.5:0.64,pmos:2:5,pmos:4:7,pmos:8:0.84,pmos:8:1.6,pmos:8:5",
+    "seed": 0
+  },
+  "n_rows_preserved_in_csv": 131,
+  "n_devices": 18,
+  "complete_all_device_data_sizes": [
+    375,
+    750,
+    1500,
+    3000,
+    6000
+  ],
+  "complete_all_device_cells_used": 90,
+  "incomplete_or_pilot_groups_excluded_from_all18_means": {
+    "data:10000": 9,
+    "capacity:64x64x64": 4,
+    "capacity:128x128x128": 4,
+    "capacity:256x256x256": 4,
+    "capacity:512x512x512": 4,
+    "capacity:1024x1024x1024x1024": 4,
+    "search:128": 4,
+    "search:512": 4,
+    "search:8192": 4
+  },
+  "pilot_artifacts": {
+    "figure": "figs/scaling_pilot4.png",
+    "summary": "out/tables/scaling_pilot4_summary.json"
+  },
+  "arithmetic_means": {
+    "emulator_validation_mse": [
+      0.004961850994732231,
+      0.0032793988454310843,
+      0.0016695681422586655,
+      0.0010724153851495227,
+      0.0005242849308868042
+    ],
+    "raw_ngspice_rrms": [
+      0.2497050534128931,
+      0.2482015605425555,
+      0.23935419369118943,
+      0.23910105559064318,
+      0.23984283788582125
+    ],
+    "fd_ngspice_rrms": [
+      0.2279589453139684,
+      0.22698456872950235,
+      0.22732133176530478,
+      0.22797374496377598,
+      0.2294252791160202
+    ]
+  },
+  "emulator_validation_power_law_alpha": 0.8097478405665681,
+  "best_fd_mean": 0.22698456872950235,
+  "best_fd_n_data": 750
+}

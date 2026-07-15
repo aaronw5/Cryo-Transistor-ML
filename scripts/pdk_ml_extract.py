@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
-"""ML-driven BSIM4 extraction against the PDK NGSpice chain.
+"""Surrogate-driven BSIM4 extraction against the PDK NGSpice chain.
 
-Two learned components per device, both trained ONLY on synthetic NGSpice
-data (data/processed/pdk_synth/<tag>.npz — published-bin neighborhoods,
-never a measured point):
+One emulator is trained per device using only synthetic NGSpice data from
+``data/processed/pdk_synth/<tag>.npz``:
 
 * **Emulator** E(z) -> signed_log Id at every kept measured-bias point.
-  A small MLP that makes the forward model differentiable; used for a
-  massive multistart Adam search in z-space (no NGSpice in the loop).
-* **Inverse MLP** G(signed_log Id curves) -> z. The "obvious MLP that
-  predicts parameters": trained with noise augmentation on synthetic
-  curves, applied once to the real measured curves.
+  The MLP makes the parameter-to-I-V model differentiable, so thousands of
+  parameter vectors can be optimized against the measured I-V curves without
+  putting NGSpice in the search loop.
 
-Candidates from both are validated in real NGSpice in the native geometry
-bin and FD-polished on the paper-exact all-curve RRMS objective.
+The best surrogate-search candidates are validated in real NGSpice in the
+native geometry bin, then optionally FD-polished on the confirmed-setup
+rrmsCalc objective. Curve inclusion is frozen to the published-card
+baseline's included set. The search box follows the synth dataset's box_mode
+(±10 % LHC by default).
 
   python scripts/pdk_ml_extract.py --device mps
 """
 from __future__ import annotations
 
 import argparse
-from collections import defaultdict
 import csv
 import json
 import sys
@@ -40,7 +39,7 @@ from cryoml.utils import device_tag, get_logger, set_seed  # noqa: E402
 
 logger = get_logger("pdk_ml_extract")
 
-OUT_ML = OUT_DIR / "pdk_ml"
+OUT_ML = OUT_DIR / "pdk_surrogate_final"
 SYNTH = PROCESSED_DIR / "pdk_synth"
 I_REF = 1e-9
 
@@ -51,7 +50,7 @@ def slog(x):
     return torch.sign(x) * torch.log1p(torch.abs(x) / I_REF)
 
 
-def inv_slog_t(y):
+def current_from_slog(y):
     return torch.sign(y) * I_REF * torch.expm1(torch.abs(y))
 
 
@@ -108,12 +107,21 @@ def train_net(net, X, Y, device, epochs=1500, lr=1e-3, batch=None, wd=1e-5,
     return best_v
 
 
+def baseline_include_tags(tag: str) -> set[str]:
+    """Curve-inclusion set frozen to the published-card baseline run, so no
+    candidate can game the sim-dependent exclusion rules of the metric."""
+    per_curve = json.load(
+        open(OUT_DIR / "pdk_baseline" / "pdk_baseline.json"))["per_curve"][tag]
+    return {t for t, v in per_curve.items() if v.get("included")}
+
+
 def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
                    n_polish=3, max_nfev=80, seed=0,
-                   emu_sizes=(256, 256, 256), inv_sizes=(512, 256),
-                   warm_starts=None, emu_save_path=None):
-    from cryoml.pdk_extract import (PARAMS7, ThetaBox, eval_params,
-                                    flatten_paper_curves, residual_fn)
+                   emu_sizes=(256, 256, 256), emu_save_path=None):
+    from cryoml.metrics import clean_current
+    from cryoml.pdk_extract import (LhcBox, PARAMS7, ThetaBox,
+                                    eval_params_new, new_metric_layout,
+                                    residual_fn_new)
     from scipy.optimize import least_squares
 
     tag = device_tag(d.dev_type, d.L_um, d.W_um)
@@ -124,27 +132,45 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     meas, slices = data["meas"], data["slices"]
     bin_index = int(data["bin_index"])
     published = {p: float(v) for p, v in zip(PARAMS7, data["published"])}
-    box = ThetaBox(dev_type=d.dev_type, bin_index=bin_index, published=published)
+    box_mode = str(data["box_mode"]) if "box_mode" in data else "wide"
+    if box_mode == "lhc10":
+        box = LhcBox(dev_type=d.dev_type, bin_index=bin_index,
+                     published=published)
+        z_clamp = 8.0     # covers >99.9 % of the ±10 % box in logit space
+    else:
+        box = ThetaBox(dev_type=d.dev_type, bin_index=bin_index,
+                       published=published)
+        z_clamp = 3.5
     # recompute z from physical theta with the CURRENT box so the dataset
     # stays valid even when bound definitions evolve
     THETA = data["THETA"].astype(np.float64)
     Z = np.stack([box.params_to_z({p: t[i] for i, p in enumerate(PARAMS7)})
                   for t in THETA])
     curves = load_device_curves(d)
-    flat = flatten_paper_curves(curves)
+    include_tags = baseline_include_tags(tag)
+    layout = new_metric_layout(d.dev_type, d.L_um, d.W_um, curves,
+                               include_tags)
 
-    # Every nonzero-denominator curve is included. All-zero curves contribute
-    # zero to the paper scorer and therefore have no optimization residual.
+    # Emulator I/O covers every nonzero curve on its full grid; the search
+    # objective below slices the confirmed-setup metric's trimmed spans.
     kept_mask = np.zeros(len(meas), dtype=bool)
-    curve_layout = []
+    kept_span = {}                     # curve index -> (a, b) in kept coords
+    meas_clean_parts = []
     kept_offset = 0
-    for (a, b) in slices:
-        m = meas[a:b]
+    for ci, (a, b) in enumerate(slices):
+        m = np.asarray(meas[a:b], dtype=np.float64)
         den = np.mean(np.abs(m))
         if den > 0 and np.isfinite(den):
             kept_mask[a:b] = True
-            curve_layout.append((kept_offset, kept_offset + b - a, den))
+            kept_span[ci] = (kept_offset, kept_offset + b - a)
+            meas_clean_parts.append(clean_current(m))
             kept_offset += b - a
+    meas_clean_flat = np.concatenate(meas_clean_parts)
+    # confirmed-setup objective spans in kept coordinates
+    search_layout = []
+    for ci, start, _cleaned, den, _t in layout.entries:
+        A, B = kept_span[ci]
+        search_layout.append((A + start, B, den))
 
     Zok, Yok = Z[ok], IDS[ok][:, kept_mask]
     Y_slog = slog(Yok)
@@ -161,41 +187,29 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     if emu_save_path is not None:
         torch.save({
             "state": emu.state_dict(), "emu_sizes": list(emu_sizes), "P": P,
-            "curve_layout": curve_layout, "n_curves": len(slices),
-            "meas_kept": meas[kept_mask], "emu_val": float(emu_val),
+            "curve_layout": search_layout, "n_curves": len(search_layout),
+            "meas_kept": meas_clean_flat, "emu_val": float(emu_val),
         }, emu_save_path)
 
-    # ---------------- inverse MLP G(slog Id) -> z ----------------
-    # noise augmentation: additive 1 nA floor noise + 5% multiplicative
     rng = np.random.default_rng(seed + 7)
-    aug_reps = 4
-    Xa, Ya = [], []
-    for _ in range(aug_reps):
-        noisy = Yok * (1 + rng.normal(0, 0.05, size=Yok.shape)) \
-            + rng.normal(0, 1e-9, size=Yok.shape)
-        Xa.append(slog(noisy))
-        Ya.append(Zok)
-    Xinv = torch.tensor(np.concatenate(Xa), dtype=torch.float32, device=dev)
-    Yinv = torch.tensor(np.concatenate(Ya), dtype=torch.float32, device=dev)
-    inv = mlp([P, *inv_sizes, 7]).to(dev)
-    inv_val = train_net(inv, Xinv, Yinv, dev, epochs=1500, lr=1e-3, batch=4096)
 
-    meas_slog_t = torch.tensor(slog(meas[kept_mask]), dtype=torch.float32,
-                               device=dev)
-    with torch.no_grad():
-        z_inv = inv(meas_slog_t.unsqueeze(0)).squeeze(0).cpu().numpy().astype(np.float64)
-
-    # ---------------- Adam multistart search on the emulator ----------------
-    meas_t = torch.tensor(meas[kept_mask], dtype=torch.float32, device=dev)
+    # ------ Adam multistart search on the emulator (confirmed metric) ------
+    meas_t = torch.tensor(meas_clean_flat, dtype=torch.float32, device=dev)
     S = n_adam_starts
+    if S < 3:
+        raise ValueError("n_adam_starts must be at least 3")
     z0 = box.z_published
-    warm = [(lbl, box.params_to_z(p)) for lbl, p in (warm_starts or [])]
-    warm_z = np.stack([z for _, z in warm]) if warm else np.empty((0, 7))
-    n_fixed = 2 + len(warm)
+    n_fixed = 1
+    if isinstance(box, LhcBox):
+        # uniform coverage of the ±10 % box: z = logit(u), u ~ U(0.001, 0.999)
+        u = rng.uniform(1e-3, 1 - 1e-3, size=(S - S // 2 - n_fixed, 7))
+        box_starts = np.log(u / (1 - u))
+        local = z0 + rng.normal(0, 2.0, size=(S // 2, 7))
+    else:
+        box_starts = rng.uniform(-3.0, 3.0, size=(S - S // 2 - n_fixed, 7))
+        local = z0 + rng.normal(0, 0.7, size=(S // 2, 7))
     starts = np.concatenate([
-        z0[None, :], z_inv[None, :], warm_z,
-        z0 + rng.normal(0, 0.7, size=(S // 2, 7)),
-        rng.uniform(-3.0, 3.0, size=(S - S // 2 - n_fixed, 7)),
+        z0[None, :], local, box_starts,
     ], axis=0)
     zv = torch.tensor(starts, dtype=torch.float32, device=dev, requires_grad=True)
     opt = torch.optim.Adam([zv], lr=0.05)
@@ -203,18 +217,18 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     best_z = starts.copy()
     for _ in range(adam_steps):
         opt.zero_grad()
-        pred = inv_slog_t(emu(zv))
+        pred = current_from_slog(emu(zv))
         curve_rrms = []
-        for a, b, denominator in curve_layout:
+        for a, b, denominator in search_layout:
             rmse = torch.sqrt(torch.mean(
                 (pred[:, a:b] - meas_t[a:b].unsqueeze(0)) ** 2, dim=1
             ))
             curve_rrms.append(rmse / denominator)
-        loss_per = torch.stack(curve_rrms, dim=1).sum(dim=1) / len(slices)
+        loss_per = torch.stack(curve_rrms, dim=1).sum(dim=1) / len(search_layout)
         loss_per.sum().backward()
         opt.step()
         with torch.no_grad():
-            zv.clamp_(-3.5, 3.5)  # stay inside the emulator's training range
+            zv.clamp_(-z_clamp, z_clamp)  # stay inside the training range
         lv = loss_per.detach().cpu().numpy()
         improved = lv < best_loss
         if improved.any():
@@ -224,15 +238,25 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     order = np.argsort(best_loss)
 
     # ---------------- NGSpice validation of candidates ----------------
+    # Candidates are ranked/selected on the FIXED-inclusion confirmed-setup
+    # score; the official dynamic-inclusion score is recorded alongside.
     results = {}
-    start_m, _ = eval_params(d.dev_type, d.L_um, d.W_um, bin_index, curves,
-                             box.published)
+    start_fixed, start_official, _ = eval_params_new(
+        d.dev_type, d.L_um, d.W_um, bin_index, curves, box.published,
+        include_tags)
     results["published"] = {"params": box.published,
-                            "rrms": float(start_m["rrms"])}
+                            "rrms": float(start_fixed["rrms"]),
+                            "rrms_official": float(start_official["rrms"]),
+                            "sigma": float(start_official["sigma"])}
 
     def validate(z):
         params = box.z_to_params(np.asarray(z, dtype=np.float64))
-        m, _ = eval_params(d.dev_type, d.L_um, d.W_um, bin_index, curves, params)
+        fixed, official, _ = eval_params_new(
+            d.dev_type, d.L_um, d.W_um, bin_index, curves, params,
+            include_tags)
+        m = dict(fixed)
+        m["rrms_official"] = float(official["rrms"])
+        m["sigma_official"] = float(official["sigma"])
         return params, m
 
     cand = []
@@ -246,12 +270,6 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
         cand.append(("emu_search", z))
         if len(seen) >= n_validate:
             break
-    cand.append(("inverse_mlp", z_inv))
-    # warm starts (e.g. classical-control winners) compete as candidates so
-    # the ML result can only match or beat them after polish
-    for lbl, z in warm:
-        cand.append((lbl, z))
-
     validated = []
     for lbl, z in cand:
         params, m = validate(z)
@@ -260,45 +278,79 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     validated.sort(key=lambda t: t[0])
 
     best_emu = next((v for v in validated if v[1] == "emu_search"), None)
-    best_inv = next((v for v in validated if v[1] == "inverse_mlp"), None)
     if best_emu:
         results["emu_search"] = {"params": best_emu[3],
-                                 "rrms": float(best_emu[4]["rrms"])}
-    if best_inv:
-        results["inverse_mlp"] = {"params": best_inv[3],
-                                  "rrms": float(best_inv[4]["rrms"])}
+                                 "rrms": float(best_emu[4]["rrms"]),
+                                 "rrms_official": best_emu[4]["rrms_official"]}
 
     # ---------------- FD polish of the best few candidates ----------------
-    f = lambda z: residual_fn(z, box, d.dev_type, d.L_um, d.W_um, bin_index,
-                              curves, flat)
+    f = lambda z: residual_fn_new(z, box, d.dev_type, d.L_um, d.W_um,
+                                  bin_index, curves, layout)
     # if every ML candidate failed in NGSpice, polish from the published
     # start instead so the method always returns something sane
     if not any(np.isfinite(v[0]) for v in validated):
-        validated.insert(0, (start_m["rrms"], "emu_search", box.z_published,
-                             box.published, start_m))
+        sf = dict(start_fixed)
+        sf["rrms_official"] = float(start_official["rrms"])
+        validated.insert(0, (start_fixed["rrms"], "emu_search",
+                             box.z_published, box.published, sf))
     polished = []
-    for rr, lbl, z, params, m in validated[:n_polish]:
+    fd_attempts = []
+    emu_validated = [v for v in validated if v[1] == "emu_search"]
+    for rank, (rr, lbl, z, params, m) in enumerate(
+            emu_validated[:n_polish]):
+        fd_t0 = time.time()
         try:
             sol = least_squares(f, z, method="trf", jac="2-point",
                                 diff_step=2e-2, max_nfev=max_nfev)
             p2, m2 = validate(sol.x)
             polished.append((m2["rrms"], lbl + "+fd", p2, m2))
-        except Exception:
+            accepted = (np.isfinite(m2["rrms"]) and m2["rrms"] <= rr)
+            fd_attempts.append({
+                "candidate_rank": rank,
+                "is_raw_winner_pair": rank == 0,
+                "start_rrms": float(rr),
+                "endpoint_rrms": float(m2["rrms"]),
+                "endpoint_accepted_for_pair": bool(accepted),
+                "start_params": params,
+                "endpoint_params": p2,
+                "paired_params": p2 if accepted else params,
+                "paired_rrms": float(m2["rrms"] if accepted else rr),
+                "nfev": int(sol.nfev),
+                "njev": int(sol.njev) if sol.njev is not None else None,
+                "success": bool(sol.success),
+                "status": int(sol.status),
+                "runtime_s": round(time.time() - fd_t0, 1),
+            })
+        except Exception as exc:  # noqa: BLE001
+            fd_attempts.append({
+                "candidate_rank": rank,
+                "is_raw_winner_pair": rank == 0,
+                "start_rrms": float(rr),
+                "endpoint_rrms": None,
+                "endpoint_accepted_for_pair": False,
+                "start_params": params,
+                "endpoint_params": None,
+                "paired_params": params,
+                "paired_rrms": float(rr),
+                "nfev": 0, "njev": None, "success": False,
+                "status": None, "runtime_s": round(time.time() - fd_t0, 1),
+                "error": f"{type(exc).__name__}: {exc}",
+            })
             continue
-    # also polish the inverse-MLP start explicitly (if not already polished)
-    if best_inv and all(not lbl.startswith("inverse_mlp") for _, lbl, *_ in
-                        [(0, p[1]) for p in polished]):
-        try:
-            sol = least_squares(f, best_inv[2], method="trf", jac="2-point",
-                                diff_step=2e-2, max_nfev=max_nfev)
-            p2, m2 = validate(sol.x)
-            polished.append((m2["rrms"], "inverse_mlp+fd", p2, m2))
-        except Exception:
-            pass
     for rr, lbl, p2, m2 in polished:
         cur = results.get(lbl)
         if cur is None or (np.isfinite(rr) and rr < cur["rrms"]):
-            results[lbl] = {"params": p2, "rrms": float(m2["rrms"])}
+            results[lbl] = {"params": p2, "rrms": float(m2["rrms"]),
+                            "rrms_official": m2.get("rrms_official")}
+    # A polish stage is non-regressing by definition. Preserve the attempted
+    # endpoints above, but materialize the raw vector if every FD attempt is
+    # worse or fails.
+    if "emu_search" in results:
+        raw = results["emu_search"]
+        fd = results.get("emu_search+fd")
+        if (fd is None or not np.isfinite(fd["rrms"])
+                or fd["rrms"] > raw["rrms"]):
+            results["emu_search+fd"] = dict(raw)
 
     # Final pick is the best paper-exact NGSpice score.
     ml_keys = [k for k in results if k != "published"
@@ -314,207 +366,30 @@ def extract_device(d, tdev, n_adam_starts=512, adam_steps=400, n_validate=8,
     rec = {
         "device": tag, "dev_type": d.dev_type, "L_um": d.L_um, "W_um": d.W_um,
         "bin_index": bin_index, "paper_reported": d.paper_rrms,
-        "emulator_val_mse": float(emu_val), "inverse_val_mse": float(inv_val),
+        "box_mode": box_mode, "include_tags": sorted(include_tags),
+        "selection_policy": "fixed surrogate search, with FD as an ablation",
+        "emulator_val_mse": float(emu_val),
+        "fd_attempts": fd_attempts,
+        "production_config": {
+            "seed": int(seed), "emulator_hidden": list(emu_sizes),
+            "n_adam_starts": int(n_adam_starts),
+            "adam_steps": int(adam_steps),
+            "n_ngspice_validate": int(n_validate),
+            "n_fd_polish": int(n_polish),
+            "fd_max_nfev": int(max_nfev),
+            "fd_diff_step": 2e-2,
+        },
         "n_synth": int(ok.sum()),
         "methods": {k: {kk: vv for kk, vv in v.items() if kk != "params"}
                     for k, v in results.items()},
         "params_by_method": {k: v["params"] for k, v in results.items()},
         "best_method": best_key,
         "rrms": results[best_key]["rrms"],
+        "rrms_official": results[best_key].get("rrms_official"),
         "start_rrms": results["published"]["rrms"],
         "runtime_s": round(time.time() - t0, 1),
     }
     return rec, sims
-
-
-def joint_emulator_search(emu_paths, tdev, n_starts=1024, steps=500,
-                          extra_starts=None, seed=0, top_k=6):
-    """Adam multistart on the SUM of several devices' emulator losses.
-
-    All devices share one model bin (one z space), so a single z is searched
-    against every member's curves at once. Returns the top_k distinct z's.
-    """
-    dev = torch.device(tdev)
-    members = []
-    for path in emu_paths:
-        blob = torch.load(path, map_location=dev, weights_only=False)
-        emu = mlp([7, *blob["emu_sizes"], blob["P"]]).to(dev)
-        emu.load_state_dict(blob["state"])
-        emu.eval()
-        meas_t = torch.tensor(np.asarray(blob["meas_kept"], dtype=np.float64),
-                              dtype=torch.float32, device=dev)
-        members.append((emu, meas_t, blob["curve_layout"], blob["n_curves"]))
-
-    rng = np.random.default_rng(seed)
-    extra = np.stack(extra_starts) if extra_starts else np.empty((0, 7))
-    starts = np.concatenate([
-        extra,
-        rng.normal(0, 1.0, size=(n_starts // 2, 7)),
-        rng.uniform(-3.0, 3.0, size=(n_starts - n_starts // 2, 7)),
-    ], axis=0)
-    zv = torch.tensor(starts, dtype=torch.float32, device=dev,
-                      requires_grad=True)
-    opt = torch.optim.Adam([zv], lr=0.05)
-    best_loss = np.full(len(starts), np.inf)
-    best_z = starts.copy()
-    for _ in range(steps):
-        opt.zero_grad()
-        loss_per = 0.0
-        for emu, meas_t, layout, n_curves in members:
-            pred = inv_slog_t(emu(zv))
-            curve_rrms = []
-            for a, b, denominator in layout:
-                rmse = torch.sqrt(torch.mean(
-                    (pred[:, a:b] - meas_t[a:b].unsqueeze(0)) ** 2, dim=1))
-                curve_rrms.append(rmse / denominator)
-            loss_per = loss_per + torch.stack(curve_rrms, dim=1).sum(dim=1) / n_curves
-        loss_per.sum().backward()
-        opt.step()
-        with torch.no_grad():
-            zv.clamp_(-3.5, 3.5)
-        lv = loss_per.detach().cpu().numpy()
-        improved = lv < best_loss
-        if improved.any():
-            zc = zv.detach().cpu().numpy().astype(np.float64)
-            best_loss[improved] = lv[improved]
-            best_z[improved] = zc[improved]
-
-    order = np.argsort(best_loss)
-    out, seen = [], []
-    for i in order:
-        z = best_z[i]
-        if any(np.linalg.norm(z - s) < 0.5 for s in seen):
-            continue
-        seen.append(z)
-        out.append(z)
-        if len(out) >= top_k:
-            break
-    return out
-
-
-def enforce_shared_bin_cards(out_dir: Path, max_nfev: int,
-                             tdev: str = "cpu") -> None:
-    """Jointly fit devices that NGspice maps to the same deployable model bin."""
-    from scipy.optimize import least_squares
-
-    from cryoml.pdk_extract import (eval_params, flatten_paper_curves,
-                                    residual_fn, theta_box_for)
-
-    baseline_rows = json.load(
-        open(OUT_DIR / "pdk_baseline" / "pdk_baseline.json")
-    )["devices"]
-    baseline = {row["device"]: row for row in baseline_rows}
-    groups = defaultdict(list)
-    for device in PAPER_DEVICES:
-        tag = device_tag(device.dev_type, device.L_um, device.W_um)
-        groups[(device.dev_type, int(baseline[tag]["bin_index"]))].append(device)
-
-    for (dev_type, bin_index), devices in groups.items():
-        if len(devices) < 2:
-            continue
-        tags = [device_tag(d.dev_type, d.L_um, d.W_um) for d in devices]
-        paths = [out_dir / f"ml_{tag}.json" for tag in tags]
-        if not all(path.exists() for path in paths):
-            continue
-        records = [json.load(open(path)) for path in paths]
-        curves_by_device = [load_device_curves(d) for d in devices]
-        flats = [flatten_paper_curves(curves) for curves in curves_by_device]
-        box = theta_box_for(
-            devices[0].dev_type, devices[0].L_um, devices[0].W_um, bin_index
-        )
-
-        def joint_residual(z):
-            return np.concatenate([
-                residual_fn(z, box, d.dev_type, d.L_um, d.W_um, bin_index,
-                            curves, flat)
-                for d, curves, flat in zip(devices, curves_by_device, flats)
-            ])
-
-        def evaluate(params):
-            scores, simulations = [], []
-            for d, curves in zip(devices, curves_by_device):
-                metrics, sims = eval_params(
-                    d.dev_type, d.L_um, d.W_um, bin_index, curves, params
-                )
-                scores.append(float(metrics["rrms"]))
-                simulations.append(sims)
-            return float(np.mean(scores)), scores, simulations
-
-        starts = [box.z_published]
-        independent_best = []
-        for record in records:
-            for method, params in record["params_by_method"].items():
-                if method != "shared_bin_ml+fd":
-                    starts.append(box.params_to_z(params))
-            methods = {
-                method: metrics["rrms"]
-                for method, metrics in record["methods"].items()
-                if method != "shared_bin_ml+fd" and np.isfinite(metrics["rrms"])
-            }
-            method = min(methods, key=methods.get)
-            independent_best.append(
-                box.params_to_z(record["params_by_method"][method])
-            )
-        if len(independent_best) == 2:
-            for alpha in np.linspace(0.1, 0.9, 9):
-                starts.append(
-                    (1.0 - alpha) * independent_best[0] + alpha * independent_best[1]
-                )
-
-        # joint emulator gradient search across all bin members (the same
-        # surrogate trick as per-device extraction, on the summed objective)
-        emu_paths = [out_dir / f"emu_{tag}.pt" for tag in tags]
-        if all(path.exists() for path in emu_paths):
-            try:
-                starts += joint_emulator_search(
-                    emu_paths, tdev,
-                    extra_starts=[np.asarray(s, dtype=np.float64)
-                                  for s in starts])
-            except Exception as e:  # noqa: BLE001
-                logger.warning("joint emulator search failed: %s", e)
-
-        unique_starts = []
-        for start in starts:
-            if not any(np.linalg.norm(start - seen) < 1e-3 for seen in unique_starts):
-                unique_starts.append(np.asarray(start, dtype=np.float64))
-
-        best = (*evaluate(box.published), box.published)
-        scored_starts = []
-        for start in unique_starts:
-            params = box.z_to_params(start)
-            joint_score, scores, simulations = evaluate(params)
-            scored_starts.append((joint_score, start))
-            if np.isfinite(joint_score) and joint_score < best[0]:
-                best = joint_score, scores, simulations, params
-        scored_starts.sort(key=lambda item: item[0])
-
-        for _, start in scored_starts[:8]:
-            try:
-                solution = least_squares(
-                    joint_residual, start, method="trf", jac="2-point",
-                    diff_step=2e-2, max_nfev=max_nfev,
-                )
-            except Exception:
-                continue
-            params = box.z_to_params(np.asarray(solution.x, dtype=np.float64))
-            joint_score, scores, simulations = evaluate(params)
-            if np.isfinite(joint_score) and joint_score < best[0]:
-                best = joint_score, scores, simulations, params
-
-        _, scores, simulations, params = best
-        for path, tag, record, score, sims in zip(
-            paths, tags, records, scores, simulations
-        ):
-            record["methods"]["shared_bin_ml+fd"] = {"rrms": score}
-            record["params_by_method"]["shared_bin_ml+fd"] = params
-            record["best_method"] = "shared_bin_ml+fd"
-            record["rrms"] = score
-            record["shared_bin_devices"] = tags
-            json.dump(record, open(path, "w"), indent=2)
-            np.savez(out_dir / f"sims_{tag}.npz",
-                     **{f"sim_{i}": np.asarray(sim) for i, sim in enumerate(sims)})
-        logger.info("%s bin %-2d joint mean %.3f for %s",
-                    dev_type, bin_index, best[0], ", ".join(tags))
 
 
 def main() -> int:
@@ -529,12 +404,6 @@ def main() -> int:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--emu-arch", default="256,256,256",
                     help="comma-separated emulator hidden sizes")
-    ap.add_argument("--inv-arch", default="512,256",
-                    help="comma-separated inverse-MLP hidden sizes")
-    ap.add_argument("--starts-from", default=None,
-                    help="comma-separated dirs of *_<tag>.json records whose "
-                         "'params' become warm-start candidates (e.g. "
-                         "out/pdk_fd,out/pdk_cma)")
     ap.add_argument("--out-dir", default=None)
     ap.add_argument("--resume", action="store_true",
                     help="Skip devices with an existing finite result")
@@ -546,16 +415,6 @@ def main() -> int:
     devices = parse_device_list(args.devices)
 
     emu_sizes = tuple(int(s) for s in args.emu_arch.split(","))
-    inv_sizes = tuple(int(s) for s in args.inv_arch.split(","))
-    warm_by_tag: dict[str, list] = defaultdict(list)
-    if args.starts_from:
-        for d_str in args.starts_from.split(","):
-            directory = Path(d_str.strip())
-            label = f"warm_{directory.name.removeprefix('pdk_')}"
-            for path in directory.glob("*.json"):
-                rec = json.loads(path.read_text())
-                if isinstance(rec, dict) and "device" in rec and "params" in rec:
-                    warm_by_tag[rec["device"]].append((label, rec["params"]))
 
     rows = []
     for d in devices:
@@ -570,8 +429,7 @@ def main() -> int:
             d, args.device, n_adam_starts=args.n_adam_starts,
             adam_steps=args.adam_steps, n_validate=args.n_validate,
             n_polish=args.n_polish, max_nfev=args.max_nfev, seed=args.seed,
-            emu_sizes=emu_sizes, inv_sizes=inv_sizes,
-            warm_starts=warm_by_tag.get(tag),
+            emu_sizes=emu_sizes,
             emu_save_path=out_dir / f"emu_{tag}.pt")
         rows.append(rec)
         json.dump(rec, open(out_dir / f"ml_{rec['device']}.json", "w"), indent=2)
@@ -581,11 +439,11 @@ def main() -> int:
                     rec["device"], rec["start_rrms"], rec["rrms"],
                     rec["best_method"], rec["runtime_s"])
 
-    enforce_shared_bin_cards(out_dir, args.max_nfev, args.device)
-
     # Always aggregate every completed result in the output directory. This
     # keeps subset/resume runs from replacing the full experiment summary.
+    from cryoml.metrics import device_rrms, family_totals, score_device_new
     rows = []
+    new_by_tag = {}
     for path in sorted(out_dir.glob("ml_*.json")):
         rec = json.load(open(path))
         if np.isfinite(rec.get("rrms", np.nan)):
@@ -594,11 +452,21 @@ def main() -> int:
             curves = load_device_curves(d)
             saved = np.load(out_dir / f"sims_{rec['device']}.npz")
             sims = [np.asarray(saved[f"sim_{i}"]) for i in range(len(curves))]
-            from cryoml.metrics import device_rrms
+            include = set(rec.get("include_tags") or
+                          baseline_include_tags(rec["device"]))
+            fixed = score_device_new(d.dev_type, d.L_um, d.W_um, curves, sims,
+                                     include_tags=include)
+            official = score_device_new(d.dev_type, d.L_um, d.W_um, curves,
+                                        sims)
+            rec["rrms"] = float(fixed["rrms"])
+            rec["rrms_official"] = float(official["rrms"])
+            rec["sigma_official"] = float(official["sigma"])
+            rec["n_curves_official"] = int(official["n_curves"])
             meas = [c.Id for c in curves]
-            rec["rrms"] = float(device_rrms(sims, meas)["rrms"])
+            rec["legacy_rrms"] = float(device_rrms(sims, meas)["rrms"])
             json.dump(rec, open(path, "w"), indent=2)
             rows.append(rec)
+            new_by_tag[rec["device"]] = official
     if not rows:
         raise RuntimeError(f"no finite ML results found in {out_dir}")
 
@@ -608,9 +476,11 @@ def main() -> int:
     base = np.array([baseline[r["device"]]["rrms"] for r in rows])
     summary = {
         "n_devices": len(rows),
+        "metric": "confirmed-setup rrmsCalc port (fixed baseline inclusion)",
         "mean_rrms": float(np.nanmean(scores)),
         "baseline_mean_rrms": float(np.nanmean(base)),
         "wins_vs_baseline": int(np.sum(scores < base)),
+        **{f"official_{k}": v for k, v in family_totals(new_by_tag).items()},
     }
     # per-method means
     method_keys = sorted({k for r in rows for k in r["methods"]

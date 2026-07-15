@@ -1,5 +1,10 @@
 # Codex experiment log
 
+> Historical note: this log documents June experiments under the old card,
+> metric, and binning setup. The named direct/tandem/control scripts were
+> removed in the July cleanup. Current instructions and results are in
+> `docs/HANDOFF.md`, `docs/METHODS.md`, and the top of `docs/RESEARCH_LOG.md`.
+
 This file records Codex-authored working notes only. Experiment code and
 results are shared repository assets; other agents may use and extend them.
 Other agents' Markdown work logs remain separate.

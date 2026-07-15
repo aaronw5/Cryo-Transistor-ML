@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export one deployable nMOS card and one deployable pMOS card."""
+"""Export and revalidate a single, globally selected fixed ML method."""
 from __future__ import annotations
 
 import json
@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from cryoml.config import OUT_DIR  # noqa: E402
 from cryoml.data_io import load_device_curves  # noqa: E402
 from cryoml.devices import PAPER_DEVICES  # noqa: E402
-from cryoml.metrics import device_rrms  # noqa: E402
+from cryoml.metrics import score_device_new  # noqa: E402
 from cryoml.spice_pdk import (LIB_FILE, PDK77K_DIR, _CORNER_BASENAME,  # noqa: E402
                               _patch_params_in_bin, ensure_pdk77k, simulate_pdk)
 from cryoml.utils import device_tag  # noqa: E402
@@ -22,22 +22,48 @@ from cryoml.utils import device_tag  # noqa: E402
 def main() -> int:
     import argparse
     ap = argparse.ArgumentParser()
-    ap.add_argument("--src", default=str(OUT_DIR / "pdk_ml"))
+    ap.add_argument(
+        "--src", required=True,
+        help="the fixed pdk_ml_emu directory from make_ml_variants.py; do "
+             "not pass a mixed extraction-source directory",
+    )
+    ap.add_argument(
+        "--card-dir", default=str(OUT_DIR / "pdk_ml_selected" / "cards"),
+        help="canonical output directory for the globally selected card",
+    )
     args = ap.parse_args()
 
     error = ensure_pdk77k()
     if error:
         raise RuntimeError(error)
     result_dir = Path(args.src)
-    card_dir = result_dir / "cards"
+    card_dir = Path(args.card_dir)
     card_dir.mkdir(parents=True, exist_ok=True)
 
     bins: dict[tuple[str, int], dict] = {}
     manifest_bins = []
+    method_names = set()
+    records_seen = set()
     for path in sorted(result_dir.glob("ml_*.json")):
         record = json.load(open(path))
+        if "method" not in record:
+            raise RuntimeError(
+                f"{result_dir} is not a fixed-method directory; run "
+                "make_ml_variants.py and export pdk_ml_emu"
+            )
+        method_names.add(record["method"])
+        records_seen.add(record["device"])
+        if record.get("box_mode") != "lhc10":
+            raise RuntimeError(
+                f"{record['device']}: export source is not current lhc10 data"
+            )
+        if not record["method"].endswith("+fd"):
+            raise RuntimeError(
+                f"{record['method']} is an unpolished ablation; exported "
+                "cards must use the globally selected polished method"
+            )
         key = record["dev_type"], int(record["bin_index"])
-        params = record["params_by_method"][record["best_method"]]
+        params = record["params"]
         if key in bins:
             previous = bins[key]
             if not all(
@@ -48,6 +74,26 @@ def main() -> int:
             previous["devices"].append(record["device"])
         else:
             bins[key] = {"params": params, "devices": [record["device"]]}
+    expected_devices = {
+        device_tag(d.dev_type, d.L_um, d.W_um) for d in PAPER_DEVICES
+    }
+    if records_seen != expected_devices:
+        raise RuntimeError(
+            "fixed-method source must contain exactly all 18 devices; "
+            f"missing={sorted(expected_devices - records_seen)}, "
+            f"extra={sorted(records_seen - expected_devices)}"
+        )
+    if len(bins) != len(PAPER_DEVICES):
+        raise RuntimeError(
+            f"confirmed setup expects 18 distinct native bins, found {len(bins)}"
+        )
+    if len(method_names) != 1:
+        raise RuntimeError(f"expected one uniform method, found {method_names}")
+    if method_names != {"emu_search+fd"}:
+        raise RuntimeError(
+            "the canonical card is the fixed surrogate-search + FD method; "
+            f"refusing to export {method_names}"
+        )
 
     output_cards = {}
     for dev_type in ("nmos", "pmos"):
@@ -88,12 +134,23 @@ def main() -> int:
             device.dev_type, device.L_um, device.W_um, curves,
             library_path=library_path,
         )
-        score = float(device_rrms(simulations, [curve.Id for curve in curves])["rrms"])
-        saved = json.load(open(result_dir / f"ml_{tag}.json"))["rrms"]
+        rec = json.load(open(result_dir / f"ml_{tag}.json"))
+        include = set(rec.get("include_tags") or [])
+        score = float(score_device_new(
+            device.dev_type, device.L_um, device.W_um, curves, simulations,
+            include_tags=include)["rrms"])
+        saved = rec["rrms"]
         scores.append(score)
         saved_differences.append(abs(score - saved))
+    nmos = [s for s, d in zip(scores, PAPER_DEVICES) if d.dev_type == "nmos"]
+    pmos = [s for s, d in zip(scores, PAPER_DEVICES) if d.dev_type == "pmos"]
     manifest = {
+        "source_directory": str(result_dir),
+        "uniform_method": next(iter(method_names)),
         "validated_mean_rrms": float(np.mean(scores)),
+        "validated_nmos_rrms": float(np.mean(nmos)),
+        "validated_pmos_rrms": float(np.mean(pmos)),
+        "validated_combined_rrms": float((np.mean(nmos) + np.mean(pmos)) / 2),
         "validated_wins_vs_paper_params_ngspice": int(sum(
             score < baseline[device_tag(d.dev_type, d.L_um, d.W_um)]["rrms"]
             for score, d in zip(scores, PAPER_DEVICES)

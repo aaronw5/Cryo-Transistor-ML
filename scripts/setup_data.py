@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch measured data and the corrected NGSpice model repository."""
+"""Fetch measured data and validate the pinned confirmed simulation setup."""
 
 from __future__ import annotations
 
@@ -13,8 +13,10 @@ from pathlib import Path
 # Ensure src/ is importable when run from a fresh checkout.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from cryoml.config import (CORRECTED_REPO_DIR, CORRECTED_REPO_URL, PAPER_REPO_DIR,
-                           PAPER_REPO_URL, PROCESSED_DIR, ensure_dirs)  # noqa: E402
+from cryoml.config import (CORRECTED_REPO_DIR, CORRECTED_REPO_URL,
+                           NEW_REPO_COMMIT, NEW_REPO_DIR, NEW_REPO_URL,
+                           PAPER_REPO_DIR, PAPER_REPO_URL, PROCESSED_DIR,
+                           ensure_dirs)  # noqa: E402
 from cryoml.data_io import load_device_curves  # noqa: E402
 from cryoml.devices import PAPER_DEVICES  # noqa: E402
 from cryoml.paper_data import discover_paper_paths  # noqa: E402
@@ -56,11 +58,55 @@ def clone_or_update_repo(url: str, dest: Path) -> bool:
     return True
 
 
+def sparse_clone_new_repo(url: str, dest: Path) -> bool:
+    """Sparse shallow clone of the confirmed-setup repo (skips the multi-GB
+    montecarlo outputs and other bulk that the pipeline never reads). The
+    checkout is detached at NEW_REPO_COMMIT, never an unpinned branch tip."""
+    if dest.exists():
+        marker = dest / ".upstream_commit"
+        recorded = marker.read_text().strip() if marker.exists() else None
+        if recorded != NEW_REPO_COMMIT:
+            logger.error("%s has upstream marker %r; expected %s", dest,
+                         recorded, NEW_REPO_COMMIT)
+            return False
+        logger.info("%s already present at pinned upstream %s", dest.name,
+                    NEW_REPO_COMMIT[:12])
+        return True
+    git = shutil.which("git")
+    if not git:
+        logger.error("git not found on PATH")
+        return False
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    logger.info("sparse-cloning %s -> %s", url, dest)
+    try:
+        subprocess.run(["git", "clone", "--depth", "1", "--filter=blob:none",
+                        "--no-checkout", url, str(dest)], check=True)
+        subprocess.run(["git", "-C", str(dest), "sparse-checkout", "init",
+                        "--no-cone"], check=True)
+        (dest / ".git" / "info" / "sparse-checkout").write_text(
+            "/*\n"
+            "!/archive/\n"
+            "!/comp_analysis/\n"
+            "!/outside_data/\n"
+            "!/montecarlo/mc_output_lhc/\n"
+            "!/montecarlo/gaussMC/\n"
+            "!/.ipynb_checkpoints/\n")
+        subprocess.run(["git", "-C", str(dest), "fetch", "--depth", "1",
+                        "origin", NEW_REPO_COMMIT], check=True)
+        subprocess.run(["git", "-C", str(dest), "checkout", "--detach",
+                        NEW_REPO_COMMIT], check=True)
+        (dest / ".upstream_commit").write_text(NEW_REPO_COMMIT + "\n")
+    except subprocess.CalledProcessError as e:
+        logger.error("sparse clone failed: %s", e)
+        return False
+    return True
+
+
 def write_devices_csv(repo_root: Path) -> Path:
     out = PROCESSED_DIR / "devices.csv"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", newline="") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["dev_type", "L_um", "W_um", "source_folder", "paper_rrms", "paper_sigma"])
         for d in PAPER_DEVICES:
             src = str(Path(load_device_curves(d, repo_root)[0].path).parent)
@@ -79,6 +125,9 @@ def main() -> int:
     if not args.skip_clone:
         clone_or_update_repo(PAPER_REPO_URL, PAPER_REPO_DIR)
         clone_or_update_repo(CORRECTED_REPO_URL, CORRECTED_REPO_DIR)
+        if not sparse_clone_new_repo(NEW_REPO_URL, NEW_REPO_DIR):
+            raise RuntimeError("confirmed upstream checkout is unavailable or "
+                               "does not match the pinned commit")
 
     paths = discover_paper_paths(PAPER_REPO_DIR)
     if not paths.data_files:
@@ -86,6 +135,9 @@ def main() -> int:
     corrected_corners = CORRECTED_REPO_DIR / "compressed-cryo-files"
     if not corrected_corners.exists():
         raise RuntimeError(f"corrected model repository unavailable under {CORRECTED_REPO_DIR}")
+    marker = NEW_REPO_DIR / ".upstream_commit"
+    if not marker.exists() or marker.read_text().strip() != NEW_REPO_COMMIT:
+        raise RuntimeError(f"confirmed setup must be pinned to {NEW_REPO_COMMIT}")
     logger.info("found %d measured-data files in %s",
                 len(paths.data_files), PAPER_REPO_DIR)
     write_devices_csv(PAPER_REPO_DIR)

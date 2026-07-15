@@ -1,0 +1,3243 @@
+{
+  "summary": {
+    "status": "exploratory; excluded from canonical method selection/export",
+    "n_devices": 18,
+    "foundation_raw": {
+      "nmos_mean": 0.07980029893960722,
+      "pmos_mean": 0.3445876397372435,
+      "combined_rrms": 0.21219396933842535,
+      "all_device_mean_rrms": 0.22690437716051626
+    },
+    "foundation_plus_fd": {
+      "nmos_mean": 0.07937187073299168,
+      "pmos_mean": 0.34341968095229003,
+      "combined_rrms": 0.21139577584264085,
+      "all_device_mean_rrms": 0.22606509863260182
+    },
+    "published_all_device_mean_rrms": 0.27505313088325356,
+    "emulator_validation_mse": {
+      "foundation_global": 0.00024276475135380886,
+      "foundation_mean_across_devices": 0.00024276475314922053,
+      "mean_of_18_per_device_emulators": 0.00021459848398485014
+    },
+    "timing_s": {
+      "fd_only_18_total": 16.2,
+      "per_device_emulator_18_total": 2420.2,
+      "foundation_training_once": 189.5,
+      "foundation_cache_build_once": 14.5,
+      "foundation_18_search_validate_fd": 996.7,
+      "foundation_first_campaign_total": 1200.7
+    },
+    "break_even_campaigns": {
+      "versus_fd_only": null,
+      "versus_retraining_18_per_device_emulators": 0.1433087460484721
+    },
+    "interpretation": {
+      "fd_only": "No training and direct local NGSpice accuracy; best for a one-time small device set, but each objective evaluation invokes NGSpice and each new device needs another solve.",
+      "foundation": "One differentiable model is reusable across the 18 conditioned training geometries and supports large parallel inverse searches; it has substantial upfront training/cache cost, can blur geometry-specific behavior, still requires NGSpice validation/FD, and this split does not establish generalization to an unseen geometry.",
+      "per_device_emulators": "Usually easier to fit accurately for one geometry but require one training run and one model artifact per transistor."
+    }
+  },
+  "devices": [
+    {
+      "device": "nmos_L0p15_W1p6",
+      "dev_type": "nmos",
+      "L_um": 0.15,
+      "W_um": 1.6,
+      "bin_index": 0,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.4256894429750371,
+            "u0": 0.0771242282984497,
+            "nfactor": 10.199128161639331,
+            "vsat": 134663.70605165703,
+            "delta": 0.047993618159620936,
+            "rdsw": 90.25782571514661,
+            "eta0": -0.18800898882754433
+          },
+          "rrms": 0.03464521653004233,
+          "rrms_official": 0.03464521653004233
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.4258597692288562,
+            "u0": 0.07711770127507772,
+            "nfactor": 10.199128696708136,
+            "vsat": 134663.9772312925,
+            "delta": 0.04799361815899354,
+            "rdsw": 90.25782571308535,
+            "eta0": -0.1881360451051883
+          },
+          "rrms": 0.03428805976766446,
+          "rrms_official": 0.03428805976766446
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.03464521653004233,
+          "endpoint_rrms": 0.03428805976766446,
+          "rrms_official": 0.03428805976766446,
+          "params": {
+            "vth0": 0.4258597692288562,
+            "u0": 0.07711770127507772,
+            "nfactor": 10.199128696708136,
+            "vsat": 134663.9772312925,
+            "delta": 0.04799361815899354,
+            "rdsw": 90.25782571308535,
+            "eta0": -0.1881360451051883
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 2.8
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.034686758165690834,
+          "endpoint_rrms": 0.034315488504142774,
+          "rrms_official": 0.034315488504142774,
+          "params": {
+            "vth0": 0.4257139239057718,
+            "u0": 0.07675385289765937,
+            "nfactor": 10.190975616329515,
+            "vsat": 135073.00033998158,
+            "delta": 0.04811076262606667,
+            "rdsw": 90.30876888477138,
+            "eta0": -0.18812481570315642
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 3.8
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.03469245507105772,
+          "endpoint_rrms": 0.0343252180452829,
+          "rrms_official": 0.0343252180452829,
+          "params": {
+            "vth0": 0.42569146449642825,
+            "u0": 0.07670740988878834,
+            "nfactor": 10.205041413528393,
+            "vsat": 135138.85153715388,
+            "delta": 0.04800561134827214,
+            "rdsw": 90.46402583612293,
+            "eta0": -0.18810303132979483
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 3.8
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.03471716675162831,
+          "endpoint_rrms": 0.03432403997140137,
+          "rrms_official": 0.03432403997140137,
+          "params": {
+            "vth0": 0.4256526646749182,
+            "u0": 0.07666965184423424,
+            "nfactor": 10.188131806061252,
+            "vsat": 135161.0558239091,
+            "delta": 0.04799613453806248,
+            "rdsw": 90.29097287334764,
+            "eta0": -0.18808163967281127
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 2.8
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.03472253079661616,
+          "endpoint_rrms": 0.03431929688369092,
+          "rrms_official": 0.03431929688369092,
+          "params": {
+            "vth0": 0.4256871319573187,
+            "u0": 0.07673182518425345,
+            "nfactor": 10.214550646619298,
+            "vsat": 135075.5892667599,
+            "delta": 0.048038626157882076,
+            "rdsw": 90.31422042341431,
+            "eta0": -0.1880832083348593
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 3.2
+        }
+      ],
+      "timing": {
+        "search_s": 8.7,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 16.4,
+        "total_device_s": 26.3
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 0
+      }
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "L_um": 0.19,
+      "W_um": 7.0,
+      "bin_index": 1,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.7101947572305597,
+            "u0": 0.08941925300149955,
+            "nfactor": 8.97871626865115,
+            "vsat": 235475.22425402186,
+            "delta": 0.0762654545592727,
+            "rdsw": 129.0492219417719,
+            "eta0": -0.22022295795005714
+          },
+          "rrms": 0.043043351289798665,
+          "rrms_official": 0.043043351289798665
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.7093669484971892,
+            "u0": 0.08941925303161256,
+            "nfactor": 8.978712031897576,
+            "vsat": 235509.24123035182,
+            "delta": 0.07626545450993122,
+            "rdsw": 129.0492211184455,
+            "eta0": -0.22022295795005659
+          },
+          "rrms": 0.04284105059076077,
+          "rrms_official": 0.04284105059076077
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.043043351289798665,
+          "endpoint_rrms": 0.04284105059076077,
+          "rrms_official": 0.04284105059076077,
+          "params": {
+            "vth0": 0.7093669484971892,
+            "u0": 0.08941925303161256,
+            "nfactor": 8.978712031897576,
+            "vsat": 235509.24123035182,
+            "delta": 0.07626545450993122,
+            "rdsw": 129.0492211184455,
+            "eta0": -0.22022295795005659
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.7
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.043054979244621504,
+          "endpoint_rrms": 0.04284325453449729,
+          "rrms_official": 0.04284325453449729,
+          "params": {
+            "vth0": 0.7094310352038997,
+            "u0": 0.0894080393702889,
+            "nfactor": 8.979020784818905,
+            "vsat": 235515.52953446092,
+            "delta": 0.07628543770157103,
+            "rdsw": 129.01188336957972,
+            "eta0": -0.22035790457586657
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.7
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.0430559653051454,
+          "endpoint_rrms": 0.04284943850774916,
+          "rrms_official": 0.04284943850774916,
+          "params": {
+            "vth0": 0.7094057310475679,
+            "u0": 0.08940832971891023,
+            "nfactor": 8.979916460146892,
+            "vsat": 235534.66141991492,
+            "delta": 0.0762633128662716,
+            "rdsw": 129.1332049508787,
+            "eta0": -0.22020877849507653
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.7
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.04306563020884092,
+          "endpoint_rrms": 0.0428659292857063,
+          "rrms_official": 0.0428659292857063,
+          "params": {
+            "vth0": 0.7093754034856864,
+            "u0": 0.08941926755820531,
+            "nfactor": 8.979546117965972,
+            "vsat": 235528.56682479096,
+            "delta": 0.07630263128367132,
+            "rdsw": 129.11370075492144,
+            "eta0": -0.22012143993791297
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.7
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.04306932401868675,
+          "endpoint_rrms": 0.04285989100143841,
+          "rrms_official": 0.04285989100143841,
+          "params": {
+            "vth0": 0.7094454573891438,
+            "u0": 0.08941926755516938,
+            "nfactor": 8.979898550161574,
+            "vsat": 235544.45812759435,
+            "delta": 0.07629871044737746,
+            "rdsw": 129.14584683335602,
+            "eta0": -0.22023997948524887
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.7
+        }
+      ],
+      "timing": {
+        "search_s": 8.3,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 13.4,
+        "total_device_s": 22.8
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 1
+      }
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "L_um": 0.25,
+      "W_um": 1.6,
+      "bin_index": 2,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.7522472641078739,
+            "u0": 0.11644379577796506,
+            "nfactor": 7.893285344810481,
+            "vsat": 150936.2295058306,
+            "delta": 0.05202239839211812,
+            "rdsw": 142.73476677504777,
+            "eta0": -0.3183515180847404
+          },
+          "rrms": 0.05059881771470792,
+          "rrms_official": 0.05059881771470792
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.7526519088178385,
+            "u0": 0.11656796815138709,
+            "nfactor": 7.894283646750962,
+            "vsat": 150047.63432900707,
+            "delta": 0.05201066460690435,
+            "rdsw": 142.8050385418016,
+            "eta0": -0.3183895373809665
+          },
+          "rrms": 0.049878658170621815,
+          "rrms_official": 0.049878658170621815
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.05059881771470792,
+          "endpoint_rrms": 0.0499083826974022,
+          "rrms_official": 0.0499083826974022,
+          "params": {
+            "vth0": 0.7526010552696052,
+            "u0": 0.1164437513578288,
+            "nfactor": 7.893285555454072,
+            "vsat": 150107.4619331824,
+            "delta": 0.05202239594095765,
+            "rdsw": 142.7347674458112,
+            "eta0": -0.31835151808492507
+          },
+          "nfev": 42,
+          "success": true,
+          "runtime_s": 16.0
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.05061072813655694,
+          "endpoint_rrms": 0.04989000562801306,
+          "rrms_official": 0.04989000562801306,
+          "params": {
+            "vth0": 0.752602904472565,
+            "u0": 0.11649617257005795,
+            "nfactor": 7.896365727231924,
+            "vsat": 150051.5915089121,
+            "delta": 0.05205337544380707,
+            "rdsw": 142.64352933108444,
+            "eta0": -0.31852604971753773
+          },
+          "nfev": 74,
+          "success": true,
+          "runtime_s": 32.7
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.05061154523773144,
+          "endpoint_rrms": 0.049878658170621815,
+          "rrms_official": 0.049878658170621815,
+          "params": {
+            "vth0": 0.7526519088178385,
+            "u0": 0.11656796815138709,
+            "nfactor": 7.894283646750962,
+            "vsat": 150047.63432900707,
+            "delta": 0.05201066460690435,
+            "rdsw": 142.8050385418016,
+            "eta0": -0.3183895373809665
+          },
+          "nfev": 31,
+          "success": true,
+          "runtime_s": 13.3
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.05061316558653976,
+          "endpoint_rrms": 0.04991414555795975,
+          "rrms_official": 0.04991414555795975,
+          "params": {
+            "vth0": 0.7525622365344419,
+            "u0": 0.11630705966333905,
+            "nfactor": 7.895459372201698,
+            "vsat": 150127.92385396382,
+            "delta": 0.052016239887024036,
+            "rdsw": 142.72213484702897,
+            "eta0": -0.31874908582798095
+          },
+          "nfev": 41,
+          "success": true,
+          "runtime_s": 14.5
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.050617787742280575,
+          "endpoint_rrms": 0.049926441323402945,
+          "rrms_official": 0.049926441323402945,
+          "params": {
+            "vth0": 0.7525524162884251,
+            "u0": 0.1162553712659906,
+            "nfactor": 7.893471527014198,
+            "vsat": 150146.0333476309,
+            "delta": 0.05201668601291117,
+            "rdsw": 142.76033939424218,
+            "eta0": -0.3187684192455873
+          },
+          "nfev": 41,
+          "success": true,
+          "runtime_s": 17.4
+        }
+      ],
+      "timing": {
+        "search_s": 8.3,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 93.8,
+        "total_device_s": 103.2
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 2
+      }
+    },
+    {
+      "device": "nmos_L1_W1p6",
+      "dev_type": "nmos",
+      "L_um": 1.0,
+      "W_um": 1.6,
+      "bin_index": 3,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.5951983854966307,
+            "u0": 0.241690245039673,
+            "nfactor": 3.9927515571706986,
+            "vsat": 41966.678433352805,
+            "delta": 0.07202692250523267,
+            "rdsw": 220.26507971717052,
+            "eta0": 0.0006099435979540392
+          },
+          "rrms": 0.06442656393213973,
+          "rrms_official": 0.06442656393213973
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.5969611043620184,
+            "u0": 0.2416902656957412,
+            "nfactor": 3.992751549403598,
+            "vsat": 41966.67906201616,
+            "delta": 0.07202691265961636,
+            "rdsw": 220.26504596648184,
+            "eta0": 0.0006099435979540392
+          },
+          "rrms": 0.06353834906551031,
+          "rrms_official": 0.06353834906551031
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.06442656393213973,
+          "endpoint_rrms": 0.06353834906551031,
+          "rrms_official": 0.06353834906551031,
+          "params": {
+            "vth0": 0.5969611043620184,
+            "u0": 0.2416902656957412,
+            "nfactor": 3.992751549403598,
+            "vsat": 41966.67906201616,
+            "delta": 0.07202691265961636,
+            "rdsw": 220.26504596648184,
+            "eta0": 0.0006099435979540392
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.4
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.06443348122488249,
+          "endpoint_rrms": 0.06354101369840032,
+          "rrms_official": 0.06354101369840032,
+          "params": {
+            "vth0": 0.5971128303467912,
+            "u0": 0.24171772642347117,
+            "nfactor": 3.9929357653358455,
+            "vsat": 41954.384635403294,
+            "delta": 0.07203921613083908,
+            "rdsw": 220.29070655938975,
+            "eta0": 0.0006100686921918945
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 3.7
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.0644342343759124,
+          "endpoint_rrms": 0.06355082996191494,
+          "rrms_official": 0.06355082996191494,
+          "params": {
+            "vth0": 0.5969479161539926,
+            "u0": 0.2417155329336974,
+            "nfactor": 3.992271562315626,
+            "vsat": 41964.60047514062,
+            "delta": 0.07207565650336901,
+            "rdsw": 220.21909004109284,
+            "eta0": 0.0006099388580379098
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.3
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.0644355449512673,
+          "endpoint_rrms": 0.06355096253359582,
+          "rrms_official": 0.06355096253359582,
+          "params": {
+            "vth0": 0.5969486161832946,
+            "u0": 0.2417211487616202,
+            "nfactor": 3.9940549265777165,
+            "vsat": 41967.12187032335,
+            "delta": 0.07201576455548353,
+            "rdsw": 220.56247649734664,
+            "eta0": 0.0006107755393260366
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.3
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.06443611223794869,
+          "endpoint_rrms": 0.06354928771582145,
+          "rrms_official": 0.06354928771582145,
+          "params": {
+            "vth0": 0.5970352211655782,
+            "u0": 0.2417674579083947,
+            "nfactor": 3.9917555581054662,
+            "vsat": 41967.97224895117,
+            "delta": 0.07208315347848558,
+            "rdsw": 220.35989502392528,
+            "eta0": 0.0006098614527162092
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 3.4
+        }
+      ],
+      "timing": {
+        "search_s": 8.2,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 20.2,
+        "total_device_s": 29.5
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 3
+      }
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "L_um": 1.0,
+      "W_um": 3.0,
+      "bin_index": 4,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.6105199546552812,
+            "u0": 0.32263638431181313,
+            "nfactor": 6.965153431729351,
+            "vsat": -3.0416506537633787,
+            "delta": 0.04501458252696947,
+            "rdsw": 259.43353213018105,
+            "eta0": 0.0044063668814110085
+          },
+          "rrms": 0.11050000082651604,
+          "rrms_official": 0.11050000082651604
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.6123401797703536,
+            "u0": 0.3226398377919879,
+            "nfactor": 6.965151498477677,
+            "vsat": -3.041650652370338,
+            "delta": 0.04501417510169472,
+            "rdsw": 259.4333016207027,
+            "eta0": 0.0044063668814110085
+          },
+          "rrms": 0.11018165494549578,
+          "rrms_official": 0.11018165494549578
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.11050000082651604,
+          "endpoint_rrms": 0.11018165494549578,
+          "rrms_official": 0.11018165494549578,
+          "params": {
+            "vth0": 0.6123401797703536,
+            "u0": 0.3226398377919879,
+            "nfactor": 6.965151498477677,
+            "vsat": -3.041650652370338,
+            "delta": 0.04501417510169472,
+            "rdsw": 259.4333016207027,
+            "eta0": 0.0044063668814110085
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 3.9
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.11050546684576065,
+          "endpoint_rrms": 0.11018387191707661,
+          "rrms_official": 0.11018387191707661,
+          "params": {
+            "vth0": 0.6123572757958385,
+            "u0": 0.32261556353406656,
+            "nfactor": 6.9661430884395195,
+            "vsat": -3.041945662238261,
+            "delta": 0.045010271906058594,
+            "rdsw": 259.43337462291805,
+            "eta0": 0.004414488805938222
+          },
+          "nfev": 21,
+          "success": true,
+          "runtime_s": 6.4
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.11050611430217994,
+          "endpoint_rrms": 0.11018854808436147,
+          "rrms_official": 0.11018854808436147,
+          "params": {
+            "vth0": 0.6122343328596191,
+            "u0": 0.32265445016645555,
+            "nfactor": 6.965043697696414,
+            "vsat": -3.0425502704069487,
+            "delta": 0.04503514516125674,
+            "rdsw": 259.44483364611705,
+            "eta0": 0.004412384902741962
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 3.4
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.11050807697984548,
+          "endpoint_rrms": 0.11018976275028484,
+          "rrms_official": 0.11018976275028484,
+          "params": {
+            "vth0": 0.6123566237399458,
+            "u0": 0.3226648083445712,
+            "nfactor": 6.965475594732475,
+            "vsat": -3.041650653094266,
+            "delta": 0.04504075599233831,
+            "rdsw": 259.4696007944222,
+            "eta0": 0.004409155145457761
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 5.3
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.1105085401258605,
+          "endpoint_rrms": 0.11019049123569384,
+          "rrms_official": 0.11019049123569384,
+          "params": {
+            "vth0": 0.6123453166347619,
+            "u0": 0.3226830586874838,
+            "nfactor": 6.966841202756002,
+            "vsat": -3.0416506529819225,
+            "delta": 0.04505927239729145,
+            "rdsw": 259.4382466950317,
+            "eta0": 0.004409375353121557
+          },
+          "nfev": 21,
+          "success": true,
+          "runtime_s": 5.4
+        }
+      ],
+      "timing": {
+        "search_s": 8.2,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 24.4,
+        "total_device_s": 33.7
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 4
+      }
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "L_um": 8.0,
+      "W_um": 1.6,
+      "bin_index": 5,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.6070987143609745,
+            "u0": 0.25087833952533195,
+            "nfactor": 3.676885146974528,
+            "vsat": 42105.635362644025,
+            "delta": 0.1350184552450515,
+            "rdsw": 0.09349960065306129,
+            "eta0": 0.08795746623625514
+          },
+          "rrms": 0.08096422267177553,
+          "rrms_official": 0.08096422267177553
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.6068353786327179,
+            "u0": 0.2508630610450905,
+            "nfactor": 3.672319061014203,
+            "vsat": 41359.84588186183,
+            "delta": 0.13501630483419588,
+            "rdsw": 0.09349420181507054,
+            "eta0": 0.08799389257914557
+          },
+          "rrms": 0.08059012018593836,
+          "rrms_official": 0.08059012018593836
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.08096422267177553,
+          "endpoint_rrms": 0.08059141939376904,
+          "rrms_official": 0.08059141939376904,
+          "params": {
+            "vth0": 0.6068730579225472,
+            "u0": 0.25087507474318793,
+            "nfactor": 3.676885665991994,
+            "vsat": 41380.51126947479,
+            "delta": 0.13501839097682977,
+            "rdsw": 0.0934996006537988,
+            "eta0": 0.08795746623625514
+          },
+          "nfev": 38,
+          "success": true,
+          "runtime_s": 18.7
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.08097895229299158,
+          "endpoint_rrms": 0.0805989530780298,
+          "rrms_official": 0.0805989530780298,
+          "params": {
+            "vth0": 0.6069258128609409,
+            "u0": 0.25100449644713735,
+            "nfactor": 3.675254671997882,
+            "vsat": 41366.800335211854,
+            "delta": 0.13501315120863464,
+            "rdsw": 0.09349103914719495,
+            "eta0": 0.08796394592279849
+          },
+          "nfev": 112,
+          "success": true,
+          "runtime_s": 61.1
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.08098012925681852,
+          "endpoint_rrms": 0.0806003411543183,
+          "rrms_official": 0.0806003411543183,
+          "params": {
+            "vth0": 0.6069000973456975,
+            "u0": 0.250991414052709,
+            "nfactor": 3.676041343338439,
+            "vsat": 41356.701668886264,
+            "delta": 0.13502343306956593,
+            "rdsw": 0.09352522713396501,
+            "eta0": 0.0879824901824575
+          },
+          "nfev": 26,
+          "success": true,
+          "runtime_s": 13.0
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.08098015155588797,
+          "endpoint_rrms": 0.08059783671431517,
+          "rrms_official": 0.08059783671431517,
+          "params": {
+            "vth0": 0.6068608796235754,
+            "u0": 0.2509484185052076,
+            "nfactor": 3.6741593302782274,
+            "vsat": 41346.303297106904,
+            "delta": 0.1350250954783089,
+            "rdsw": 0.09353601711616559,
+            "eta0": 0.08795918656597915
+          },
+          "nfev": 27,
+          "success": true,
+          "runtime_s": 10.8
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.08098025410071555,
+          "endpoint_rrms": 0.08059012018593836,
+          "rrms_official": 0.08059012018593836,
+          "params": {
+            "vth0": 0.6068353786327179,
+            "u0": 0.2508630610450905,
+            "nfactor": 3.672319061014203,
+            "vsat": 41359.84588186183,
+            "delta": 0.13501630483419588,
+            "rdsw": 0.09349420181507054,
+            "eta0": 0.08799389257914557
+          },
+          "nfev": 24,
+          "success": true,
+          "runtime_s": 8.8
+        }
+      ],
+      "timing": {
+        "search_s": 8.3,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 112.4,
+        "total_device_s": 121.7
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 5
+      }
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "L_um": 20.0,
+      "W_um": 0.64,
+      "bin_index": 6,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.48217943205722047,
+            "u0": 0.3189211817747391,
+            "nfactor": 35.61844416884959,
+            "vsat": 23289.432726898805,
+            "delta": 0.13506125637539673,
+            "rdsw": 4096.100859505394,
+            "eta0": 0.0879889610036546
+          },
+          "rrms": 0.1206567039118192,
+          "rrms_official": 0.1206567039118192
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.4833095178305011,
+            "u0": 0.3189070141492953,
+            "nfactor": 35.61841152428207,
+            "vsat": 24031.362536297464,
+            "delta": 0.13506013762863703,
+            "rdsw": 4095.9913325997386,
+            "eta0": 0.0879889610036546
+          },
+          "rrms": 0.1201162046970528,
+          "rrms_official": 0.1201162046970528
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.1206567039118192,
+          "endpoint_rrms": 0.1201162046970528,
+          "rrms_official": 0.1201162046970528,
+          "params": {
+            "vth0": 0.4833095178305011,
+            "u0": 0.3189070141492953,
+            "nfactor": 35.61841152428207,
+            "vsat": 24031.362536297464,
+            "delta": 0.13506013762863703,
+            "rdsw": 4095.9913325997386,
+            "eta0": 0.0879889610036546
+          },
+          "nfev": 21,
+          "success": true,
+          "runtime_s": 5.8
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.12066449657146798,
+          "endpoint_rrms": 0.12012857335128932,
+          "rrms_official": 0.12012857335128932,
+          "params": {
+            "vth0": 0.48292618925261876,
+            "u0": 0.3189442807197477,
+            "nfactor": 35.618414364598216,
+            "vsat": 23975.995758466113,
+            "delta": 0.1350488774079584,
+            "rdsw": 4098.536950695516,
+            "eta0": 0.08799368082288148
+          },
+          "nfev": 26,
+          "success": true,
+          "runtime_s": 6.6
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.12066731813778911,
+          "endpoint_rrms": 0.12012592403253645,
+          "rrms_official": 0.12012592403253645,
+          "params": {
+            "vth0": 0.48327016084996366,
+            "u0": 0.31901911326013616,
+            "nfactor": 35.61840879990674,
+            "vsat": 24026.4832009628,
+            "delta": 0.1350567154734844,
+            "rdsw": 4096.626768332201,
+            "eta0": 0.08797104753989118
+          },
+          "nfev": 25,
+          "success": true,
+          "runtime_s": 10.2
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.12067165639651745,
+          "endpoint_rrms": 0.12013030585084405,
+          "rrms_official": 0.12013030585084405,
+          "params": {
+            "vth0": 0.48319788442458617,
+            "u0": 0.31899737463378225,
+            "nfactor": 35.61840670287729,
+            "vsat": 24019.887863074207,
+            "delta": 0.13508520706456698,
+            "rdsw": 4097.441097259994,
+            "eta0": 0.08798291136549892
+          },
+          "nfev": 22,
+          "success": true,
+          "runtime_s": 7.9
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.12067688655972968,
+          "endpoint_rrms": 0.12013588236386433,
+          "rrms_official": 0.12013588236386433,
+          "params": {
+            "vth0": 0.4833284518388066,
+            "u0": 0.3190186539085528,
+            "nfactor": 35.6200559236426,
+            "vsat": 24025.552494845924,
+            "delta": 0.13506634301199263,
+            "rdsw": 4098.317447314949,
+            "eta0": 0.08797907409097311
+          },
+          "nfev": 22,
+          "success": true,
+          "runtime_s": 8.0
+        }
+      ],
+      "timing": {
+        "search_s": 9.0,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 38.5,
+        "total_device_s": 48.6
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 6
+      }
+    },
+    {
+      "device": "nmos_L100_W100",
+      "dev_type": "nmos",
+      "L_um": 100.0,
+      "W_um": 100.0,
+      "bin_index": 7,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": 0.5371733357711271,
+            "u0": 0.28493814261438255,
+            "nfactor": 5.222239566271515,
+            "vsat": 5886.316259993085,
+            "delta": 0.09000652698919533,
+            "rdsw": 16500.593076745354,
+            "eta0": 0.08798923501669229
+          },
+          "rrms": 0.13356751464005828,
+          "rrms_official": 0.13356751464005828
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": 0.5364418519540123,
+            "u0": 0.2850721111638833,
+            "nfactor": 5.222239566292322,
+            "vsat": 5886.316599795465,
+            "delta": 0.09000652694663391,
+            "rdsw": 16500.592384293384,
+            "eta0": 0.08798923501669229
+          },
+          "rrms": 0.13354086844088914,
+          "rrms_official": 0.13354086844088914
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.13356751464005828,
+          "endpoint_rrms": 0.13354086844088914,
+          "rrms_official": 0.13354086844088914,
+          "params": {
+            "vth0": 0.5364418519540123,
+            "u0": 0.2850721111638833,
+            "nfactor": 5.222239566292322,
+            "vsat": 5886.316599795465,
+            "delta": 0.09000652694663391,
+            "rdsw": 16500.592384293384,
+            "eta0": 0.08798923501669229
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 3.5
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.13356771236168694,
+          "endpoint_rrms": 0.1335411137120692,
+          "rrms_official": 0.1335411137120692,
+          "params": {
+            "vth0": 0.5363554331059186,
+            "u0": 0.2850539848892845,
+            "nfactor": 5.2221656842659,
+            "vsat": 5887.5904043304,
+            "delta": 0.09003684186799282,
+            "rdsw": 16506.674109935575,
+            "eta0": 0.08799463439791255
+          },
+          "nfev": 22,
+          "success": true,
+          "runtime_s": 5.1
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.13356803759643218,
+          "endpoint_rrms": 0.1335415520940614,
+          "rrms_official": 0.1335415520940614,
+          "params": {
+            "vth0": 0.5363555831107516,
+            "u0": 0.2850653681571217,
+            "nfactor": 5.22223956633302,
+            "vsat": 5887.015025009746,
+            "delta": 0.09002752244151395,
+            "rdsw": 16504.916043014182,
+            "eta0": 0.08798149376213031
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 5.0
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.13356820563091648,
+          "endpoint_rrms": 0.13354194668281547,
+          "rrms_official": 0.13354194668281547,
+          "params": {
+            "vth0": 0.5363577864332154,
+            "u0": 0.2850525548197577,
+            "nfactor": 5.222201692266109,
+            "vsat": 5886.372771549904,
+            "delta": 0.09002555185861774,
+            "rdsw": 16501.814639463737,
+            "eta0": 0.08799424353895652
+          },
+          "nfev": 21,
+          "success": true,
+          "runtime_s": 5.2
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.1335682121414618,
+          "endpoint_rrms": 0.13354198448362112,
+          "rrms_official": 0.13354198448362112,
+          "params": {
+            "vth0": 0.5363646704742466,
+            "u0": 0.28505080646964026,
+            "nfactor": 5.221693848381891,
+            "vsat": 5885.916291042308,
+            "delta": 0.09002386423099516,
+            "rdsw": 16498.87360553054,
+            "eta0": 0.08798789898865306
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.0
+        }
+      ],
+      "timing": {
+        "search_s": 9.1,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 22.7,
+        "total_device_s": 32.9
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 7
+      }
+    },
+    {
+      "device": "pmos_L0p35_W0p55",
+      "dev_type": "pmos",
+      "L_um": 0.35,
+      "W_um": 0.55,
+      "bin_index": 5,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.37",
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -0.9460449465721773,
+            "u0": 0.00323178931133721,
+            "nfactor": 65.7737512427618,
+            "vsat": -23721.52862277527,
+            "delta": 0.1402975451511018,
+            "rdsw": 7.063209593932666,
+            "eta0": 0.20603193253581098
+          },
+          "rrms": 0.6309482496913228,
+          "rrms_official": 0.6309482496913228
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -0.9443123848332695,
+            "u0": 0.003176212270075874,
+            "nfactor": 65.76885005250763,
+            "vsat": -23272.92212746245,
+            "delta": 0.14030609999800386,
+            "rdsw": 7.072229993473623,
+            "eta0": 0.21999847835836223
+          },
+          "rrms": 0.6307271710639927,
+          "rrms_official": 0.6307271710639927
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.6309482496913228,
+          "endpoint_rrms": 0.6307276648321449,
+          "rrms_official": 0.6307276648321449,
+          "params": {
+            "vth0": -0.9442786246392468,
+            "u0": 0.0031755189653406243,
+            "nfactor": 65.7688500403911,
+            "vsat": -23272.94086711169,
+            "delta": 0.14030609999993254,
+            "rdsw": 7.0722182278965136,
+            "eta0": 0.2199987085712191
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.1
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.6309503855980174,
+          "endpoint_rrms": 0.6307273404602323,
+          "rrms_official": 0.6307273404602323,
+          "params": {
+            "vth0": -0.9442877258022637,
+            "u0": 0.003176007942918782,
+            "nfactor": 65.76885002575534,
+            "vsat": -23272.93590264828,
+            "delta": 0.14030609999874777,
+            "rdsw": 7.072229960276272,
+            "eta0": 0.2199997300033808
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 4.9
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.6309537025901641,
+          "endpoint_rrms": 0.6307271940694352,
+          "rrms_official": 0.6307271940694352,
+          "params": {
+            "vth0": -0.9443114730303229,
+            "u0": 0.0031761789936963244,
+            "nfactor": 65.76885003726042,
+            "vsat": -23272.926775041862,
+            "delta": 0.140306099999536,
+            "rdsw": 7.0722297673579915,
+            "eta0": 0.2199962303409525
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.9
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.6309600986081084,
+          "endpoint_rrms": 0.6307271710639927,
+          "rrms_official": 0.6307271710639927,
+          "params": {
+            "vth0": -0.9443123848332695,
+            "u0": 0.003176212270075874,
+            "nfactor": 65.76885005250763,
+            "vsat": -23272.92212746245,
+            "delta": 0.14030609999800386,
+            "rdsw": 7.072229993473623,
+            "eta0": 0.21999847835836223
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 5.0
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.6309619570491566,
+          "endpoint_rrms": 0.6307281629191339,
+          "rrms_official": 0.6307281629191339,
+          "params": {
+            "vth0": -0.9442180586330057,
+            "u0": 0.0031750430636946184,
+            "nfactor": 65.7688500085086,
+            "vsat": -23272.923187103992,
+            "delta": 0.14030609962068105,
+            "rdsw": 7.072229989417404,
+            "eta0": 0.2199967940045244
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 3.8
+        }
+      ],
+      "timing": {
+        "search_s": 9.7,
+        "ngspice_validation_s": 1.1,
+        "fd_s": 22.7,
+        "total_device_s": 33.7
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 8
+      }
+    },
+    {
+      "device": "pmos_L0p35_W1p6",
+      "dev_type": "pmos",
+      "L_um": 0.35,
+      "W_um": 1.6,
+      "bin_index": 0,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.0836732762872705,
+            "u0": 0.010721058897908808,
+            "nfactor": 69.34001310726762,
+            "vsat": 1129935781.6955464,
+            "delta": -0.013818588641223704,
+            "rdsw": 0.005939422821667351,
+            "eta0": 0.18002896440602928
+          },
+          "rrms": 0.33159487496235085,
+          "rrms_official": 0.33159487496235085
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.0913474825580445,
+            "u0": 0.01072039070853812,
+            "nfactor": 68.59984667670825,
+            "vsat": 1130098286.002423,
+            "delta": -0.013818798168708618,
+            "rdsw": 0.005938766539057713,
+            "eta0": 0.1800290419684912
+          },
+          "rrms": 0.32841782831308436,
+          "rrms_official": 0.32841782831308436
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.33159487496235085,
+          "endpoint_rrms": 0.32861246144777145,
+          "rrms_official": 0.32861246144777145,
+          "params": {
+            "vth0": -1.0890187879250457,
+            "u0": 0.01072103304534381,
+            "nfactor": 69.33984176215863,
+            "vsat": 1129935780.3663535,
+            "delta": -0.013818584120932568,
+            "rdsw": 0.0059394228216537595,
+            "eta0": 0.18002896445756678
+          },
+          "nfev": 21,
+          "success": true,
+          "runtime_s": 4.0
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.33159962804394705,
+          "endpoint_rrms": 0.32841782831308436,
+          "rrms_official": 0.32841782831308436,
+          "params": {
+            "vth0": -1.0913474825580445,
+            "u0": 0.01072039070853812,
+            "nfactor": 68.59984667670825,
+            "vsat": 1130098286.002423,
+            "delta": -0.013818798168708618,
+            "rdsw": 0.005938766539057713,
+            "eta0": 0.1800290419684912
+          },
+          "nfev": 33,
+          "success": true,
+          "runtime_s": 9.3
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.3316091643858695,
+          "endpoint_rrms": 0.32861391057338224,
+          "rrms_official": 0.32861391057338224,
+          "params": {
+            "vth0": -1.0889682798310258,
+            "u0": 0.010721033825325372,
+            "nfactor": 69.34149034569346,
+            "vsat": 1130181085.4842906,
+            "delta": -0.013820479344873684,
+            "rdsw": 0.005938950259956279,
+            "eta0": 0.1800134140150489
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.9
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.3316111883606994,
+          "endpoint_rrms": 0.3286223777575806,
+          "rrms_official": 0.3286223777575806,
+          "params": {
+            "vth0": -1.089131936174027,
+            "u0": 0.010721032300151938,
+            "nfactor": 69.34665985825602,
+            "vsat": 1130091124.8552027,
+            "delta": -0.013820419910704691,
+            "rdsw": 0.0059387473108903355,
+            "eta0": 0.1800352386176469
+          },
+          "nfev": 21,
+          "success": true,
+          "runtime_s": 4.0
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.3316116066143477,
+          "endpoint_rrms": 0.32857269569668135,
+          "rrms_official": 0.32857269569668135,
+          "params": {
+            "vth0": -1.089029101851954,
+            "u0": 0.010720341438579742,
+            "nfactor": 69.32155043639455,
+            "vsat": 1129891755.6513543,
+            "delta": -0.013818012757834834,
+            "rdsw": 0.0059379965799054996,
+            "eta0": 0.18002261258928032
+          },
+          "nfev": 29,
+          "success": true,
+          "runtime_s": 8.0
+        }
+      ],
+      "timing": {
+        "search_s": 8.9,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 30.2,
+        "total_device_s": 40.3
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 9
+      }
+    },
+    {
+      "device": "pmos_L0p35_W5",
+      "dev_type": "pmos",
+      "L_um": 0.35,
+      "W_um": 5.0,
+      "bin_index": 9,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.2416760845321007,
+            "u0": 0.027358886490690966,
+            "nfactor": 22.392984554873784,
+            "vsat": 3400233665.757638,
+            "delta": 0.053330267263680065,
+            "rdsw": 2693.343293725243,
+            "eta0": 0.18003715512546373
+          },
+          "rrms": 0.28887412914136795,
+          "rrms_official": 0.28887412914136795
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.2426470932797682,
+            "u0": 0.027358926022324596,
+            "nfactor": 22.392984555176103,
+            "vsat": 3400233665.7576256,
+            "delta": 0.053330267239109795,
+            "rdsw": 2693.3432896900285,
+            "eta0": 0.18003715512545052
+          },
+          "rrms": 0.28866102446522546,
+          "rrms_official": 0.28866102446522546
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.28887412914136795,
+          "endpoint_rrms": 0.28866102446522546,
+          "rrms_official": 0.28866102446522546,
+          "params": {
+            "vth0": -1.2426470932797682,
+            "u0": 0.027358926022324596,
+            "nfactor": 22.392984555176103,
+            "vsat": 3400233665.7576256,
+            "delta": 0.053330267239109795,
+            "rdsw": 2693.3432896900285,
+            "eta0": 0.18003715512545052
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.3
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.2889171506856086,
+          "endpoint_rrms": 0.2887042753898531,
+          "rrms_official": 0.2887042753898531,
+          "params": {
+            "vth0": -1.2425034404361637,
+            "u0": 0.027321611535300317,
+            "nfactor": 22.392984555155476,
+            "vsat": 3399377933.4610457,
+            "delta": 0.05333245152395579,
+            "rdsw": 2693.1348444118344,
+            "eta0": 0.1800707689234312
+          },
+          "nfev": 16,
+          "success": true,
+          "runtime_s": 2.7
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.28891845396675503,
+          "endpoint_rrms": 0.2887049112237645,
+          "rrms_official": 0.2887049112237645,
+          "params": {
+            "vth0": -1.2425099406129845,
+            "u0": 0.027318701501300474,
+            "nfactor": 22.392689138887658,
+            "vsat": 3398759354.8512535,
+            "delta": 0.053320577669864616,
+            "rdsw": 2693.0470237867466,
+            "eta0": 0.18006648071888137
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.8
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.28891852300386295,
+          "endpoint_rrms": 0.28870458872747207,
+          "rrms_official": 0.28870458872747207,
+          "params": {
+            "vth0": -1.242539243394022,
+            "u0": 0.027315587832003975,
+            "nfactor": 22.39298455517505,
+            "vsat": 3398479021.825144,
+            "delta": 0.053316868443490595,
+            "rdsw": 2692.8386611146766,
+            "eta0": 0.18008055547474752
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 2.3
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.2889303504586604,
+          "endpoint_rrms": 0.2887142651518691,
+          "rrms_official": 0.2887142651518691,
+          "params": {
+            "vth0": -1.2425294752464675,
+            "u0": 0.027312776234163002,
+            "nfactor": 22.392984555166166,
+            "vsat": 3400149093.434827,
+            "delta": 0.05332173277526554,
+            "rdsw": 2693.2450195082797,
+            "eta0": 0.1800559210006062
+          },
+          "nfev": 16,
+          "success": true,
+          "runtime_s": 2.7
+        }
+      ],
+      "timing": {
+        "search_s": 8.7,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 12.8,
+        "total_device_s": 22.6
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 10
+      }
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "L_um": 0.5,
+      "W_um": 0.42,
+      "bin_index": 7,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.0647412195831327,
+            "u0": 0.043340821002826026,
+            "nfactor": 2.7908442470987893,
+            "vsat": -4459.120037668394,
+            "delta": 0.14028199666569582,
+            "rdsw": 3931.909102468073,
+            "eta0": 0.2094953292827759
+          },
+          "rrms": 0.36020876548484676,
+          "rrms_official": 0.36020876548484676
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.0662408942809265,
+            "u0": 0.04334422975716099,
+            "nfactor": 2.79085982342653,
+            "vsat": -4423.4461683500895,
+            "delta": 0.14028909338638573,
+            "rdsw": 3932.1502392946577,
+            "eta0": 0.21028833181903173
+          },
+          "rrms": 0.3590371189136765,
+          "rrms_official": 0.3590371189136765
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.36020876548484676,
+          "endpoint_rrms": 0.35905443935627196,
+          "rrms_official": 0.35905443935627196,
+          "params": {
+            "vth0": -1.066304427922484,
+            "u0": 0.04334082070714467,
+            "nfactor": 2.7908442476013477,
+            "vsat": -4459.120079001326,
+            "delta": 0.1402819987068627,
+            "rdsw": 3931.9091641339583,
+            "eta0": 0.20949532921582198
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 4.4
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.36021941297988014,
+          "endpoint_rrms": 0.3590371189136765,
+          "rrms_official": 0.3590371189136765,
+          "params": {
+            "vth0": -1.0662408942809265,
+            "u0": 0.04334422975716099,
+            "nfactor": 2.79085982342653,
+            "vsat": -4423.4461683500895,
+            "delta": 0.14028909338638573,
+            "rdsw": 3932.1502392946577,
+            "eta0": 0.21028833181903173
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 3.4
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.3602257087498283,
+          "endpoint_rrms": 0.35907555905039806,
+          "rrms_official": 0.35907555905039806,
+          "params": {
+            "vth0": -1.0662927645299503,
+            "u0": 0.043356352375704496,
+            "nfactor": 2.790580483495865,
+            "vsat": -4461.029395232755,
+            "delta": 0.14029754541092568,
+            "rdsw": 3932.150246910608,
+            "eta0": 0.20946221897285297
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 4.3
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.3602350075095522,
+          "endpoint_rrms": 0.3590888677368496,
+          "rrms_official": 0.3590888677368496,
+          "params": {
+            "vth0": -1.0662617261785217,
+            "u0": 0.04333921935856543,
+            "nfactor": 2.7905603744599152,
+            "vsat": -4465.803351588518,
+            "delta": 0.140220252326675,
+            "rdsw": 3932.1502472434076,
+            "eta0": 0.20934556441123592
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 4.3
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.3602460411263718,
+          "endpoint_rrms": 0.35908875441496607,
+          "rrms_official": 0.35908875441496607,
+          "params": {
+            "vth0": -1.0662380731498375,
+            "u0": 0.0433392193532085,
+            "nfactor": 2.7905561605186513,
+            "vsat": -4448.464386297709,
+            "delta": 0.14026794420741953,
+            "rdsw": 3931.518288634902,
+            "eta0": 0.2097420576893768
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.4
+        }
+      ],
+      "timing": {
+        "search_s": 8.8,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 20.8,
+        "total_device_s": 30.8
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 11
+      }
+    },
+    {
+      "device": "pmos_L0p5_W0p64",
+      "dev_type": "pmos",
+      "L_um": 0.5,
+      "W_um": 0.64,
+      "bin_index": 4,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@0.74",
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.0631179739466852,
+            "u0": 0.055445123376393506,
+            "nfactor": 74.7644398063139,
+            "vsat": 1619833994.7590876,
+            "delta": 0.039704702854545706,
+            "rdsw": 7215.394274360502,
+            "eta0": 0.2189553496597126
+          },
+          "rrms": 0.3282012175803661,
+          "rrms_official": 0.3282012175803661
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.0613336173283165,
+            "u0": 0.05545225575579921,
+            "nfactor": 73.75955010194147,
+            "vsat": 1615317708.191255,
+            "delta": 0.0397051597559276,
+            "rdsw": 7443.456564376526,
+            "eta0": 0.21943228904214038
+          },
+          "rrms": 0.32532591754185464,
+          "rrms_official": 0.32532591754185464
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.3282012175803661,
+          "endpoint_rrms": 0.3254297540174925,
+          "rrms_official": 0.3254297540174925,
+          "params": {
+            "vth0": -1.061449904202452,
+            "u0": 0.05544511732887166,
+            "nfactor": 73.83839706594627,
+            "vsat": 1619834245.770309,
+            "delta": 0.039704703993662195,
+            "rdsw": 7448.307533755609,
+            "eta0": 0.21895534953481563
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 3.8
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.3282024884277235,
+          "endpoint_rrms": 0.3254091822683124,
+          "rrms_official": 0.3254091822683124,
+          "params": {
+            "vth0": -1.0614436232251812,
+            "u0": 0.055442958783683605,
+            "nfactor": 73.82213804154696,
+            "vsat": 1628405374.5824878,
+            "delta": 0.03970301552794603,
+            "rdsw": 7449.601460670643,
+            "eta0": 0.2182669947223941
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 4.4
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.32820266351115523,
+          "endpoint_rrms": 0.32542465226291395,
+          "rrms_official": 0.32542465226291395,
+          "params": {
+            "vth0": -1.0614391973096522,
+            "u0": 0.055443374967101944,
+            "nfactor": 73.83366222741594,
+            "vsat": 1615854963.0362477,
+            "delta": 0.03970339970262559,
+            "rdsw": 7450.366013540461,
+            "eta0": 0.2194678751253665
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 3.9
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.32820284033415137,
+          "endpoint_rrms": 0.32533100451219177,
+          "rrms_official": 0.32533100451219177,
+          "params": {
+            "vth0": -1.0614019233795648,
+            "u0": 0.055451089926562815,
+            "nfactor": 73.75900821776717,
+            "vsat": 1622396046.3345416,
+            "delta": 0.03970515975110334,
+            "rdsw": 7442.618147623971,
+            "eta0": 0.21869872159579462
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.4
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.3282043727732529,
+          "endpoint_rrms": 0.32532591754185464,
+          "rrms_official": 0.32532591754185464,
+          "params": {
+            "vth0": -1.0613336173283165,
+            "u0": 0.05545225575579921,
+            "nfactor": 73.75955010194147,
+            "vsat": 1615317708.191255,
+            "delta": 0.0397051597559276,
+            "rdsw": 7443.456564376526,
+            "eta0": 0.21943228904214038
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.9
+        }
+      ],
+      "timing": {
+        "search_s": 8.8,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 21.4,
+        "total_device_s": 31.4
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 12
+      }
+    },
+    {
+      "device": "pmos_L2_W5",
+      "dev_type": "pmos",
+      "L_um": 2.0,
+      "W_um": 5.0,
+      "bin_index": 11,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.140827527892806,
+            "u0": 0.10475070567670676,
+            "nfactor": 57.39206078758141,
+            "vsat": 7366294.097796928,
+            "delta": 0.013923140070168184,
+            "rdsw": 12172.266373423245,
+            "eta0": 0.2051051013815776
+          },
+          "rrms": 0.17592873943779766,
+          "rrms_official": 0.17592873943779766
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.1404723894279218,
+            "u0": 0.10475070369110523,
+            "nfactor": 57.299710688592356,
+            "vsat": 7374148.353814293,
+            "delta": 0.013923023002976176,
+            "rdsw": 12168.33483670923,
+            "eta0": 0.20512175652508108
+          },
+          "rrms": 0.17577756789860172,
+          "rrms_official": 0.17577756789860172
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.17592873943779766,
+          "endpoint_rrms": 0.17577847430557889,
+          "rrms_official": 0.17577847430557889,
+          "params": {
+            "vth0": -1.1404669315125875,
+            "u0": 0.10475070393193668,
+            "nfactor": 57.30326930815981,
+            "vsat": 7366295.12209942,
+            "delta": 0.013923141588335342,
+            "rdsw": 12168.3018885101,
+            "eta0": 0.2051051013815776
+          },
+          "nfev": 120,
+          "success": false,
+          "runtime_s": 58.4
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.17592894875650453,
+          "endpoint_rrms": 0.17578158579731665,
+          "rrms_official": 0.17578158579731665,
+          "params": {
+            "vth0": -1.1404564388355425,
+            "u0": 0.10475070408127035,
+            "nfactor": 57.306435461064204,
+            "vsat": 7363691.03693853,
+            "delta": 0.013920106309560722,
+            "rdsw": 12168.377195951098,
+            "eta0": 0.20509964197916064
+          },
+          "nfev": 120,
+          "success": false,
+          "runtime_s": 58.8
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.17593129560168538,
+          "endpoint_rrms": 0.17578030489870677,
+          "rrms_official": 0.17578030489870677,
+          "params": {
+            "vth0": -1.1404011135162824,
+            "u0": 0.10476376614140213,
+            "nfactor": 57.319489252252204,
+            "vsat": 7369095.94937743,
+            "delta": 0.013925143714187495,
+            "rdsw": 12168.861223090671,
+            "eta0": 0.20511644889463015
+          },
+          "nfev": 94,
+          "success": true,
+          "runtime_s": 45.9
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.1759324250985501,
+          "endpoint_rrms": 0.17577756789860172,
+          "rrms_official": 0.17577756789860172,
+          "params": {
+            "vth0": -1.1404723894279218,
+            "u0": 0.10475070369110523,
+            "nfactor": 57.299710688592356,
+            "vsat": 7374148.353814293,
+            "delta": 0.013923023002976176,
+            "rdsw": 12168.33483670923,
+            "eta0": 0.20512175652508108
+          },
+          "nfev": 120,
+          "success": false,
+          "runtime_s": 56.8
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.17593318206213057,
+          "endpoint_rrms": 0.1757844437179558,
+          "rrms_official": 0.1757844437179558,
+          "params": {
+            "vth0": -1.1404001149944176,
+            "u0": 0.10477865520508092,
+            "nfactor": 57.31918314124567,
+            "vsat": 7365855.29952421,
+            "delta": 0.013923169051524308,
+            "rdsw": 12168.906484912182,
+            "eta0": 0.20511567905984493
+          },
+          "nfev": 103,
+          "success": true,
+          "runtime_s": 50.3
+        }
+      ],
+      "timing": {
+        "search_s": 8.7,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 270.2,
+        "total_device_s": 280.1
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 13
+      }
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "L_um": 4.0,
+      "W_um": 7.0,
+      "bin_index": 2,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.1761314604923805,
+            "u0": 0.03359561365813321,
+            "nfactor": 42.747573403919915,
+            "vsat": 812915565.5355597,
+            "delta": -0.010738700212481321,
+            "rdsw": 11336.89871594806,
+            "eta0": 0.21995059382837265
+          },
+          "rrms": 0.22384723490989655,
+          "rrms_official": 0.22384723490989655
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.1738621847020696,
+            "u0": 0.033595520364996474,
+            "nfactor": 42.74757869622054,
+            "vsat": 812915565.5663364,
+            "delta": -0.01073869955521976,
+            "rdsw": 11336.90274568573,
+            "eta0": 0.21995059382837265
+          },
+          "rrms": 0.22333708850375178,
+          "rrms_official": 0.22333708850375178
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.22384723490989655,
+          "endpoint_rrms": 0.22333708850375178,
+          "rrms_official": 0.22333708850375178,
+          "params": {
+            "vth0": -1.1738621847020696,
+            "u0": 0.033595520364996474,
+            "nfactor": 42.74757869622054,
+            "vsat": 812915565.5663364,
+            "delta": -0.01073869955521976,
+            "rdsw": 11336.90274568573,
+            "eta0": 0.21995059382837265
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 5.1
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.22385798436428944,
+          "endpoint_rrms": 0.22334833595883824,
+          "rrms_official": 0.22334833595883824,
+          "params": {
+            "vth0": -1.1738680269120634,
+            "u0": 0.03359776224271656,
+            "nfactor": 42.74561628241282,
+            "vsat": 813082365.2778747,
+            "delta": -0.0107402395439889,
+            "rdsw": 11336.901464963943,
+            "eta0": 0.21995329096639704
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.4
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.22386337995408256,
+          "endpoint_rrms": 0.2233461847274022,
+          "rrms_official": 0.2233461847274022,
+          "params": {
+            "vth0": -1.1739230009080108,
+            "u0": 0.033592379657251294,
+            "nfactor": 42.73309367733702,
+            "vsat": 812951208.0842621,
+            "delta": -0.010738699706967815,
+            "rdsw": 11336.23037943116,
+            "eta0": 0.21992034397846794
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.7
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.2238648272105545,
+          "endpoint_rrms": 0.22335421954090873,
+          "rrms_official": 0.22335421954090873,
+          "params": {
+            "vth0": -1.1738775950569886,
+            "u0": 0.03359238300552604,
+            "nfactor": 42.74741410812308,
+            "vsat": 813156491.5430312,
+            "delta": -0.010740120765131818,
+            "rdsw": 11334.30499635722,
+            "eta0": 0.2198848366783539
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.9
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.22387264174661448,
+          "endpoint_rrms": 0.22336196134477188,
+          "rrms_official": 0.22336196134477188,
+          "params": {
+            "vth0": -1.1739369058638136,
+            "u0": 0.03359899426113275,
+            "nfactor": 42.74757612434353,
+            "vsat": 812936058.5610855,
+            "delta": -0.010740636911574347,
+            "rdsw": 11335.874275023849,
+            "eta0": 0.21996831977021625
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 4.5
+        }
+      ],
+      "timing": {
+        "search_s": 9.0,
+        "ngspice_validation_s": 1.0,
+        "fd_s": 23.7,
+        "total_device_s": 33.8
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 14
+      }
+    },
+    {
+      "device": "pmos_L8_W0p84",
+      "dev_type": "pmos",
+      "L_um": 8.0,
+      "W_um": 0.84,
+      "bin_index": 8,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.183986983150968,
+            "u0": 0.028758215658412814,
+            "nfactor": 42.41692781811055,
+            "vsat": 627175203.7804005,
+            "delta": -0.0034845012729067407,
+            "rdsw": 31611.396003243048,
+            "eta0": 0.19048927305368962
+          },
+          "rrms": 0.3756264964499276,
+          "rrms_official": 0.3756264964499276
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.182855343368102,
+            "u0": 0.028758153745353798,
+            "nfactor": 43.19092544872349,
+            "vsat": 627177568.5779394,
+            "delta": -0.0034844932527405958,
+            "rdsw": 31611.489791567306,
+            "eta0": 0.19048927305368962
+          },
+          "rrms": 0.37399946825400293,
+          "rrms_official": 0.37399946825400293
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.3756264964499276,
+          "endpoint_rrms": 0.37399946825400293,
+          "rrms_official": 0.37399946825400293,
+          "params": {
+            "vth0": -1.182855343368102,
+            "u0": 0.028758153745353798,
+            "nfactor": 43.19092544872349,
+            "vsat": 627177568.5779394,
+            "delta": -0.0034844932527405958,
+            "rdsw": 31611.489791567306,
+            "eta0": 0.19048927305368962
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 5.0
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.3756313578437532,
+          "endpoint_rrms": 0.3740099748035888,
+          "rrms_official": 0.3740099748035888,
+          "params": {
+            "vth0": -1.1828411816232265,
+            "u0": 0.028757027354284374,
+            "nfactor": 43.188991943972596,
+            "vsat": 627212094.9587458,
+            "delta": -0.003484943527062483,
+            "rdsw": 31608.542117930152,
+            "eta0": 0.19049440306863355
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 5.0
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.3756316182941324,
+          "endpoint_rrms": 0.3740148964787158,
+          "rrms_official": 0.3740148964787158,
+          "params": {
+            "vth0": -1.1828581693161337,
+            "u0": 0.02876049638651242,
+            "nfactor": 43.186714546336866,
+            "vsat": 627176944.0912756,
+            "delta": -0.0034846677038782954,
+            "rdsw": 31611.356005771137,
+            "eta0": 0.19048647621590709
+          },
+          "nfev": 17,
+          "success": true,
+          "runtime_s": 5.3
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.37563364218701284,
+          "endpoint_rrms": 0.3740197413352886,
+          "rrms_official": 0.3740197413352886,
+          "params": {
+            "vth0": -1.1828758813442393,
+            "u0": 0.028761925829537602,
+            "nfactor": 43.187156853110345,
+            "vsat": 627141449.067972,
+            "delta": -0.003483842227296471,
+            "rdsw": 31610.07863587678,
+            "eta0": 0.1904711132621549
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.5
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.37563372445773785,
+          "endpoint_rrms": 0.37400500504850304,
+          "rrms_official": 0.37400500504850304,
+          "params": {
+            "vth0": -1.1828604206705766,
+            "u0": 0.028757025473520863,
+            "nfactor": 43.19612582649246,
+            "vsat": 627158532.544943,
+            "delta": -0.003483228896911884,
+            "rdsw": 31603.87240009957,
+            "eta0": 0.19046472123294483
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.6
+        }
+      ],
+      "timing": {
+        "search_s": 8.8,
+        "ngspice_validation_s": 1.1,
+        "fd_s": 24.4,
+        "total_device_s": 34.4
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 15
+      }
+    },
+    {
+      "device": "pmos_L8_W1p6",
+      "dev_type": "pmos",
+      "L_um": 8.0,
+      "W_um": 1.6,
+      "bin_index": 6,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.1856525357821428,
+            "u0": 0.02282687098305276,
+            "nfactor": 25.752323129599922,
+            "vsat": 575310942.7406071,
+            "delta": 0.02053954099866503,
+            "rdsw": 13292.457936372008,
+            "eta0": 0.19468449512627944
+          },
+          "rrms": 0.4707955824016346,
+          "rrms_official": 0.4707955824016346
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.186188614975765,
+            "u0": 0.022825279402875567,
+            "nfactor": 25.33403671598713,
+            "vsat": 575368911.8856529,
+            "delta": 0.02091572142076172,
+            "rdsw": 13293.584705856505,
+            "eta0": 0.19468449512627944
+          },
+          "rrms": 0.4697382445000389,
+          "rrms_official": 0.4697382445000389
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.4707955824016346,
+          "endpoint_rrms": 0.4697382445000389,
+          "rrms_official": 0.4697382445000389,
+          "params": {
+            "vth0": -1.186188614975765,
+            "u0": 0.022825279402875567,
+            "nfactor": 25.33403671598713,
+            "vsat": 575368911.8856529,
+            "delta": 0.02091572142076172,
+            "rdsw": 13293.584705856505,
+            "eta0": 0.19468449512627944
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.6
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.4708085405691306,
+          "endpoint_rrms": 0.46974014716239687,
+          "rrms_official": 0.46974014716239687,
+          "params": {
+            "vth0": -1.1861567857871371,
+            "u0": 0.022825313643276033,
+            "nfactor": 25.335123150024064,
+            "vsat": 575285566.5855778,
+            "delta": 0.020915716299048957,
+            "rdsw": 13293.46184872987,
+            "eta0": 0.19467190016036018
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 5.3
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.4708126097423124,
+          "endpoint_rrms": 0.46973945774116327,
+          "rrms_official": 0.46973945774116327,
+          "params": {
+            "vth0": -1.1861450941446443,
+            "u0": 0.02282528937894253,
+            "nfactor": 25.33475509549224,
+            "vsat": 575278533.5140306,
+            "delta": 0.02091571915302257,
+            "rdsw": 13293.48168278205,
+            "eta0": 0.19467262612638656
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 6.2
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.4708137493424065,
+          "endpoint_rrms": 0.46974000324011,
+          "rrms_official": 0.46974000324011,
+          "params": {
+            "vth0": -1.1861516989730574,
+            "u0": 0.022825367330745538,
+            "nfactor": 25.335321896588486,
+            "vsat": 575356748.9852111,
+            "delta": 0.02091571647350999,
+            "rdsw": 13293.567110616194,
+            "eta0": 0.19469448692952612
+          },
+          "nfev": 20,
+          "success": true,
+          "runtime_s": 5.7
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.4708213830377235,
+          "endpoint_rrms": 0.46974207523763045,
+          "rrms_official": 0.46974207523763045,
+          "params": {
+            "vth0": -1.1861446546087309,
+            "u0": 0.022825423109671495,
+            "nfactor": 25.336109209309225,
+            "vsat": 575165813.107394,
+            "delta": 0.020915707667928652,
+            "rdsw": 13293.462084616054,
+            "eta0": 0.19467948395571325
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 5.0
+        }
+      ],
+      "timing": {
+        "search_s": 8.9,
+        "ngspice_validation_s": 1.1,
+        "fd_s": 26.8,
+        "total_device_s": 36.9
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 16
+      }
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "L_um": 8.0,
+      "W_um": 5.0,
+      "bin_index": 1,
+      "box_mode": "lhc10",
+      "method": "foundation_emu_search_fixed",
+      "selection_policy": "one shared emulator and one fixed recipe across all 18",
+      "include_tags": [
+        "idvd@1.11",
+        "idvd@1.48",
+        "idvd@1.85",
+        "idvg@0.01",
+        "idvg@0.37",
+        "idvg@0.74",
+        "idvg@1.11",
+        "idvg@1.48",
+        "idvg@1.85"
+      ],
+      "methods": {
+        "foundation_emu_search": {
+          "params": {
+            "vth0": -1.1423634730389665,
+            "u0": 0.026761154152843816,
+            "nfactor": 24.898666104952266,
+            "vsat": 814829865.9607882,
+            "delta": 0.01261085274649176,
+            "rdsw": 17217.250152881566,
+            "eta0": 0.19619902357733615
+          },
+          "rrms": 0.25985110731292366,
+          "rrms_official": 0.25985110731292366
+        },
+        "foundation_emu_search+fd": {
+          "params": {
+            "vth0": -1.1416551144568254,
+            "u0": 0.026760705266449324,
+            "nfactor": 24.248762207179574,
+            "vsat": 811799053.6331207,
+            "delta": 0.01300023665363332,
+            "rdsw": 17217.349062476573,
+            "eta0": 0.19603841006658498
+          },
+          "rrms": 0.25917538006867114,
+          "rrms_official": 0.25917538006867114
+        }
+      },
+      "fd_attempts": [
+        {
+          "candidate_rank": 0,
+          "start_rrms": 0.25985110731292366,
+          "endpoint_rrms": 0.2591785785472349,
+          "rrms_official": 0.2591785785472349,
+          "params": {
+            "vth0": -1.1415955214002667,
+            "u0": 0.02676065052414844,
+            "nfactor": 24.229193400158216,
+            "vsat": 814829915.004478,
+            "delta": 0.013000237629235946,
+            "rdsw": 17217.38501736722,
+            "eta0": 0.19619902357733615
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 5.2
+        },
+        {
+          "candidate_rank": 1,
+          "start_rrms": 0.2598521673219135,
+          "endpoint_rrms": 0.2591844119561721,
+          "rrms_official": 0.2591844119561721,
+          "params": {
+            "vth0": -1.1416167527942394,
+            "u0": 0.02676064492879883,
+            "nfactor": 24.221002580347964,
+            "vsat": 816229233.9638956,
+            "delta": 0.013000237846976521,
+            "rdsw": 17216.731809232944,
+            "eta0": 0.1962704205765456
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 4.7
+        },
+        {
+          "candidate_rank": 2,
+          "start_rrms": 0.2598555878855485,
+          "endpoint_rrms": 0.25919338064387154,
+          "rrms_official": 0.25919338064387154,
+          "params": {
+            "vth0": -1.1416774672913677,
+            "u0": 0.026760613972540283,
+            "nfactor": 24.19978971198871,
+            "vsat": 816714499.675368,
+            "delta": 0.013000239226212847,
+            "rdsw": 17216.345965944853,
+            "eta0": 0.19629676940911228
+          },
+          "nfev": 18,
+          "success": true,
+          "runtime_s": 4.0
+        },
+        {
+          "candidate_rank": 3,
+          "start_rrms": 0.2598632406721975,
+          "endpoint_rrms": 0.25917538006867114,
+          "rrms_official": 0.25917538006867114,
+          "params": {
+            "vth0": -1.1416551144568254,
+            "u0": 0.026760705266449324,
+            "nfactor": 24.248762207179574,
+            "vsat": 811799053.6331207,
+            "delta": 0.01300023665363332,
+            "rdsw": 17217.349062476573,
+            "eta0": 0.19603841006658498
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 5.0
+        },
+        {
+          "candidate_rank": 4,
+          "start_rrms": 0.2598632468607444,
+          "endpoint_rrms": 0.25918323647151564,
+          "rrms_official": 0.25918323647151564,
+          "params": {
+            "vth0": -1.141655093072964,
+            "u0": 0.026760997044431037,
+            "nfactor": 24.2417420438363,
+            "vsat": 814739021.0711992,
+            "delta": 0.013000235318128136,
+            "rdsw": 17216.59432848017,
+            "eta0": 0.19619658394486525
+          },
+          "nfev": 19,
+          "success": true,
+          "runtime_s": 5.2
+        }
+      ],
+      "timing": {
+        "search_s": 8.7,
+        "ngspice_validation_s": 1.1,
+        "fd_s": 24.1,
+        "total_device_s": 34.0
+      },
+      "config": {
+        "n_starts": 2048,
+        "steps": 600,
+        "n_validate": 14,
+        "n_polish": 5,
+        "max_nfev": 120,
+        "seed": 17
+      }
+    }
+  ],
+  "training": {
+    "best_validation_mse": 0.00024276475135380886,
+    "validation_mse_by_device": {
+      "nmos_L0p15_W1p6": 0.0005491637089773745,
+      "nmos_L0p19_W7": 0.00019378405558864858,
+      "nmos_L0p25_W1p6": 0.00043865476566636627,
+      "nmos_L1_W1p6": 0.00019076539577510233,
+      "nmos_L1_W3": 0.00018474603468371975,
+      "nmos_L8_W1p6": 0.00015876761567285762,
+      "nmos_L20_W0p64": 0.00014584351580319323,
+      "nmos_L100_W100": 0.0001735969958611442,
+      "pmos_L0p35_W0p55": 0.0003060775065740571,
+      "pmos_L0p35_W1p6": 0.00021862212746956715,
+      "pmos_L0p35_W5": 0.00028954529226234117,
+      "pmos_L0p5_W0p42": 0.0003987707571239105,
+      "pmos_L0p5_W0p64": 0.0003273133457814027,
+      "pmos_L2_W5": 0.00022470656090739808,
+      "pmos_L4_W7": 0.0002071786422456037,
+      "pmos_L8_W0p84": 0.00013825145036555067,
+      "pmos_L8_W1p6": 0.00011039351298312638,
+      "pmos_L8_W5": 0.00011358427294460481
+    },
+    "mean_device_validation_mse": 0.00024276475314922053,
+    "epochs_completed": 59,
+    "runtime_s": 189.5,
+    "n_train": 153000,
+    "n_validation": 27000,
+    "history": [
+      {
+        "epoch": 1,
+        "train_mse": 2.740692632939301,
+        "validation_mse": 0.07418313659953026,
+        "learning_rate": 0.0009999383162408303
+      },
+      {
+        "epoch": 2,
+        "train_mse": 0.031865685705168574,
+        "validation_mse": 0.01207953536930404,
+        "learning_rate": 0.0009997532801828658
+      },
+      {
+        "epoch": 3,
+        "train_mse": 0.010840607948747336,
+        "validation_mse": 0.01080387117881605,
+        "learning_rate": 0.0009994449374809851
+      },
+      {
+        "epoch": 4,
+        "train_mse": 0.011175369722001692,
+        "validation_mse": 0.0046031116496506284,
+        "learning_rate": 0.0009990133642141358
+      },
+      {
+        "epoch": 5,
+        "train_mse": 0.009744254552460963,
+        "validation_mse": 0.004313439887488658,
+        "learning_rate": 0.000998458666866564
+      },
+      {
+        "epoch": 6,
+        "train_mse": 0.01368115635183366,
+        "validation_mse": 0.0026026954710265597,
+        "learning_rate": 0.00099778098230154
+      },
+      {
+        "epoch": 7,
+        "train_mse": 0.00892710395086727,
+        "validation_mse": 0.0021515817585242123,
+        "learning_rate": 0.0009969804777275899
+      },
+      {
+        "epoch": 8,
+        "train_mse": 0.009390045175657552,
+        "validation_mse": 0.0028439617248824634,
+        "learning_rate": 0.000996057350657239
+      },
+      {
+        "epoch": 9,
+        "train_mse": 0.009710969609908419,
+        "validation_mse": 0.00812382361536795,
+        "learning_rate": 0.0009950118288582787
+      },
+      {
+        "epoch": 10,
+        "train_mse": 0.01149849224673718,
+        "validation_mse": 0.001413114187335136,
+        "learning_rate": 0.0009938441702975688
+      },
+      {
+        "epoch": 11,
+        "train_mse": 0.00975173185920355,
+        "validation_mse": 0.0010969182805793006,
+        "learning_rate": 0.000992554663077387
+      },
+      {
+        "epoch": 12,
+        "train_mse": 0.0064817431469940965,
+        "validation_mse": 0.0013086565579180653,
+        "learning_rate": 0.0009911436253643444
+      },
+      {
+        "epoch": 13,
+        "train_mse": 0.00808234192897243,
+        "validation_mse": 0.0006437110689572769,
+        "learning_rate": 0.0009896114053108828
+      },
+      {
+        "epoch": 14,
+        "train_mse": 0.005176367176355782,
+        "validation_mse": 0.0022091278880516283,
+        "learning_rate": 0.0009879583809693736
+      },
+      {
+        "epoch": 15,
+        "train_mse": 0.005658292499243044,
+        "validation_mse": 0.03815122037254829,
+        "learning_rate": 0.0009861849601988382
+      },
+      {
+        "epoch": 16,
+        "train_mse": 0.005410204202350643,
+        "validation_mse": 0.009214281864607517,
+        "learning_rate": 0.0009842915805643154
+      },
+      {
+        "epoch": 17,
+        "train_mse": 0.00908556404549726,
+        "validation_mse": 0.001028786969259972,
+        "learning_rate": 0.000982278709228899
+      },
+      {
+        "epoch": 18,
+        "train_mse": 0.004260257932747063,
+        "validation_mse": 0.0005001542106665155,
+        "learning_rate": 0.0009801468428384714
+      },
+      {
+        "epoch": 19,
+        "train_mse": 0.007977658134976438,
+        "validation_mse": 0.003521716421732304,
+        "learning_rate": 0.0009778965073991648
+      },
+      {
+        "epoch": 20,
+        "train_mse": 0.0008064962292783985,
+        "validation_mse": 0.0015771812791694174,
+        "learning_rate": 0.0009755282581475766
+      },
+      {
+        "epoch": 21,
+        "train_mse": 0.00656883078409371,
+        "validation_mse": 0.0007361090930684463,
+        "learning_rate": 0.0009730426794137723
+      },
+      {
+        "epoch": 22,
+        "train_mse": 0.003957979336966839,
+        "validation_mse": 0.0004603427342676951,
+        "learning_rate": 0.0009704403844771124
+      },
+      {
+        "epoch": 23,
+        "train_mse": 0.0025872867400788405,
+        "validation_mse": 0.011958965828674147,
+        "learning_rate": 0.0009677220154149334
+      },
+      {
+        "epoch": 24,
+        "train_mse": 0.0054424343220311295,
+        "validation_mse": 0.0005178232655311657,
+        "learning_rate": 0.0009648882429441253
+      },
+      {
+        "epoch": 25,
+        "train_mse": 0.002949555370579261,
+        "validation_mse": 0.004042400646406522,
+        "learning_rate": 0.000961939766255643
+      },
+      {
+        "epoch": 26,
+        "train_mse": 0.0036611484097441647,
+        "validation_mse": 0.0003751738985979446,
+        "learning_rate": 0.0009588773128419901
+      },
+      {
+        "epoch": 27,
+        "train_mse": 0.0038683514025037976,
+        "validation_mse": 0.00048635466422218446,
+        "learning_rate": 0.0009557016383177221
+      },
+      {
+        "epoch": 28,
+        "train_mse": 0.004742232554424798,
+        "validation_mse": 0.0003215036813097831,
+        "learning_rate": 0.0009524135262330093
+      },
+      {
+        "epoch": 29,
+        "train_mse": 0.001972398250086805,
+        "validation_mse": 0.0004303946627813031,
+        "learning_rate": 0.0009490137878803073
+      },
+      {
+        "epoch": 30,
+        "train_mse": 0.0036371118865566317,
+        "validation_mse": 0.009029833213618601,
+        "learning_rate": 0.0009455032620941834
+      },
+      {
+        "epoch": 31,
+        "train_mse": 0.0038942454738384175,
+        "validation_mse": 0.0007049981286397026,
+        "learning_rate": 0.0009418828150443463
+      },
+      {
+        "epoch": 32,
+        "train_mse": 0.005778271708929655,
+        "validation_mse": 0.003929699275690513,
+        "learning_rate": 0.0009381533400219311
+      },
+      {
+        "epoch": 33,
+        "train_mse": 0.0009522469882926374,
+        "validation_mse": 0.00025952454720912113,
+        "learning_rate": 0.0009343157572190951
+      },
+      {
+        "epoch": 34,
+        "train_mse": 0.005528597098626075,
+        "validation_mse": 0.00024276475135380886,
+        "learning_rate": 0.0009303710135019713
+      },
+      {
+        "epoch": 35,
+        "train_mse": 0.0008609886124389234,
+        "validation_mse": 0.0035329671725568717,
+        "learning_rate": 0.0009263200821770456
+      },
+      {
+        "epoch": 36,
+        "train_mse": 0.004767997416332851,
+        "validation_mse": 0.0017297065320261305,
+        "learning_rate": 0.000922163962751007
+      },
+      {
+        "epoch": 37,
+        "train_mse": 0.0006907719436034657,
+        "validation_mse": 0.0017961475610827982,
+        "learning_rate": 0.0009179036806841347
+      },
+      {
+        "epoch": 38,
+        "train_mse": 0.003443582061285555,
+        "validation_mse": 0.001260728081641417,
+        "learning_rate": 0.0009135402871372803
+      },
+      {
+        "epoch": 39,
+        "train_mse": 0.0011782177122541112,
+        "validation_mse": 0.0006922282977183772,
+        "learning_rate": 0.0009090748587125112
+      },
+      {
+        "epoch": 40,
+        "train_mse": 0.00278026065062975,
+        "validation_mse": 0.0006644804870178989,
+        "learning_rate": 0.0009045084971874732
+      },
+      {
+        "epoch": 41,
+        "train_mse": 0.0024036265696304564,
+        "validation_mse": 0.00037960532155165887,
+        "learning_rate": 0.0008998423292435448
+      },
+      {
+        "epoch": 42,
+        "train_mse": 0.0019894900831996516,
+        "validation_mse": 0.000425227270495438,
+        "learning_rate": 0.0008950775061878447
+      },
+      {
+        "epoch": 43,
+        "train_mse": 0.092704463049672,
+        "validation_mse": 0.002293003642858143,
+        "learning_rate": 0.0008902152036691643
+      },
+      {
+        "epoch": 44,
+        "train_mse": 0.0010998889385643446,
+        "validation_mse": 0.000652835634779237,
+        "learning_rate": 0.000885256621387894
+      },
+      {
+        "epoch": 45,
+        "train_mse": 0.0005637834492136475,
+        "validation_mse": 0.0004706398599425136,
+        "learning_rate": 0.0008802029828000149
+      },
+      {
+        "epoch": 46,
+        "train_mse": 0.00048539146770619685,
+        "validation_mse": 0.0015286049460101054,
+        "learning_rate": 0.0008750555348152292
+      },
+      {
+        "epoch": 47,
+        "train_mse": 0.0010300633132676869,
+        "validation_mse": 0.0003726418544448461,
+        "learning_rate": 0.0008698155474893041
+      },
+      {
+        "epoch": 48,
+        "train_mse": 0.0010352481524870895,
+        "validation_mse": 0.0005030017337776284,
+        "learning_rate": 0.0008644843137107051
+      },
+      {
+        "epoch": 49,
+        "train_mse": 0.0010333304271296737,
+        "validation_mse": 0.00600415536363898,
+        "learning_rate": 0.0008590631488815939
+      },
+      {
+        "epoch": 50,
+        "train_mse": 0.0022261850778363475,
+        "validation_mse": 0.0002746342361752377,
+        "learning_rate": 0.0008535533905932731
+      },
+      {
+        "epoch": 51,
+        "train_mse": 0.0007892341886211819,
+        "validation_mse": 0.0005096792661152346,
+        "learning_rate": 0.0008479563982961564
+      },
+      {
+        "epoch": 52,
+        "train_mse": 0.0016515682028010001,
+        "validation_mse": 0.009993192762569127,
+        "learning_rate": 0.0008422735529643437
+      },
+      {
+        "epoch": 53,
+        "train_mse": 0.0020489755951239442,
+        "validation_mse": 0.00028587216016484146,
+        "learning_rate": 0.000836506256754886
+      },
+      {
+        "epoch": 54,
+        "train_mse": 0.0017624939748853007,
+        "validation_mse": 0.00042824647583790057,
+        "learning_rate": 0.0008306559326618253
+      },
+      {
+        "epoch": 55,
+        "train_mse": 0.002617917314212879,
+        "validation_mse": 0.00029842001937524255,
+        "learning_rate": 0.0008247240241650912
+      },
+      {
+        "epoch": 56,
+        "train_mse": 0.0013418214223865005,
+        "validation_mse": 0.0031711546443959787,
+        "learning_rate": 0.0008187119948743442
+      },
+      {
+        "epoch": 57,
+        "train_mse": 0.0019049129667296227,
+        "validation_mse": 0.0005174616038905025,
+        "learning_rate": 0.000812621328167852
+      },
+      {
+        "epoch": 58,
+        "train_mse": 0.0018312350892236615,
+        "validation_mse": 0.0014614377513974025,
+        "learning_rate": 0.0008064535268264877
+      },
+      {
+        "epoch": 59,
+        "train_mse": 0.0019924735491851867,
+        "validation_mse": 0.002079770444481427,
+        "learning_rate": 0.0008002101126629415
+      }
+    ],
+    "arch": [
+      1024,
+      1024,
+      1024,
+      1024
+    ],
+    "n_parameters": 5257214,
+    "cache_build_runtime_s": 14.5,
+    "batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "patience": 25,
+    "seed": 0
+  }
+}

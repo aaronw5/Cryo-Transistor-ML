@@ -1,0 +1,243 @@
+{
+  "summary": {
+    "policy": "fixed direct MLP start plus fixed measured-data FD",
+    "n_devices": 18,
+    "direct_mlp_raw": {
+      "all_device_mean": 0.27225219727774347,
+      "nmos_mean": 0.12837097335974096,
+      "pmos_mean": 0.3873571764121454,
+      "combined": 0.2578640748859432
+    },
+    "direct_mlp_plus_fd": {
+      "all_device_mean": 0.23279837866775843,
+      "nmos_mean": 0.0876710619632972,
+      "pmos_mean": 0.34890023203132736,
+      "combined": 0.2182856469973123
+    },
+    "all_device_improvement": 0.039453818609985036,
+    "wins": 18,
+    "accepted_endpoints": 18,
+    "mean_scipy_nfev": 44.55555555555556,
+    "mean_objective_evaluations": 253.77777777777777,
+    "mean_runtime_s": 20.75,
+    "total_runtime_s": 373.5
+  },
+  "devices": [
+    {
+      "device": "nmos_L0p15_W1p6",
+      "dev_type": "nmos",
+      "raw_rrms": 0.11044621477714764,
+      "endpoint_rrms": 0.03698237887489776,
+      "fd_rrms": 0.03698237887489776,
+      "improvement": 0.07346383590224988,
+      "endpoint_accepted": true,
+      "scipy_nfev": 41,
+      "objective_evaluations": 300,
+      "runtime_s": 25.4
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "raw_rrms": 0.17559471747824074,
+      "endpoint_rrms": 0.061349599381152566,
+      "fd_rrms": 0.061349599381152566,
+      "improvement": 0.11424511809708818,
+      "endpoint_accepted": true,
+      "scipy_nfev": 25,
+      "objective_evaluations": 102,
+      "runtime_s": 8.9
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "raw_rrms": 0.09887424169757417,
+      "endpoint_rrms": 0.0539568798507033,
+      "fd_rrms": 0.0539568798507033,
+      "improvement": 0.04491736184687087,
+      "endpoint_accepted": true,
+      "scipy_nfev": 67,
+      "objective_evaluations": 382,
+      "runtime_s": 32.9
+    },
+    {
+      "device": "nmos_L1_W1p6",
+      "dev_type": "nmos",
+      "raw_rrms": 0.12223739149616435,
+      "endpoint_rrms": 0.06930952640678688,
+      "fd_rrms": 0.06930952640678688,
+      "improvement": 0.05292786508937747,
+      "endpoint_accepted": true,
+      "scipy_nfev": 26,
+      "objective_evaluations": 96,
+      "runtime_s": 8.8
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "raw_rrms": 0.1402060365371009,
+      "endpoint_rrms": 0.11525166580602395,
+      "fd_rrms": 0.11525166580602395,
+      "improvement": 0.024954370731076952,
+      "endpoint_accepted": true,
+      "scipy_nfev": 19,
+      "objective_evaluations": 54,
+      "runtime_s": 4.9
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "raw_rrms": 0.12240229321979493,
+      "endpoint_rrms": 0.11521024473250041,
+      "fd_rrms": 0.11521024473250041,
+      "improvement": 0.007192048487294517,
+      "endpoint_accepted": true,
+      "scipy_nfev": 19,
+      "objective_evaluations": 61,
+      "runtime_s": 5.4
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "raw_rrms": 0.12250687802661905,
+      "endpoint_rrms": 0.11677533889850795,
+      "fd_rrms": 0.11677533889850795,
+      "improvement": 0.005731539128111099,
+      "endpoint_accepted": true,
+      "scipy_nfev": 120,
+      "objective_evaluations": 855,
+      "runtime_s": 73.5
+    },
+    {
+      "device": "nmos_L100_W100",
+      "dev_type": "nmos",
+      "raw_rrms": 0.13470001364528575,
+      "endpoint_rrms": 0.1325328617558048,
+      "fd_rrms": 0.1325328617558048,
+      "improvement": 0.0021671518894809394,
+      "endpoint_accepted": true,
+      "scipy_nfev": 120,
+      "objective_evaluations": 862,
+      "runtime_s": 75.5
+    },
+    {
+      "device": "pmos_L0p35_W0p55",
+      "dev_type": "pmos",
+      "raw_rrms": 0.7378912897899629,
+      "endpoint_rrms": 0.6307927304316675,
+      "fd_rrms": 0.6307927304316675,
+      "improvement": 0.10709855935829538,
+      "endpoint_accepted": true,
+      "scipy_nfev": 26,
+      "objective_evaluations": 124,
+      "runtime_s": 11.3
+    },
+    {
+      "device": "pmos_L0p35_W1p6",
+      "dev_type": "pmos",
+      "raw_rrms": 0.3796315379771226,
+      "endpoint_rrms": 0.3284525730395387,
+      "fd_rrms": 0.3284525730395387,
+      "improvement": 0.05117896493758395,
+      "endpoint_accepted": true,
+      "scipy_nfev": 72,
+      "objective_evaluations": 415,
+      "runtime_s": 35.4
+    },
+    {
+      "device": "pmos_L0p35_W5",
+      "dev_type": "pmos",
+      "raw_rrms": 0.32098669528215035,
+      "endpoint_rrms": 0.29089949309355523,
+      "fd_rrms": 0.29089949309355523,
+      "improvement": 0.03008720218859512,
+      "endpoint_accepted": true,
+      "scipy_nfev": 22,
+      "objective_evaluations": 92,
+      "runtime_s": 7.0
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "raw_rrms": 0.43731197213300865,
+      "endpoint_rrms": 0.35937895251194246,
+      "fd_rrms": 0.35937895251194246,
+      "improvement": 0.07793301962106619,
+      "endpoint_accepted": true,
+      "scipy_nfev": 20,
+      "objective_evaluations": 62,
+      "runtime_s": 4.3
+    },
+    {
+      "device": "pmos_L0p5_W0p64",
+      "dev_type": "pmos",
+      "raw_rrms": 0.3897752581192599,
+      "endpoint_rrms": 0.3666817977922515,
+      "fd_rrms": 0.3666817977922515,
+      "improvement": 0.023093460327008375,
+      "endpoint_accepted": true,
+      "scipy_nfev": 52,
+      "objective_evaluations": 297,
+      "runtime_s": 20.6
+    },
+    {
+      "device": "pmos_L2_W5",
+      "dev_type": "pmos",
+      "raw_rrms": 0.23028793133002892,
+      "endpoint_rrms": 0.18640484511308236,
+      "fd_rrms": 0.18640484511308236,
+      "improvement": 0.04388308621694656,
+      "endpoint_accepted": true,
+      "scipy_nfev": 43,
+      "objective_evaluations": 218,
+      "runtime_s": 15.1
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "raw_rrms": 0.24240727355339875,
+      "endpoint_rrms": 0.22334391812525936,
+      "fd_rrms": 0.22334391812525936,
+      "improvement": 0.01906335542813939,
+      "endpoint_accepted": true,
+      "scipy_nfev": 36,
+      "objective_evaluations": 183,
+      "runtime_s": 12.6
+    },
+    {
+      "device": "pmos_L8_W0p84",
+      "dev_type": "pmos",
+      "raw_rrms": 0.37968419455711716,
+      "endpoint_rrms": 0.3740591945013059,
+      "fd_rrms": 0.3740591945013059,
+      "improvement": 0.005625000055811236,
+      "endpoint_accepted": true,
+      "scipy_nfev": 42,
+      "objective_evaluations": 217,
+      "runtime_s": 14.9
+    },
+    {
+      "device": "pmos_L8_W1p6",
+      "dev_type": "pmos",
+      "raw_rrms": 0.4819890892698671,
+      "endpoint_rrms": 0.4697332423659546,
+      "fd_rrms": 0.4697332423659546,
+      "improvement": 0.012255846903912515,
+      "endpoint_accepted": true,
+      "scipy_nfev": 19,
+      "objective_evaluations": 96,
+      "runtime_s": 6.6
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "raw_rrms": 0.2736065221095382,
+      "endpoint_rrms": 0.25925557333871624,
+      "fd_rrms": 0.25925557333871624,
+      "improvement": 0.014350948770821936,
+      "endpoint_accepted": true,
+      "scipy_nfev": 33,
+      "objective_evaluations": 152,
+      "runtime_s": 10.4
+    }
+  ]
+}

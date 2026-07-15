@@ -1,0 +1,245 @@
+{
+  "summary": {
+    "status": "diagnostic only; one card per curve is not deployable",
+    "device": "pmos_L2_W5",
+    "search": "best of 10,000 saved NGSpice LHC samples per curve, then fresh NGSpice rerun",
+    "box_mode": "lhc10",
+    "included_curve_count": 9,
+    "included_mean_rrms": {
+      "paper": 0.19067231469139023,
+      "per_device_surrogate_plus_fd": 0.1899800197199335,
+      "foundation_plus_fd": 0.1757775678986017,
+      "separate_voltage_cards": 0.10776120805426705
+    },
+    "runtime_s": 0.61,
+    "max_saved_vs_rerun_rrms_delta": 0.0
+  },
+  "curves": [
+    {
+      "index": 0,
+      "kind": "idvd",
+      "bias_v": 1.85,
+      "metric_tag": "idvd@1.85",
+      "included": true,
+      "paper_rrms": 0.010921871868403241,
+      "surrogate_rrms": 0.09382811213879579,
+      "foundation_rrms": 0.04703299394844558,
+      "per_bias_rrms_dataset": 0.004586465825543952,
+      "per_bias_rrms": 0.004586465825543952,
+      "per_bias_dataset_index": 3970,
+      "per_bias_params": {
+        "vth0": -1.1243534650693183,
+        "u0": 0.11968536460209814,
+        "nfactor": 63.09993384311828,
+        "vsat": 6295013.955364879,
+        "delta": 0.013870524485695555,
+        "rdsw": 11887.173835567928,
+        "eta0": 0.21249088873911204
+      }
+    },
+    {
+      "index": 1,
+      "kind": "idvg",
+      "bias_v": 0.37,
+      "metric_tag": "idvg@0.37",
+      "included": true,
+      "paper_rrms": 0.09813852638292038,
+      "surrogate_rrms": 0.07597917567159021,
+      "foundation_rrms": 0.07034992272328798,
+      "per_bias_rrms_dataset": 0.06305427346021747,
+      "per_bias_rrms": 0.06305427346021747,
+      "per_bias_dataset_index": 4946,
+      "per_bias_params": {
+        "vth0": -1.1071169047468097,
+        "u0": 0.1252081521470662,
+        "nfactor": 63.478287357379614,
+        "vsat": 6533241.571293958,
+        "delta": 0.013821264049240035,
+        "rdsw": 12919.219669905471,
+        "eta0": 0.18974148687600997
+      }
+    },
+    {
+      "index": 2,
+      "kind": "idvg",
+      "bias_v": 1.48,
+      "metric_tag": "idvg@1.48",
+      "included": true,
+      "paper_rrms": 0.05055967708548725,
+      "surrogate_rrms": 0.07762244505618393,
+      "foundation_rrms": 0.044352277254150946,
+      "per_bias_rrms_dataset": 0.03258128384092561,
+      "per_bias_rrms": 0.03258128384092561,
+      "per_bias_dataset_index": 6907,
+      "per_bias_params": {
+        "vth0": -1.1028589524002284,
+        "u0": 0.12396304457581724,
+        "nfactor": 63.43334329498437,
+        "vsat": 6639140.767073692,
+        "delta": 0.012539342152318184,
+        "rdsw": 13057.027273664306,
+        "eta0": 0.20826320969273157
+      }
+    },
+    {
+      "index": 3,
+      "kind": "idvg",
+      "bias_v": 1.11,
+      "metric_tag": "idvg@1.11",
+      "included": true,
+      "paper_rrms": 0.04918026996798771,
+      "surrogate_rrms": 0.08351234147362761,
+      "foundation_rrms": 0.048500954355275815,
+      "per_bias_rrms_dataset": 0.03478007244589787,
+      "per_bias_rrms": 0.03478007244589787,
+      "per_bias_dataset_index": 3266,
+      "per_bias_params": {
+        "vth0": -1.0973533571811642,
+        "u0": 0.12244478143665742,
+        "nfactor": 64.03776960485818,
+        "vsat": 7019877.665308007,
+        "delta": 0.01234729743393746,
+        "rdsw": 12980.066195135698,
+        "eta0": 0.1959163961452339
+      }
+    },
+    {
+      "index": 4,
+      "kind": "idvd",
+      "bias_v": 0.74,
+      "metric_tag": "idvd@0.74",
+      "included": false,
+      "paper_rrms": NaN,
+      "surrogate_rrms": NaN,
+      "foundation_rrms": NaN,
+      "per_bias_rrms_dataset": null,
+      "per_bias_rrms": null,
+      "per_bias_dataset_index": null,
+      "per_bias_params": null
+    },
+    {
+      "index": 5,
+      "kind": "idvd",
+      "bias_v": 1.11,
+      "metric_tag": "idvd@1.11",
+      "included": true,
+      "paper_rrms": 0.2123062436587856,
+      "surrogate_rrms": 0.23414234932175507,
+      "foundation_rrms": 0.1799937021786174,
+      "per_bias_rrms_dataset": 0.16958529146445497,
+      "per_bias_rrms": 0.16958529146445497,
+      "per_bias_dataset_index": 4444,
+      "per_bias_params": {
+        "vth0": -1.1527857276387556,
+        "u0": 0.10485703979277966,
+        "nfactor": 53.887273723361425,
+        "vsat": 6159345.974055671,
+        "delta": 0.01188004118271418,
+        "rdsw": 11821.650016418213,
+        "eta0": 0.20975562126624167
+      }
+    },
+    {
+      "index": 6,
+      "kind": "idvg",
+      "bias_v": 0.74,
+      "metric_tag": "idvg@0.74",
+      "included": true,
+      "paper_rrms": 0.05544119631433868,
+      "surrogate_rrms": 0.08225411860553927,
+      "foundation_rrms": 0.05044637330416827,
+      "per_bias_rrms_dataset": 0.03954858476715745,
+      "per_bias_rrms": 0.03954858476715745,
+      "per_bias_dataset_index": 6907,
+      "per_bias_params": {
+        "vth0": -1.1028589524002284,
+        "u0": 0.12396304457581724,
+        "nfactor": 63.43334329498437,
+        "vsat": 6639140.767073692,
+        "delta": 0.012539342152318184,
+        "rdsw": 13057.027273664306,
+        "eta0": 0.20826320969273157
+      }
+    },
+    {
+      "index": 7,
+      "kind": "idvg",
+      "bias_v": 1.85,
+      "metric_tag": "idvg@1.85",
+      "included": true,
+      "paper_rrms": 0.05639226096733934,
+      "surrogate_rrms": 0.07586138596208211,
+      "foundation_rrms": 0.043472755149039415,
+      "per_bias_rrms_dataset": 0.03265767572232726,
+      "per_bias_rrms": 0.03265767572232726,
+      "per_bias_dataset_index": 1914,
+      "per_bias_params": {
+        "vth0": -1.0989951928431525,
+        "u0": 0.11659791683887225,
+        "nfactor": 64.16401918949303,
+        "vsat": 6835818.598345602,
+        "delta": 0.012979130064748868,
+        "rdsw": 13021.86403609579,
+        "eta0": 0.18523663536758653
+      }
+    },
+    {
+      "index": 8,
+      "kind": "idvd",
+      "bias_v": 0.37,
+      "metric_tag": "idvd@0.37",
+      "included": false,
+      "paper_rrms": NaN,
+      "surrogate_rrms": NaN,
+      "foundation_rrms": NaN,
+      "per_bias_rrms_dataset": null,
+      "per_bias_rrms": null,
+      "per_bias_dataset_index": null,
+      "per_bias_params": null
+    },
+    {
+      "index": 9,
+      "kind": "idvd",
+      "bias_v": 1.48,
+      "metric_tag": "idvd@1.48",
+      "included": true,
+      "paper_rrms": 0.041358128640554666,
+      "surrogate_rrms": 0.03444611563725902,
+      "foundation_rrms": 0.03972228795409134,
+      "per_bias_rrms_dataset": 0.03383438573001852,
+      "per_bias_rrms": 0.03383438573001852,
+      "per_bias_dataset_index": 7779,
+      "per_bias_params": {
+        "vth0": -1.1373523195999666,
+        "u0": 0.1139132195234655,
+        "nfactor": 56.79946236341764,
+        "vsat": 6622932.523528259,
+        "delta": 0.013629704675213551,
+        "rdsw": 13022.36717967828,
+        "eta0": 0.1923491398619585
+      }
+    },
+    {
+      "index": 10,
+      "kind": "idvg",
+      "bias_v": 0.01,
+      "metric_tag": "idvg@0.01",
+      "included": true,
+      "paper_rrms": 1.1417526573366952,
+      "surrogate_rrms": 0.9521741336125684,
+      "foundation_rrms": 1.0581268442203386,
+      "per_bias_rrms_dataset": 0.5592228392318602,
+      "per_bias_rrms": 0.5592228392318602,
+      "per_bias_dataset_index": 8134,
+      "per_bias_params": {
+        "vth0": -1.2526286621108638,
+        "u0": 0.11180109519107798,
+        "nfactor": 62.83669844173522,
+        "vsat": 6664402.04367551,
+        "delta": 0.013923014504539172,
+        "rdsw": 13026.512636169327,
+        "eta0": 0.20794161364569444
+      }
+    }
+  ]
+}
