@@ -27,6 +27,7 @@ from scipy.optimize import least_squares
 from .data_io import Curve
 from .metrics import (curve_trim, device_rrms, score_device_new,
                       tag_metric_curves)
+from .parameter_sets import PARAMS7
 from .spice_pdk import (LIB_FILE, PDK77K_DIR, _CORNER_BASENAME, _MODEL,
                         _NGSPICE_BIN, _SUBCKT, _force_bin, _instance_line,
                         ensure_pdk77k, simulate_pdk)
@@ -34,7 +35,6 @@ from .utils import get_logger
 
 logger = get_logger("cryoml.pdk_extract")
 
-PARAMS7 = ("vth0", "u0", "nfactor", "vsat", "delta", "rdsw", "eta0")
 PENALTY = 10.0
 
 
@@ -75,8 +75,14 @@ def flatten_paper_curves(curves: list[Curve]) -> FlatCurves:
 # ---------------------------------------------------------------------------
 # Published per-bin parameter readback (authoritative, via showmod)
 # ---------------------------------------------------------------------------
-def read_bin_params(dev_type: str, L_um: float, W_um: float,
-                    bin_index: int) -> dict[str, float]:
+def read_bin_parameters(dev_type: str, L_um: float, W_um: float,
+                        bin_index: int,
+                        parameter_names: tuple[str, ...]) -> dict[str, float]:
+    """Read effective BSIM4 values for an arbitrary parameter tuple.
+
+    ``showmod`` is authoritative here because card expressions and geometry
+    scaling mean the literal text is not always the value used by NGSpice.
+    """
     err = ensure_pdk77k()
     if err:
         raise RuntimeError(err)
@@ -98,20 +104,28 @@ def read_bin_params(dev_type: str, L_um: float, W_um: float,
             + _instance_line(dev_type, L_um, W_um) +
             f"VG ng 0 DC {1.0 * sign}\nVD nd 0 DC {1.0 * sign}\n.op\n"
             ".control\nrun\n"
-            f"showmod m.xm1.m{_SUBCKT[dev_type]} : {' '.join(PARAMS7)}\n"
+            f"showmod m.xm1.m{_SUBCKT[dev_type]} : "
+            f"{' '.join(parameter_names)}\n"
             "quit\n.endc\n.end\n")
         out = subprocess.run([_NGSPICE_BIN, "-b", str(deck)],
                              capture_output=True, text=True, timeout=30).stdout
     vals: dict[str, float] = {}
-    for p in PARAMS7:
+    for p in parameter_names:
         m = re.search(rf"^\s*{p}\s+([0-9eE.+\-]+)\s*$", out, re.MULTILINE)
         if m:
             vals[p] = float(m.group(1))
-    missing = [p for p in PARAMS7 if p not in vals]
+    missing = [p for p in parameter_names if p not in vals]
     if missing:
         raise RuntimeError(f"showmod readback missing {missing} for "
                            f"{dev_type} bin {bin_index}: {out[-500:]}")
     return vals
+
+
+def read_bin_params(dev_type: str, L_um: float, W_um: float,
+                    bin_index: int) -> dict[str, float]:
+    """Backward-compatible seven-parameter readback."""
+    return read_bin_parameters(
+        dev_type, L_um, W_um, bin_index, PARAMS7)
 
 
 # ---------------------------------------------------------------------------

@@ -17,6 +17,13 @@ There is no per-device method cherry-picking. The global foundation emulator
 and high-voltage-preserving selection are fixed exploratory series. The
 canonical exported card uses per-device surrogate search + FD for every bin.
 
+The current maximum-relevant-parameter, regional-RRMS, adaptive-Monte-Carlo,
+and direct-autoencoder investigation is documented chronologically in
+[docs/EXPERIMENT_2026-08-18.md](docs/EXPERIMENT_2026-08-18.md). Its results
+remain experimental until all measured-card NGSpice validation stages
+complete; the established seven-parameter results below are not silently
+overwritten.
+
 ## Confirmed setup
 
 | component | pinned value |
