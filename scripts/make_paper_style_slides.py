@@ -16,6 +16,7 @@ from pptx.util import Inches, Pt
 ROOT = Path(__file__).resolve().parents[1]
 FIGS = ROOT / "out/figs/iv_paper_style"
 DECK = ROOT / "slides" / "cryo_ml_paper_style.pptx"
+OUT_EQ = ROOT / "slides" / "eq"
 
 
 def means() -> dict[str, float]:
@@ -32,6 +33,44 @@ def means() -> dict[str, float]:
         "paper_low": low["all_device_means"]["paper"]["low_drain_rrms"],
         "full_low": low["all_device_means"]["constrained"]["low_drain_rrms"],
     }
+
+
+def equation_image(latex: str, path: Path, *, fontsize: int = 26) -> Path:
+    """Render one equation to PNG; python-pptx cannot typeset maths itself."""
+    fig = plt.figure(figsize=(0.01, 0.01))
+    text = fig.text(0, 0, latex, fontsize=fontsize)
+    fig.savefig(path, dpi=200, bbox_inches="tight",
+                bbox_extra_artists=[text], transparent=True)
+    plt.close(fig)
+    return path
+
+
+def equation_slide(prs, title: str, blocks: list[tuple[str, str]]) -> None:
+    """Slide of caption/equation pairs, equations rendered as images."""
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
+    box = slide.shapes.add_textbox(Inches(0.6), Inches(0.35),
+                                   Inches(12.1), Inches(0.8))
+    para = box.text_frame.paragraphs[0]
+    run = para.add_run()
+    run.text = title
+    run.font.size = Pt(30)
+    run.font.bold = True
+    top = 1.35
+    for index, (caption, latex) in enumerate(blocks):
+        label = slide.shapes.add_textbox(Inches(0.8), Inches(top),
+                                         Inches(11.7), Inches(0.4))
+        run = label.text_frame.paragraphs[0].add_run()
+        run.text = caption
+        run.font.size = Pt(17)
+        top += 0.45
+        image = OUT_EQ / f"eq_{abs(hash((title, index))) % 10**8}.png"
+        equation_image(latex, image)
+        width, height = Image.open(image).size
+        scale = min(10.5 / (width / 200), 1.0 / (height / 200))
+        slide.shapes.add_picture(str(image), Inches(1.2), Inches(top),
+                                 Inches(width / 200 * scale),
+                                 Inches(height / 200 * scale))
+        top += height / 200 * scale + 0.42
 
 
 def rrms_chart(path: Path) -> None:
@@ -104,60 +143,82 @@ def figure_slide(prs, title: str, image: Path) -> None:
 
 def main() -> None:
     m = means()
+    OUT_EQ.mkdir(parents=True, exist_ok=True)
     prs = Presentation()
     prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
-    text_slide(prs, "43-parameter method", [
-        "1. Screen.  Each continuous BSIM4 DC parameter is perturbed one at a "
-        "time in NGSpice on all 18 devices; a parameter is kept if its "
-        "normalised current response exceeds 1e-4 on any device.  43 of 115 "
-        "survive; the 7 of the previous method are a subset.",
-        "2. Box.  Per device, +/-10% of that device's 77 K card value.  DELTA "
-        "and AGS are widened 8x: NGSpice probes show the values that set the "
-        "triode/saturation knee lie outside +/-10%, so the shape was "
-        "unreachable rather than unfound.  Parameters published as zero stay "
-        "pinned (PRWG on every nMOS card).",
-        "3. Data.  10,000 Latin-hypercube points per device, each simulated in "
-        "NGSpice: 180,000 cards, 2,046 current points each.  50% global, 35% "
-        "in one newly opened region, 15% in two jointly.",
-        "4. Surrogate.  One network for all devices: 43 parameters plus "
-        "polarity, log L, log W -> 2,046 currents.  4 x 1024 LeakyReLU, Adam, "
-        "batch 512, 200 epochs, per-device 80/10/10 split.",
-        "5. Loss.  Every curve is split into 4 normalised sweep sections.  Each "
-        "section contributes standardised signed-log error plus a "
-        "curve-normalised linear Huber term; sections and curves are averaged "
-        "with equal weight, plus a 25% worst-section term.",
-        "6. Search.  Two-point finite differences on the frozen surrogate "
-        "(L-BFGS-B, step 0.02 in normalised coordinates, trust radius 0.25) "
-        "from several starts: best sampled cards, section-best, "
-        "low-drain-feasible, the 77 K card, and the previous result.",
-        "7. Validate.  Every candidate is re-simulated in NGSpice.  No reported "
-        "number comes from the surrogate.",
-        "8. Select.  Discard any candidate whose low-drain RRMS exceeds that "
-        "device's 77 K card, then take the lowest RRMS among survivors.",
+    text_slide(prs, "Method 1 of 3:  which parameters, and where to look", [
+        "Screen.  Each continuous BSIM4 DC parameter is perturbed one at a "
+        "time in NGSpice on all 18 devices.  A parameter is kept if its "
+        "normalised current response exceeds 1e-4 on any device.",
+        "    115 candidates  ->  43 kept.  The 7 of the previous method are a "
+        "subset, so the comparison is nested.",
+        "",
+        "Box.  Sampling is centred on each device's own 77 K card value, "
+        "resolved through BSIM binning (8 bins per polarity).",
+        "    Default window  +/-10%.",
+        "    DELTA and AGS  +/-80%:  NGSpice probes show the values that set "
+        "the triode/saturation knee lie outside +/-10%, so the correct shape "
+        "was unreachable rather than unfound.",
+        "    Parameters published as zero stay pinned, since a multiplicative "
+        "window around zero has no width.  PRWG is in this state on every "
+        "nMOS card.",
     ])
-    text_slide(prs, "Metric and selection rule", [
-        "Per curve:   RRMS = sqrt(mean((I_sim - I_meas)^2)) / mean|I_meas|,",
-        "             over the points the 77 K reference admits.",
-        "Per device:  mean RRMS over admitted curves.  Reported unchanged; the "
-        "curve inclusion set is frozen to the 77 K card's.",
+    text_slide(prs, "Method 2 of 3:  data and surrogate", [
+        "Data.  10,000 Latin-hypercube points per device, every one simulated "
+        "in NGSpice.  180,000 cards, 2,046 current points each, ~2 h.",
+        "    50% global, 35% in one newly opened region, 15% in two jointly.",
         "",
-        "Low-drain region:  |Vds| < 0.6 V on output curves at |Vgs| >= 1.48 V, "
-        "i.e. triode at strong gate drive.",
+        "Surrogate.  A single network for all 18 devices:",
+        "    in:   43 parameters, polarity, log L, log W",
+        "    out:  all 2,046 currents",
+        "    4 x 1024 LeakyReLU, Adam, batch 512, 200 epochs, per-device "
+        "80/10/10 split.",
         "",
-        "Constraint:  for each device, compute that region's RRMS for its 77 K "
-        "card.  Any candidate exceeding it is discarded outright, however good "
-        "elsewhere.  Selection then minimises device RRMS over survivors.",
+        "It is used only to make the search affordable: one gradient needs ~40 "
+        "objective evaluations, which is microseconds through the network and "
+        "hours through NGSpice.  No reported number comes from it.",
+    ])
+    equation_slide(prs, "Method 3 of 3:  metric, loss and selection", [
+        ("Per curve, against measured data, on the points the 77 K card "
+         "admits:",
+         r"$\mathrm{RRMS}_c=\dfrac{\sqrt{\frac{1}{N_c}\sum_i"
+         r"\left(I^{\mathrm{sim}}_i-I^{\mathrm{meas}}_i\right)^2}}"
+         r"{\frac{1}{N_c}\sum_i\left|I^{\mathrm{meas}}_i\right|}"
+         r"\qquad\mathrm{RRMS}_{\mathrm{dev}}=\frac{1}{C}"
+         r"\sum_{c=1}^{C}\mathrm{RRMS}_c$"),
+        ("Surrogate loss.  Each curve is split into 4 normalised sweep "
+         "sections; sections and curves carry equal weight, plus a worst-"
+         "section term:",
+         r"$\mathcal{L}=\frac{1}{CS}\sum_{c,s}\left[\ell^{\log}_{cs}"
+         r"+\lambda\,\ell^{\mathrm{lin}}_{cs}\right]"
+         r"+\frac{1}{4}\max_{c,s}\ell_{cs}$"),
+        ("Selection.  Constrained, not reweighted:",
+         r"$\min_{\theta}\ \mathrm{RRMS}_{\mathrm{dev}}(\theta)"
+         r"\quad\mathrm{s.t.}\quad"
+         r"\mathrm{RRMS}_{\mathrm{low}}(\theta)\leq "
+         r"\mathrm{RRMS}_{\mathrm{low}}(\theta_{77\mathrm{K}})$"),
+    ])
+    text_slide(prs, "Why a constraint and not a weighting", [
+        "Low-drain region:  |Vds| < 0.6 V on output curves at |Vgs| >= 1.48 V "
+        "-- triode at strong gate drive.",
         "",
-        "Two objective reweightings were tried first and both failed: absolute "
-        "section weights are outvoted by numerically larger sections "
-        "elsewhere, and a ratio-to-reference objective is degenerate because "
-        "the reference scores 1.0 in every section by construction.",
+        "Two reweightings were tried first and both failed, on measurement:",
+        "    Absolute section weights chase the numerically largest sections, "
+        "which are transfer-curve upper ends, not the triode region.  "
+        "All-device RRMS 0.1823 -> 0.2016, low drain 0.0585 -> 0.0813.",
+        "    A ratio-to-reference objective is degenerate: the 77 K card "
+        "scores exactly 1.0 in every section, so any card better somewhere and "
+        "worse elsewhere loses on the worst-ratio term.  It reselects the 77 K "
+        "card.",
         "",
-        "Finite differences on the surrogate produced the selected card on 4 "
-        "of 18 devices; 14 selected a sampled card the search could not beat.  "
-        "A finite-difference stage against measured data with real NGSpice was "
-        "implemented and rejected: it worsened all-device RRMS 0.1823 -> "
-        "0.2016.",
+        "The constraint has neither failure mode: a candidate worse than the "
+        "77 K card in that region is discarded outright, and the optimiser is "
+        "free everywhere else.",
+        "",
+        "Finite differences on the surrogate produced the winning card on 4 of "
+        "18 devices; 14 selected a sampled card the search could not beat.  A "
+        "finite-difference stage against measured data in real NGSpice was "
+        "implemented and rejected: 0.1823 -> 0.2016.",
     ])
     text_slide(prs, "Summary", [
         f"All-device RRMS:  paper {m['paper']:.4f}  ->  "

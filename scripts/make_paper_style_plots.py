@@ -113,7 +113,7 @@ def plot_device(device, out_dir: Path) -> Path:
         panels = [0] if curve.kind == "idvd" else [1, 2]
         for panel in panels:
             axes[panel].plot(sweep, measured, "o", mfc="none", mec="black",
-                             ms=3, mew=0.6, zorder=1,
+                             ms=2.6, mew=0.5, zorder=1,
                              label="measured" if index == 0 else None)
         for (name, _d, _p, color, _s, _m) in CARDS:
             if sims[name] is None:
@@ -126,7 +126,7 @@ def plot_device(device, out_dir: Path) -> Path:
                 label = (f"{name}   RRMS {score:.4f}"
                          if score is not None else name)
                 axes[panel].plot(sweep[:count], model[:count], "-",
-                                 color=color, lw=1.8, zorder=2,
+                                 color=color, lw=1.1, zorder=2,
                                  label=label if index == 0 else None)
     axes[0].set_title("Output characteristics")
     axes[0].set_xlabel("|$V_{DS}$| (V)")
