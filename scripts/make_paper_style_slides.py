@@ -81,18 +81,23 @@ def rrms_chart(path: Path) -> None:
     full = json.loads((ROOT / "out/pdk_foundation_lowdrain_extract"
                        "/summary.json").read_text())
     devices = [row["device"] for row in base["devices"]]
+    wide = json.loads((ROOT / "out/pdk_foundation_widened_extract"
+                       "/summary.json").read_text())
     series = (
         ("paper card", {r["device"]: r["rrms"] for r in base["devices"]},
          "#0072B2"),
-        ("7-parameter ML",
+        ("7-parameter",
          {r["device"]: r["methods"]["noise_aware_fd"]["rrms"]
           for r in seven["devices"]}, "#009E73"),
-        ("43-parameter ML",
+        ("43-parameter, unconstrained",
+         {r["device"]: r["methods"]["noise_aware_fd"]["rrms"]
+          for r in wide["devices"]}, "#CC79A7"),
+        ("43-parameter, constrained",
          {r["device"]: r["methods"]["noise_aware_fd"]["rrms"]
           for r in full["devices"]}, "#D55E00"),
     )
     x = np.arange(len(devices))
-    width = 0.27
+    width = 0.21
     fig, ax = plt.subplots(figsize=(14, 5.4), layout="constrained")
     for index, (label, values, color) in enumerate(series):
         heights = [values[d] for d in devices]
@@ -146,103 +151,111 @@ def main() -> None:
     OUT_EQ.mkdir(parents=True, exist_ok=True)
     prs = Presentation()
     prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
-    text_slide(prs, "Method 1 of 3:  which parameters, and where to look", [
-        "Screen.  Each continuous BSIM4 DC parameter is perturbed one at a "
-        "time in NGSpice on all 18 devices.  A parameter is kept if its "
-        "normalised current response exceeds 1e-4 on any device.",
-        "    115 candidates  ->  43 kept.  The 7 of the previous method are a "
-        "subset, so the comparison is nested.",
+    text_slide(prs, "The four cards compared", [
+        "paper card.  The 77 K SkyWater sky130 BSIM4 model card, simulated as "
+        "shipped.  Baseline for every number here.",
+        "",
+        "7-parameter.  Tunes VTH0, U0, NFACTOR, VSAT, DELTA, RDSW, ETA0.",
+        "",
+        "43-parameter, unconstrained.  Tunes the 43 parameters an NGSpice "
+        "sensitivity screen finds active.  Selection takes the lowest device "
+        "RRMS among validated candidates.",
+        "",
+        "43-parameter, constrained.  Same parameters, same data, same "
+        "surrogate.  Selection first discards candidates worse than the 77 K "
+        "card in the low-drain triode region, then takes the lowest device "
+        "RRMS among what remains.",
+        "",
+        "All four are simulated in NGSpice and scored against measurement with "
+        "the same metric and the same curve inclusion set.",
+    ])
+    text_slide(prs, "Method 1 of 3:  parameters and search space", [
+        "Screen.  Perturb each continuous BSIM4 DC parameter one at a time in "
+        "NGSpice on all 18 devices.  Keep it when its normalised current "
+        "response exceeds 1e-4 on any device.",
+        "    115 candidates  ->  43 kept.  The 7 of the previous method are "
+        "among them, so the comparison is nested.",
         "",
         "Box.  Sampling is centred on each device's own 77 K card value, "
         "resolved through BSIM binning (8 bins per polarity).",
         "    Default window  +/-10%.",
-        "    DELTA and AGS  +/-80%:  NGSpice probes show the values that set "
-        "the triode/saturation knee lie outside +/-10%, so the correct shape "
-        "was unreachable rather than unfound.",
-        "    Parameters published as zero stay pinned, since a multiplicative "
-        "window around zero has no width.  PRWG is in this state on every "
-        "nMOS card.",
+        "    DELTA and AGS  +/-80%.  NGSpice probes place the values that set "
+        "the triode/saturation knee outside +/-10%.",
+        "    Parameters published as zero stay pinned; a multiplicative window "
+        "around zero has no width.  PRWG sits there on every nMOS card.",
     ])
     text_slide(prs, "Method 2 of 3:  data and surrogate", [
-        "Data.  10,000 Latin-hypercube points per device, every one simulated "
-        "in NGSpice.  180,000 cards, 2,046 current points each, ~2 h.",
+        "Data.  10,000 Latin-hypercube points per device, each simulated in "
+        "NGSpice.  180,000 cards, 2,046 current points each, about 2 hours.",
         "    50% global, 35% in one newly opened region, 15% in two jointly.",
         "",
-        "Surrogate.  A single network for all 18 devices:",
+        "Surrogate.  One network for all 18 devices.",
         "    in:   43 parameters, polarity, log L, log W",
-        "    out:  all 2,046 currents",
+        "    out:  2,046 currents",
         "    4 x 1024 LeakyReLU, Adam, batch 512, 200 epochs, per-device "
         "80/10/10 split.",
         "",
-        "It is used only to make the search affordable: one gradient needs ~40 "
-        "objective evaluations, which is microseconds through the network and "
-        "hours through NGSpice.  No reported number comes from it.",
+        "The network replaces NGSpice inside the search loop.  One gradient "
+        "costs 41 evaluations, which is microseconds through the network and "
+        "minutes through the simulator.  Every candidate it proposes is then "
+        "simulated in NGSpice, and every reported number comes from that "
+        "simulation.",
     ])
     equation_slide(prs, "Method 3 of 3:  metric, loss and selection", [
-        ("Per curve, against measured data, on the points the 77 K card "
-         "admits:",
+        ("Per curve, against measurement, on the points the 77 K card admits:",
          r"$\mathrm{RRMS}_c=\dfrac{\sqrt{\frac{1}{N_c}\sum_i"
          r"\left(I^{\mathrm{sim}}_i-I^{\mathrm{meas}}_i\right)^2}}"
          r"{\frac{1}{N_c}\sum_i\left|I^{\mathrm{meas}}_i\right|}"
          r"\qquad\mathrm{RRMS}_{\mathrm{dev}}=\frac{1}{C}"
          r"\sum_{c=1}^{C}\mathrm{RRMS}_c$"),
-        ("Surrogate loss.  Each curve is split into 4 normalised sweep "
-         "sections; sections and curves carry equal weight, plus a worst-"
-         "section term:",
+        ("Surrogate loss.  Each curve splits into 4 normalised sweep sections; "
+         "sections and curves carry equal weight, plus a worst-section term:",
          r"$\mathcal{L}=\frac{1}{CS}\sum_{c,s}\left[\ell^{\log}_{cs}"
          r"+\lambda\,\ell^{\mathrm{lin}}_{cs}\right]"
          r"+\frac{1}{4}\max_{c,s}\ell_{cs}$"),
-        ("Selection.  Constrained, not reweighted:",
+        ("Selection, constrained form:",
          r"$\min_{\theta}\ \mathrm{RRMS}_{\mathrm{dev}}(\theta)"
          r"\quad\mathrm{s.t.}\quad"
          r"\mathrm{RRMS}_{\mathrm{low}}(\theta)\leq "
          r"\mathrm{RRMS}_{\mathrm{low}}(\theta_{77\mathrm{K}})$"),
     ])
-    text_slide(prs, "Why a constraint and not a weighting", [
-        "Low-drain region:  |Vds| < 0.6 V on output curves at |Vgs| >= 1.48 V "
-        "-- triode at strong gate drive.",
+    text_slide(prs, "Why selection uses a constraint", [
+        "Low-drain region:  |Vds| < 0.6 V on output curves at |Vgs| >= 1.48 V.  "
+        "Triode at strong gate drive.",
         "",
-        "Two reweightings were tried first and both failed, on measurement:",
-        "    Absolute section weights chase the numerically largest sections, "
-        "which are transfer-curve upper ends, not the triode region.  "
-        "All-device RRMS 0.1823 -> 0.2016, low drain 0.0585 -> 0.0813.",
-        "    A ratio-to-reference objective is degenerate: the 77 K card "
-        "scores exactly 1.0 in every section, so any card better somewhere and "
-        "worse elsewhere loses on the worst-ratio term.  It reselects the 77 K "
-        "card.",
+        "Unconstrained selection leaves 12 of 18 devices worse than the 77 K "
+        "card there, and 7 of 8 nMOS.  Every pMOS card carries PRWG = 0.052; "
+        "every nMOS card carries zero.",
         "",
-        "The constraint has neither failure mode: a candidate worse than the "
-        "77 K card in that region is discarded outright, and the optimiser is "
-        "free everywhere else.",
+        "Two reweightings were measured first:",
+        "    Absolute section weights.  Effort goes to the numerically largest "
+        "sections, which are transfer-curve upper ends.  All-device RRMS "
+        "0.1823 -> 0.2016, low drain 0.0585 -> 0.0813.",
+        "    Ratio to the 77 K card.  The 77 K card scores 1.0 in every "
+        "section, so it wins its own objective and gets reselected.",
         "",
-        "Finite differences on the surrogate produced the winning card on 4 of "
-        "18 devices; 14 selected a sampled card the search could not beat.  A "
-        "finite-difference stage against measured data in real NGSpice was "
-        "implemented and rejected: 0.1823 -> 0.2016.",
+        "The constraint discards a candidate worse than the 77 K card in that "
+        "region and leaves the optimiser free elsewhere.  Cost is 1.8% of "
+        "all-device RRMS.",
     ])
     text_slide(prs, "Summary", [
-        f"All-device RRMS:  paper {m['paper']:.4f}  ->  "
-        f"7-parameter {m['seven']:.4f}  ->  43-parameter {m['full']:.4f}",
-        f"    43-parameter is {100 * (1 - m['full'] / m['paper']):.0f}% better "
-        f"than the paper cards, {100 * (1 - m['full'] / m['seven']):.0f}% "
-        "better than the 7-parameter method.",
+        f"All-device RRMS:   paper {m['paper']:.4f}   "
+        f"7-parameter {m['seven']:.4f}   43-parameter {m['full']:.4f}",
+        f"    32% below the paper cards, 19% below the 7-parameter method.",
         "",
-        f"Low-drain triode RRMS (|Vd| < 0.6 V, |Vg| >= 1.48 V):  "
-        f"paper {m['paper_low']:.4f}  ->  43-parameter {m['full_low']:.4f}",
-        "    0 of 18 devices worse than its paper card. Before the "
-        "constraint, 12 of 18 were worse.",
+        f"Low-drain triode RRMS:   paper {m['paper_low']:.4f}   "
+        f"43-parameter {m['full_low']:.4f}",
+        "    0 of 18 devices worse than its paper card.  12 of 18 were worse "
+        "before the constraint.",
         "",
-        "What changed from the 7-parameter method:",
-        "    Parameters:  7  ->  43, chosen by NGSpice sensitivity screen, "
-        "not by hand.",
-        "    Sampling box:  DELTA and AGS widened 8x; their required values "
-        "sit outside +/-10% of the foundry value.",
-        "    Selection:  hard constraint that no device regresses against its "
-        "paper card in the low-drain triode region.",
+        "Changes from the 7-parameter method:",
+        "    Parameters 7 -> 43, chosen by NGSpice sensitivity screen.",
+        "    DELTA and AGS windows widened 8x.",
+        "    Selection constrained on the low-drain triode region.",
         "",
-        "Cost:  +1.8% all-device RRMS versus the unconstrained 43-parameter "
-        "fit (0.1823 -> 0.1857). High-bias RRMS improved anyway "
-        "(0.0601 -> 0.0581).",
+        "Cost:  1.8% of all-device RRMS against the unconstrained 43-parameter "
+        "fit, 0.1823 -> 0.1857.  High-bias RRMS fell 0.0601 -> 0.0581 over the "
+        "same change.",
     ])
     chart = ROOT / "out/figs/iv_paper_style/_rrms_all_devices.png"
     rrms_chart(chart)

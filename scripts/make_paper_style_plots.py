@@ -24,7 +24,8 @@ from cryoml.utils import device_tag  # noqa: E402
 # Output-curve sweep split, so the triode, knee and saturation regions are
 # reported separately instead of averaging into one whole-curve number.
 VDS_REGIONS = ((0.0, 0.6), (0.6, 1.2), (1.2, np.inf))
-VDS_LABELS = ("|Vds|<0.6V", "|Vds|0.6-1.2V", "|Vds|>1.2V")
+VDS_LABELS = ("$|V_{DS}|$<0.6V", "$|V_{DS}|$ 0.6-1.2V",
+              "$|V_{DS}|$>1.2V")
 
 CARDS = (
     ("paper card", "out/pdk_baseline", "sim_", "#0072B2",
@@ -33,7 +34,10 @@ CARDS = (
      "fd_sim_", "#009E73",
      "out/pdk_foundation_segmented_seven_rrms_extract/summary.json",
      "noise_aware_fd"),
-    ("43-parameter ML", "out/pdk_foundation_lowdrain_extract",
+    ("43-parameter, unconstrained", "out/pdk_foundation_widened_extract",
+     "fd_sim_", "#CC79A7",
+     "out/pdk_foundation_widened_extract/summary.json", "noise_aware_fd"),
+    ("43-parameter, constrained", "out/pdk_foundation_lowdrain_extract",
      "fd_sim_", "#D55E00",
      "out/pdk_foundation_lowdrain_extract/summary.json", "noise_aware_fd"),
 )
@@ -58,19 +62,10 @@ def load(directory: str, prefix: str, tag: str, count: int):
                 for i in range(count)]
 
 
-def region_table(device, curves, sims, included: set[str]) -> str:
-    """Output-curve RRMS per |Vds| region, broken out by fixed gate bias."""
-    short = {"paper card": "paper", "7-parameter ML": "7-par",
-             "43-parameter ML": "43-par"}
+def region_values(device, curves, sims, included: set[str]):
+    """Output-curve RRMS per fixed gate bias and |Vds| region."""
     active = [name for name, _d, _p, _c, _s, _m in CARDS
               if sims[name] is not None]
-    header = f"{'':>12s}" + "".join(
-        f"{label:>{7 * len(active) + 3}s}" for label in VDS_LABELS)
-    subhead = f"{'':>12s}" + "".join(
-        "".join(f"{short[name]:>7s}" for name in active) + "   "
-        for _ in VDS_LABELS)
-    lines = ["output-curve RRMS, by fixed gate bias and |Vds| region:",
-             header, subhead]
     rows = []
     for index, curve in enumerate(curves):
         tag = f"{curve.kind}@{abs(float(curve.fixed)):g}"
@@ -82,20 +77,57 @@ def region_table(device, curves, sims, included: set[str]) -> str:
             continue
         sweep = np.abs(np.asarray(curve.Vd, dtype=np.float64))[start:]
         target = np.asarray(cleaned[start:], dtype=np.float64)
-        cells = ""
+        cells = []
         for low, high in VDS_REGIONS:
             mask = (sweep >= low) & (sweep < high)
-            for name in active:
-                model = np.asarray(sims[name][index],
-                                   dtype=np.float64)[start:]
-                value = masked_rrms(model, target, mask, denominator)
-                cells += (f"{value:7.4f}" if np.isfinite(value)
-                          else f"{'-':>7s}")
-            cells += "   "
-        rows.append((abs(float(curve.fixed)),
-                     f"Vgs={abs(float(curve.fixed)):.2f}V".rjust(12) + cells))
-    lines.extend(row for _bias, row in sorted(rows))
-    return "\n".join(lines)
+            cells.append([
+                masked_rrms(np.asarray(sims[name][index],
+                                       dtype=np.float64)[start:],
+                            target, mask, denominator)
+                for name in active])
+        rows.append((abs(float(curve.fixed)), cells))
+    rows.sort()
+    return active, rows
+
+
+def draw_region_table(ax, device, curves, sims, included: set[str]) -> None:
+    """Table of per-region RRMS with the best card bold in each group."""
+    short = {"paper card": "paper", "7-parameter ML": "7-par",
+             "43-parameter, unconstrained": "43 uncon",
+             "43-parameter, constrained": "43 constr"}
+    active, rows = region_values(device, curves, sims, included)
+    ax.axis("off")
+    if not rows:
+        return
+    columns = [f"{short[name]}\n{label}"
+               for label in VDS_LABELS for name in active]
+    text, best = [], []
+    for bias, cells in rows:
+        line, flags = [], []
+        for group in cells:
+            finite = [v for v in group if np.isfinite(v)]
+            winner = min(finite) if finite else None
+            for value in group:
+                line.append(f"{value:.4f}" if np.isfinite(value) else "-")
+                flags.append(winner is not None and value == winner)
+        text.append(line)
+        best.append(flags)
+    table = ax.table(
+        cellText=text, colLabels=columns,
+        rowLabels=[f"$V_{{GS}}$ = {bias:.2f} V" for bias, _c in rows],
+        cellLoc="center", rowLoc="right", loc="center")
+    table.auto_set_font_size(False)
+    table.set_fontsize(9)
+    table.scale(1, 1.45)
+    for (row, column), cell in table.get_celld().items():
+        cell.set_linewidth(0.4)
+        if row == 0 or column < 0:
+            cell.get_text().set_fontweight("bold")
+        elif best[row - 1][column]:
+            cell.get_text().set_fontweight("bold")
+            cell.set_facecolor("#eaf3ea")
+    ax.set_title("output-curve RRMS by fixed gate bias and $|V_{DS}|$ region "
+                 "(best in bold)", fontsize=10, pad=2)
 
 
 def plot_device(device, out_dir: Path) -> Path:
@@ -105,7 +137,10 @@ def plot_device(device, out_dir: Path) -> Path:
             for name, d, p, _c, _s, _m in CARDS}
     scores = {name: card_rrms(summary, method).get(tag)
               for name, _d, _p, _c, summary, method in CARDS}
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.6), layout="constrained")
+    fig = plt.figure(figsize=(16.5, 7.0), layout="constrained")
+    grid = fig.add_gridspec(2, 3, height_ratios=[2.5, 1.0])
+    axes = [fig.add_subplot(grid[0, column]) for column in range(3)]
+    table_ax = fig.add_subplot(grid[1, :])
     for index, curve in enumerate(curves):
         sweep = np.abs(np.asarray(
             curve.Vd if curve.kind == "idvd" else curve.Vg, dtype=np.float64))
@@ -141,10 +176,9 @@ def plot_device(device, out_dir: Path) -> Path:
     included = {tag for tag, row in json.loads(
         (ROOT / "out/pdk_baseline/pdk_baseline.json").read_text()
     )["per_curve"][tag_key].items() if row.get("included")}
-    fig.text(0.5, -0.02, region_table(device, curves, sims, included),
-             ha="center", va="top", family="monospace", fontsize=10)
+    draw_region_table(table_ax, device, curves, sims, included)
     handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="outside upper center", ncol=4,
+    fig.legend(handles, labels, loc="outside upper center", ncol=5,
                fontsize=11, handlelength=3.2, columnspacing=2.0)
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{tag}.png"
