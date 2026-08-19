@@ -91,23 +91,34 @@ def region_values(device, curves, sims, included: set[str]):
 
 
 def draw_region_table(ax, device, curves, sims, included: set[str]) -> None:
-    """Table of per-region RRMS with the best card bold in each group."""
+    """Per-region RRMS table: groups separated, best card bold in each group."""
     short = {"paper card": "paper", "7-parameter ML": "7-par",
              "43-parameter, unconstrained": "43 uncon",
              "43-parameter, constrained": "43 constr"}
+    group_tint = ("#ffffff", "#f2f2f2", "#ffffff")
     active, rows = region_values(device, curves, sims, included)
     ax.axis("off")
     if not rows:
         return
-    columns = [f"{short[name]}\n{label}"
-               for label in VDS_LABELS for name in active]
+    width = len(active)
+    columns, column_group = [], []
+    for group, label in enumerate(VDS_LABELS):
+        if group:
+            columns.append("")
+            column_group.append(None)          # spacer between groups
+        for name in active:
+            columns.append(f"{label}\n{short[name]}")
+            column_group.append(group)
     text, best = [], []
-    for bias, cells in rows:
+    for _bias, cells in rows:
         line, flags = [], []
-        for group in cells:
-            finite = [v for v in group if np.isfinite(v)]
+        for group, values in enumerate(cells):
+            if group:
+                line.append("")
+                flags.append(False)
+            finite = [v for v in values if np.isfinite(v)]
             winner = min(finite) if finite else None
-            for value in group:
+            for value in values:
                 line.append(f"{value:.4f}" if np.isfinite(value) else "-")
                 flags.append(winner is not None and value == winner)
         text.append(line)
@@ -118,14 +129,22 @@ def draw_region_table(ax, device, curves, sims, included: set[str]) -> None:
         cellLoc="center", rowLoc="right", loc="center")
     table.auto_set_font_size(False)
     table.set_fontsize(9)
-    table.scale(1, 1.45)
+    table.scale(1, 1.5)
     for (row, column), cell in table.get_celld().items():
+        group = column_group[column] if 0 <= column < len(column_group) else None
+        if group is None and column >= 0:
+            cell.set_linewidth(0)              # spacer carries no border
+            cell.set_facecolor("white")
+            cell.set_width(cell.get_width() * 0.35)
+            continue
         cell.set_linewidth(0.4)
+        cell.set_edgecolor("#b0b0b0")
+        cell.set_facecolor(group_tint[group] if group is not None else "white")
         if row == 0 or column < 0:
             cell.get_text().set_fontweight("bold")
         elif best[row - 1][column]:
             cell.get_text().set_fontweight("bold")
-            cell.set_facecolor("#eaf3ea")
+            cell.set_facecolor("#d7ead7")
     ax.set_title("output-curve RRMS by fixed gate bias and $|V_{DS}|$ region "
                  "(best in bold)", fontsize=10, pad=2)
 

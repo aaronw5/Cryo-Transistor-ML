@@ -152,22 +152,40 @@ def main() -> None:
     prs = Presentation()
     prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
     text_slide(prs, "The four cards compared", [
-        "paper card.  The 77 K SkyWater sky130 BSIM4 model card, simulated as "
-        "shipped.  Baseline for every number here.",
+        "Shared by all four:  the 77 K SkyWater sky130 BSIM4 card.  It sets "
+        "the sampling centre, the curve inclusion set used for scoring, and "
+        "the guard anchor.  Every card is simulated in NGSpice and scored "
+        "against measurement with the same metric.",
+        "",
+        "paper card.  The 77 K card simulated as shipped.  Baseline.",
         "",
         "7-parameter.  Tunes VTH0, U0, NFACTOR, VSAT, DELTA, RDSW, ETA0.",
         "",
-        "43-parameter, unconstrained.  Tunes the 43 parameters an NGSpice "
+        "43-parameter, unconstrained.  Tunes the 43 parameters the NGSpice "
         "sensitivity screen finds active.  Selection takes the lowest device "
         "RRMS among validated candidates.",
         "",
-        "43-parameter, constrained.  Same parameters, same data, same "
-        "surrogate.  Selection first discards candidates worse than the 77 K "
-        "card in the low-drain triode region, then takes the lowest device "
-        "RRMS among what remains.",
+        "43-parameter, constrained.  Same parameters, data and surrogate.  "
+        "Selection additionally requires the low-drain triode RRMS to stay at "
+        "or below the 77 K card's, per device.",
+    ])
+    text_slide(prs, "Pipeline", [
+        "1.  Sample 10,000 parameter sets per device around the 77 K card and "
+        "simulate every one in NGSpice.",
+        "2.  Train the surrogate on those cards.",
+        "3.  Finite differences on the surrogate.  Gradients come from the "
+        "network; NGSpice is not called inside the search.",
+        "4.  Simulate every candidate the search produces in NGSpice and score "
+        "it against measurement.",
+        "5.  Select under the constraint.",
         "",
-        "All four are simulated in NGSpice and scored against measurement with "
-        "the same metric and the same curve inclusion set.",
+        "Surrogate accuracy at the 277 validated candidates:  mean absolute "
+        "RRMS error 0.0012 against NGSpice, correlation 0.9999, 97.9% pairwise "
+        "ranking agreement within a device.",
+        "",
+        "A sixth stage, finite differences against measured data in real "
+        "NGSpice, was implemented and measured.  All-device RRMS moved 0.1823 "
+        "-> 0.2016, so it is excluded.",
     ])
     text_slide(prs, "Method 1 of 3:  parameters and search space", [
         "Screen.  Perturb each continuous BSIM4 DC parameter one at a time in "
