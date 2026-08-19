@@ -24,7 +24,7 @@ from cryoml.utils import device_tag  # noqa: E402
 # Output-curve sweep split, so the triode, knee and saturation regions are
 # reported separately instead of averaging into one whole-curve number.
 VDS_REGIONS = ((0.0, 0.6), (0.6, 1.2), (1.2, np.inf))
-VDS_LABELS = ("|Vds| < 0.6", "0.6-1.2", "> 1.2")
+VDS_LABELS = ("|Vds|<0.6V", "|Vds|0.6-1.2V", "|Vds|>1.2V")
 
 CARDS = (
     ("paper card", "out/pdk_baseline", "sim_", "#0072B2",
@@ -59,33 +59,42 @@ def load(directory: str, prefix: str, tag: str, count: int):
 
 
 def region_table(device, curves, sims, included: set[str]) -> str:
-    """Mean output-curve RRMS per |Vds| region, one row per card."""
-    lines = ["output-curve RRMS by |Vds| region:",
-             f"{'':>16s}" + "".join(f"{label:>14s}" for label in VDS_LABELS)]
-    for name, _d, _p, _c, _s, _m in CARDS:
-        if sims[name] is None:
+    """Output-curve RRMS per |Vds| region, broken out by fixed gate bias."""
+    short = {"paper card": "paper", "7-parameter ML": "7-par",
+             "43-parameter ML": "43-par"}
+    active = [name for name, _d, _p, _c, _s, _m in CARDS
+              if sims[name] is not None]
+    header = f"{'':>12s}" + "".join(
+        f"{label:>{7 * len(active) + 3}s}" for label in VDS_LABELS)
+    subhead = f"{'':>12s}" + "".join(
+        "".join(f"{short[name]:>7s}" for name in active) + "   "
+        for _ in VDS_LABELS)
+    lines = ["output-curve RRMS, by fixed gate bias and |Vds| region:",
+             header, subhead]
+    rows = []
+    for index, curve in enumerate(curves):
+        tag = f"{curve.kind}@{abs(float(curve.fixed)):g}"
+        if curve.kind != "idvd" or tag not in included:
             continue
-        totals: list[list[float]] = [[] for _ in VDS_REGIONS]
-        for index, curve in enumerate(curves):
-            tag = f"{curve.kind}@{abs(float(curve.fixed)):g}"
-            if curve.kind != "idvd" or tag not in included:
-                continue
-            start, cleaned, denominator = curve_trim(
-                device.dev_type, device.L_um, device.W_um, curve.kind, curve.Id)
-            if denominator <= 0:
-                continue
-            sweep = np.abs(np.asarray(curve.Vd, dtype=np.float64))[start:]
-            target = np.asarray(cleaned[start:], dtype=np.float64)
-            model = np.asarray(sims[name][index], dtype=np.float64)[start:]
-            for slot, (low, high) in enumerate(VDS_REGIONS):
-                mask = (sweep >= low) & (sweep < high)
+        start, cleaned, denominator = curve_trim(
+            device.dev_type, device.L_um, device.W_um, curve.kind, curve.Id)
+        if denominator <= 0:
+            continue
+        sweep = np.abs(np.asarray(curve.Vd, dtype=np.float64))[start:]
+        target = np.asarray(cleaned[start:], dtype=np.float64)
+        cells = ""
+        for low, high in VDS_REGIONS:
+            mask = (sweep >= low) & (sweep < high)
+            for name in active:
+                model = np.asarray(sims[name][index],
+                                   dtype=np.float64)[start:]
                 value = masked_rrms(model, target, mask, denominator)
-                if np.isfinite(value):
-                    totals[slot].append(value)
-        cells = "".join(
-            f"{np.mean(values):14.4f}" if values else f"{'-':>14s}"
-            for values in totals)
-        lines.append(f"{name:>16s}" + cells)
+                cells += (f"{value:7.4f}" if np.isfinite(value)
+                          else f"{'-':>7s}")
+            cells += "   "
+        rows.append((abs(float(curve.fixed)),
+                     f"Vgs={abs(float(curve.fixed)):.2f}V".rjust(12) + cells))
+    lines.extend(row for _bias, row in sorted(rows))
     return "\n".join(lines)
 
 
@@ -133,7 +142,7 @@ def plot_device(device, out_dir: Path) -> Path:
         (ROOT / "out/pdk_baseline/pdk_baseline.json").read_text()
     )["per_curve"][tag_key].items() if row.get("included")}
     fig.text(0.5, -0.02, region_table(device, curves, sims, included),
-             ha="center", va="top", family="monospace", fontsize=11)
+             ha="center", va="top", family="monospace", fontsize=10)
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="outside upper center", ncol=4,
                fontsize=11, handlelength=3.2, columnspacing=2.0)
