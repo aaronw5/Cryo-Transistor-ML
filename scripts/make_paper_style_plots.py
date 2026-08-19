@@ -17,7 +17,14 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from cryoml.data_io import load_device_curves  # noqa: E402
 from cryoml.devices import PAPER_DEVICES  # noqa: E402
+from cryoml.metrics import curve_trim  # noqa: E402
+from cryoml.regions import masked_rrms  # noqa: E402
 from cryoml.utils import device_tag  # noqa: E402
+
+# Output-curve sweep split, so the triode, knee and saturation regions are
+# reported separately instead of averaging into one whole-curve number.
+VDS_REGIONS = ((0.0, 0.6), (0.6, 1.2), (1.2, np.inf))
+VDS_LABELS = ("|Vds| < 0.6", "0.6-1.2", "> 1.2")
 
 CARDS = (
     ("paper card", "out/pdk_baseline", "sim_", "#0072B2",
@@ -51,8 +58,39 @@ def load(directory: str, prefix: str, tag: str, count: int):
                 for i in range(count)]
 
 
+def region_table(device, curves, sims, included: set[str]) -> str:
+    """Mean output-curve RRMS per |Vds| region, one row per card."""
+    lines = ["output-curve RRMS by |Vds| region:",
+             f"{'':>16s}" + "".join(f"{label:>14s}" for label in VDS_LABELS)]
+    for name, _d, _p, _c, _s, _m in CARDS:
+        if sims[name] is None:
+            continue
+        totals: list[list[float]] = [[] for _ in VDS_REGIONS]
+        for index, curve in enumerate(curves):
+            tag = f"{curve.kind}@{abs(float(curve.fixed)):g}"
+            if curve.kind != "idvd" or tag not in included:
+                continue
+            start, cleaned, denominator = curve_trim(
+                device.dev_type, device.L_um, device.W_um, curve.kind, curve.Id)
+            if denominator <= 0:
+                continue
+            sweep = np.abs(np.asarray(curve.Vd, dtype=np.float64))[start:]
+            target = np.asarray(cleaned[start:], dtype=np.float64)
+            model = np.asarray(sims[name][index], dtype=np.float64)[start:]
+            for slot, (low, high) in enumerate(VDS_REGIONS):
+                mask = (sweep >= low) & (sweep < high)
+                value = masked_rrms(model, target, mask, denominator)
+                if np.isfinite(value):
+                    totals[slot].append(value)
+        cells = "".join(
+            f"{np.mean(values):14.4f}" if values else f"{'-':>14s}"
+            for values in totals)
+        lines.append(f"{name:>16s}" + cells)
+    return "\n".join(lines)
+
+
 def plot_device(device, out_dir: Path) -> Path:
-    tag = device_tag(device.dev_type, device.L_um, device.W_um)
+    tag = tag_key = device_tag(device.dev_type, device.L_um, device.W_um)
     curves = load_device_curves(device)
     sims = {name: load(d, p, tag, len(curves))
             for name, d, p, _c, _s, _m in CARDS}
@@ -91,14 +129,17 @@ def plot_device(device, out_dir: Path) -> Path:
     for ax in axes:
         ax.set_ylabel("|$I_D$| ($\\mu$A)")
         ax.grid(True, alpha=0.25)
+    included = {tag for tag, row in json.loads(
+        (ROOT / "out/pdk_baseline/pdk_baseline.json").read_text()
+    )["per_curve"][tag_key].items() if row.get("included")}
+    fig.text(0.5, -0.02, region_table(device, curves, sims, included),
+             ha="center", va="top", family="monospace", fontsize=11)
     handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="outside lower center", ncol=4,
+    fig.legend(handles, labels, loc="outside upper center", ncol=4,
                fontsize=11, handlelength=3.2, columnspacing=2.0)
-    fig.suptitle(f"{device.dev_type} L={device.L_um} $\\mu$m, "
-                 f"W={device.W_um} $\\mu$m", fontsize=13)
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{tag}.png"
-    fig.savefig(path, dpi=170)
+    fig.savefig(path, dpi=170, bbox_inches="tight")
     plt.close(fig)
     return path
 
