@@ -1,0 +1,2679 @@
+{
+  "definition": {
+    "source": "out/pdk_foundation_segmented_full_rrms_extract/summary.json",
+    "method": "noise_aware_fd",
+    "threshold": 0.95,
+    "meaning": "|local coordinate| at or above threshold in the selected real-NGSpice-validated foundation FD card"
+  },
+  "n_devices": 18,
+  "n_parameters": 43,
+  "n_total_hits": 159,
+  "parameters": [
+    {
+      "parameter": "a0",
+      "total": 7,
+      "nmos": 3,
+      "pmos": 4,
+      "lower": 3,
+      "upper": 4,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "pdiblc2",
+      "total": 7,
+      "nmos": 4,
+      "pmos": 3,
+      "lower": 4,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "delta",
+      "total": 6,
+      "nmos": 4,
+      "pmos": 2,
+      "lower": 4,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "eta0",
+      "total": 6,
+      "nmos": 4,
+      "pmos": 2,
+      "lower": 5,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "nfactor",
+      "total": 6,
+      "nmos": 4,
+      "pmos": 2,
+      "lower": 2,
+      "upper": 4,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "rdsw",
+      "total": 6,
+      "nmos": 3,
+      "pmos": 3,
+      "lower": 2,
+      "upper": 4,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "u0",
+      "total": 6,
+      "nmos": 3,
+      "pmos": 3,
+      "lower": 2,
+      "upper": 4,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "ua",
+      "total": 6,
+      "nmos": 4,
+      "pmos": 2,
+      "lower": 3,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "vsat",
+      "total": 6,
+      "nmos": 3,
+      "pmos": 3,
+      "lower": 3,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "wr",
+      "total": 6,
+      "nmos": 4,
+      "pmos": 2,
+      "lower": 3,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "alpha0",
+      "total": 5,
+      "nmos": 2,
+      "pmos": 3,
+      "lower": 3,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "cdscd",
+      "total": 5,
+      "nmos": 3,
+      "pmos": 2,
+      "lower": 2,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "lpe0",
+      "total": 5,
+      "nmos": 5,
+      "pmos": 0,
+      "lower": 1,
+      "upper": 4,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "voff",
+      "total": 5,
+      "nmos": 3,
+      "pmos": 2,
+      "lower": 3,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "ags",
+      "total": 4,
+      "nmos": 1,
+      "pmos": 3,
+      "lower": 1,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "cit",
+      "total": 4,
+      "nmos": 2,
+      "pmos": 2,
+      "lower": 2,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "dsub",
+      "total": 4,
+      "nmos": 1,
+      "pmos": 3,
+      "lower": 2,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "k1",
+      "total": 4,
+      "nmos": 2,
+      "pmos": 2,
+      "lower": 1,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "ndep",
+      "total": 4,
+      "nmos": 2,
+      "pmos": 2,
+      "lower": 1,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "pclm",
+      "total": 4,
+      "nmos": 2,
+      "pmos": 2,
+      "lower": 3,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "w0",
+      "total": 4,
+      "nmos": 1,
+      "pmos": 3,
+      "lower": 1,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "xj",
+      "total": 4,
+      "nmos": 3,
+      "pmos": 1,
+      "lower": 4,
+      "upper": 0,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "a2",
+      "total": 3,
+      "nmos": 2,
+      "pmos": 1,
+      "lower": 0,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "beta0",
+      "total": 3,
+      "nmos": 2,
+      "pmos": 1,
+      "lower": 1,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "dvt0",
+      "total": 3,
+      "nmos": 2,
+      "pmos": 1,
+      "lower": 0,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "dvt1w",
+      "total": 3,
+      "nmos": 2,
+      "pmos": 1,
+      "lower": 1,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "dwg",
+      "total": 3,
+      "nmos": 2,
+      "pmos": 1,
+      "lower": 3,
+      "upper": 0,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "k3",
+      "total": 3,
+      "nmos": 1,
+      "pmos": 2,
+      "lower": 1,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "k3b",
+      "total": 3,
+      "nmos": 2,
+      "pmos": 1,
+      "lower": 2,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "rsh",
+      "total": 3,
+      "nmos": 1,
+      "pmos": 2,
+      "lower": 0,
+      "upper": 3,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "toxm",
+      "total": 3,
+      "nmos": 1,
+      "pmos": 2,
+      "lower": 2,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "b0",
+      "total": 2,
+      "nmos": 0,
+      "pmos": 2,
+      "lower": 1,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "drout",
+      "total": 2,
+      "nmos": 1,
+      "pmos": 1,
+      "lower": 1,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "dvt1",
+      "total": 2,
+      "nmos": 1,
+      "pmos": 1,
+      "lower": 1,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "k2",
+      "total": 2,
+      "nmos": 0,
+      "pmos": 2,
+      "lower": 2,
+      "upper": 0,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "lpeb",
+      "total": 2,
+      "nmos": 2,
+      "pmos": 0,
+      "lower": 2,
+      "upper": 0,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "nsd",
+      "total": 2,
+      "nmos": 1,
+      "pmos": 1,
+      "lower": 2,
+      "upper": 0,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "prwg",
+      "total": 2,
+      "nmos": 0,
+      "pmos": 2,
+      "lower": 0,
+      "upper": 2,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "toxe",
+      "total": 2,
+      "nmos": 1,
+      "pmos": 1,
+      "lower": 1,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "vfb",
+      "total": 2,
+      "nmos": 0,
+      "pmos": 2,
+      "lower": 1,
+      "upper": 1,
+      "repeated_boundary_limited": true
+    },
+    {
+      "parameter": "b1",
+      "total": 0,
+      "nmos": 0,
+      "pmos": 0,
+      "lower": 0,
+      "upper": 0,
+      "repeated_boundary_limited": false
+    },
+    {
+      "parameter": "ub",
+      "total": 0,
+      "nmos": 0,
+      "pmos": 0,
+      "lower": 0,
+      "upper": 0,
+      "repeated_boundary_limited": false
+    },
+    {
+      "parameter": "vth0",
+      "total": 0,
+      "nmos": 0,
+      "pmos": 0,
+      "lower": 0,
+      "upper": 0,
+      "repeated_boundary_limited": false
+    }
+  ],
+  "devices": [
+    {
+      "device": "nmos_L0p15_W1p6",
+      "dev_type": "nmos",
+      "n_bound_hits": 1,
+      "parameters": [
+        "wr"
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "n_bound_hits": 16,
+      "parameters": [
+        "toxe",
+        "xj",
+        "nsd",
+        "dvt1",
+        "lpe0",
+        "lpeb",
+        "ua",
+        "u0",
+        "nfactor",
+        "cit",
+        "cdscd",
+        "eta0",
+        "pclm",
+        "pdiblc2",
+        "delta",
+        "alpha0"
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "n_bound_hits": 26,
+      "parameters": [
+        "xj",
+        "ndep",
+        "dwg",
+        "rsh",
+        "k3",
+        "dvt0",
+        "dvt1w",
+        "w0",
+        "k3b",
+        "lpe0",
+        "lpeb",
+        "vsat",
+        "ua",
+        "rdsw",
+        "wr",
+        "u0",
+        "a0",
+        "voff",
+        "nfactor",
+        "cdscd",
+        "eta0",
+        "dsub",
+        "pclm",
+        "pdiblc2",
+        "delta",
+        "beta0"
+      ]
+    },
+    {
+      "device": "nmos_L1_W1p6",
+      "dev_type": "nmos",
+      "n_bound_hits": 2,
+      "parameters": [
+        "k3b",
+        "lpe0"
+      ]
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "n_bound_hits": 5,
+      "parameters": [
+        "lpe0",
+        "vsat",
+        "rdsw",
+        "eta0",
+        "pdiblc2"
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "n_bound_hits": 24,
+      "parameters": [
+        "toxm",
+        "xj",
+        "ndep",
+        "dwg",
+        "k1",
+        "dvt1w",
+        "lpe0",
+        "ua",
+        "rdsw",
+        "wr",
+        "u0",
+        "a0",
+        "a2",
+        "ags",
+        "voff",
+        "nfactor",
+        "cit",
+        "cdscd",
+        "eta0",
+        "pdiblc2",
+        "drout",
+        "delta",
+        "alpha0",
+        "beta0"
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "n_bound_hits": 8,
+      "parameters": [
+        "k1",
+        "vsat",
+        "wr",
+        "a0",
+        "a2",
+        "voff",
+        "nfactor",
+        "delta"
+      ]
+    },
+    {
+      "device": "nmos_L100_W100",
+      "dev_type": "nmos",
+      "n_bound_hits": 2,
+      "parameters": [
+        "dvt0",
+        "ua"
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W0p55",
+      "dev_type": "pmos",
+      "n_bound_hits": 2,
+      "parameters": [
+        "u0",
+        "ags"
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W1p6",
+      "dev_type": "pmos",
+      "n_bound_hits": 2,
+      "parameters": [
+        "dsub",
+        "alpha0"
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W5",
+      "dev_type": "pmos",
+      "n_bound_hits": 1,
+      "parameters": [
+        "u0"
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "n_bound_hits": 32,
+      "parameters": [
+        "toxm",
+        "xj",
+        "ndep",
+        "nsd",
+        "dwg",
+        "rsh",
+        "k1",
+        "k2",
+        "k3",
+        "dvt0",
+        "dvt1w",
+        "w0",
+        "k3b",
+        "vfb",
+        "vsat",
+        "ua",
+        "rdsw",
+        "prwg",
+        "wr",
+        "u0",
+        "a2",
+        "b0",
+        "voff",
+        "nfactor",
+        "cit",
+        "cdscd",
+        "eta0",
+        "dsub",
+        "pclm",
+        "drout",
+        "delta",
+        "alpha0"
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p64",
+      "dev_type": "pmos",
+      "n_bound_hits": 3,
+      "parameters": [
+        "w0",
+        "a0",
+        "pdiblc2"
+      ]
+    },
+    {
+      "device": "pmos_L2_W5",
+      "dev_type": "pmos",
+      "n_bound_hits": 2,
+      "parameters": [
+        "vsat",
+        "rdsw"
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "n_bound_hits": 26,
+      "parameters": [
+        "toxe",
+        "toxm",
+        "ndep",
+        "rsh",
+        "k1",
+        "k2",
+        "k3",
+        "dvt1",
+        "w0",
+        "vfb",
+        "vsat",
+        "ua",
+        "rdsw",
+        "prwg",
+        "wr",
+        "a0",
+        "ags",
+        "b0",
+        "voff",
+        "nfactor",
+        "cit",
+        "cdscd",
+        "pclm",
+        "pdiblc2",
+        "delta",
+        "beta0"
+      ]
+    },
+    {
+      "device": "pmos_L8_W0p84",
+      "dev_type": "pmos",
+      "n_bound_hits": 1,
+      "parameters": [
+        "a0"
+      ]
+    },
+    {
+      "device": "pmos_L8_W1p6",
+      "dev_type": "pmos",
+      "n_bound_hits": 2,
+      "parameters": [
+        "a0",
+        "alpha0"
+      ]
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "n_bound_hits": 4,
+      "parameters": [
+        "ags",
+        "eta0",
+        "dsub",
+        "pdiblc2"
+      ]
+    }
+  ],
+  "hits": [
+    {
+      "device": "nmos_L0p15_W1p6",
+      "dev_type": "nmos",
+      "parameter": "wr",
+      "local": -0.9511192933460402,
+      "direction": "lower",
+      "value": 0.904888070665396,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "toxe",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 3.7332e-09,
+      "bounds": [
+        3.7332e-09,
+        4.5628e-09
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "xj",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 1.35e-07,
+      "bounds": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "nsd",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 9e+19,
+      "bounds": [
+        9e+19,
+        1.1e+20
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "dvt1",
+      "local": -0.9904117351293862,
+      "direction": "lower",
+      "value": 0.11280004507618009,
+      "bounds": [
+        0.11268,
+        0.13772
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "lpe0",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 2.61822e-07,
+      "bounds": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "lpeb",
+      "local": -0.9822763691035644,
+      "direction": "lower",
+      "value": -5.398008480941784e-08,
+      "bounds": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "ua",
+      "local": -0.9716140271118637,
+      "direction": "lower",
+      "value": -3.478506340839708e-09,
+      "bounds": [
+        -3.487506e-09,
+        -2.8534139999999996e-09
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "u0",
+      "local": 0.9935878333656283,
+      "direction": "upper",
+      "value": 0.08937259216310255,
+      "bounds": [
+        0.07316568,
+        0.08942472
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "nfactor",
+      "local": 0.9990407134880244,
+      "direction": "upper",
+      "value": 9.869890192882055,
+      "bounds": [
+        8.076069,
+        9.870750999999998
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "cit",
+      "local": -0.999289364251375,
+      "direction": "lower",
+      "value": -2.4649847436861906e-07,
+      "bounds": [
+        -2.4651440000000003e-07,
+        -2.016936e-07
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "cdscd",
+      "local": 0.9996659040458055,
+      "direction": "upper",
+      "value": 5.278079687397339e-06,
+      "bounds": [
+        4.318559999999999e-06,
+        5.27824e-06
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "eta0",
+      "local": 0.9997421073987128,
+      "direction": "upper",
+      "value": -0.2201076069440893,
+      "bounds": [
+        -0.2690127,
+        -0.2201013
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "pclm",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 0.6579432000000001,
+      "bounds": [
+        0.6579432000000001,
+        0.8041528
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "pdiblc2",
+      "local": 0.9965265210839654,
+      "direction": "upper",
+      "value": -0.01260243193264314,
+      "bounds": [
+        -0.01539703,
+        -0.01259757
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "delta",
+      "local": -0.9960416393392079,
+      "direction": "lower",
+      "value": 0.07629116946696414,
+      "bounds": [
+        0.07625763,
+        0.09320377
+      ]
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "parameter": "alpha0",
+      "local": 0.9515713333579173,
+      "direction": "upper",
+      "value": 0.022985048398738262,
+      "bounds": [
+        0.01888911,
+        0.02308669
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "xj",
+      "local": -0.9999816381344085,
+      "direction": "lower",
+      "value": 1.3500027542798388e-07,
+      "bounds": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "ndep",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 1.87e+17,
+      "bounds": [
+        1.53e+17,
+        1.87e+17
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "dwg",
+      "local": -0.9954713133880057,
+      "direction": "lower",
+      "value": -1.4623976846806046e-08,
+      "bounds": [
+        -1.463e-08,
+        -1.197e-08
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "rsh",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 1.1,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "k3",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 1.815,
+      "bounds": [
+        1.4849999999999999,
+        1.815
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "dvt0",
+      "local": 0.9929936338118754,
+      "direction": "upper",
+      "value": 0.08426129620316802,
+      "bounds": [
+        0.06898499999999999,
+        0.084315
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "dvt1w",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 4770000.0,
+      "bounds": [
+        4770000.0,
+        5830000.0
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "w0",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 9e-08,
+      "bounds": [
+        9e-08,
+        1.0999999999999999e-07
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "k3b",
+      "local": -0.9997317902870599,
+      "direction": "lower",
+      "value": 1.4400429135540704,
+      "bounds": [
+        1.44,
+        1.7600000000000002
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "lpe0",
+      "local": -0.9987910252593182,
+      "direction": "lower",
+      "value": 2.1424677601677772e-07,
+      "bounds": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "lpeb",
+      "local": -0.9999691928239641,
+      "direction": "lower",
+      "value": -5.406704857656835e-08,
+      "bounds": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "vsat",
+      "local": -0.9995440533278388,
+      "direction": "lower",
+      "value": 136985.13941716097,
+      "bounds": [
+        136978.2,
+        167417.8
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "ua",
+      "local": -0.9994816175712768,
+      "direction": "lower",
+      "value": -2.2148336195509173e-09,
+      "bounds": [
+        -2.214938e-09,
+        -1.812222e-09
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "rdsw",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 142.6329,
+      "bounds": [
+        142.6329,
+        174.32909999999998
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "wr",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 1.1,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "u0",
+      "local": 0.9996446576972389,
+      "direction": "upper",
+      "value": 0.11657423408227534,
+      "bounds": [
+        0.09538200000000001,
+        0.116578
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "a0",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 5.378164,
+      "bounds": [
+        4.400316,
+        5.378164
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "voff",
+      "local": -0.9995724155368124,
+      "direction": "lower",
+      "value": -0.1807141751293374,
+      "bounds": [
+        -0.1807212,
+        -0.1478628
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "nfactor",
+      "local": 0.9998810910511654,
+      "direction": "upper",
+      "value": 9.642484764534363,
+      "bounds": [
+        7.889391,
+        9.642589000000001
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "cdscd",
+      "local": 0.9999843070706551,
+      "direction": "upper",
+      "value": 5.278232469904783e-06,
+      "bounds": [
+        4.318559999999999e-06,
+        5.27824e-06
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "eta0",
+      "local": -1.0,
+      "direction": "lower",
+      "value": -0.3190902,
+      "bounds": [
+        -0.3190902,
+        -0.2610738
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "dsub",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 0.40992710000000004,
+      "bounds": [
+        0.3353949,
+        0.40992710000000004
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "pclm",
+      "local": -0.999983786841363,
+      "direction": "lower",
+      "value": 1.1351270448846331,
+      "bounds": [
+        1.135125,
+        1.387375
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "pdiblc2",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 0.006896907,
+      "bounds": [
+        0.006896907,
+        0.008429553
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "delta",
+      "local": -0.9999450973073142,
+      "direction": "lower",
+      "value": 0.052004567241484015,
+      "bounds": [
+        0.05200425,
+        0.06356075
+      ]
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "parameter": "beta0",
+      "local": 0.9999977371630193,
+      "direction": "upper",
+      "value": 36.82007242565103,
+      "bounds": [
+        30.125519999999998,
+        36.82008
+      ]
+    },
+    {
+      "device": "nmos_L1_W1p6",
+      "dev_type": "nmos",
+      "parameter": "k3b",
+      "local": 0.9732307195663452,
+      "direction": "upper",
+      "value": 1.7557169151306153,
+      "bounds": [
+        1.44,
+        1.7600000000000002
+      ]
+    },
+    {
+      "device": "nmos_L1_W1p6",
+      "dev_type": "nmos",
+      "parameter": "lpe0",
+      "local": 0.9625484943389893,
+      "direction": "upper",
+      "value": 2.609305792622566e-07,
+      "bounds": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ]
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "parameter": "lpe0",
+      "local": 0.977865374251625,
+      "direction": "upper",
+      "value": 2.612951516379372e-07,
+      "bounds": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ]
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "parameter": "vsat",
+      "local": 0.9999977844707404,
+      "direction": "upper",
+      "value": -3.041424748707096,
+      "bounds": [
+        -3.717296,
+        -3.041424
+      ]
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "parameter": "rdsw",
+      "local": 0.99999929675832,
+      "direction": "upper",
+      "value": 317.06177972990247,
+      "bounds": [
+        259.4142,
+        317.0618
+      ]
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "parameter": "eta0",
+      "local": -0.9991611509963798,
+      "direction": "lower",
+      "value": 0.0036154929522231698,
+      "bounds": [
+        0.0036151559999999996,
+        0.004418524
+      ]
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "parameter": "pdiblc2",
+      "local": -0.9999842279422428,
+      "direction": "lower",
+      "value": 0.007218858650672896,
+      "bounds": [
+        0.007218846000000001,
+        0.008823034
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "toxm",
+      "local": -0.9993563383679843,
+      "direction": "lower",
+      "value": 3.73346699084496e-09,
+      "bounds": [
+        3.7332e-09,
+        4.5628e-09
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "xj",
+      "local": -0.9999865289536547,
+      "direction": "lower",
+      "value": 1.3500020206569518e-07,
+      "bounds": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "ndep",
+      "local": -0.9999970643982551,
+      "direction": "lower",
+      "value": 1.5300004990522966e+17,
+      "bounds": [
+        1.53e+17,
+        1.87e+17
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "dwg",
+      "local": -0.9998190779208204,
+      "direction": "lower",
+      "value": -1.462975937363469e-08,
+      "bounds": [
+        -1.463e-08,
+        -1.197e-08
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "k1",
+      "local": 0.9975346277688475,
+      "direction": "upper",
+      "value": 0.5864545315604015,
+      "bounds": [
+        0.47993399999999997,
+        0.5865859999999999
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "dvt1w",
+      "local": 0.999937055648626,
+      "direction": "upper",
+      "value": 5829966.639493772,
+      "bounds": [
+        4770000.0,
+        5830000.0
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "lpe0",
+      "local": 0.9999151331750673,
+      "direction": "upper",
+      "value": 2.6181997999983295e-07,
+      "bounds": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "ua",
+      "local": -0.9988216865505097,
+      "direction": "lower",
+      "value": -1.0770860108275064e-09,
+      "bounds": [
+        -1.0772014e-09,
+        -8.813465999999999e-10
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "rdsw",
+      "local": -0.9999927672212394,
+      "direction": "lower",
+      "value": 0.09347227511819366,
+      "bounds": [
+        0.0934722,
+        0.1142438
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "wr",
+      "local": 0.9984888920196524,
+      "direction": "upper",
+      "value": 1.0998488892019653,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "u0",
+      "local": 0.9998809378285554,
+      "direction": "upper",
+      "value": 0.25103048285837304,
+      "bounds": [
+        0.20539079999999998,
+        0.2510332
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "a0",
+      "local": 0.9997152407359409,
+      "direction": "upper",
+      "value": 2.112847302871041,
+      "bounds": [
+        1.7287379999999999,
+        2.112902
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "a2",
+      "local": 0.9983849569777807,
+      "direction": "upper",
+      "value": 0.4255165156005134,
+      "bounds": [
+        0.348201,
+        0.42557900000000004
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "ags",
+      "local": -0.9999999978395039,
+      "direction": "lower",
+      "value": 0.4834584001160566,
+      "bounds": [
+        0.48345839999999995,
+        0.5908936
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "voff",
+      "local": -1.0,
+      "direction": "lower",
+      "value": -0.1212574,
+      "bounds": [
+        -0.1212574,
+        -0.0992106
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "nfactor",
+      "local": -0.9996855148122954,
+      "direction": "lower",
+      "value": 3.6705352542927048,
+      "bounds": [
+        3.6704069999999995,
+        4.486052999999999
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "cit",
+      "local": 0.9950685175555878,
+      "direction": "upper",
+      "value": 1.099506851755559e-05,
+      "bounds": [
+        9e-06,
+        1.1000000000000001e-05
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "cdscd",
+      "local": -0.9997363132709806,
+      "direction": "lower",
+      "value": 4.318686527440052e-06,
+      "bounds": [
+        4.318559999999999e-06,
+        5.27824e-06
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "eta0",
+      "local": -0.9991405096485594,
+      "direction": "lower",
+      "value": 0.07200687592281153,
+      "bounds": [
+        0.07200000000000001,
+        0.088
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "pdiblc2",
+      "local": -0.9999999875175128,
+      "direction": "lower",
+      "value": 0.006812190009448119,
+      "bounds": [
+        0.006812189999999999,
+        0.00832601
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "drout",
+      "local": -0.9999999750118057,
+      "direction": "lower",
+      "value": 3.1451400087323744,
+      "bounds": [
+        3.14514,
+        3.8440600000000003
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "delta",
+      "local": -0.9999998110367105,
+      "direction": "lower",
+      "value": 0.13500000283444935,
+      "bounds": [
+        0.135,
+        0.16499999999999998
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "alpha0",
+      "local": -0.9631199200212066,
+      "direction": "lower",
+      "value": 3.771532864499069e-05,
+      "bounds": [
+        3.7561409999999997e-05,
+        4.590839e-05
+      ]
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "parameter": "beta0",
+      "local": -0.9894911946894326,
+      "direction": "lower",
+      "value": 16.032758737641302,
+      "bounds": [
+        16.014059999999997,
+        19.57274
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "k1",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 0.5865859999999999,
+      "bounds": [
+        0.47993399999999997,
+        0.5865859999999999
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "vsat",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 25964.29,
+      "bounds": [
+        21243.510000000002,
+        25964.29
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "wr",
+      "local": -0.9901678438213691,
+      "direction": "lower",
+      "value": 0.9009832156178631,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "a0",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 2.112902,
+      "bounds": [
+        1.7287379999999999,
+        2.112902
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "a2",
+      "local": 1.0,
+      "direction": "upper",
+      "value": 0.42557900000000004,
+      "bounds": [
+        0.348201,
+        0.42557900000000004
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "voff",
+      "local": -1.0,
+      "direction": "lower",
+      "value": -0.1212574,
+      "bounds": [
+        -0.1212574,
+        -0.0992106
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "nfactor",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 35.61579,
+      "bounds": [
+        35.61579,
+        43.530409999999996
+      ]
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "parameter": "delta",
+      "local": -1.0,
+      "direction": "lower",
+      "value": 0.13499819999999998,
+      "bounds": [
+        0.13499819999999998,
+        0.1649978
+      ]
+    },
+    {
+      "device": "nmos_L100_W100",
+      "dev_type": "nmos",
+      "parameter": "dvt0",
+      "local": 0.9837665557861328,
+      "direction": "upper",
+      "value": 0.08419057065010072,
+      "bounds": [
+        0.06898499999999999,
+        0.084315
+      ]
+    },
+    {
+      "device": "nmos_L100_W100",
+      "dev_type": "nmos",
+      "parameter": "ua",
+      "local": 0.9956046938896179,
+      "direction": "upper",
+      "value": -1.1719760754621027e-09,
+      "bounds": [
+        -1.431716e-09,
+        -1.171404e-09
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W0p55",
+      "dev_type": "pmos",
+      "parameter": "u0",
+      "local": -0.9618202447891235,
+      "direction": "lower",
+      "value": 0.002803625283706903,
+      "bounds": [
+        0.0027917819999999996,
+        0.003412178
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W0p55",
+      "dev_type": "pmos",
+      "parameter": "ags",
+      "local": 0.9795399904251099,
+      "direction": "upper",
+      "value": 4.4463294122225046,
+      "bounds": [
+        3.644685,
+        4.4546149999999995
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W1p6",
+      "dev_type": "pmos",
+      "parameter": "dsub",
+      "local": -0.9873235821723938,
+      "direction": "lower",
+      "value": 0.9012676417827606,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W1p6",
+      "dev_type": "pmos",
+      "parameter": "alpha0",
+      "local": -0.9985535740852356,
+      "direction": "lower",
+      "value": 4.5411847146418685e-13,
+      "bounds": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ]
+    },
+    {
+      "device": "pmos_L0p35_W5",
+      "dev_type": "pmos",
+      "parameter": "u0",
+      "local": 0.9816884398460388,
+      "direction": "upper",
+      "value": 0.03280230336982012,
+      "bounds": [
+        0.026883,
+        0.032857
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "toxm",
+      "local": -0.9889756882203988,
+      "direction": "lower",
+      "value": 3.811663283882771e-09,
+      "bounds": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "xj",
+      "local": -0.9995698611700172,
+      "direction": "lower",
+      "value": 1.3500645208244975e-07,
+      "bounds": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "ndep",
+      "local": 0.9999993901559756,
+      "direction": "upper",
+      "value": 1.869999896326516e+17,
+      "bounds": [
+        1.53e+17,
+        1.87e+17
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "nsd",
+      "local": -0.9999958296601542,
+      "direction": "lower",
+      "value": 9.000004170339846e+19,
+      "bounds": [
+        9e+19,
+        1.1e+20
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "dwg",
+      "local": -0.999999999920304,
+      "direction": "lower",
+      "value": -8.707599999936912e-09,
+      "bounds": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "rsh",
+      "local": 0.9999999965328801,
+      "direction": "upper",
+      "value": 1.099999999653288,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "k1",
+      "local": 0.9945075241414294,
+      "direction": "upper",
+      "value": 0.7121582303687369,
+      "bounds": [
+        0.582966,
+        0.712514
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "k2",
+      "local": -0.9533922672185859,
+      "direction": "lower",
+      "value": -0.03926703500659725,
+      "bounds": [
+        -0.039434119999999996,
+        -0.03226428
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "k3",
+      "local": 0.9999746842905708,
+      "direction": "upper",
+      "value": 3.7289914179745036,
+      "bounds": [
+        3.051,
+        3.729
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "dvt0",
+      "local": 0.9796636011220059,
+      "direction": "upper",
+      "value": 2.6814534446660163,
+      "bounds": [
+        2.1979800000000003,
+        2.68642
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "dvt1w",
+      "local": 0.9982471310678853,
+      "direction": "upper",
+      "value": 2120572.029341199,
+      "bounds": [
+        1735290.0,
+        2120910.0
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "w0",
+      "local": 0.9989207037131709,
+      "direction": "upper",
+      "value": 1.0998920703713172e-08,
+      "bounds": [
+        9e-09,
+        1.1000000000000001e-08
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "k3b",
+      "local": -0.999999998968957,
+      "direction": "lower",
+      "value": 0.9000000001031043,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "vfb",
+      "local": 0.9999999980388921,
+      "direction": "upper",
+      "value": -0.9000000001961108,
+      "bounds": [
+        -1.1,
+        -0.9
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "vsat",
+      "local": 0.9999999999997871,
+      "direction": "upper",
+      "value": -4422.771000000104,
+      "bounds": [
+        -5405.6089999999995,
+        -4422.771
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "ua",
+      "local": 0.999999999882039,
+      "direction": "upper",
+      "value": -1.8660960000244585e-09,
+      "bounds": [
+        -2.2807839999999997e-09,
+        -1.866096e-09
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "rdsw",
+      "local": 0.999999999990653,
+      "direction": "upper",
+      "value": 3932.389999996659,
+      "bounds": [
+        3217.41,
+        3932.3900000000003
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "prwg",
+      "local": 0.9999999985572958,
+      "direction": "upper",
+      "value": 0.05719999999249794,
+      "bounds": [
+        0.046799999999999994,
+        0.0572
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "wr",
+      "local": 0.9999999999806977,
+      "direction": "upper",
+      "value": 1.0999999999980699,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "u0",
+      "local": -0.9999999998231869,
+      "direction": "lower",
+      "value": 0.04333599000085138,
+      "bounds": [
+        0.043335990000000005,
+        0.05296621
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "a2",
+      "local": 0.9999999999999953,
+      "direction": "upper",
+      "value": 0.5137406999999997,
+      "bounds": [
+        0.42033329999999997,
+        0.5137406999999999
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "b0",
+      "local": -0.9999999984078332,
+      "direction": "lower",
+      "value": -5.337529999227433e-07,
+      "bounds": [
+        -5.337530000000001e-07,
+        -4.36707e-07
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "voff",
+      "local": 0.9999999998530877,
+      "direction": "upper",
+      "value": -0.16371000000267233,
+      "bounds": [
+        -0.20009000000000002,
+        -0.16371
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "nfactor",
+      "local": 0.9999999999997549,
+      "direction": "upper",
+      "value": 2.791029999999938,
+      "bounds": [
+        2.28357,
+        2.79103
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "cit",
+      "local": -0.9999917530257972,
+      "direction": "lower",
+      "value": -7.032415727618675e-11,
+      "bounds": [
+        -7.032421e-11,
+        -5.753798999999999e-11
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "cdscd",
+      "local": -0.9999999994052171,
+      "direction": "lower",
+      "value": 9.000000000594783e-11,
+      "bounds": [
+        9e-11,
+        1.1000000000000001e-10
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "eta0",
+      "local": -0.9999995531251851,
+      "direction": "lower",
+      "value": 0.1800000089374963,
+      "bounds": [
+        0.18,
+        0.22000000000000003
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "dsub",
+      "local": 0.9995909240187242,
+      "direction": "upper",
+      "value": 1.0999590924018725,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "pclm",
+      "local": -0.9999999997771557,
+      "direction": "lower",
+      "value": -0.07928568999839379,
+      "bounds": [
+        -0.07928569,
+        -0.06487011
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "drout",
+      "local": 0.9999989512690255,
+      "direction": "upper",
+      "value": 0.5082736515416025,
+      "bounds": [
+        0.4158603,
+        0.5082737
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "delta",
+      "local": 0.9999999999948994,
+      "direction": "upper",
+      "value": 0.14030609999993493,
+      "bounds": [
+        0.11479589999999999,
+        0.1403061
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "parameter": "alpha0",
+      "local": -0.9999999999998138,
+      "direction": "lower",
+      "value": 4.5404550000000934e-13,
+      "bounds": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p64",
+      "dev_type": "pmos",
+      "parameter": "w0",
+      "local": 0.9814608614701507,
+      "direction": "upper",
+      "value": 1.0981460861470151e-08,
+      "bounds": [
+        9e-09,
+        1.1000000000000001e-08
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p64",
+      "dev_type": "pmos",
+      "parameter": "a0",
+      "local": -0.9573290204635387,
+      "direction": "lower",
+      "value": 1.5973787858641362,
+      "bounds": [
+        1.5898409999999998,
+        1.943139
+      ]
+    },
+    {
+      "device": "pmos_L0p5_W0p64",
+      "dev_type": "pmos",
+      "parameter": "pdiblc2",
+      "local": 0.974890782850039,
+      "direction": "upper",
+      "value": 0.014271418727294705,
+      "bounds": [
+        0.01170333,
+        0.01430407
+      ]
+    },
+    {
+      "device": "pmos_L2_W5",
+      "dev_type": "pmos",
+      "parameter": "vsat",
+      "local": -0.9854044914245605,
+      "direction": "lower",
+      "value": 6043547.091668129,
+      "bounds": [
+        6033762.0,
+        7374598.0
+      ]
+    },
+    {
+      "device": "pmos_L2_W5",
+      "dev_type": "pmos",
+      "parameter": "rdsw",
+      "local": 0.9693801999092102,
+      "direction": "upper",
+      "value": 13026.248681194187,
+      "bounds": [
+        10687.59,
+        13062.61
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "toxe",
+      "local": 0.9999183008851413,
+      "direction": "upper",
+      "value": 4.652965441274414e-09,
+      "bounds": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "toxm",
+      "local": 0.9999807342773825,
+      "direction": "upper",
+      "value": 4.652991850599332e-09,
+      "bounds": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "ndep",
+      "local": 0.9999999985844066,
+      "direction": "upper",
+      "value": 1.869999999759349e+17,
+      "bounds": [
+        1.53e+17,
+        1.87e+17
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "rsh",
+      "local": 0.9998829074571827,
+      "direction": "upper",
+      "value": 1.0999882907457184,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "k1",
+      "local": -0.9999999999992972,
+      "direction": "lower",
+      "value": 0.5829660000000455,
+      "bounds": [
+        0.582966,
+        0.712514
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "k2",
+      "local": -0.9998971934342955,
+      "direction": "lower",
+      "value": -0.06386232313386536,
+      "bounds": [
+        -0.06386292,
+        -0.05225148
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "k3",
+      "local": -0.9999999559086827,
+      "direction": "lower",
+      "value": 3.0510000149469567,
+      "bounds": [
+        3.051,
+        3.729
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "dvt1",
+      "local": 0.9999871531464819,
+      "direction": "upper",
+      "value": 0.17749579270317165,
+      "bounds": [
+        0.145224,
+        0.17749600000000001
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "w0",
+      "local": 0.9972523636766855,
+      "direction": "upper",
+      "value": 1.0997252363676686e-08,
+      "bounds": [
+        9e-09,
+        1.1000000000000001e-08
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "vfb",
+      "local": -0.9999998216771413,
+      "direction": "lower",
+      "value": -1.0999999821677142,
+      "bounds": [
+        -1.1,
+        -0.9
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "vsat",
+      "local": -0.9999618948597517,
+      "direction": "lower",
+      "value": 665356617.0444293,
+      "bounds": [
+        665353800.0,
+        813210200.0
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "ua",
+      "local": 0.9975994703343283,
+      "direction": "upper",
+      "value": -2.9952967090314218e-09,
+      "bounds": [
+        -3.659942e-09,
+        -2.994498e-09
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "rdsw",
+      "local": 0.9999915185004056,
+      "direction": "upper",
+      "value": 11337.581258203183,
+      "bounds": [
+        9276.21,
+        11337.59
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "prwg",
+      "local": 0.9998637994543238,
+      "direction": "upper",
+      "value": 0.057199291757162485,
+      "bounds": [
+        0.046799999999999994,
+        0.0572
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "wr",
+      "local": -0.9999932327357177,
+      "direction": "lower",
+      "value": 0.9000006767264283,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "a0",
+      "local": -0.9999999999573131,
+      "direction": "lower",
+      "value": 1.862316000008833,
+      "bounds": [
+        1.862316,
+        2.276164
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "ags",
+      "local": 0.9999999999584079,
+      "direction": "upper",
+      "value": 0.5379505999979659,
+      "bounds": [
+        0.44014139999999996,
+        0.5379506
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "b0",
+      "local": 0.9994770731429856,
+      "direction": "upper",
+      "value": 4.8497626020117094e-08,
+      "bounds": [
+        -4.8523000000000004e-08,
+        4.8523000000000004e-08
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "voff",
+      "local": 0.9999999995153364,
+      "direction": "upper",
+      "value": -0.16371000000881603,
+      "bounds": [
+        -0.20009000000000002,
+        -0.16371
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "nfactor",
+      "local": 0.9999997953525614,
+      "direction": "upper",
+      "value": 42.75017920466229,
+      "bounds": [
+        34.977419999999995,
+        42.75018
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "cit",
+      "local": 0.9553464034720933,
+      "direction": "upper",
+      "value": -5.782346535449852e-11,
+      "bounds": [
+        -7.032421e-11,
+        -5.753798999999999e-11
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "cdscd",
+      "local": 0.9999999980402619,
+      "direction": "upper",
+      "value": 1.0999999998040263e-10,
+      "bounds": [
+        9e-11,
+        1.1000000000000001e-10
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "pclm",
+      "local": 0.9999999999008538,
+      "direction": "upper",
+      "value": 0.033106699999701596,
+      "bounds": [
+        0.027087299999999998,
+        0.033106699999999996
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "pdiblc2",
+      "local": 0.9999806958558417,
+      "direction": "upper",
+      "value": -0.00011431644519737828,
+      "bounds": [
+        -0.0001397198,
+        -0.00011431620000000001
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "delta",
+      "local": 0.9999999999999942,
+      "direction": "upper",
+      "value": -0.010737900000000007,
+      "bounds": [
+        -0.013124100000000001,
+        -0.0107379
+      ]
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "parameter": "beta0",
+      "local": 0.9999357751289972,
+      "direction": "upper",
+      "value": 6.821775169982875,
+      "bounds": [
+        5.581485,
+        6.821815
+      ]
+    },
+    {
+      "device": "pmos_L8_W0p84",
+      "dev_type": "pmos",
+      "parameter": "a0",
+      "local": 0.9705497026443481,
+      "direction": "upper",
+      "value": 1.0227766693927407,
+      "bounds": [
+        0.8390637000000001,
+        1.0255223
+      ]
+    },
+    {
+      "device": "pmos_L8_W1p6",
+      "dev_type": "pmos",
+      "parameter": "a0",
+      "local": -0.9836829304695129,
+      "direction": "lower",
+      "value": 1.6755562989332677,
+      "bounds": [
+        1.6725240000000001,
+        2.044196
+      ]
+    },
+    {
+      "device": "pmos_L8_W1p6",
+      "dev_type": "pmos",
+      "parameter": "alpha0",
+      "local": 0.9723702669143677,
+      "direction": "upper",
+      "value": 5.535505937806963e-13,
+      "bounds": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ]
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "parameter": "ags",
+      "local": 0.9855441451072693,
+      "direction": "upper",
+      "value": 0.3525074361914456,
+      "bounds": [
+        0.28879469999999996,
+        0.3529713
+      ]
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "parameter": "eta0",
+      "local": -0.9556277394294739,
+      "direction": "lower",
+      "value": 0.1808874452114105,
+      "bounds": [
+        0.18,
+        0.22000000000000003
+      ]
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "parameter": "dsub",
+      "local": -0.9985443353652954,
+      "direction": "lower",
+      "value": 0.9001455664634704,
+      "bounds": [
+        0.9,
+        1.1
+      ]
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "parameter": "pdiblc2",
+      "local": -0.9934794902801514,
+      "direction": "lower",
+      "value": -0.0016462955406284332,
+      "bounds": [
+        -0.001647272,
+        -0.001347768
+      ]
+    }
+  ],
+  "inactive_selected_parameters_by_family": {
+    "nmos": [
+      "vfb",
+      "prwg",
+      "b0",
+      "b1"
+    ],
+    "pmos": [
+      "lpe0",
+      "lpeb"
+    ]
+  },
+  "key_nmos_L1_W3": {
+    "rrms": 0.06574959129947501,
+    "high_voltage_rrms": 0.05045997949567713,
+    "bound_hits": [
+      {
+        "device": "nmos_L1_W3",
+        "dev_type": "nmos",
+        "parameter": "lpe0",
+        "local": 0.977865374251625,
+        "direction": "upper",
+        "value": 2.612951516379372e-07,
+        "bounds": [
+          2.1421800000000002e-07,
+          2.61822e-07
+        ]
+      },
+      {
+        "device": "nmos_L1_W3",
+        "dev_type": "nmos",
+        "parameter": "vsat",
+        "local": 0.9999977844707404,
+        "direction": "upper",
+        "value": -3.041424748707096,
+        "bounds": [
+          -3.717296,
+          -3.041424
+        ]
+      },
+      {
+        "device": "nmos_L1_W3",
+        "dev_type": "nmos",
+        "parameter": "rdsw",
+        "local": 0.99999929675832,
+        "direction": "upper",
+        "value": 317.06177972990247,
+        "bounds": [
+          259.4142,
+          317.0618
+        ]
+      },
+      {
+        "device": "nmos_L1_W3",
+        "dev_type": "nmos",
+        "parameter": "eta0",
+        "local": -0.9991611509963798,
+        "direction": "lower",
+        "value": 0.0036154929522231698,
+        "bounds": [
+          0.0036151559999999996,
+          0.004418524
+        ]
+      },
+      {
+        "device": "nmos_L1_W3",
+        "dev_type": "nmos",
+        "parameter": "pdiblc2",
+        "local": -0.9999842279422428,
+        "direction": "lower",
+        "value": 0.007218858650672896,
+        "bounds": [
+          0.007218846000000001,
+          0.008823034
+        ]
+      }
+    ]
+  },
+  "interpretation": {
+    "boundary_hit_is_not_proof": "expand only after outward physical probes improve multiple independent sweep sections; widespread hits can also signal non-identifiability",
+    "zero_family_terms": "a globally selected parameter published as zero throughout one polarity must receive an absolute cross-polarity sensitivity probe before being fixed inactive"
+  }
+}

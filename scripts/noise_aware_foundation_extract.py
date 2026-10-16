@@ -402,6 +402,8 @@ def extract_device(context: fps.DeviceContext, parameter_set: str,
                    segment_guard_absolute: float,
                    data_dir: Path = None,
                    trust_radius: float = 0.25,
+                   start_mode: str = "informed",
+                   n_random: int = 8,
                    low_drain_tolerance: float = 0.0,
                    guard_mode: str = "reported",
                    noise_guard_absolute: float = 0.0005,
@@ -419,12 +421,21 @@ def extract_device(context: fps.DeviceContext, parameter_set: str,
         canonical_from_real(context, published_simulations), drain_layout)
     ordinary_starts, oracle = fps.diverse_oracle_starts(
         context, max(1, n_starts))
+    if start_mode == "random":
+        # Ablation: discard every informed start and search from uniform
+        # random points in the box.  The published card is retained only
+        # because the segment guard anchors on it.
+        rng = np.random.default_rng(20260819 + context.device_index)
+        ordinary_starts = [
+            rng.uniform(-1.0, 1.0, size=context.box.n_parameters)
+            for _ in range(max(1, n_random))]
     starts = [(f"ordinary_lhc_{index}", local)
               for index, local in enumerate(ordinary_starts)]
-    starts.extend(extra_physical_starts(context, parameter_set, data_dir))
-    starts.extend(section_objective_starts(context, max(1, n_starts)))
-    starts.extend(low_drain_constrained_starts(
-        context, max(1, n_starts), published_low_drain))
+    if start_mode != "random":
+        starts.extend(extra_physical_starts(context, parameter_set, data_dir))
+        starts.extend(section_objective_starts(context, max(1, n_starts)))
+        starts.extend(low_drain_constrained_starts(
+            context, max(1, n_starts), published_low_drain))
     starts.append(("inverse_prediction",
                    inverse_local(inverse, context, tensors, device)))
     starts.append(("published", context.box.local_published))
@@ -649,6 +660,7 @@ def extract_device(context: fps.DeviceContext, parameter_set: str,
                 best["surrogate_paper"]["high_voltage_rrms"]),
             "noise_models": best["real_noise"]["noise_models"],
             "oracle_lhc": oracle, "n_starts": len(starts),
+        "start_mode": start_mode,
             "n_validated": len(validations), "maxiter": maxiter,
             "diff_step": diff_step, "regularization": regularization,
             "trust_radius": trust_radius,
@@ -759,6 +771,11 @@ def main() -> None:
     parser.add_argument("--segment-guard-relative", type=float, default=0.25)
     parser.add_argument("--segment-guard-absolute", type=float, default=0.02)
     parser.add_argument(
+        "--start-mode", choices=("informed", "random"), default="informed",
+        help="random discards the sampled-card starts and searches from "
+             "uniform random points in the box")
+    parser.add_argument("--n-random", type=int, default=8)
+    parser.add_argument(
         "--low-drain-tolerance", type=float, default=0.0,
         help="fractional slack on the published-card low-drain constraint")
     parser.add_argument(
@@ -808,6 +825,7 @@ def main() -> None:
             segment_guard_absolute=args.segment_guard_absolute,
             data_dir=data_dir,
             trust_radius=args.trust_radius,
+            start_mode=args.start_mode, n_random=args.n_random,
             low_drain_tolerance=args.low_drain_tolerance,
             guard_mode=args.guard_mode,
             noise_guard_absolute=args.noise_guard_absolute,

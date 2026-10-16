@@ -37,7 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 import pdk_ml_extract as mlx  # noqa: E402
 from cryoml.config import OUT_DIR, PROCESSED_DIR, ensure_dirs  # noqa: E402
-from cryoml.data_io import load_device_curves  # noqa: E402
+from cryoml.data_io import bank_measured, load_device_curves  # noqa: E402
 from cryoml.devices import PAPER_DEVICES, parse_device_list  # noqa: E402
 from cryoml.foundation import (FoundationSurrogate, InverseAutoencoder,  # noqa: E402
                                canonical_point_order,
@@ -70,12 +70,15 @@ def default_paths(parameter_set: str) -> tuple[Path, Path, Path]:
 def box_from_dataset(data, parameter_set: str) -> ParameterBox:
     if parameter_set == "full":
         names = tuple(str(value) for value in data["parameter_names"])
+        log_scale = (tuple(bool(value) for value in data["log_scale"])
+                     if "log_scale" in data.files else None)
         return ParameterBox(
             names=names,
             published={name: float(value)
                        for name, value in zip(names, data["published"])},
             bounds={name: [float(lo), float(hi)]
-                    for name, lo, hi in zip(names, data["lo"], data["hi"])})
+                    for name, lo, hi in zip(names, data["lo"], data["hi"])},
+            log_scale=log_scale)
     names = tuple(PARAMS7)
     published = {name: float(value)
                  for name, value in zip(names, data["published"])}
@@ -697,7 +700,7 @@ def measured_finetune_batch(data_dir: Path, metadata: dict,
         with np.load(data_dir / f"{tag}.npz", allow_pickle=True) as data:
             order, descriptions = canonical_point_order(
                 data["kinds"], data["fixeds"], data["slices"])
-            measured = np.asarray(data["meas"], dtype=np.float64)[order]
+            measured = bank_measured(data, paper_device)[order]
         objective_scale = np.ones_like(measured)
         objective_weight = np.zeros_like(measured)
         segments = []
@@ -880,7 +883,7 @@ def build_device_context(device, data_dir: Path, metadata: dict,
         valid = np.flatnonzero(data["ok"])
         order, descriptions = canonical_point_order(
             data["kinds"], data["fixeds"], data["slices"])
-        measured = np.asarray(data["meas"], dtype=np.float64)[order]
+        measured = bank_measured(data, device)[order]
         local = local_from_dataset(data, box, parameter_set)[valid]
         currents = np.asarray(data["IDS"][valid], dtype=np.float32)[:, order]
         bin_index = int(data["bin_index"])

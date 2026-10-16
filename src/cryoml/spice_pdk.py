@@ -228,11 +228,13 @@ def _patch_params_in_bin(text: str, dev_type: str, bin_index: int,
             continue
         span = text[s:e]
         for k, v in params.items():
+            # Strings are written verbatim (e.g. ``{...temper...}`` expressions).
+            text_v = v if isinstance(v, str) else f"{v:.10g}"
             pat = re.compile(rf"^(\+\s*{re.escape(k)}\s*=\s*)[^\n]*", re.IGNORECASE | re.MULTILINE)
-            span, n = pat.subn(rf"\g<1>{v:.10g}", span, count=1)
+            span, n = pat.subn(lambda m: m.group(1) + text_v, span, count=1)
             if n == 0:
                 hdr_end = span.find("\n")
-                span = span[:hdr_end + 1] + f"+ {k} = {v:.10g}\n" + span[hdr_end + 1:]
+                span = span[:hdr_end + 1] + f"+ {k} = {text_v}\n" + span[hdr_end + 1:]
         return text[:s] + span + text[e:]
     raise ValueError(f"bin {bin_index} not found for {dev_type}")
 
@@ -264,13 +266,18 @@ def _instance_line(dev_type: str, L_um: float, W_um: float) -> str:
 
 
 def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
-                lib_path: Path, raw_dir: Path, temp_K: float) -> str:
-    """One deck that runs every curve's DC sweep in a single ngspice process."""
+                lib_path: Path, raw_dir: Path, temp_K: float,
+                temps_K: list[float] | None = None) -> str:
+    """One deck that runs every curve's DC sweep in a single ngspice process.
+
+    With ``temps_K`` the sweeps repeat at each temperature (``option temp``
+    inside the control block re-evaluates ``temper`` expressions); outputs are
+    ``raw_t{j}_{i}.dat``."""
     instance = _instance_line(dev_type, L_um, W_um)
     lines = [
         "* corrected-repository batched DC sweeps\n",
         ".options scale=1.0\n",
-        f".options temp={temp_K - 273.15:.4f}\n",
+        f".options temp={(temps_K[0] if temps_K else temp_K) - 273.15:.4f}\n",
         f'.lib "{lib_path.as_posix()}" tt_77k\n',
         instance,
     ]
@@ -280,6 +287,18 @@ def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
         ".control\n",
         "set filetype=ascii\n",
     ]
+    if temps_K:
+        for j, t in enumerate(temps_K):
+            lines.append(f"option temp={t - 273.15:.4f}\n")
+            lines += _sweep_lines(curves, raw_dir, f"raw_t{j}_")
+    else:
+        lines += _sweep_lines(curves, raw_dir, "raw_")
+    lines += ["quit\n", ".endc\n", ".end\n"]
+    return "".join(lines)
+
+
+def _sweep_lines(curves: list[Curve], raw_dir: Path, prefix: str) -> list[str]:
+    lines = []
     for i, c in enumerate(curves):
         if c.kind == "idvg":
             v = np.asarray(c.Vg, dtype=np.float64)
@@ -299,10 +318,9 @@ def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
         lines += [
             f"alter {bias_src} dc = {fixed:.6g}\n",
             f"dc {sweep_src} {v_start:.6g} {v_stop:.6g} {v_step:.6g}\n",
-            f"wrdata {(raw_dir / f'raw_{i}.dat').as_posix()} -i(VD)\n",
+            f"wrdata {(raw_dir / f'{prefix}{i}.dat').as_posix()} -i(VD)\n",
         ]
-    lines += ["quit\n", ".endc\n", ".end\n"]
-    return "".join(lines)
+    return lines
 
 
 def simulate_pdk(
@@ -315,6 +333,7 @@ def simulate_pdk(
     timeout_s: float = _DEFAULT_TIMEOUT_S,
     bin_index: int | None = None,
     library_path: Path | None = None,
+    temps_K: list[float] | None = None,
 ) -> list[np.ndarray]:
     """Simulate measured-bias curves with the corrected-repository deck.
 
@@ -351,7 +370,8 @@ def simulate_pdk(
             lib_path.write_text(lib_text)
         deck_path = td / "deck_batch.sp"
         deck_path.write_text(
-            _batch_deck(dev_type, L_um, W_um, curves, lib_path, td, temp_K))
+            _batch_deck(dev_type, L_um, W_um, curves, lib_path, td, temp_K,
+                        temps_K))
         try:
             proc = subprocess.run([_NGSPICE_BIN, "-b", str(deck_path)],
                                   cwd=str(td), capture_output=True,
@@ -360,29 +380,39 @@ def simulate_pdk(
             fatal = "could not find a valid modelname" in txt
         except subprocess.TimeoutExpired:
             fatal = True
-        for idx, c in enumerate(curves):
-            target = np.asarray(c.Vg if c.kind == "idvg" else c.Vd, dtype=np.float64)
-            raw_path = td / f"raw_{idx}.dat"
-            sim_v = sim_id = None
-            if not fatal and raw_path.exists():
-                rows = []
-                with raw_path.open("r") as f:
-                    for line in f:
-                        parts = line.split()
-                        if len(parts) >= 2:
-                            try:
-                                rows.append((float(parts[0]), float(parts[1])))
-                            except ValueError:
-                                continue
-                if rows:
-                    arr = np.array(rows, dtype=np.float64)
-                    sim_v, sim_id = arr[:, 0], arr[:, 1]
-            if sim_v is None or sim_id is None or len(sim_v) != len(sim_id):
-                out.append(np.full_like(target, np.nan, dtype=np.float64))
-                continue
-            order = np.argsort(sim_v)
-            id_resampled = np.interp(target, sim_v[order], sim_id[order])
-            if dev_type == "pmos":
-                id_resampled = -id_resampled
-            out.append(id_resampled)
+        if temps_K:
+            return [_read_curves(td, f"raw_t{j}_", curves, dev_type, fatal)
+                    for j in range(len(temps_K))]
+        out = _read_curves(td, "raw_", curves, dev_type, fatal)
+    return out
+
+
+def _read_curves(td: Path, prefix: str, curves: list[Curve], dev_type: str,
+                 fatal: bool) -> list[np.ndarray]:
+    out: list[np.ndarray] = []
+    for idx, c in enumerate(curves):
+        target = np.asarray(c.Vg if c.kind == "idvg" else c.Vd, dtype=np.float64)
+        raw_path = td / f"{prefix}{idx}.dat"
+        sim_v = sim_id = None
+        if not fatal and raw_path.exists():
+            rows = []
+            with raw_path.open("r") as f:
+                for line in f:
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        try:
+                            rows.append((float(parts[0]), float(parts[1])))
+                        except ValueError:
+                            continue
+            if rows:
+                arr = np.array(rows, dtype=np.float64)
+                sim_v, sim_id = arr[:, 0], arr[:, 1]
+        if sim_v is None or sim_id is None or len(sim_v) != len(sim_id):
+            out.append(np.full_like(target, np.nan, dtype=np.float64))
+            continue
+        order = np.argsort(sim_v)
+        id_resampled = np.interp(target, sim_v[order], sim_id[order])
+        if dev_type == "pmos":
+            id_resampled = -id_resampled
+        out.append(id_resampled)
     return out

@@ -1,0 +1,534 @@
+{
+  "definition": {
+    "low_drain": "|Vd| < 0.6 V on idvd curves with |fixed Vg| >= 1.48 V",
+    "denominator": "unchanged paper per-curve denominator"
+  },
+  "all_device_means": {
+    "paper": {
+      "low_drain_rrms": 0.07924563389002384,
+      "above_knee_rrms": 0.06767653723804355,
+      "whole_curve_rrms": 0.07370292457689455
+    },
+    "unconstrained": {
+      "low_drain_rrms": 0.0585435160342961,
+      "above_knee_rrms": 0.051894814877919276,
+      "whole_curve_rrms": 0.05799981106606037
+    },
+    "polish_v1": {
+      "low_drain_rrms": 0.08369498250846961,
+      "above_knee_rrms": 0.09692996750572642,
+      "whole_curve_rrms": 0.09757577288394101
+    },
+    "polish_v2_shape": {
+      "low_drain_rrms": 0.0812760318300437,
+      "above_knee_rrms": 0.09058629300382354,
+      "whole_curve_rrms": 0.09191988748806362
+    }
+  },
+  "devices": [
+    {
+      "device": "nmos_L0p15_W1p6",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.03510933262001456,
+        "above_knee_rrms": 0.007620178326446212,
+        "whole_curve_rrms": 0.0214619568096003,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.05194111590213953,
+        "above_knee_rrms": 0.012529208552176705,
+        "whole_curve_rrms": 0.032538244878163834,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.0536525198430397,
+        "above_knee_rrms": 0.013866537329652276,
+        "whole_curve_rrms": 0.03401620551753766,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.05110526420050314,
+        "above_knee_rrms": 0.014076632518533238,
+        "whole_curve_rrms": 0.03261790559149951,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "nmos_L0p19_W7",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.040879376753940946,
+        "above_knee_rrms": 0.022165086693291803,
+        "whole_curve_rrms": 0.029528994037877218,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.050428748233395854,
+        "above_knee_rrms": 0.01625831162501432,
+        "whole_curve_rrms": 0.03164397362943992,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.0509954156770668,
+        "above_knee_rrms": 0.015976871573058056,
+        "whole_curve_rrms": 0.031839899031457106,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.05145062649985839,
+        "above_knee_rrms": 0.013601977945769658,
+        "whole_curve_rrms": 0.03129942892213774,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "nmos_L0p25_W1p6",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.03472021211061596,
+        "above_knee_rrms": 0.020726424486569896,
+        "whole_curve_rrms": 0.026153960870518182,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.061485118899985605,
+        "above_knee_rrms": 0.028248824551741186,
+        "whole_curve_rrms": 0.041987744889495304,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.06135085942102835,
+        "above_knee_rrms": 0.0285697254840883,
+        "whole_curve_rrms": 0.042075827493376225,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.06128014302414649,
+        "above_knee_rrms": 0.0287248999908189,
+        "whole_curve_rrms": 0.042114502873898015,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "nmos_L1_W1p6",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.04862408587603076,
+        "above_knee_rrms": 0.03479626164016256,
+        "whole_curve_rrms": 0.03999515631806452,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.06660293099848005,
+        "above_knee_rrms": 0.018461684011036778,
+        "whole_curve_rrms": 0.04240545474410575,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.09020491407894425,
+        "above_knee_rrms": 0.02883787792075402,
+        "whole_curve_rrms": 0.05752952683994227,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.0842867625102073,
+        "above_knee_rrms": 0.03047510154513869,
+        "whole_curve_rrms": 0.05486538877214077,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "nmos_L1_W3",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.08929906428707522,
+        "above_knee_rrms": 0.09991284784289339,
+        "whole_curve_rrms": 0.09681249128792402,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.11632876273976617,
+        "above_knee_rrms": 0.025799568788402092,
+        "whole_curve_rrms": 0.06953835418718066,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.10331790096186258,
+        "above_knee_rrms": 0.02577480796839562,
+        "whole_curve_rrms": 0.06475816006627247,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.0990455843265601,
+        "above_knee_rrms": 0.026314233693701006,
+        "whole_curve_rrms": 0.06274798950805056,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "nmos_L8_W1p6",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.056840379721282926,
+        "above_knee_rrms": 0.042140705653665206,
+        "whole_curve_rrms": 0.04778986296648055,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.07775544254325849,
+        "above_knee_rrms": 0.03087069959686122,
+        "whole_curve_rrms": 0.052196075940080716,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.07507235975423583,
+        "above_knee_rrms": 0.029027964925637223,
+        "whole_curve_rrms": 0.050510947639433604,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.07524993930064172,
+        "above_knee_rrms": 0.029627812951283194,
+        "whole_curve_rrms": 0.05092534225414465,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "nmos_L20_W0p64",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.029617132000964365,
+        "above_knee_rrms": 0.05209774404714387,
+        "whole_curve_rrms": 0.04606076642709994,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.028429458226842688,
+        "above_knee_rrms": 0.021021764877846322,
+        "whole_curve_rrms": 0.024332638206428045,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.055988448438264796,
+        "above_knee_rrms": 0.029375546303338343,
+        "whole_curve_rrms": 0.04001945847452399,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.0600650477053527,
+        "above_knee_rrms": 0.028659364033863613,
+        "whole_curve_rrms": 0.04161890065091988,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "nmos_L100_W100",
+      "dev_type": "nmos",
+      "paper": {
+        "low_drain_rrms": 0.0470870984185345,
+        "above_knee_rrms": 0.03636581318899612,
+        "whole_curve_rrms": 0.043211555313170835,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.0479066780671509,
+        "above_knee_rrms": 0.026572734352318314,
+        "whole_curve_rrms": 0.03768014037528823,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.056089054432498876,
+        "above_knee_rrms": 0.031104025325627657,
+        "whole_curve_rrms": 0.04225566653046964,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.055745258565548364,
+        "above_knee_rrms": 0.030113756678010986,
+        "whole_curve_rrms": 0.04172970225326838,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L0p35_W0p55",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.1015422172853021,
+        "above_knee_rrms": 0.07679927345083845,
+        "whole_curve_rrms": 0.08593495955114541,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.06917473752541052,
+        "above_knee_rrms": 0.11831605020600214,
+        "whole_curve_rrms": 0.105388986806627,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.16014100240577533,
+        "above_knee_rrms": 0.2613266947150959,
+        "whole_curve_rrms": 0.23430481236248724,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.16011210589960923,
+        "above_knee_rrms": 0.26124494101189044,
+        "whole_curve_rrms": 0.23423664211634576,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L0p35_W1p6",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.07903643458581443,
+        "above_knee_rrms": 0.06019252178630918,
+        "whole_curve_rrms": 0.06686812040014035,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.03650300933190155,
+        "above_knee_rrms": 0.03491904726525828,
+        "whole_curve_rrms": 0.03559240958863984,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.11212235594427997,
+        "above_knee_rrms": 0.21937219850659326,
+        "whole_curve_rrms": 0.191458956272747,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.1115304193482107,
+        "above_knee_rrms": 0.21803388090684223,
+        "whole_curve_rrms": 0.19030814539676255,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L0p35_W5",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.0655428658081441,
+        "above_knee_rrms": 0.12456282408206197,
+        "whole_curve_rrms": 0.11011428746641766,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.06225452628135329,
+        "above_knee_rrms": 0.09517193664687443,
+        "whole_curve_rrms": 0.08627196980974869,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.06225452628135329,
+        "above_knee_rrms": 0.09517193664687443,
+        "whole_curve_rrms": 0.08627196980974869,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.09690991803048266,
+        "above_knee_rrms": 0.12107098959927058,
+        "whole_curve_rrms": 0.11399712284261945,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L0p5_W0p42",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.12540327775196053,
+        "above_knee_rrms": 0.12788127051547382,
+        "whole_curve_rrms": 0.12840638270460866,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.046306220430088765,
+        "above_knee_rrms": 0.11095519833928968,
+        "whole_curve_rrms": 0.09569861536926809,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.061099084915980956,
+        "above_knee_rrms": 0.09308464655868855,
+        "whole_curve_rrms": 0.08460496710434515,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.052758848259649924,
+        "above_knee_rrms": 0.09067436714103874,
+        "whole_curve_rrms": 0.08046339460515747,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L0p5_W0p64",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.05794734188754909,
+        "above_knee_rrms": 0.07391666958263232,
+        "whole_curve_rrms": 0.06916928727446248,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.04065538905385892,
+        "above_knee_rrms": 0.054685712189668646,
+        "whole_curve_rrms": 0.05058964328064028,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.13562894406644604,
+        "above_knee_rrms": 0.2664203993284968,
+        "whole_curve_rrms": 0.2334568330993007,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.10463687686593766,
+        "above_knee_rrms": 0.18932312630589238,
+        "whole_curve_rrms": 0.16725334599371516,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L2_W5",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.037526822139610325,
+        "above_knee_rrms": 0.014642025081621025,
+        "whole_curve_rrms": 0.026140000254478955,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.04880996658265645,
+        "above_knee_rrms": 0.03950586520796999,
+        "whole_curve_rrms": 0.042872060226093966,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.09576118142851507,
+        "above_knee_rrms": 0.10895423963869931,
+        "whole_curve_rrms": 0.10497056754716089,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.08735930797059115,
+        "above_knee_rrms": 0.09375135931322129,
+        "whole_curve_rrms": 0.09197579700745122,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L4_W7",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.12827848649309703,
+        "above_knee_rrms": 0.1122364918257605,
+        "whole_curve_rrms": 0.11801779792452909,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.049252151112476224,
+        "above_knee_rrms": 0.03909273332651329,
+        "whole_curve_rrms": 0.04281398735120118,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.06712929923772229,
+        "above_knee_rrms": 0.0604469149633286,
+        "whole_curve_rrms": 0.06268199480228723,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.06733375715483794,
+        "above_knee_rrms": 0.06007229851959772,
+        "whole_curve_rrms": 0.06269073940796509,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L8_W0p84",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.146828280200808,
+        "above_knee_rrms": 0.13357716040158077,
+        "whole_curve_rrms": 0.13802396549898274,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.09868949675179649,
+        "above_knee_rrms": 0.14005933659470812,
+        "whole_curve_rrms": 0.13028136863028492,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.09079869919866691,
+        "above_knee_rrms": 0.13978520793804805,
+        "whole_curve_rrms": 0.1300790039355656,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.09303916839313217,
+        "above_knee_rrms": 0.13928244316494345,
+        "whole_curve_rrms": 0.1274462182747414,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L8_W1p6",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.15283594611690504,
+        "above_knee_rrms": 0.08251702153587684,
+        "whole_curve_rrms": 0.11374707524789399,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.04985243111437972,
+        "above_knee_rrms": 0.0758985742654546,
+        "whole_curve_rrms": 0.07111769064301053,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.1244160672625973,
+        "above_knee_rrms": 0.20929868765734438,
+        "whole_curve_rrms": 0.1866549582463207,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.1028646111792722,
+        "above_knee_rrms": 0.1732785800382693,
+        "whole_curve_rrms": 0.1545017009496157,
+        "n_curves": 2
+      }
+    },
+    {
+      "device": "pmos_L8_W5",
+      "dev_type": "pmos",
+      "paper": {
+        "low_drain_rrms": 0.1493030559627793,
+        "above_knee_rrms": 0.09602735014346017,
+        "whole_curve_rrms": 0.11921602203070694,
+        "n_curves": 2
+      },
+      "unconstrained": {
+        "low_drain_rrms": 0.05140710482238849,
+        "above_knee_rrms": 0.04573941740541089,
+        "whole_curve_rrms": 0.051047240633389834,
+        "n_curves": 2
+      },
+      "polish_v1": {
+        "low_drain_rrms": 0.05048705180417473,
+        "above_knee_rrms": 0.08834513231935488,
+        "whole_curve_rrms": 0.07887415713796228,
+        "n_curves": 2
+      },
+      "polish_v2_shape": {
+        "low_drain_rrms": 0.04819493370624483,
+        "above_knee_rrms": 0.08222750871073811,
+        "whole_curve_rrms": 0.07376570736471195,
+        "n_curves": 2
+      }
+    }
+  ]
+}

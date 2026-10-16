@@ -42,3 +42,14 @@ out/pdk_ml_selected/*
 out/pdk_ml_selected/cards/*
 !out/pdk_ml_selected/cards/*.spice
 !out/pdk_ml_selected/cards/manifest.json
+
+# --- Research-loop banks and bulky outputs (regenerable via scripts/research) ---
+data/processed/cold_loop/
+data/processed/temp_bank/
+data/processed/pdk2/
+# Results reports (PNG figures + tables) are kept for later reference.
+!out/research/
+out/research/*
+!out/research/report/
+# Local paper build files and archives are not versioned.
+paper/

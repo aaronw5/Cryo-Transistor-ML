@@ -13,7 +13,7 @@ import numpy as np
 from .config import PAPER_REPO_DIR
 from .devices import Device, PAPER_DEVICES
 from .paper_data import discover_paper_paths, parse_geometry_from_name
-from .utils import get_logger
+from .utils import device_tag, get_logger
 
 logger = get_logger("cryoml.data_io")
 
@@ -190,7 +190,50 @@ def load_device_curves(
             f"no measured data for {dev.dev_type} L={dev.L_um:g} W={dev.W_um:g} "
             f"under {repo_root or PAPER_REPO_DIR}"
         )
+    override = target_override()
+    if override is not None:
+        tag = device_tag(dev.dev_type, dev.L_um, dev.W_um)
+        for index, curve in enumerate(curves):
+            key = f"{tag}__{index}"
+            if key not in override:
+                raise RuntimeError(f"{TARGET_OVERRIDE_ENV} lacks {key}")
+            values = np.asarray(override[key], dtype=np.float64)
+            if len(values) != len(curve.Id):
+                raise RuntimeError(f"override {key} has the wrong length")
+            curve.Id = values
+            curve.source = "synthetic_target"
     return curves
+
+
+# Held-out simulated-device evaluation: when this variable names an npz of
+# simulated currents (keys ``<tag>__<curve index>`` in load order), every
+# method sees those currents in place of the measured ones, through both
+# ``load_device_curves`` and ``bank_measured``; the bias grid, curve
+# inclusion and metric are unchanged.
+TARGET_OVERRIDE_ENV = "CRYOML_TARGET_OVERRIDE"
+_OVERRIDE_CACHE: dict = {}
+
+
+def target_override() -> dict | None:
+    import os
+    path = os.environ.get(TARGET_OVERRIDE_ENV)
+    if not path:
+        return None
+    if path not in _OVERRIDE_CACHE:
+        with np.load(path) as data:
+            _OVERRIDE_CACHE[path] = {k: np.asarray(data[k]) for k in data.files}
+    return _OVERRIDE_CACHE[path]
+
+
+def bank_measured(data, dev: Device) -> np.ndarray:
+    """A bank's ``meas`` vector (curve load order), honoring the override."""
+    if target_override() is None:
+        return np.asarray(data["meas"], dtype=np.float64)
+    measured = np.concatenate([np.asarray(c.Id, dtype=np.float64)
+                               for c in load_device_curves(dev)])
+    if measured.shape != np.shape(data["meas"]):
+        raise RuntimeError("override does not match the bank layout")
+    return measured
 
 
 def all_device_curves(

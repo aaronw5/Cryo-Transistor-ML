@@ -34,6 +34,10 @@ NEW_REPO_COMMIT = "39b1e518e25120104225b8fa19f4cfc61a6766b3"
 # The confirmed simulator binary (new repo README pins ngspice-41). Resolution
 # order: NGSPICE_BIN env var, the known local ngspice-41 install, PATH.
 _NG41 = Path.home() / "cryo-ng41" / "mm" / "envs" / "ng41" / "bin" / "ngspice"
+# Native arm64 build of the same ngspice-41 release (macOS 27 has no Rosetta
+# for the x86_64 conda-forge binary); reproduces the released, seven- and
+# 43-parameter paper RRMS exactly (out/research/reference_scores.json).
+_NG41_ARM64 = Path.home() / "cryo-ng41" / "arm64" / "bin" / "ngspice"
 
 
 def resolve_ngspice_bin() -> str:
@@ -42,6 +46,10 @@ def resolve_ngspice_bin() -> str:
     env = os.environ.get("NGSPICE_BIN")
     if env:
         return env
+    import platform
+
+    if platform.machine() == "arm64" and _NG41_ARM64.exists():
+        return str(_NG41_ARM64)
     if _NG41.exists():
         return str(_NG41)
     return "ngspice"

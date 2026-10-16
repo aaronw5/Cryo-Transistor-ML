@@ -32,12 +32,25 @@ def parameter_signature(names: tuple[str, ...]) -> str:
     return hashlib.sha256("\n".join(names).encode()).hexdigest()[:16]
 
 
+def spec_signature(summary: dict) -> str:
+    names = tuple(summary["selected_parameters"])
+    if "log_scale_by_device" in summary:
+        # Cold-start round specs: a new box must never resume an old bank.
+        names = names + (hashlib.sha256(json.dumps(
+            [summary["bounds_by_device"], summary["published_by_device"]],
+            sort_keys=True).encode()).hexdigest(),)
+    return parameter_signature(names)
+
+
 def build_box(summary: dict, tag: str) -> ParameterBox:
     names = tuple(summary["selected_parameters"])
+    log_flags = summary.get("log_scale_by_device", {}).get(tag)
     return ParameterBox(
         names=names,
         published=summary["published_by_device"][tag],
-        bounds=summary["bounds_by_device"][tag])
+        bounds=summary["bounds_by_device"][tag],
+        log_scale=(None if log_flags is None
+                   else tuple(bool(log_flags[name]) for name in names)))
 
 
 def static_curve_layout(curves):
@@ -152,10 +165,11 @@ def generate_device(job):
         **layout,
         bin_index=np.asarray(bin_index),
         parameter_names=np.asarray(names),
-        parameter_signature=np.asarray(parameter_signature(names)),
+        parameter_signature=np.asarray(spec_signature(summary)),
         published=box.center.astype(np.float64),
         lo=box.lo.astype(np.float64), hi=box.hi.astype(np.float64),
         active=box.active,
+        log_scale=box.log,
         seed=np.asarray(seed),
         sampling=np.asarray(sampling_mode),
     )
@@ -199,8 +213,9 @@ def main() -> int:
     bins = {row["device"]: int(row["bin_index"])
             for row in baseline["devices"]}
 
+
     records, jobs = [], []
-    signature = parameter_signature(names)
+    signature = spec_signature(summary)
     for index, device in enumerate(devices):
         tag = device_tag(device.dev_type, device.L_um, device.W_um)
         out_path = out_dir / f"{tag}.npz"

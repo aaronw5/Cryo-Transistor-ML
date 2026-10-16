@@ -29,6 +29,8 @@ from cryoml.metrics import (clean_current, curve_trim,  # noqa: E402
                             score_device_new)
 from cryoml.noise_aware import fit_curve_noise_model  # noqa: E402
 from cryoml.regions import (FINE_SECTION_EDGES,  # noqa: E402
+                            LOW_DRAIN_GATE_MIN_V, LOW_DRAIN_MAX_V,
+                            is_low_drain_curve, low_drain_mask, masked_rrms,
                             section_spans)
 from cryoml.spice_pdk import simulate_pdk  # noqa: E402
 from cryoml.utils import device_tag, get_logger  # noqa: E402
@@ -114,10 +116,54 @@ def section_residuals(simulations, layout: list[dict], *,
     return np.asarray(values, dtype=np.float64) / np.sqrt(total)
 
 
+def curve_residuals(simulations, layout: list[dict], *,
+                    censor: bool = False) -> np.ndarray:
+    """One residual per curve, so the sum of squares tracks the paper metric.
+
+    Section residuals spend the optimizer on whichever section is numerically
+    largest, which is not where the reported metric is decided.  One residual
+    per curve keeps the search aligned with what is scored.
+    """
+    values = []
+    for row in layout:
+        simulated = np.asarray(
+            simulations[row["index"]], dtype=np.float64)[row["start"]:]
+        deviation = curve_deviation(simulated, row, censor=censor)
+        value = float(np.sqrt(np.mean(deviation ** 2)) / row["denominator"])
+        values.append(value if np.isfinite(value) else PENALTY)
+    total = max(len(values), 1)
+    return np.asarray(values, dtype=np.float64) / np.sqrt(total)
+
+
+def low_drain_score(simulations, curves, device,
+                    include_tags: set[str]) -> float:
+    """Mean RRMS in the low-drain triode region, for the acceptance guard."""
+    values = []
+    for index, curve in enumerate(curves):
+        tag = f"{curve.kind}@{abs(float(curve.fixed)):g}"
+        if tag not in include_tags:
+            continue
+        if not is_low_drain_curve(curve.kind, curve.fixed,
+                                  LOW_DRAIN_GATE_MIN_V):
+            continue
+        start, cleaned, denominator = curve_trim(
+            device.dev_type, device.L_um, device.W_um, curve.kind, curve.Id)
+        if denominator <= 0:
+            continue
+        sweep = np.abs(np.asarray(curve.Vd, dtype=np.float64))[start:]
+        value = masked_rrms(
+            np.asarray(simulations[index], dtype=np.float64)[start:],
+            np.asarray(cleaned[start:], dtype=np.float64),
+            low_drain_mask(sweep, LOW_DRAIN_MAX_V), denominator)
+        if np.isfinite(value):
+            values.append(value)
+    return float(np.mean(values)) if values else float("nan")
+
+
 def polish_device(job) -> dict:
     (tag, dev_type, L_um, W_um, bin_index, names, start_params, lo, hi,
      active, include_tags, max_nfev, trust_radius, diff_step,
-     accept_on, censor, overrides) = job
+     accept_on, censor, overrides, objective, low_drain_limit) = job
     device = next(row for row in PAPER_DEVICES
                   if device_tag(row.dev_type, row.L_um, row.W_um) == tag)
     curves = load_device_curves(device)
@@ -166,6 +212,8 @@ def polish_device(job) -> dict:
         if not all(np.isfinite(np.asarray(values)).all()
                    for values in simulations):
             return np.full((len(EDGES) - 1) * max(len(layout), 1), PENALTY)
+        if objective == "curve":
+            return curve_residuals(simulations, layout, censor=censor)
         return section_residuals(simulations, layout, censor=censor)
 
     def score(params: dict) -> dict:
@@ -238,16 +286,26 @@ def polish_device(job) -> dict:
 
     before_objective = section_objective(before)
     after_objective = section_objective(after)
+    after_low = low_drain_score(after["simulations"], curves, device,
+                                set(include_tags))
+    before_low = low_drain_score(before["simulations"], curves, device,
+                                 set(include_tags))
+    feasible = (not np.isfinite(low_drain_limit)
+                or not np.isfinite(after_low)
+                or after_low <= low_drain_limit)
     if accept_on == "overall":
-        improved = after["rrms"] < before["rrms"]
+        improved = after["rrms"] < before["rrms"] and feasible
     else:
-        improved = after_objective < before_objective
+        improved = after_objective < before_objective and feasible
     chosen = after if improved else before
     chosen_params = (after_params if improved
                      else to_params(start_local[active]))
     return {
         "device": tag, "dev_type": dev_type,
         "before_rrms": before["rrms"], "after_rrms": after["rrms"],
+        "before_low_drain": before_low, "after_low_drain": after_low,
+        "low_drain_limit": low_drain_limit, "low_drain_feasible": feasible,
+        "objective": objective,
         "before_section_objective": before_objective,
         "after_section_objective": after_objective,
         "accept_on": accept_on,
@@ -288,6 +346,15 @@ def main() -> None:
         help="polarity:name:lo:hi specs unfreezing structurally pinned "
              "coordinates, e.g. nmos:prwg:-0.4:0.4")
     parser.add_argument(
+        "--objective", choices=("section", "curve"), default="curve",
+        help="curve keeps the search aligned with the reported metric")
+    parser.add_argument(
+        "--low-drain-guard", action="store_true", default=True,
+        help="reject a polished card that regresses the low-drain region "
+             "against its 77 K card")
+    parser.add_argument("--no-low-drain-guard", dest="low_drain_guard",
+                        action="store_false")
+    parser.add_argument(
         "--no-censor", action="store_true",
         help="fit sub-detection measurement points literally (control)")
     parser.add_argument(
@@ -308,6 +375,22 @@ def main() -> None:
 
     summary = json.loads(args.summary.read_text())
     baseline = json.loads(args.baseline.read_text())
+    from cryoml.data_io import load_device_curves as _load
+    from cryoml.devices import PAPER_DEVICES as _DEV
+    limits = {}
+    if args.low_drain_guard:
+        for row in baseline["devices"]:
+            tag = row["device"]
+            dev = next(d for d in _DEV
+                       if device_tag(d.dev_type, d.L_um, d.W_um) == tag)
+            path = ROOT / "out/pdk_baseline" / f"sims_{tag}.npz"
+            curves = _load(dev)
+            with np.load(path) as data:
+                sims = [np.asarray(data[f"sim_{i}"])
+                        for i in range(len(curves))]
+            keep = {c for c, r in baseline["per_curve"][tag].items()
+                    if r.get("included")}
+            limits[tag] = low_drain_score(sims, curves, dev, keep)
     include = {tag: [curve for curve, row in values.items()
                      if row.get("included")]
                for tag, values in baseline["per_curve"].items()}
@@ -332,7 +415,9 @@ def main() -> None:
                      bins[tag], names, start, lo, hi, active, include[tag],
                      args.max_nfev, args.trust_radius, args.diff_step,
                      args.accept_on, not args.no_censor,
-                     overrides.get(record["dev_type"], {})))
+                     overrides.get(record["dev_type"], {}),
+                     args.objective,
+                     limits.get(tag, float("nan"))))
 
     if args.workers == 1:
         results = [polish_device(job) for job in jobs]
@@ -358,6 +443,8 @@ def main() -> None:
                      "NGSpice against measured curves; no surrogate"),
         "max_nfev": args.max_nfev, "trust_radius": args.trust_radius,
         "accept_on": args.accept_on, "censored": not args.no_censor,
+        "objective": args.objective,
+        "low_drain_guard": args.low_drain_guard,
         "unfreeze": args.unfreeze, "section_edges": list(EDGES),
         "all_device_mean_before": float(np.mean(
             [row["before_rrms"] for row in results])),

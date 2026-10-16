@@ -20,6 +20,9 @@ class ParameterBox:
     names: tuple[str, ...]
     published: dict[str, float]
     bounds: dict[str, list[float] | tuple[float, float]]
+    # Optional per-parameter flag: map local coordinates log-uniformly
+    # between same-signed bounds (cold-start multiplier searches).
+    log_scale: tuple[bool, ...] | None = None
     lo: np.ndarray = field(init=False)
     hi: np.ndarray = field(init=False)
     center: np.ndarray = field(init=False)
@@ -44,6 +47,18 @@ class ParameterBox:
             raise ValueError("published parameter lies outside its bounds")
         scale = np.maximum(np.maximum(np.abs(self.lo), np.abs(self.hi)), 1.0)
         self.active = (self.hi - self.lo) > (1e-14 * scale)
+        if self.log_scale is None:
+            self.log = np.zeros(len(self.names), dtype=bool)
+        else:
+            self.log = np.asarray(self.log_scale, dtype=bool) & self.active
+            if len(self.log) != len(self.names):
+                raise ValueError("log_scale length differs from names")
+            if np.any(self.log & ((self.lo * self.hi) <= 0)):
+                raise ValueError("log-scaled bounds must be nonzero and same-signed")
+        self.sign = np.where(self.lo < 0, -1.0, 1.0)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            self.log_lo = np.where(self.log, np.log(np.abs(self.lo)), 0.0)
+            self.log_hi = np.where(self.log, np.log(np.abs(self.hi)), 0.0)
 
     @property
     def n_parameters(self) -> int:
@@ -67,6 +82,11 @@ class ParameterBox:
             self.lo[self.active]
             + 0.5 * (clipped[..., self.active] + 1.0)
             * (self.hi[self.active] - self.lo[self.active]))
+        if np.any(self.log):
+            fraction = 0.5 * (clipped[..., self.log] + 1.0)
+            low, high = self.log_lo[self.log], self.log_hi[self.log]
+            values[..., self.log] = self.sign[self.log] * np.exp(
+                low + fraction * (high - low))
         values[..., ~self.active] = self.center[~self.active]
         return values
 
@@ -84,5 +104,10 @@ class ParameterBox:
         local[self.active] = (
             2.0 * (values[self.active] - self.lo[self.active])
             / (self.hi[self.active] - self.lo[self.active]) - 1.0)
+        if np.any(self.log):
+            magnitude = np.log(np.maximum(
+                self.sign[self.log] * values[self.log], 1e-300))
+            low, high = self.log_lo[self.log], self.log_hi[self.log]
+            local[self.log] = 2.0 * (magnitude - low) / (high - low) - 1.0
         return np.clip(local, -1.0, 1.0)
 
