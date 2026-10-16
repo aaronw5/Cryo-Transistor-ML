@@ -1,0 +1,7 @@
+{"root": {"title": "hybrid trust-region fit (surrogate + first-order NGSpice correction)", "status": "baseline", "dev_runs": "queued in iteration 1 harness (n1c)"},
+ "nodes": [
+  {"id": "n1a", "parent": "root", "iteration": 1, "title": "surrogate-transported sketched Jacobians (k probes + Broyden secant, full Jacobian on demand); control = same code with r_s=0", "status": "verified; DEV runs queued", "files": ["src/cryoml/sketch_tr.py", "scripts/research/sketch_tr.py"]},
+  {"id": "n1b", "parent": "root", "iteration": 1, "title": "budget-aware anytime allocation: zero-call surrogate presearch, racing with optimistic-bound drops, surrogate restarts; control gets identical racing", "status": "verified; DEV runs queued", "files": ["src/cryoml/racing.py", "scripts/research/anytime_tr.py"]},
+  {"id": "n1c", "parent": "root", "iteration": 1, "title": "DEV comparison harness + CMA-ES+TRF and lq-CMA-ES call-trace baselines at budgets 500/1000/2000/5000", "status": "verified; DEV runs queued", "files": ["scripts/research/dev_compare.py", "scripts/research/cmaes_trace.py"]}
+ ],
+ "deferred_ideas": "see workflow wf_975927ae-443 journal: Hermite multi-centre discrepancy correction, amortized proposal network, NPE and TuRBO baselines"}
