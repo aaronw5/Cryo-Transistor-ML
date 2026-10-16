@@ -1,0 +1,2115 @@
+{
+ "_schema": {
+  "site": "title, eyebrow, run_header, conventions[], devices[] (order for per_device tables)",
+  "tabs[]": "id (deep link #id), kind (paper | log | questions), label, title, subtitle, state (active | merged | archived), merged_into (tab id when merged), may_merge_into (tab id, shown as a notice), state_date, state_note, status {question, answer[], next[], updated}, sections[] {id, title, position (before_claims | after_claims), blocks[]}. Questions tab: open[] {question, context, source}, decided[] {question, decision, context, recorded, source}.",
+  "status items": "string, or {text, source[], claim (claim id for a details link), queue_match (regex over queue labels; appends running/queued/done counts)}",
+  "claims[]": "id, tab, statement (one sentence), status (verified | in_progress | refuted | planned), headline {value, convention}, numbers[] {label, value, convention, source}, what[] (blocks), did[] (strings or blocks), result {text[], figures[] {batch, file, caption?}, tables[] (batch_table refs {batch, table, rows?, columns?} or inline tables), blocks[]}, caveats[], sources[], updated. A claim renders in its tab; when a tab is merged its claims render in merged_into.",
+  "blocks": "string | {type: text|code|list|figure|table|batch_table|per_device|queue|timeline|nodes|facts, ...}. batch_table: {batch, table (heading prefix in tables.md), rows (first-cells prefixes joined by ' | '), columns (subset)}. per_device: {columns [{label, file, path with {device}}], caption, notes, mean_row}. queue: {match (regex)}.",
+  "inline markup": "`code`, **bold**, [label](href); #tab or #claim-<id> links switch tabs"
+ },
+ "site": {
+  "title": "Cryo-ML Research Results",
+  "eyebrow": "cryo-ml · results ledger · branch widened-43-parameter-extraction",
+  "run_header": "T = 77 K · 18 measured SkyWater devices (8 nMOS, 10 pMOS), 11 I–V curves each · ngspice-41 (native arm64 build) · metric: paper RRMS (port of upstream rrmsCalc.py)",
+  "conventions": [
+   "RRMS is the paper metric with the published-baseline curve inclusion frozen, scored on a fresh NGSpice re-simulation of the card, unless a claim says otherwise.",
+   "all-device = mean over the 18 devices. combined = mean of the nMOS (8) and pMOS (10) family means. The paper's headline 0.2038 (43 parameters) and 0.2284 (seven parameters) are all-device values.",
+   "raw = method output; + FD = after the uniform NGSpice finite-difference polish (`scripts/research/polish_cards.py`).",
+   "NGSpice calls per device: 'this run' counts the run's own simulations; 'cumulative' adds every bank and earlier round it used.",
+   "DEV = held-out simulated sets 0 and 1. TEST = the 18 real devices, simulated set 2 and the GF180/IHP test truths, run once per frozen method. Results on the real devices dated before 2026-10-16 18:00 were produced before this split was defined."
+  ],
+  "devices": [
+   "nmos_L0p15_W1p6",
+   "nmos_L0p19_W7",
+   "nmos_L0p25_W1p6",
+   "nmos_L1_W1p6",
+   "nmos_L1_W3",
+   "nmos_L8_W1p6",
+   "nmos_L20_W0p64",
+   "nmos_L100_W100",
+   "pmos_L0p35_W0p55",
+   "pmos_L0p35_W1p6",
+   "pmos_L0p35_W5",
+   "pmos_L0p5_W0p42",
+   "pmos_L0p5_W0p64",
+   "pmos_L2_W5",
+   "pmos_L4_W7",
+   "pmos_L8_W0p84",
+   "pmos_L8_W1p6",
+   "pmos_L8_W5"
+  ]
+ },
+ "tabs": [
+  {
+   "id": "icml",
+   "kind": "paper",
+   "label": "ICML 2027",
+   "title": "ICML 2027: simulator-in-the-loop fitting",
+   "subtitle": "Target: ICML 2027 main track. Fallback: NeurIPS Datasets and Benchmarks.",
+   "state": "active",
+   "status": {
+    "question": "Does a trust-region fit that uses a neural surrogate as its model, corrected at each centre with the NGSpice value and Jacobian, reach direct-NGSpice accuracy with fewer NGSpice calls? Thesis under test: neural surrogates do not rank candidate cards in the order NGSpice ranks them, and inverse networks trained on simulations have large errors on measured devices (model misspecification).",
+    "answer": [
+     {
+      "text": "Same search with NGSpice in place of the surrogate, 43 parameters, round 1: all-device RRMS 0.2375 → 0.1125 (combined 0.2281 → 0.1053).",
+      "source": [
+       "out/research/report/2026-10-16_baseline_results/tables.md"
+      ],
+      "claim": "icml-swap"
+     },
+     {
+      "text": "The round-1 43-parameter surrogate orders its own picks and the direct-fit cards opposite to NGSpice on 17 of 18 devices (surrogate 0.2034 vs 0.5074; NGSpice 0.2375 vs 0.1269, all-device).",
+      "source": [
+       "out/research/surrogate_gap_full_round_1.json"
+      ],
+      "claim": "icml-misrank"
+     },
+     {
+      "text": "Tandem inverse network (A), seven parameters: median device RRMS 0.0258 on held-out simulated devices, 0.6344 on measured devices.",
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ],
+      "claim": "icml-inverse"
+     },
+     {
+      "text": "Hybrid trust-region fit: smoke runs on two DEV targets only. No DEV comparison yet.",
+      "source": [
+       "out/research/dev/smoke/"
+      ],
+      "claim": "icml-hybrid"
+     }
+    ],
+    "next": [
+     {
+      "text": "Hybrid trust-region fit on the round-1 and round-4 43-parameter boxes, with the surrogate and with no model (`--model none`), equal and successive-halving schedules.",
+      "queue_match": "^hybrid_tr_",
+      "source": [
+       "out/research/queue.txt"
+      ]
+     },
+     {
+      "text": "DEV comparison of all registered arms at 500, 1000, 2000 and 5000 NGSpice calls per target (36 targets).",
+      "source": [
+       "out/research/dev/arms.json",
+       "scripts/research/dev_compare.py"
+      ]
+     },
+     {
+      "text": "GF180MCU and IHP SG13G2 truth sets and banks.",
+      "queue_match": "^pdk2_",
+      "source": [
+       "out/research/queue.txt"
+      ]
+     },
+     {
+      "text": "Surrogate architecture study on the round-1 43-parameter cache, with learning curves.",
+      "queue_match": "^arch",
+      "source": [
+       "out/research/queue.txt"
+      ]
+     }
+    ],
+    "updated": "2026-10-16"
+   },
+   "sections": [
+    {
+     "id": "icml-nodes",
+     "title": "Research-loop nodes in progress",
+     "position": "after_claims",
+     "blocks": [
+      {
+       "type": "text",
+       "text": "Each node is a method variant registered as a DEV arm in `out/research/dev/arms.json`. Method selection uses DEV only."
+      },
+      {
+       "type": "nodes",
+       "items": [
+        {
+         "name": "n1a · sketched Jacobians",
+         "method": "At each trust-region centre, k = 8 directional NGSpice probes (Gauss-Newton step, top singular vectors of the transported prior, one Gaussian direction) plus secant and Broyden updates replace the 43-call FD Jacobian; a full FD Jacobian at the first centre, on refresh, and on prior mismatch. Control: the same code with no surrogate.",
+         "code": [
+          "scripts/research/sketch_tr.py",
+          "src/cryoml/sketch_tr.py",
+          "tests/test_sketch_tr.py"
+         ],
+         "state": "implemented, adversarially verified; DEV runs queued (81 jobs)",
+         "chip": "running"
+        },
+        {
+         "name": "Hermite discrepancy correction",
+         "method": "Multi-centre gradient-enhanced (Hermite) GP correction of the surrogate-NGSpice discrepancy, first-order consistent at the centre, using every NGSpice call including rejected trials. Proposed in iteration 1 and not selected for implementation.",
+         "code_note": "not implemented",
+         "state": "deferred to iteration 2",
+         "chip": "running"
+        },
+        {
+         "name": "n1c · CMA-ES call-trace baseline",
+         "method": "CMA-ES (sigma0 0.3, popsize 15) then bounded TRF, and lq-CMA-ES, on the same oracle, bank start, objective and call accounting as the trust-region arms, with an exact trace of best RRMS against cumulative NGSpice calls.",
+         "code": [
+          "scripts/research/cmaes_trace.py",
+          "out/research/dev/verify_n1c/compare.md"
+         ],
+         "state": "implemented, adversarially verified; DEV runs queued (81 jobs)",
+         "chip": "running"
+        },
+        {
+         "name": "n1b · anytime racing",
+         "method": "Eight zero-call surrogate presearch starts, racing of trust-region runs by predicted reduction per NGSpice call, optimistic-bound drops, surrogate-proposed restarts.",
+         "code": [
+          "scripts/research/anytime_tr.py",
+          "src/cryoml/racing.py",
+          "tests/test_racing.py"
+         ],
+         "state": "implemented, adversarially verified; DEV runs queued (81 jobs)",
+         "chip": "smoke"
+        }
+       ],
+       "source": [
+        "out/research/dev/arms.json"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "icml-protocol",
+     "title": "Evaluation protocol",
+     "position": "after_claims",
+     "blocks": [
+      {
+       "type": "facts",
+       "items": [
+        {
+         "label": "DEV",
+         "value": "Held-out simulated targets `set_0` and `set_1` (18 devices each, 36 targets) on the full round-1 43-parameter box, through `CRYOML_TARGET_OVERRIDE`. Method development and tuning read only DEV results.",
+         "source": [
+          "scripts/research/dev_compare.py",
+          "out/research/dev/arms.json"
+         ]
+        },
+        {
+         "label": "TEST",
+         "value": "The 18 real 77 K devices, simulated `set_2`, and the GF180/IHP test truths. Each frozen method runs on TEST once.",
+         "source": [
+          "scripts/research/dev_compare.py"
+         ]
+        },
+        {
+         "label": "Primary metric",
+         "value": "All-device mean paper RRMS (frozen inclusion), pooled over targets, at fixed cumulative NGSpice budgets per target (500, 1000, 2000, 5000). Every call counts, Jacobian probes and cliff retries included. The final card is scored by one fresh NGSpice simulation.",
+         "source": [
+          "scripts/research/dev_compare.py",
+          "scripts/research/hybrid_tr.py"
+         ]
+        },
+        {
+         "label": "Secondary columns",
+         "value": "Per-set all-device mean and combined, median, geometric mean, worst target, fraction below 1e-2 and 1e-3, area under the log10 RRMS-vs-calls curve, median calls to reach 0.05 and 0.01. No device is excluded.",
+         "source": [
+          "out/research/dev/smoke/compare.md"
+         ]
+        },
+        {
+         "label": "References",
+         "value": "Bank oracle: best sample of the pre-paid 10k bank per geometry (0 calls). Round-1 paper pipeline (its NGSpice validation calls), and pipeline + FD when present.",
+         "source": [
+          "out/research/dev/arms.json"
+         ]
+        },
+        {
+         "label": "Paired tests",
+         "value": "Arm minus reference per target: win/tie/loss, mean difference, 95% CI, Wilcoxon p. Each row reads one arm's own records; no minimum over arms is taken.",
+         "source": [
+          "out/research/dev/smoke/compare.md"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "icml-timeline",
+     "title": "Timeline",
+     "position": "after_claims",
+     "blocks": [
+      {
+       "type": "timeline",
+       "items": [
+        {
+         "date": "2026-10-16",
+         "label": "Target set: ICML 2027 main track.",
+         "note": "Fallback: NeurIPS Datasets and Benchmarks."
+        },
+        {
+         "date": "~2026-12-01",
+         "label": "Method freeze.",
+         "note": "Method development on DEV until then."
+        },
+        {
+         "date": "by 2027-01-10",
+         "label": "TEST runs, GF180/IHP benchmarks, ablations."
+        },
+        {
+         "date": "by 2027-01-31",
+         "label": "Submission.",
+         "note": "The official ICML 2027 abstract and paper dates are not yet checked; in past years the abstract deadline was about one week before the paper deadline."
+        }
+       ],
+       "source": [
+        "~/.claude/projects/-Users-anrunw-Documents-cryo-ml/memory/icml-target.md"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cryo77k",
+   "kind": "paper",
+   "label": "Cryogenic SkyWater 77 K",
+   "title": "Cryogenic SkyWater 77 K cards",
+   "subtitle": "Device-venue candidate. Cold-start reruns of the paper pipeline, direct NGSpice fits and a simulated temperature benchmark.",
+   "state": "active",
+   "status": {
+    "question": "How low can the paper RRMS on the 18 measured 77 K SkyWater devices go from a cold start (no released 77 K multipliers in boxes, starts or fallback), and at how many NGSpice calls?",
+    "answer": [
+     {
+      "text": "43 parameters, after FD, all-device (combined): direct NGSpice round 3 0.1044 (0.0976); NGSpice-swap search round 1 0.1106 (0.1036); paper pipeline round 4 0.1465 (0.1380). Paper card, 43 parameters: 0.2038 (0.1905).",
+      "source": [
+       "out/research/report/2026-10-16_baseline_results/tables.md"
+      ],
+      "claim": "cryo-43"
+     },
+     {
+      "text": "Seven parameters, after FD: paper pipeline round 4 0.1643 (0.1548); direct NGSpice 0.1670 (0.1570). Paper card, seven parameters: 0.2284 (0.2135). Released card: 0.2751 (0.2595).",
+      "source": [
+       "out/research/report/2026-10-16_baseline_results/tables.md"
+      ],
+      "claim": "cryo-seven-floor"
+     },
+     {
+      "text": "Simulated 77–300 K benchmark, held-out temperatures, all-device after FD: pipeline search on NGSpice 0.0004, paper-MLP surrogate search 0.0007, direct NGSpice 0.0117.",
+      "source": [
+       "out/research/report/2026-10-16_baseline_results/tables.md"
+      ],
+      "claim": "cryo-temp"
+     }
+    ],
+    "next": [
+     {
+      "text": "Temperature-conditioned surrogates (DeepONet, FNO, ResMLP), a one-pass direct MLP, then the temperature table.",
+      "queue_match": "^temp_",
+      "source": [
+       "out/research/queue.txt"
+      ]
+     },
+     {
+      "text": "Physicality check of fitted cards with parameters at the box edges (for example rdsw up to ×2·10^4 of released) before any card is presented. Not queued.",
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
+     },
+     {
+      "text": "Check whether the seven-parameter simulated truths lie outside the 43-parameter round-4 box (pipeline 43 r4 + FD: sets 0 and 2 have means 4.9 and 5.0 from nmos_L1_W3). Not queued.",
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
+     }
+    ],
+    "updated": "2026-10-16"
+   },
+   "sections": [
+    {
+     "id": "cryo-setup",
+     "title": "Setup and reference cards",
+     "position": "before_claims",
+     "blocks": [
+      {
+       "type": "list",
+       "items": [
+        "Simulator: a native arm64 build of the ngspice-41 release (`~/cryo-ng41/arm64/bin/ngspice`); the x86_64 conda-forge build no longer runs on macOS 27. It reproduces the reference scores exactly, and `verify_simulator.py` agrees with the upstream sweeps to ≤1e-11 A.",
+        "Cold start: round 1 is centred on the multiplier-free card and searched log-uniformly: vth0 within ×3, the other six paper parameters within ×100, the remaining sensitivity-screened parameters within ×3. Each later round re-centres every device's box on its selected NGSpice-validated card; interior coordinates halve their log width, edge coordinates keep it.",
+        "Surrogates are always trained from random initialization."
+       ],
+       "source": [
+        "docs/RESEARCH_LOOP.md",
+        "src/cryoml/cold_start.py",
+        "out/tables/simulator_verification_arm64_ng41.json"
+       ]
+      },
+      {
+       "type": "batch_table",
+       "batch": "2026-10-16_baseline_results",
+       "table": "Measured 77 K data",
+       "rows": [
+        "Reference"
+       ],
+       "columns": [
+        "method",
+        "all-device",
+        "combined",
+        "nMOS",
+        "pMOS"
+       ],
+       "caption": "Reference cards on the measured devices",
+       "notes": false
+      },
+      {
+       "type": "text",
+       "text": "Cold-start card with every released multiplier = 1: all-device 11.6006, nMOS 0.6847, pMOS 20.3333.",
+       "source": [
+        "out/research/reference_scores.json"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "benchmark",
+   "kind": "paper",
+   "label": "Benchmark",
+   "title": "Benchmark (NeurIPS Datasets and Benchmarks fallback)",
+   "subtitle": "Fitting problems for simulator-in-the-loop parameter extraction under model misspecification.",
+   "state": "active",
+   "may_merge_into": "icml",
+   "status": {
+    "question": "Can the fitting problems built for this project be released as a benchmark with fixed targets, budgets and scoring?",
+    "answer": [
+     {
+      "text": "Five problem sets exist or have generators: SkyWater 77 K measured (18 devices), SkyWater held-out simulated (3 sets × 18), simulated temperature 77–300 K (3 sets × 18), GF180MCU (16 devices, tiers a/b/c) and IHP SG13G2 (16 devices, tiers a/b/c).",
+      "source": [
+       "scripts/research/make_sim_targets.py",
+       "scripts/research/temp_bank.py",
+       "scripts/research/pdk2/make_truth.py",
+       "scripts/research/pdk2/ihp_make_truth.py"
+      ]
+     },
+     {
+      "text": "Refit floors, seven-parameter set, mean of 3 devices, tiers a/b/c: GF180 0 / 0.0136 / 0.0743; IHP 0 / 0.0146 / 0.1227.",
+      "source": [
+       "out/research/pdk2/floors/floors_gf180/floors_gf180.json",
+       "out/research/pdk2/floors/floors_ihp2/floors_ihp.json"
+      ],
+      "claim": "icml-pdk2-floors"
+     },
+     {
+      "text": "GF180 and IHP truth sets and banks are not generated yet."
+     }
+    ],
+    "next": [
+     {
+      "text": "GF180MCU and IHP SG13G2 truths (tiers a, b, c) and seven- and wide-parameter banks.",
+      "queue_match": "^pdk2_",
+      "source": [
+       "out/research/queue.txt"
+      ]
+     }
+    ],
+    "updated": "2026-10-16"
+   },
+   "sections": [
+    {
+     "id": "bench-contents",
+     "title": "Contents",
+     "position": "after_claims",
+     "blocks": [
+      {
+       "type": "table",
+       "columns": [
+        "problem",
+        "simulator and model",
+        "devices",
+        "targets",
+        "fitted parameters",
+        "status"
+       ],
+       "align": [
+        "left",
+        "left",
+        "left",
+        "left",
+        "left",
+        "left"
+       ],
+       "rows": [
+        [
+         "SkyWater 77 K, measured",
+         "ngspice-41 (arm64), BSIM4, SkyWater sky130 card with `tnom = -196.15`",
+         "18 (8 nMOS, 10 pMOS), 11 curves each",
+         "measured I–V",
+         "7 or 43",
+         "in use"
+        ],
+        [
+         "SkyWater 77 K, held-out simulated",
+         "same",
+         "18 per set",
+         "3 sets; one card per device drawn log-uniformly from the round-4 seven-parameter box, clipped into the round-1 box; a true card scores a median RRMS of about 0.45 against the real device",
+         "7 or 43",
+         "in use (DEV: sets 0, 1; TEST: set 2)"
+        ],
+        [
+         "Simulated temperature 77–300 K",
+         "ngspice-41, BSIM4, `tnom = 27 C` card with temperature expressions",
+         "18 per set",
+         "3 sets; observed 77, 150, 225, 300 K; held out 110, 190, 260 K",
+         "14 per device (log m and log g for seven parameters)",
+         "in use; well-specified tier only"
+        ],
+        [
+         "GF180MCU",
+         "ngspice-41, BSIM4 bins, 3.3 V",
+         "16",
+         "tiers a, b, c; 3 sets × 16",
+         "7 (seven) or 21 (wide)",
+         "generator built; truths and banks queued"
+        ],
+        [
+         "IHP SG13G2",
+         "Homebrew ngspice-46, PSP 103.6 via OSDI (prebuilt macOS OpenVAF-Reloaded), 1.2 V",
+         "16",
+         "tiers a, b, c; 3 sets × 16",
+         "7 (seven) or 12 (wide)",
+         "generator built; truths and banks queued"
+        ]
+       ],
+       "source": [
+        "docs/RESEARCH_LOOP.md",
+        "scripts/research/make_sim_targets.py",
+        "src/cryoml/temperature.py",
+        "src/cryoml/pdk2/__init__.py",
+        "src/cryoml/pdk2/boxes.py",
+        "scripts/research/pdk2/make_truth.py"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "bench-tiers",
+     "title": "Misspecification tiers (GF180 and IHP)",
+     "position": "after_claims",
+     "blocks": [
+      {
+       "type": "facts",
+       "items": [
+        {
+         "label": "a · well-specified",
+         "value": "The seven fitted parameters drawn uniformly in the device's seven-parameter box; every other card value stock; 27 C; no noise."
+        },
+        {
+         "label": "b · mildly misspecified",
+         "value": "A fresh in-box draw, plus every non-fitted misspecification parameter scaled by a log-uniform factor in [1/(1+w), 1+w] (w = 0.2 GF180, 0.05 IHP); extrinsic drain and source resistors outside the card (GF180 r ~ U(25, 100) ohm·µm / W; IHP r = k × RSW1, k ~ U(0.1, 0.4)); multiplicative Gaussian noise σ = 0.01."
+        },
+        {
+         "label": "c · strongly misspecified",
+         "value": "A fresh in-box draw, plus non-fitted parameters with width 0.5; extrinsic resistors r = k × the card's own per-side series resistance, k ~ U(1, 2); self-heating-like heating, curve i at 27 C + ΔT_max · P_i / max P with ΔT_max ~ U(20, 40) K; bias-dependent noise σ(1 + |Vd|/VDD) with σ = 0.01; per-curve gain error 1 + N(0, 0.01)."
+        }
+       ]
+      },
+      {
+       "type": "text",
+       "text": "Refit floors for these tiers: see [the floors claim](#claim-icml-pdk2-floors).",
+       "source": [
+        "scripts/research/pdk2/make_truth.py"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "bench-scoring",
+     "title": "Scoring",
+     "position": "after_claims",
+     "blocks": [
+      {
+       "type": "list",
+       "items": [
+        "SkyWater problems: the paper RRMS (port of the upstream `rrmsCalc.py`) with the published-baseline curve inclusion frozen; both all-device and combined conventions.",
+        "GF180 and IHP: the same RRMS with a 1e-10 A trim floor and curve inclusion frozen per target.",
+        "Budgets and the DEV/TEST split follow the [ICML evaluation protocol](#icml-protocol)."
+       ],
+       "source": [
+        "src/cryoml/metrics.py",
+        "src/cryoml/pdk2/metric.py",
+        "scripts/research/dev_compare.py"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "log",
+   "kind": "log",
+   "label": "Log",
+   "title": "Report log",
+   "subtitle": "Report batches, newest first, generated from out/research/report/index.json, and the run queue at build time."
+  },
+  {
+   "id": "questions",
+   "kind": "questions",
+   "label": "Open questions",
+   "title": "Open questions",
+   "open": [],
+   "decided": [
+    {
+     "question": "Which toolchain runs the IHP SG13G2 PSP 103.6 model?",
+     "decision": "The prebuilt macOS OpenVAF-Reloaded build compiles the OSDI model; it runs on Homebrew ngspice-46, isolated from the ngspice-41 configuration.",
+     "recorded": "2026-10-16",
+     "source": [
+      "src/cryoml/pdk2/__init__.py"
+     ]
+    },
+    {
+     "question": "Cap u0 below the BSIM4 u0 > 1 unit switch?",
+     "decision": "No. The u0 range of the cold boxes stays unchanged.",
+     "context": "BSIM4 divides u0 by 1e4 when u0 > 1; the cold round-1 box (u0 ×100) crosses that value for about 14% of nMOS samples. The trust-region arms use a 1e-3 Jacobian step and a cliff guard.",
+     "recorded": "2026-10-16",
+     "source": [
+      "docs/RESEARCH_LOOP.md",
+      "scripts/research/hybrid_tr.py"
+     ]
+    }
+   ]
+  }
+ ],
+ "claims": [
+  {
+   "id": "icml-swap",
+   "tab": "icml",
+   "statement": "Replacing the surrogate with NGSpice in the same search lowers the round-1 43-parameter RRMS from 0.2375 to 0.1125.",
+   "status": "verified",
+   "headline": {
+    "value": "0.2375 → 0.1125",
+    "convention": "all-device, raw, 43 parameters, round 1 (combined 0.2281 → 0.1053)"
+   },
+   "numbers": [
+    {
+     "label": "Pipeline 43, round 1 (surrogate search), raw",
+     "value": "0.2375 / 0.2281",
+     "convention": "all-device / combined",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "NGSpice swap 43, round 1, raw",
+     "value": "0.1125 / 0.1053",
+     "convention": "all-device / combined",
+     "source": "out/research/swap_search/full_round_1/summary.json"
+    },
+    {
+     "label": "Pipeline 43, round 1, + FD",
+     "value": "0.1824 / 0.1730",
+     "convention": "all-device / combined",
+     "source": "out/research/polished/pipe43_r1_fd/real/summary.json"
+    },
+    {
+     "label": "NGSpice swap 43, round 1, + FD",
+     "value": "0.1106 / 0.1036",
+     "convention": "all-device / combined",
+     "source": "out/research/polished/swap_full_r1_fd/real/summary.json"
+    },
+    {
+     "label": "Pipeline 7 → NGSpice swap 7, round 1, raw",
+     "value": "0.2367 → 0.1887",
+     "convention": "all-device",
+     "source": "out/research/swap_search/seven_round_1/summary.json"
+    },
+    {
+     "label": "Difference from the swap, raw",
+     "value": "0.1250 (43) / 0.0480 (7)",
+     "convention": "all-device",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "NGSpice calls per device, this run",
+     "value": "10,009 / 19,854",
+     "convention": "pipeline 43 r1 (bank + validation) / swap 43 r1",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    }
+   ],
+   "what": [
+    "Question: how much of the paper pipeline's error at 43 parameters comes from the surrogate rather than from the search procedure?",
+    "Paper pipeline (cold, round 1): a 10k-card Latin-hypercube bank per device in the round-1 box, simulated in NGSpice; a forward surrogate (parameters → I–V) trained on it from random initialization; 8 diverse bank starts; bounded TRF least squares on the surrogate with 2-point FD (max_nfev 100, diff_step 0.02, regularization 1e-4); NGSpice validation of the top 4 endpoints, the 4 starts and the fallback.",
+    "Swap control: the same `finite_difference_surrogate_extract` code with an NGSpice evaluator in place of the surrogate. Nothing else changes. Failed NGSpice points are penalized at curve RRMS 10. Round trip against the bank ≤5e-6 relative.",
+    "Box: cold round-1 box (vth0 ×3, the other six paper parameters ×100, the remaining screened parameters ×3, log-uniform). Devices: the 18 measured 77 K devices."
+   ],
+   "did": [
+    "`swap_seven_r1` and `swap_full_r1`: `scripts/research/swap_search.py` on `out/cold_loop/{seven,full}/round_1` with bank `data/processed/cold_loop/{seven,full}_r1`; ended 2026-10-16 05:43 (245 s) and 06:16 (1,948 s).",
+    "`fd_swap_full_r1` (70 s) and `fd_pipe43_r1_real` (32 s): `scripts/research/polish_cards.py`, max_nfev 400, diff_step 0.01, irls 2.",
+    "Pipeline 43 round 1: `scripts/research/cold_loop.py --set full` (rounds 1–4 finished 2026-10-16 05:39, 12.4 h)."
+   ],
+   "result": {
+    "tables": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "table": "Measured 77 K data",
+      "rows": [
+       "Pipeline 7, round 1",
+       "NGSpice swap 7, round 1",
+       "Pipeline 43, round 1",
+       "NGSpice swap 43, round 1",
+       "Direct NGSpice 43, round 1, cold"
+      ],
+      "caption": "Round-1 rows: surrogate search, the same search on NGSpice, and direct NGSpice"
+     }
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "file": "01_real_methods.png"
+     }
+    ],
+    "blocks": [
+     {
+      "type": "per_device",
+      "caption": "Per device, 43 parameters, round 1 (paper RRMS)",
+      "columns": [
+       {
+        "label": "pipeline raw",
+        "file": "out/research/swap_search/full_round_1/summary.json",
+        "path": "devices.{device}.pipeline_rrms"
+       },
+       {
+        "label": "swap raw",
+        "file": "out/research/swap_search/full_round_1/summary.json",
+        "path": "devices.{device}.rrms"
+       },
+       {
+        "label": "pipeline + FD",
+        "file": "out/research/polished/pipe43_r1_fd/real/summary.json",
+        "path": "devices.{device}.rrms"
+       },
+       {
+        "label": "swap + FD",
+        "file": "out/research/polished/swap_full_r1_fd/real/summary.json",
+        "path": "devices.{device}.rrms"
+       },
+       {
+        "label": "swap NGSpice calls",
+        "file": "out/research/swap_search/full_round_1/summary.json",
+        "path": "devices.{device}.n_ngspice_calls",
+        "format": "{:,.0f}"
+       }
+      ],
+      "notes": [
+       "pipeline raw = the pipeline's own score of its selected card (as in the summary tables)."
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "Open check: the FD run's re-score of the pipeline 43 round-1 start differs from the method's own score on `nmos_L0p15_W1p6`: 0.2035 (own) vs 1.1832 (FD start). The method-output row uses the method's own score.",
+    "Not a matched-budget comparison: the swap uses 19,854 NGSpice calls per device in this run against 10,009 for the pipeline (bank and validation). Matched-budget curves come from the DEV comparison.",
+    "These runs used the real devices before the DEV/TEST protocol was defined; under the protocol the real devices are TEST data."
+   ],
+   "sources": [
+    "scripts/research/swap_search.py",
+    "scripts/research/polish_cards.py",
+    "scripts/research/cold_loop.py",
+    "out/research/swap_search/full_round_1/summary.json",
+    "out/research/swap_search/seven_round_1/summary.json",
+    "out/cold_loop/full/round_1/extract/summary.json",
+    "out/research/polished/swap_full_r1_fd/real/summary.json",
+    "out/research/polished/pipe43_r1_fd/real/summary.json",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "icml-misrank",
+   "tab": "icml",
+   "statement": "The round-1 43-parameter surrogate scores its own picks better than the direct-fit cards on 17 of 18 devices; NGSpice scores them the other way.",
+   "status": "verified",
+   "headline": {
+    "value": "17 of 18 devices",
+    "convention": "opposite ordering; surrogate 0.2034 vs 0.5074, NGSpice 0.2375 vs 0.1269 (all-device)"
+   },
+   "numbers": [
+    {
+     "label": "Pipeline picks: surrogate-predicted RRMS",
+     "value": "0.2034",
+     "convention": "all-device",
+     "source": "out/research/surrogate_gap_full_round_1.json"
+    },
+    {
+     "label": "Pipeline picks: NGSpice RRMS",
+     "value": "0.2375",
+     "convention": "all-device",
+     "source": "out/research/surrogate_gap_full_round_1.json"
+    },
+    {
+     "label": "Direct-fit cards: surrogate-predicted RRMS",
+     "value": "0.5074",
+     "convention": "all-device",
+     "source": "out/research/surrogate_gap_full_round_1.json"
+    },
+    {
+     "label": "Direct-fit cards: NGSpice RRMS",
+     "value": "0.1269",
+     "convention": "all-device",
+     "source": "out/research/surrogate_gap_full_round_1.json"
+    },
+    {
+     "label": "Devices with opposite ordering",
+     "value": "17 / 18",
+     "convention": "surrogate prefers pipeline pick, NGSpice prefers direct card",
+     "source": "out/research/surrogate_gap_full_round_1.json"
+    },
+    {
+     "label": "Seven parameters, round 1: own picks, surrogate vs NGSpice",
+     "value": "0.235 / 0.2367",
+     "convention": "all-device",
+     "source": "docs/RESEARCH_LOOP.md"
+    }
+   ],
+   "what": [
+    "Question: does the surrogate order candidate cards the way NGSpice orders them, in the region where good cards are?",
+    "Two card sets per device are scored by the frozen round-1 surrogate and by NGSpice: the pipeline's final picks, and the cold direct NGSpice 43-parameter fits (CMA-ES + TRF, `full_r1_direct_cold`) in the same box. Paper RRMS, frozen inclusion, mean over the 18 measured devices."
+   ],
+   "did": [
+    "`scripts/research/surrogate_gap.py` (inference only; NGSpice scores taken from the existing summaries) → `out/research/surrogate_gap_full_round_1.json`.",
+    "Figure from `scripts/research/report_figs.py --topic baseline_results --date 2026-10-16`."
+   ],
+   "result": {
+    "figures": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "file": "05_surrogate_gap.png"
+     }
+    ],
+    "blocks": [
+     {
+      "type": "per_device",
+      "caption": "Per device: surrogate-predicted and NGSpice RRMS",
+      "columns": [
+       {
+        "label": "pick, surrogate",
+        "file": "out/research/surrogate_gap_full_round_1.json",
+        "path": "devices.{device}.pipeline.surrogate_rrms"
+       },
+       {
+        "label": "pick, NGSpice",
+        "file": "out/research/surrogate_gap_full_round_1.json",
+        "path": "devices.{device}.pipeline.ngspice_rrms"
+       },
+       {
+        "label": "direct, surrogate",
+        "file": "out/research/surrogate_gap_full_round_1.json",
+        "path": "devices.{device}.reference.surrogate_rrms"
+       },
+       {
+        "label": "direct, NGSpice",
+        "file": "out/research/surrogate_gap_full_round_1.json",
+        "path": "devices.{device}.reference.ngspice_rrms"
+       },
+       {
+        "label": "direct, max |local|",
+        "file": "out/research/surrogate_gap_full_round_1.json",
+        "path": "devices.{device}.reference.max_abs_local"
+       }
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "The direct-fit cards sit on the box faces (max |local| ≈ 1), where the Latin-hypercube bank is sparse and about 40% of round-1 bank samples did not converge.",
+    "At seven parameters the surrogate's prediction for its own picks matched NGSpice (0.235 vs 0.2367); the swap shows that this did not hold for the cards it did not pick.",
+    "Whether larger surrogates or neural operators change the ordering is the question of the queued architecture study (`arch_full_r1`, `archlc_full_r1`)."
+   ],
+   "sources": [
+    "scripts/research/surrogate_gap.py",
+    "out/research/surrogate_gap_full_round_1.json",
+    "out/research/ngspice_direct/full_r1_direct_cold/summary.json",
+    "out/cold_loop/full/round_1/extract/summary.json",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "icml-inverse",
+   "tab": "icml",
+   "statement": "The tandem inverse network fits held-out simulated devices (median 0.0258) but not the measured devices (median 0.6344); the round-1 flow posterior has large errors on both.",
+   "status": "verified",
+   "headline": {
+    "value": "0.0258 sim vs 0.6344 real",
+    "convention": "median device RRMS, tandem autoencoder A, seven parameters, round 4"
+   },
+   "numbers": [
+    {
+     "label": "A tandem, round 4: real all-device / median",
+     "value": "0.6857 / 0.6344",
+     "convention": "raw",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "A tandem, round 4: sim all-device / median",
+     "value": "32.41 / 0.0258",
+     "convention": "raw, mean over 3 simulated sets",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "B flow r1, best of 256 + polish: real / sim median",
+     "value": "0.2670 / 0.1839",
+     "convention": "median device",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "B flow pooled r1–4, best of 256, + FD: real all-device / sim median",
+     "value": "0.1728 / 0.0001",
+     "convention": "after uniform FD",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "Paper pipeline 7, round 4: real / sim median",
+     "value": "0.1585 / 0.0141",
+     "convention": "median device, raw",
+     "source": "docs/RESEARCH_LOOP.md"
+    }
+   ],
+   "what": [
+    "Question: do inverse networks (I–V → parameters) trained on simulated curves transfer to measured curves?",
+    "Held-out simulated devices: three sets, one card per paper device drawn log-uniformly from the round-4 seven-parameter box (clipped into the round-1 box), simulated on that device's measured bias grid. No bank contains them. A true card scores exactly 0; a true card scores a median RRMS of about 0.45 against the real device it imitates. `CRYOML_TARGET_OVERRIDE` substitutes them for the measurements; bias grids, frozen inclusion and the metric are unchanged.",
+    "A: tandem autoencoder (`inverse_autoencoder`), run in every cold round. B: conditional flow-matching posterior and a 16-head winner-takes-all model in a round-independent log-multiplier coordinate, trained with discrepancy-transfer augmentation (another device's measured-vs-closest-simulation signed-log gap). B evaluation: K samples → NGSpice → best → optional NGSpice polish."
+   ],
+   "did": [
+    "`scripts/research/posterior_study.py` (B), `scripts/research/cold_loop.py` (A), `scripts/research/make_sim_targets.py` (targets), `scripts/research/simgap_table.py` (table), 2026-10-15.",
+    "Uniform FD for every method: `scripts/research/polish_cards.py` (about 250–300 NGSpice calls per device), 2026-10-15 17:30 onward."
+   ],
+   "result": {
+    "tables": [
+     {
+      "caption": "Raw method output, seven parameters (real = 18 measured devices; sim = mean over 3 held-out simulated sets)",
+      "columns": [
+       "method",
+       "real all-device",
+       "real combined",
+       "real median",
+       "sim all-device",
+       "sim median",
+       "param error (sim)"
+      ],
+      "rows": [
+       [
+        "cold paper pipeline, round 4 (surrogate + FD)",
+        "0.1697",
+        "0.1602",
+        "0.1585",
+        "0.0157",
+        "0.0141",
+        "×1.04"
+       ],
+       [
+        "A: tandem autoencoder, round 4",
+        "0.6857",
+        "0.6859",
+        "0.6344",
+        "32.41*",
+        "0.0258",
+        "×1.05"
+       ],
+       [
+        "direct NGSpice, seven, round-1 box",
+        "0.1676",
+        "0.1575",
+        "0.1460",
+        "0.0191",
+        "0.0000",
+        "×1.00"
+       ],
+       [
+        "B: flow r1, best of 256 + polish",
+        "0.3719",
+        "0.3514",
+        "0.2670",
+        "0.3812",
+        "0.1839",
+        "×1.91"
+       ],
+       [
+        "B: WTA r1, best of 16 + polish",
+        "0.5122",
+        "0.4912",
+        "0.3509",
+        "0.6932",
+        "0.2468",
+        "×2.09"
+       ]
+      ],
+      "notes": [
+       "* one device (nmos L1/W3) reaches RRMS 500–1200 in two sets; the median device is not affected."
+      ],
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
+     },
+     {
+      "caption": "After the uniform NGSpice FD polish",
+      "columns": [
+       "method + NGSpice FD",
+       "real all-device",
+       "real combined",
+       "real median",
+       "sim all-device",
+       "sim median",
+       "FD calls/device"
+      ],
+      "rows": [
+       [
+        "B flow pooled r1–4, best of 256",
+        "0.1728",
+        "0.1632",
+        "0.1662",
+        "0.0942",
+        "0.0001",
+        "248"
+       ],
+       [
+        "B flow r1, best of 256",
+        "0.2209",
+        "0.2067",
+        "0.1664",
+        "0.1546",
+        "0.0000",
+        "239"
+       ],
+       [
+        "B WTA pooled, best of 16",
+        "0.2268",
+        "0.2242",
+        "0.1658",
+        "0.0697",
+        "0.0000",
+        "251"
+       ],
+       [
+        "A tandem, round 4",
+        "0.2270",
+        "0.2245",
+        "0.1746",
+        "0.6112*",
+        "0.0000",
+        "298"
+       ],
+       [
+        "B WTA r1, best of 16",
+        "0.2587",
+        "0.2396",
+        "0.1512",
+        "0.1108",
+        "0.0001",
+        "248"
+       ]
+      ],
+      "notes": [
+       "* the nmos L1/W3 outlier from A's raw prediction remains after FD."
+      ],
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "B's round-1 flow does not invert the ×100 round-1 prior on simulated devices either (sim median 0.1839); pooling rounds 1–4 and FD bring its sim median to 0.0001.",
+    "B evaluation spends NGSpice calls (about 700 per device for best of 256 + polish); it is not a single forward pass.",
+    "The pipeline's simulated column reuses its round-4 surrogate and bank, centred on the real-device fits, with targets drawn in that box; it is optimistic relative to a full four-round run per target."
+   ],
+   "sources": [
+    "scripts/research/posterior_study.py",
+    "src/cryoml/posterior.py",
+    "scripts/research/make_sim_targets.py",
+    "scripts/research/simgap_table.py",
+    "out/research/simgap_table.json",
+    "out/research/sim_targets/",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "icml-hybrid",
+   "tab": "icml",
+   "statement": "Hybrid trust-region fit (surrogate model with an NGSpice value and Jacobian correction at each centre): smoke runs on two DEV targets; full DEV runs are queued.",
+   "status": "in_progress",
+   "headline": {
+    "value": "0.0267, 0.2532",
+    "convention": "paper RRMS at 1000 NGSpice calls on set_0 nmos_L1_W1p6, pmos_L0p35_W1p6; no-model control 0.0282, 0.0703"
+   },
+   "numbers": [
+    {
+     "label": "Hybrid TR, surrogate, 1000 calls",
+     "value": "0.0267 / 0.2532",
+     "convention": "nmos_L1_W1p6 / pmos_L0p35_W1p6, set_0",
+     "source": "out/research/dev/smoke/hybrid_surrogate_B1000/"
+    },
+    {
+     "label": "Hybrid TR, no model, 1000 calls",
+     "value": "0.0282 / 0.0703",
+     "convention": "same targets",
+     "source": "out/research/dev/smoke/hybrid_none_B1000/"
+    },
+    {
+     "label": "Bank oracle, 0 calls",
+     "value": "0.1124 / 0.3362",
+     "convention": "same targets",
+     "source": "out/research/dev/oracle_reference.json"
+    }
+   ],
+   "what": [
+    "Question: with the surrogate as the trust-region model and NGSpice correcting it to first order at each centre, how fast does RRMS fall per NGSpice call compared with the same loop without a surrogate and with CMA-ES?",
+    {
+     "type": "code",
+     "text": "r_c(z) = r_s(z) + [r_f(z_c) - r_s(z_c)] + [J_f(z_c) - J_s(z_c)] (z - z_c)",
+     "source": "scripts/research/hybrid_tr.py"
+    },
+    "r_s, J_s: frozen round surrogate and its forward-mode Jacobian. r_f: one NGSpice call per trial point. J_f: forward differences in local coordinates, step 1e-3, from one batched NGSpice process; a probe that fails or exceeds 2× the centre's RRMS + 0.05 is retried with the opposite step. Objective: the pipeline's per-curve normalized residuals plus prior rows (reg 1e-4); its sum of squares is mean(curve RRMS²). `--model none` sets r_s = 0: Gauss-Newton trust region on NGSpice, the no-ML control.",
+    "Budget accounting: every NGSpice call counts, Jacobian probes included; the search stops at the budget; the final card is scored by one fresh simulation. Starts: 4 diverse bank starts, equal share of the remaining calls each (or successive halving). Box: full round-1 43-parameter box."
+   ],
+   "did": [
+    "Smoke runs 2026-10-16 14:46–14:58 under `out/research/dev/smoke/`, on two DEV targets from simulated set 0, at budgets of 300 and 1000 calls.",
+    "Full runs queued: `hybrid_tr_full_r1_surrogate`, `hybrid_tr_full_r1_none`, `hybrid_tr_full_r4_surrogate`, `hybrid_tr_full_r4_none`, and the two successive-halving runs on round 1.",
+    {
+     "type": "queue",
+     "match": "^hybrid_tr_"
+    }
+   ],
+   "result": {
+    "tables": [
+     {
+      "caption": "Smoke runs: paper RRMS of the final card (one fresh NGSpice simulation), two DEV targets from set_0",
+      "columns": [
+       "arm",
+       "node",
+       "model",
+       "budget",
+       "calls used (nmos / pmos)",
+       "nmos_L1_W1p6",
+       "pmos_L0p35_W1p6"
+      ],
+      "align": [
+       "left",
+       "left",
+       "left",
+       "right",
+       "right",
+       "right",
+       "right"
+      ],
+      "rows": [
+       [
+        "bank oracle",
+        "reference",
+        "–",
+        "0",
+        "0 / 0",
+        "0.1124",
+        "0.3362"
+       ],
+       [
+        "hybrid TR",
+        "hybrid",
+        "surrogate",
+        "300",
+        "279 / 295",
+        "0.0414",
+        "0.3182"
+       ],
+       [
+        "hybrid TR",
+        "hybrid",
+        "none",
+        "300",
+        "281 / 295",
+        "0.0458",
+        "0.2401"
+       ],
+       [
+        "hybrid TR",
+        "hybrid",
+        "surrogate",
+        "1000",
+        "991 / 993",
+        "0.0267",
+        "0.2532"
+       ],
+       [
+        "hybrid TR",
+        "hybrid",
+        "none",
+        "1000",
+        "989 / 999",
+        "0.0282",
+        "0.0703"
+       ],
+       [
+        "sketched TR, k = 8",
+        "n1a",
+        "surrogate",
+        "300",
+        "294 / 293",
+        "0.0318",
+        "0.2407"
+       ],
+       [
+        "sketched TR, k = 8",
+        "n1a",
+        "none",
+        "300",
+        "299 / 295",
+        "0.0360",
+        "0.1008"
+       ],
+       [
+        "sketched TR, k = 8",
+        "n1a",
+        "surrogate",
+        "1000",
+        "988 / 997",
+        "0.0240",
+        "0.0768"
+       ],
+       [
+        "sketched TR, k = 8",
+        "n1a",
+        "none",
+        "1000",
+        "1000 / 992",
+        "0.0296",
+        "0.0146"
+       ],
+       [
+        "anytime, presearch + racing",
+        "n1b",
+        "surrogate",
+        "300",
+        "286 / 260",
+        "0.0325",
+        "0.0985"
+       ],
+       [
+        "anytime, presearch, equal split",
+        "n1b",
+        "surrogate",
+        "300",
+        "285 / –",
+        "0.0402",
+        "–"
+       ],
+       [
+        "anytime, racing",
+        "n1b",
+        "none",
+        "300",
+        "281 / 294",
+        "0.0458",
+        "0.2098"
+       ],
+       [
+        "CMA-ES + TRF",
+        "n1c",
+        "none",
+        "300",
+        "286 / –",
+        "0.0326",
+        "–"
+       ],
+       [
+        "lq-CMA-ES",
+        "n1c",
+        "none",
+        "200",
+        "200 / –",
+        "0.1914",
+        "–"
+       ]
+      ],
+      "source": [
+       "out/research/dev/smoke/",
+       "out/research/dev/oracle_reference.json",
+       "out/research/dev/smoke/compare.md"
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "Two targets, partial records (no `summary.json`); `dev_compare.py` marks these runs PARTIAL. They are not used for method selection.",
+    "On `pmos_L0p35_W1p6` at 1000 calls the surrogate arm (0.2532) ends above the no-model control (0.0703).",
+    "The n1c verifier re-ran CMA-ES + TRF at 300 calls: 0.0390 (fixed run) and 0.0326 (rerun prefix) on the same target (`out/research/dev/verify_n1c/compare.md`)."
+   ],
+   "sources": [
+    "scripts/research/hybrid_tr.py",
+    "src/cryoml/trust_region.py",
+    "scripts/research/sketch_tr.py",
+    "scripts/research/anytime_tr.py",
+    "scripts/research/cmaes_trace.py",
+    "scripts/research/dev_compare.py",
+    "out/research/dev/arms.json",
+    "out/research/dev/smoke/",
+    "out/research/queue.txt"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "icml-pdk2-floors",
+   "tab": "icml",
+   "statement": "The GF180MCU and IHP SG13G2 truth tiers a/b/c leave seven-parameter refit floors of 0 / 0.0136 / 0.0743 (GF180) and 0 / 0.0146 / 0.1227 (IHP).",
+   "status": "verified",
+   "headline": {
+    "value": "GF180 0 / 0.0136 / 0.0743 · IHP 0 / 0.0146 / 0.1227",
+    "convention": "mean paper RRMS over 3 devices per PDK, seven-parameter set, tiers a / b / c"
+   },
+   "numbers": [
+    {
+     "label": "GF180, seven: tier a / b / c floor",
+     "value": "0 / 0.0136 / 0.0743",
+     "convention": "mean of 3 devices, 1 set",
+     "source": "out/research/pdk2/floors/floors_gf180/floors_gf180.json"
+    },
+    {
+     "label": "IHP, seven: tier a floor",
+     "value": "0",
+     "convention": "mean of 3 devices, 1 set",
+     "source": "out/research/pdk2/floors/floors_ihp/floors_ihp.json"
+    },
+    {
+     "label": "IHP, seven: tier b / c floor",
+     "value": "0.0146 / 0.1227",
+     "convention": "mean of 3 devices, 1 set",
+     "source": "out/research/pdk2/floors/floors_ihp2/floors_ihp.json"
+    }
+   ],
+   "what": [
+    "Question: how far below the noise level can a perfect optimizer go on each tier? The refit floor bounds what any fitting method can reach.",
+    "For each (tier, device, fitted set): start = paper RRMS of the truth card's projection onto the fitted parameters; floor = after `ngspice_fit.polish` from that start; noise = the truth's own noise-free curves scored against its observed curves. Tiers are defined on the [Benchmark tab](#bench-tiers). Metric: paper RRMS with a 1e-10 A trim floor and target-frozen inclusion."
+   ],
+   "did": [
+    "`scripts/research/pdk2/floors.py --pdk gf180 --devices gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5` (nfev 300, irls 3; one fresh truth set), 2026-10-16 14:44.",
+    "`scripts/research/pdk2/floors.py --pdk ihp` on `ihp_nmos_L0p13_W0p2`, `ihp_nmos_L2_W2`, `ihp_pmos_L0p5_W2`: first run 14:48 (tiers a, b, c), second run 14:52 (tiers b, c)."
+   ],
+   "result": {
+    "tables": [
+     {
+      "caption": "Refit floors, mean over 3 devices (paper RRMS)",
+      "columns": [
+       "PDK",
+       "tier",
+       "fitted set",
+       "start",
+       "floor",
+       "noise only"
+      ],
+      "align": [
+       "left",
+       "left",
+       "left",
+       "right",
+       "right",
+       "right"
+      ],
+      "rows": [
+       [
+        "GF180",
+        "a",
+        "seven (7)",
+        "0",
+        "0",
+        "0"
+       ],
+       [
+        "GF180",
+        "b",
+        "seven (7)",
+        "0.0275",
+        "0.0136",
+        "0.0119"
+       ],
+       [
+        "GF180",
+        "b",
+        "wide (21)",
+        "0.0275",
+        "0.0125",
+        "0.0119"
+       ],
+       [
+        "GF180",
+        "c",
+        "seven (7)",
+        "0.1193",
+        "0.0743",
+        "0.0209"
+       ],
+       [
+        "GF180",
+        "c",
+        "wide (21)",
+        "0.1193",
+        "0.0630",
+        "0.0209"
+       ],
+       [
+        "IHP (run 1)",
+        "a",
+        "seven (7)",
+        "0",
+        "0",
+        "0"
+       ],
+       [
+        "IHP (run 2)",
+        "b",
+        "seven (7)",
+        "0.0296",
+        "0.0146",
+        "0.0124"
+       ],
+       [
+        "IHP (run 2)",
+        "b",
+        "wide (12)",
+        "0.0296",
+        "0.0135",
+        "0.0124"
+       ],
+       [
+        "IHP (run 2)",
+        "c",
+        "seven (7)",
+        "0.5576",
+        "0.1227",
+        "0.0235"
+       ],
+       [
+        "IHP (run 2)",
+        "c",
+        "wide (12)",
+        "0.5576",
+        "0.1118",
+        "0.0235"
+       ],
+       [
+        "IHP (run 1)",
+        "b",
+        "seven (7)",
+        "0.1214",
+        "0.0365",
+        "0.0124"
+       ],
+       [
+        "IHP (run 1)",
+        "c",
+        "seven (7)",
+        "0.2230",
+        "0.0914",
+        "0.0234"
+       ]
+      ],
+      "source": [
+       "out/research/pdk2/floors/floors_gf180/floors_gf180.json",
+       "out/research/pdk2/floors/floors_ihp/floors_ihp.json",
+       "out/research/pdk2/floors/floors_ihp2/floors_ihp.json"
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "3 of 16 devices per PDK and one truth set each; the full truth sets are queued (`pdk2_truth`, `pdk2_ihp_truth`).",
+    "IHP run 1 and run 2 give different tier b and c floors (b seven 0.0365 vs 0.0146; c seven 0.0914 vs 0.1227). The headline uses run 2 for tiers b and c and run 1 for tier a. Which truth-generator settings each run used is not recorded in the result files (`truth_args` is empty in both).",
+    "The result files are in out/research/pdk2/floors/ (copied from the session scratchpad on 2026-10-16)."
+   ],
+   "sources": [
+    "scripts/research/pdk2/floors.py",
+    "scripts/research/pdk2/make_truth.py",
+    "scripts/research/pdk2/ihp_make_truth.py",
+    "src/cryoml/pdk2/",
+    "out/research/pdk2/floors/"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "icml-batched-jacobian",
+   "tab": "icml",
+   "statement": "Running all Jacobian probes in one NGSpice process cuts the 43-parameter forward-difference Jacobian from 1.37 s to 0.65 s with bit-identical results.",
+   "status": "verified",
+   "headline": {
+    "value": "1.37 s → 0.65 s",
+    "convention": "43-parameter forward Jacobian, exact; 0.30 s in the near-exact one-circuit mode"
+   },
+   "numbers": [
+    {
+     "label": "Cost per separate NGSpice call",
+     "value": "~31 ms",
+     "convention": "5 ms process start, 8.5 ms library parse, ~11 ms Newton solve, ~6 ms output and Python I/O",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "43-parameter forward Jacobian, separate calls → batched",
+     "value": "1.37 s → 0.65 s",
+     "convention": "exact",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "One-circuit 'parallel' mode",
+     "value": "0.30 s",
+     "convention": "near-exact",
+     "source": "docs/RESEARCH_LOOP.md"
+    }
+   ],
+   "what": [
+    "Question: how much of an NGSpice Jacobian's cost is process start and library parsing, and can it be shared across probes?",
+    "`simulate_pdk_multi` runs many cards in one NGSpice process with `altermod`; `ngspice_jacobian` builds the forward-difference Jacobian from it."
+   ],
+   "did": [
+    "Scoping of gradients through NGSpice, 2026-10-16. Checked bit-identical to separate calls on all 18 devices, with failures isolated per card."
+   ],
+   "result": {
+    "text": [
+     "The hybrid trust-region arms compute J_f with this batched path (`hybrid_tr.NgspiceResiduals.jacobian`)."
+    ]
+   },
+   "caveats": [
+    "Timings are single measurements from the scoping report on this machine; the benchmark script is not named in the report.",
+    "The 0.30 s mode is near-exact, not bit-identical."
+   ],
+   "sources": [
+    "src/cryoml/spice_batch.py",
+    "scripts/research/hybrid_tr.py",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "icml-sens",
+   "tab": "icml",
+   "statement": "NGSpice `.sens` derivatives are wrong for delta, rdsw, eta0, pclm and dwg and in saturation and subthreshold, so they are not used.",
+   "status": "verified",
+   "headline": {
+    "value": "5 parameters",
+    "convention": "plus the saturation and subthreshold regions"
+   },
+   "numbers": [],
+   "what": [
+    "Question: can NGSpice's built-in `.sens` analysis replace finite-difference Jacobians?"
+   ],
+   "did": [
+    "Checked during the 2026-10-16 scoping of gradients through NGSpice."
+   ],
+   "result": {
+    "text": [
+     "`.sens` is wrong for delta, rdsw, eta0, pclm and dwg, and in saturation and subthreshold. All Jacobians use batched finite differences instead."
+    ]
+   },
+   "caveats": [
+    "The scoping report records the result without the comparison details or a script; the claim rests on that report."
+   ],
+   "sources": [
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "icml-u0-cliff",
+   "tab": "icml",
+   "statement": "BSIM4 divides u0 by 1e4 when u0 > 1, and the cold round-1 box crosses that value for about 14% of nMOS samples.",
+   "status": "verified",
+   "headline": {
+    "value": "~14% of nMOS samples",
+    "convention": "cold round-1 box (u0 ×100)"
+   },
+   "numbers": [
+    {
+     "label": "nMOS bank samples above the u0 = 1 switch",
+     "value": "~14%",
+     "convention": "cold round-1 box",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "Jacobian error along a random direction, nmos_L1_W1p6",
+     "value": "33× (step 1e-2) / 0.4% (step 1e-3)",
+     "convention": "FD Jacobian vs directional difference",
+     "source": "scripts/research/hybrid_tr.py"
+    }
+   ],
+   "what": [
+    "BSIM4 treats u0 > 1 as cm²/(V·s) and divides it by 1e4. A box that spans u0 = 1 contains a 10^4 step in mobility."
+   ],
+   "did": [
+    "Found while reading the BSIM4 v4.8.2 source during the 2026-10-16 scoping of a differentiable BSIM4 port.",
+    "Effect on Jacobians measured in `scripts/research/hybrid_tr.py`: with the pipeline's 1e-2 step a probe moves u0 by about 5% and can cross the switch."
+   ],
+   "result": {
+    "text": [
+     "The trust-region arms use a 1e-3 step and a cliff guard (retry with the opposite step, else a zero column). The u0 range of the boxes stays unchanged (see [Open questions](#questions-decided))."
+    ]
+   },
+   "caveats": [
+    "The 14% figure is from the scoping report; the counting script is not named."
+   ],
+   "sources": [
+    "docs/RESEARCH_LOOP.md",
+    "scripts/research/hybrid_tr.py"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "cryo-43",
+   "tab": "cryo77k",
+   "statement": "With 43 parameters and a cold start, direct NGSpice reaches 0.1044 all-device after FD; the paper's 43-parameter card scores 0.2038.",
+   "status": "verified",
+   "headline": {
+    "value": "0.1044 vs 0.2038",
+    "convention": "all-device, after FD (combined 0.0976 vs 0.1905)"
+   },
+   "numbers": [
+    {
+     "label": "Direct NGSpice 43, round 3: raw / + FD",
+     "value": "0.1049 / 0.1044",
+     "convention": "all-device",
+     "source": "out/research/polished/direct43_r3_fd/real/summary.json"
+    },
+    {
+     "label": "Direct NGSpice 43, round 3 + FD: nMOS / pMOS",
+     "value": "0.0363 / 0.1588",
+     "convention": "family means",
+     "source": "out/research/polished/direct43_r3_fd/real/summary.json"
+    },
+    {
+     "label": "NGSpice swap 43, round 1 + FD",
+     "value": "0.1106 / 0.1036",
+     "convention": "all-device / combined",
+     "source": "out/research/polished/swap_full_r1_fd/real/summary.json"
+    },
+    {
+     "label": "Pipeline 43, round 4: raw / + FD",
+     "value": "0.1513 / 0.1465",
+     "convention": "all-device",
+     "source": "out/research/polished/pipe43_r4_fd/real/summary.json"
+    },
+    {
+     "label": "Paper card, 43 parameters",
+     "value": "0.2038 / 0.1905",
+     "convention": "all-device (paper's reported value) / combined",
+     "source": "out/research/reference_scores.json"
+    },
+    {
+     "label": "NGSpice calls per device, cumulative",
+     "value": "57,502 / 30,114 / 40,417",
+     "convention": "direct r3 + FD / swap r1 + FD / pipeline r4 + FD",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    }
+   ],
+   "what": [
+    "Question: how low can the measured-data RRMS go with 43 parameters when no released 77 K multiplier is used?",
+    "Direct NGSpice: CMA-ES then TRF directly on NGSpice (`scripts/research/ngspice_direct.py`), round 1 seeded from the seven-parameter fit, rounds 2 and 3 re-centred with the cold-loop rule. Paper pipeline: bank → surrogate → multistart surrogate FD → NGSpice validation, four rounds. FD: uniform polish for every method."
+   ],
+   "did": [
+    "Direct NGSpice 43: `full_r1_direct_seeded` → `full_r2_direct` → `full_r3_direct`, about 21.9k NGSpice calls per device in round 1 (TRF Jacobians included); `direct43_r3_fd` polish (314 calls per device).",
+    "Pipeline 43: `scripts/research/cold_loop.py --set full`, rounds 1–4, finished 2026-10-16 05:39 (12.4 h); `fd_pipe43_r4_real` (338 s).",
+    "All re-scored independently with `scripts/research/verify_direct.py` and `verify_cold_results.py`."
+   ],
+   "result": {
+    "figures": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "file": "01_real_methods.png"
+     },
+     {
+      "batch": "2026-10-16_baseline_results",
+      "file": "06_per_device.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "table": "Measured 77 K data"
+     }
+    ],
+    "blocks": [
+     {
+      "type": "per_device",
+      "caption": "Per device after FD, 43 parameters (paper RRMS)",
+      "columns": [
+       {
+        "label": "paper 43 card",
+        "file": "out/research/reference_scores.json",
+        "path": "paper_full43.devices.{device}.rrms"
+       },
+       {
+        "label": "pipeline 43 r4 + FD",
+        "file": "out/research/polished/pipe43_r4_fd/real/summary.json",
+        "path": "devices.{device}.rrms"
+       },
+       {
+        "label": "swap 43 r1 + FD",
+        "file": "out/research/polished/swap_full_r1_fd/real/summary.json",
+        "path": "devices.{device}.rrms"
+       },
+       {
+        "label": "direct 43 r3 + FD",
+        "file": "out/research/polished/direct43_r3_fd/real/summary.json",
+        "path": "devices.{device}.rrms"
+       }
+      ],
+      "notes": [
+       "The paper-card mean row is the mean of the re-simulated per-device scores; the table above lists the paper's reported all-device value."
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "Open check: the FD run's re-score of the pipeline 43 round-4 start differs from the method's own score on `nmos_L8_W1p6`: 0.0263 (own) vs 9.0026 (FD start). The method-output row uses the method's own score.",
+    "About 6 of 43 parameters per device sit at the box edge in the direct fits (mostly secondary parameters held to ×3: dwg, k3b, pdiblc2, xj, prwg, k2). A physicality check is pending before any card is presented.",
+    "Direct NGSpice 43-parameter fits used about 21.9k NGSpice calls per device per round (TRF Jacobian evaluations included), not 3.3k as first logged.",
+    "These runs used the real devices, which are TEST data under the ICML protocol defined later the same day."
+   ],
+   "sources": [
+    "scripts/research/ngspice_direct.py",
+    "scripts/research/cold_loop.py",
+    "scripts/research/polish_cards.py",
+    "out/research/ngspice_direct/full_r3_direct/summary.json",
+    "out/research/polished/direct43_r3_fd/real/summary.json",
+    "out/research/polished/pipe43_r4_fd/real/summary.json",
+    "out/research/polished/swap_full_r1_fd/real/summary.json",
+    "out/research/reference_scores.json",
+    "out/research/report/2026-10-16_baseline_results/README.md",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "cryo-seven-floor",
+   "tab": "cryo77k",
+   "statement": "With seven parameters the measured-data RRMS stops near 0.164 all-device; a 3× longer direct search changes it by 0.0005.",
+   "status": "verified",
+   "headline": {
+    "value": "0.1643",
+    "convention": "all-device, pipeline 7 round 4 + FD (combined 0.1548)"
+   },
+   "numbers": [
+    {
+     "label": "Pipeline 7, round 4: raw / + FD",
+     "value": "0.1697 / 0.1643",
+     "convention": "all-device",
+     "source": "out/research/polished/pipe_r4_fd/real/summary.json"
+    },
+    {
+     "label": "Direct NGSpice 7: raw / + FD",
+     "value": "0.1676 / 0.1670",
+     "convention": "all-device",
+     "source": "out/research/polished/direct7_fd/real/summary.json"
+    },
+    {
+     "label": "Direct NGSpice 7, 3× budget (7.9k calls) vs 1×",
+     "value": "0.16708 vs 0.16757",
+     "convention": "all-device",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "Pipeline 7 r4 + FD on held-out simulated devices",
+     "value": "0.0003 / 0.0000",
+     "convention": "sim all-device / sim median",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "Paper card, seven parameters",
+     "value": "0.2284 / 0.2135",
+     "convention": "all-device / combined",
+     "source": "out/research/reference_scores.json"
+    }
+   ],
+   "what": [
+    "Question: is the seven-parameter error on measured data an optimization failure or a model-form limit?",
+    "Test: the same methods on held-out simulated devices, where the true card scores 0. A method that inverts the simulator there but not the measurements is limited by the seven-parameter model form."
+   ],
+   "did": [
+    "Cold seven-parameter pipeline rounds 1–4 and direct NGSpice in the round-1 box, 2026-10-15; scores re-checked with `scripts/research/verify_cold_results.py` (`out/research/verify_seven_r4.json`).",
+    "Uniform FD polish of every method on real and three simulated sets (`scripts/research/polish_cards.py`)."
+   ],
+   "result": {
+    "tables": [
+     {
+      "caption": "After the uniform NGSpice FD polish (seven-parameter rows and the 43-parameter direct rows)",
+      "columns": [
+       "method + NGSpice FD",
+       "real all-device",
+       "real combined",
+       "real median",
+       "sim all-device",
+       "sim median",
+       "FD calls/device"
+      ],
+      "rows": [
+       [
+        "cold paper pipeline, seven, round 4",
+        "0.1643",
+        "0.1548",
+        "0.1513",
+        "0.0003",
+        "0.0000",
+        "270"
+       ],
+       [
+        "direct NGSpice, seven",
+        "0.1670",
+        "0.1570",
+        "0.1446",
+        "0.0190",
+        "0.0000",
+        "187"
+       ],
+       [
+        "direct NGSpice, 43, seeded (round 1)",
+        "0.1191",
+        "0.1117",
+        "0.1071",
+        "0.0073",
+        "0.0000",
+        "319"
+       ],
+       [
+        "direct NGSpice, 43, round 3",
+        "0.1044",
+        "0.0976",
+        "–",
+        "not run",
+        "–",
+        "314"
+       ]
+      ],
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "Many seven-parameter direct fits sit at the ×0.01 / ×100 box edges (eta0, vsat, rdsw, delta), and rdsw reaches ×2·10^4 of released on some devices. The fits may rely on non-physical compensation.",
+    "The floor applies to this parameter set and these boxes."
+   ],
+   "sources": [
+    "scripts/research/cold_loop.py",
+    "scripts/research/ngspice_direct.py",
+    "scripts/research/polish_cards.py",
+    "out/research/polished/pipe_r4_fd/real/summary.json",
+    "out/research/polished/direct7_fd/real/summary.json",
+    "out/research/ngspice_direct/seven_r1_direct_long/summary.json",
+    "out/research/verify_seven_r4.json",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "cryo-rounds",
+   "tab": "cryo77k",
+   "statement": "Each cold-pipeline round lowers the 43-parameter all-device RRMS: 0.2375, 0.1965, 0.1716, 0.1513 over rounds 1–4.",
+   "status": "verified",
+   "headline": {
+    "value": "0.2375 → 0.1513",
+    "convention": "all-device, raw, pipeline 43, rounds 1–4 (combined 0.2281 → 0.1427)"
+   },
+   "numbers": [
+    {
+     "label": "Pipeline 7, rounds 1–4",
+     "value": "0.2367, 0.1921, 0.1758, 0.1697",
+     "convention": "all-device, raw",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "Pipeline 43, rounds 1–4",
+     "value": "0.2375, 0.1965, 0.1716, 0.1513",
+     "convention": "all-device, raw",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "Direct NGSpice 43, rounds 1–3",
+     "value": "0.1201, 0.1094, 0.1049",
+     "convention": "all-device, raw",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "Pipeline 43 surrogate validation loss, rounds 1–4",
+     "value": "0.0322, 0.0207, 0.0113, 0.0085",
+     "convention": "forward model",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "Seven parameters: kept candidate is an FD endpoint, rounds 1–4",
+     "value": "11, 8, 5, 3 of 18",
+     "convention": "devices",
+     "source": "docs/RESEARCH_LOOP.md"
+    }
+   ],
+   "what": [
+    "Each round re-centres every device's box on its selected NGSpice-validated card; interior coordinates halve their log width, edge coordinates keep it so the box moves outward. Each round draws a new 10k bank per device and trains a new surrogate from random initialization."
+   ],
+   "did": [
+    "`scripts/research/cold_loop.py --set seven` and `--set full`, rounds 1–4; 43-parameter rounds finished 2026-10-16 05:39 after 12.4 h; 40,035 cumulative NGSpice calls per device by round 4.",
+    "Direct NGSpice chain `full_r1_direct_seeded` → `full_r2_direct` → `full_r3_direct` (each spec's `source_run` names the previous round)."
+   ],
+   "result": {
+    "figures": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "file": "03_rounds.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "table": "Measured 77 K data, 18 devices: paper RRMS by round"
+     },
+     {
+      "caption": "Pipeline 43 by round, with the tandem inverse model A",
+      "columns": [
+       "round",
+       "surrogate + search all-device",
+       "combined",
+       "nMOS",
+       "pMOS",
+       "forward val loss",
+       "A (tandem) all-device"
+      ],
+      "rows": [
+       [
+        "1",
+        "0.2375",
+        "0.2281",
+        "0.1435",
+        "0.3128",
+        "0.0322",
+        "0.592"
+       ],
+       [
+        "2",
+        "0.1965",
+        "0.1875",
+        "0.1058",
+        "0.2691",
+        "0.0207",
+        "5.83"
+       ],
+       [
+        "3",
+        "0.1716",
+        "0.1631",
+        "0.0865",
+        "0.2396",
+        "0.0113",
+        "nan"
+       ],
+       [
+        "4",
+        "0.1513",
+        "0.1427",
+        "0.0652",
+        "0.2201",
+        "0.0085",
+        "1.70"
+       ]
+      ],
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
+     }
+    ]
+   },
+   "caveats": [
+    "At seven parameters, by round 4 the kept candidate is usually a raw NGSpice bank sample (FD endpoint on 3 of 18 devices), so the iterated loop acts mostly as an NGSpice cross-entropy search. The paper's own runs also kept bank samples on 11 of 18 devices.",
+    "The tandem model A is unstable at 43 parameters (5.83, nan, 1.70 in rounds 2–4)."
+   ],
+   "sources": [
+    "scripts/research/cold_loop.py",
+    "src/cryoml/cold_start.py",
+    "data/processed/cold_loop/",
+    "out/cold_loop/full/",
+    "out/cold_loop/seven/",
+    "out/research/ngspice_direct/",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "cryo-fd",
+   "tab": "cryo77k",
+   "statement": "The uniform NGSpice FD polish lowers measured-data RRMS for every method, by 0.12–0.46 for the inverse models and by 0.0005–0.055 for the search pipelines.",
+   "status": "verified",
+   "headline": {
+    "value": "0.6857 → 0.2270",
+    "convention": "all-device, tandem A round 4, before → after FD; pipeline 7 r4 0.1697 → 0.1643"
+   },
+   "numbers": [
+    {
+     "label": "A tandem, round 4",
+     "value": "0.6857 → 0.2270",
+     "convention": "all-device",
+     "source": "out/research/polished/A_r4_fd/real/summary.json"
+    },
+    {
+     "label": "B flow pooled / flow r1",
+     "value": "0.2922 → 0.1728 / 0.3801 → 0.2209",
+     "convention": "all-device",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "B WTA pooled / WTA r1",
+     "value": "0.4608 → 0.2268 / 0.5148 → 0.2587",
+     "convention": "all-device",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "Pipeline 7 r4 / pipeline 43 r1 / pipeline 43 r4",
+     "value": "0.1697 → 0.1643 / 0.2375 → 0.1824 / 0.1513 → 0.1465",
+     "convention": "all-device",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "Direct 7 / direct 43 r1 / direct 43 r3 / swap 43 r1",
+     "value": "0.1676 → 0.1670 / 0.1201 → 0.1191 / 0.1049 → 0.1044 / 0.1125 → 0.1106",
+     "convention": "all-device",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    }
+   ],
+   "what": [
+    "FD polish: bounded TRF on frozen-inclusion per-curve NGSpice residuals against the target curves, about 400 simulations per device (max_nfev 400, diff_step 0.01, irls 2), in the method's own search box (pooled B: the union of the round 1–4 boxes). Applied identically to every method, on real and the three simulated sets.",
+    "Before this study, `ngspice_fit.polish` used SciPy's relative `diff_step`/`xtol`; a start at the box centre (local = 0) stopped after one rejected step. It now uses an absolute-step local Jacobian (`xtol = ftol = gtol = 1e-10`). Direct NGSpice runs were not affected."
+   ],
+   "did": [
+    "`scripts/research/polish_cards.py` for every method (queue jobs `fdU_*` and `fd_*`), 2026-10-15 17:30 to 2026-10-16 06:42."
+   ],
+   "result": {
+    "tables": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "table": "Measured 77 K data",
+      "rows": [
+       "Pipeline 7, round 4",
+       "Pipeline 43, round 1",
+       "Pipeline 43, round 4",
+       "NGSpice swap 43, round 1",
+       "Direct NGSpice 7, round 1",
+       "Direct NGSpice 43, round 1, seeded",
+       "Direct NGSpice 43, round 3"
+      ],
+      "columns": [
+       "method",
+       "stage",
+       "all-device",
+       "combined",
+       "NGSpice calls/device (this run)"
+      ],
+      "caption": "Raw and + FD rows on the measured devices"
+     }
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "file": "06_per_device.png"
+     }
+    ]
+   },
+   "caveats": [
+    "Open check: the FD run's re-score of its start differs from the method's own score on two devices: pipeline 43 round 1 `nmos_L0p15_W1p6` 0.2035 vs 1.1832, and pipeline 43 round 4 `nmos_L8_W1p6` 0.0263 vs 9.0026 (own vs FD start). The method-output rows use the method's own scores.",
+    "FD is local: devices whose start lies in another basin stay there, so the inverse models' means stay above the search pipelines after FD.",
+    "Simulated column, pipeline 43 r4 + FD: set 1 mean 0.113; sets 0 and 2 have means 4.9 and 5.0 from one device (`nmos_L1_W3`, RRMS ~87); median about 0.09–0.10."
+   ],
+   "sources": [
+    "scripts/research/polish_cards.py",
+    "src/cryoml/ngspice_fit.py",
+    "scripts/real_fd_polish.py",
+    "out/research/polished/",
+    "out/research/report/2026-10-16_baseline_results/README.md",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
+   "id": "cryo-temp",
+   "tab": "cryo77k",
+   "statement": "On the simulated 77–300 K benchmark all three methods reach held-out-temperature RRMS of 0.0004–0.0117 after FD, while the temperature exponents g stay weakly identified.",
+   "status": "verified",
+   "headline": {
+    "value": "0.0004 / 0.0007 / 0.0117",
+    "convention": "held-out all-device after FD: NGSpice search / paper-MLP surrogate search / direct NGSpice"
+   },
+   "numbers": [
+    {
+     "label": "Pipeline search on NGSpice: observed / held-out",
+     "value": "0.0005 / 0.0021 (raw); 1.2e-05 / 0.0004 (+ FD)",
+     "convention": "all-device, mean over 3 sets",
+     "source": "out/research/temp/ngspice_search/"
+    },
+    {
+     "label": "Pipeline search on paper MLP surrogate: observed / held-out",
+     "value": "0.0051 / 0.0081 (raw); 1.5e-05 / 0.0007 (+ FD)",
+     "convention": "all-device",
+     "source": "out/research/temp/surrogate_paper_mlp/"
+    },
+    {
+     "label": "Direct NGSpice (CMA-ES + TRF): observed / held-out",
+     "value": "0.0129 / 0.0362 (raw); 0.0015 / 0.0117 (+ FD)",
+     "convention": "all-device",
+     "source": "out/research/temp/direct/"
+    },
+    {
+     "label": "Parameter error at RRMS ~1e-4",
+     "value": "0.16–0.27",
+     "convention": "local RMS",
+     "source": "docs/RESEARCH_LOOP.md"
+    },
+    {
+     "label": "Hardest held-out temperature",
+     "value": "110 K",
+     "convention": "all methods",
+     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    }
+   ],
+   "what": [
+    "Only 77 K measurements exist, so temperature methods are scored on simulated devices. The released 77 K card (`tnom = -196.15 C`) cannot be heated (about 0.8 A at 150 K; NGSpice hangs at 300 K); with `tnom = 27 C` all 18 devices simulate from 77 to 300 K.",
+    {
+     "type": "code",
+     "text": "p(T) = p_stock * m ** (w(T) ** g),   w = (27 C - T) / 223.15 K, clipped at 0\np(77 K) = p_stock * m;  p(300.15 K) = p_stock",
+     "source": "src/cryoml/temperature.py"
+    },
+    "14 numbers per device: log m and log g for the seven paper parameters; BSIM4's own temperature coefficients stay zero. 77 K multipliers anchored on the cold seven-parameter round-4 box. Bank: 10k LHC per device in 1.5× that box with g ∈ [1/4, 4], each simulated at 7 temperatures. Truths: 3 sets × 18 devices in 0.75× with g ∈ [1/3, 3]. Observed 77, 150, 225, 300 K; held out 110, 190, 260 K."
+   ],
+   "did": [
+    "`temp_bank_v1` (`scripts/research/temp_bank.py`, 3,049 s), `temp_direct` (1,025 s), `temp_ngspice_search` (1,434 s), `temp_sur_paper_mlp` (3,099 s), 2026-10-16. All seven temperatures run in one NGSpice process (`option temp=` re-evaluates `temper` expressions; identical to separate decks).",
+    {
+     "type": "queue",
+     "match": "^temp_"
+    }
+   ],
+   "result": {
+    "figures": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "file": "07_temperature.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-16_baseline_results",
+      "table": "Simulated temperature benchmark: paper RRMS vs simulated truth"
+     },
+     {
+      "batch": "2026-10-16_baseline_results",
+      "table": "Simulated temperature benchmark: all-device RRMS per temperature"
+     }
+    ]
+   },
+   "caveats": [
+    "The truths come from the same card family as the fits (well-specified), and every method reaches ≤0.0117 held-out after FD; this tier does not separate methods. A misspecified tier is the next step for this benchmark.",
+    "Parameter error stays 0.16–0.27 (local RMS) at RRMS 1e-4, so the g exponents are weakly identifiable from these curves.",
+    "BSIM4's temperature laws are not built for the cryogenic range; intermediate temperatures are model predictions until measurements at another temperature exist. The 77 K fits move nfactor ×26 from stock, and BSIM4 has no temperature law for nfactor."
+   ],
+   "sources": [
+    "src/cryoml/temperature.py",
+    "src/cryoml/temp_fit.py",
+    "scripts/research/temp_bank.py",
+    "scripts/research/temp_study.py",
+    "data/processed/temp_bank/v1/meta.json",
+    "out/research/temp/",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-16"
+  }
+ ]
+}

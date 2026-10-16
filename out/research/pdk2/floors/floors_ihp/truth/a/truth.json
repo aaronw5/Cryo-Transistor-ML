@@ -1,0 +1,125 @@
+{
+ "tier": "a",
+ "draw_set": "seven",
+ "pdk": "ihp-sg13g2@5e6d592e4002946a4616f798c357f0f3c06cf3b6",
+ "fit_temp_C": 27.0,
+ "options": {
+  "draw_set": "seven",
+  "misspec_width": 0.2,
+  "rext_range": [
+   25.0,
+   100.0
+  ],
+  "noise": 0.01,
+  "temp_offset": 0.0,
+  "c_misspec_width": 0.5,
+  "c_rext_k": [
+   1.0,
+   2.0
+  ],
+  "c_dtmax": [
+   20.0,
+   40.0
+  ],
+  "c_noise": 0.01,
+  "c_gain": 0.01
+ },
+ "base_seed": 1410001,
+ "sets": {
+  "0": {
+   "ihp_nmos_L0p13_W0p2": {
+    "fitted_params": {
+     "vfbo": -0.9350980250916777,
+     "uo": 0.049704475529677834,
+     "ctl": 0.018397921708438944,
+     "thesato": 0.4111664311811538,
+     "axo": 13.906155714362995,
+     "rsw1": 91.9430664878629,
+     "cfl": 8.642784914566946e-08
+    },
+    "misspec_params": {},
+    "rs_ext_ohm_per_side": 0.0,
+    "temp_C": 27.0,
+    "noise_rel": 0.0,
+    "noise_seed": null,
+    "seed": 1410001,
+    "attempts": 1,
+    "bin_index": 0,
+    "include_tags": [
+     "idvd@0.48",
+     "idvd@0.72",
+     "idvd@0.96",
+     "idvd@1.2",
+     "idvg@0.05",
+     "idvg@0.24",
+     "idvg@0.48",
+     "idvg@0.72",
+     "idvg@0.96",
+     "idvg@1.2"
+    ]
+   },
+   "ihp_nmos_L2_W2": {
+    "fitted_params": {
+     "vfbo": -0.8671518739235772,
+     "uo": 0.04466317139285304,
+     "ctl": 0.017026295664257105,
+     "thesato": 0.41926217109041525,
+     "axo": 14.660047992154654,
+     "rsw1": 102.1723770504423,
+     "cfl": 8.186675307381744e-08
+    },
+    "misspec_params": {},
+    "rs_ext_ohm_per_side": 0.0,
+    "temp_C": 27.0,
+    "noise_rel": 0.0,
+    "noise_seed": null,
+    "seed": 1410006,
+    "attempts": 1,
+    "bin_index": 0,
+    "include_tags": [
+     "idvd@0.48",
+     "idvd@0.72",
+     "idvd@0.96",
+     "idvd@1.2",
+     "idvg@0.05",
+     "idvg@0.24",
+     "idvg@0.48",
+     "idvg@0.72",
+     "idvg@0.96",
+     "idvg@1.2"
+    ]
+   },
+   "ihp_pmos_L0p5_W2": {
+    "fitted_params": {
+     "vfbo": -0.9440030986706759,
+     "uo": 0.016727094333841848,
+     "ctl": 0.014559014571383557,
+     "thesato": 0.09861975515122533,
+     "axo": 7.560317091862929,
+     "rsw1": 589.5194416934851,
+     "cfl": 0.0001038507982034634
+    },
+    "misspec_params": {},
+    "rs_ext_ohm_per_side": 0.0,
+    "temp_C": 27.0,
+    "noise_rel": 0.0,
+    "noise_seed": null,
+    "seed": 1410012,
+    "attempts": 1,
+    "bin_index": 0,
+    "include_tags": [
+     "idvd@0.48",
+     "idvd@0.72",
+     "idvd@0.96",
+     "idvd@1.2",
+     "idvg@0.05",
+     "idvg@0.24",
+     "idvg@0.48",
+     "idvg@0.72",
+     "idvg@0.96",
+     "idvg@1.2"
+    ]
+   }
+  }
+ }
+}
