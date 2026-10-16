@@ -392,3 +392,18 @@ surrogate search 0.0051/0.0081 (+FD 0.0000/0.0007). 110 K is the
 hardest held-out temperature. Parameter error stays 0.16-0.27 (local RMS) even
 at RRMS 1e-4, so the g exponents are weakly identifiable. The
 well-specified task is too easy to separate methods, so it needs a misspecified tier.
+
+## Research loop iteration 1 (2026-10-16, AI-Scientist-style)
+
+Ideation lenses: method designer, literature scout, ICML reviewer. Nodes
+implemented and adversarially verified:
+- n1a: sketched-Jacobian TR (k NGSpice directional probes chosen from the
+  surrogate Jacobian, Broyden secant, full batched Jacobian on demand); the
+  r_s = 0 control is a random-subspace/Broyden Gauss-Newton TR.
+- n1b: budget-aware allocation (zero-call surrogate presearch, racing with
+  optimistic-bound drops, surrogate restarts).
+- n1c: DEV harness (36 targets = sim sets 0 and 1, budgets 500/1000/2000/5000)
+  with CMA-ES+TRF and lq-CMA-ES call-trace baselines and the pipeline r1 row.
+81 DEV jobs queued, about 6-9 h. The real-device hybrid runs were removed from the
+queue: real devices are TEST data and run once per frozen method. Tree:
+out/research/tree/tree.json.
