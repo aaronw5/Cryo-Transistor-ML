@@ -1,0 +1,901 @@
+{
+ "pdk": "gf180",
+ "devices": [
+  "gf180_nmos_L0p3_W0p3",
+  "gf180_nmos_L5_W5",
+  "gf180_pmos_L1_W5"
+ ],
+ "nfev": 300,
+ "irls": 3,
+ "truth_args": "",
+ "settings": {
+  "command": [
+   "/Users/anrunw/Documents/cryo-ml/.venv/bin/python",
+   "scripts/research/pdk2/floors.py",
+   "--pdk",
+   "gf180",
+   "--devices",
+   "gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5",
+   "--out",
+   "out/research/pdk2/floors/2026-10-16_final"
+  ],
+  "started": "2026-10-16T21:31:49-04:00",
+  "finished": "2026-10-16T21:33:40-04:00",
+  "runtime_s": 111.1,
+  "pdk": "gf180",
+  "devices": [
+   "gf180_nmos_L0p3_W0p3",
+   "gf180_nmos_L5_W5",
+   "gf180_pmos_L1_W5"
+  ],
+  "tiers": [
+   "a",
+   "b",
+   "c"
+  ],
+  "fit_sets": [
+   "seven",
+   "wide"
+  ],
+  "skipped": [
+   "a/wide (well-specified; the floor is 0 by construction)"
+  ],
+  "truth_generator": {
+   "script": "scripts/research/pdk2/make_truth.py",
+   "root": "out/research/pdk2/floors/2026-10-16_final/truth_gf180",
+   "sets": 1,
+   "set_index": 0,
+   "truth_args": "",
+   "argv": {
+    "a": [
+     "--pdk",
+     "gf180",
+     "--tier",
+     "a",
+     "--sets",
+     "1",
+     "--devices",
+     "gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5",
+     "--out-root",
+     "out/research/pdk2/floors/2026-10-16_final/truth_gf180"
+    ],
+    "b": [
+     "--pdk",
+     "gf180",
+     "--tier",
+     "b",
+     "--sets",
+     "1",
+     "--devices",
+     "gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5",
+     "--out-root",
+     "out/research/pdk2/floors/2026-10-16_final/truth_gf180"
+    ],
+    "c": [
+     "--pdk",
+     "gf180",
+     "--tier",
+     "c",
+     "--sets",
+     "1",
+     "--devices",
+     "gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5",
+     "--out-root",
+     "out/research/pdk2/floors/2026-10-16_final/truth_gf180"
+    ]
+   },
+   "options": {
+    "draw_set": "seven",
+    "misspec_width": 0.2,
+    "rext_range": [
+     25.0,
+     100.0
+    ],
+    "noise": 0.01,
+    "temp_offset": 0.0,
+    "c_misspec_width": 0.5,
+    "c_rext_k": [
+     1.0,
+     2.0
+    ],
+    "c_dtmax": [
+     20.0,
+     40.0
+    ],
+    "c_noise": 0.01,
+    "c_gain": 0.01
+   },
+   "misspec_params": [
+    "a0",
+    "ags",
+    "keta",
+    "lpe0",
+    "minv",
+    "etab",
+    "drout",
+    "pscbe1",
+    "pscbe2",
+    "alpha0",
+    "beta0",
+    "eu"
+   ],
+   "b_width_defaults": {
+    "gf180": 0.2,
+    "ihp": 0.05
+   },
+   "ihp_b_rext_k": [
+    0.1,
+    0.4
+   ],
+   "seed_offsets": {
+    "tier": {
+     "a": 910001,
+     "b": 920001,
+     "c": 930001
+    },
+    "pdk": {
+     "gf180": 0,
+     "ihp": 500000
+    }
+   },
+   "per_tier": {
+    "a": {
+     "tier": "a",
+     "draw_set": "seven",
+     "pdk": "gf180mcuD@c6d73a35f524070e85faff4a6a9eef49553ebc2b",
+     "fit_temp_C": 27.0,
+     "options": {
+      "draw_set": "seven",
+      "misspec_width": 0.2,
+      "rext_range": [
+       25.0,
+       100.0
+      ],
+      "noise": 0.01,
+      "temp_offset": 0.0,
+      "c_misspec_width": 0.5,
+      "c_rext_k": [
+       1.0,
+       2.0
+      ],
+      "c_dtmax": [
+       20.0,
+       40.0
+      ],
+      "c_noise": 0.01,
+      "c_gain": 0.01
+     },
+     "base_seed": 910001,
+     "sets": {
+      "0": {
+       "gf180_nmos_L0p3_W0p3": {
+        "fitted_params": {
+         "vth0": 0.7728329608071474,
+         "u0": 0.022055811168385574,
+         "nfactor": 0.9221318900649519,
+         "vsat": 88490.2177033899,
+         "delta": 0.0033367145969431084,
+         "rdsw": 525.2171831385288,
+         "eta0": 0.7142167891768894
+        },
+        "misspec_params": {},
+        "rs_ext_ohm_per_side": 0.0,
+        "temp_C": 27.0,
+        "noise_rel": 0.0,
+        "noise_seed": null,
+        "seed": 910001,
+        "attempts": 1,
+        "bin_index": 0,
+        "include_tags": [
+         "idvd@0.66",
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ]
+       },
+       "gf180_nmos_L5_W5": {
+        "fitted_params": {
+         "vth0": 0.6663779032985082,
+         "u0": 0.04173667456785612,
+         "nfactor": 0.9087641876488027,
+         "vsat": 89518.49937554017,
+         "delta": 0.002804027667110051,
+         "rdsw": 565.1179076077757,
+         "eta0": 0.6887109070495752
+        },
+        "misspec_params": {},
+        "rs_ext_ohm_per_side": 0.0,
+        "temp_C": 27.0,
+        "noise_rel": 0.0,
+        "noise_seed": null,
+        "seed": 910006,
+        "attempts": 1,
+        "bin_index": 10,
+        "include_tags": [
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ]
+       },
+       "gf180_pmos_L1_W5": {
+        "fitted_params": {
+         "vth0": -0.6986553706751699,
+         "u0": 0.010974060311611277,
+         "nfactor": 0.7986348704835555,
+         "vsat": 87810.33718273982,
+         "delta": 0.010935847507605782,
+         "rdsw": 451.0072983006736,
+         "eta0": 0.2528561210668969
+        },
+        "misspec_params": {},
+        "rs_ext_ohm_per_side": 0.0,
+        "temp_C": 27.0,
+        "noise_rel": 0.0,
+        "noise_seed": null,
+        "seed": 910012,
+        "attempts": 1,
+        "bin_index": 9,
+        "include_tags": [
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ]
+       }
+      }
+     }
+    },
+    "b": {
+     "tier": "b",
+     "draw_set": "seven",
+     "pdk": "gf180mcuD@c6d73a35f524070e85faff4a6a9eef49553ebc2b",
+     "fit_temp_C": 27.0,
+     "options": {
+      "draw_set": "seven",
+      "misspec_width": 0.2,
+      "rext_range": [
+       25.0,
+       100.0
+      ],
+      "noise": 0.01,
+      "temp_offset": 0.0,
+      "c_misspec_width": 0.5,
+      "c_rext_k": [
+       1.0,
+       2.0
+      ],
+      "c_dtmax": [
+       20.0,
+       40.0
+      ],
+      "c_noise": 0.01,
+      "c_gain": 0.01
+     },
+     "base_seed": 920001,
+     "sets": {
+      "0": {
+       "gf180_nmos_L0p3_W0p3": {
+        "fitted_params": {
+         "vth0": 0.6562594136802576,
+         "u0": 0.02332278398400384,
+         "nfactor": 0.9521036263848962,
+         "vsat": 88366.49603237279,
+         "delta": 0.0034460211034126626,
+         "rdsw": 509.69687873394906,
+         "eta0": 0.7747969761693223
+        },
+        "misspec_params": {
+         "a0": 0.10925858558327443,
+         "ags": 0.28741081583369016,
+         "keta": -0.17852435328791857,
+         "lpe0": 1.0817560202430069e-07,
+         "minv": -0.22748060687456645,
+         "etab": -0.37623941114582765,
+         "drout": 0.4885347195573766,
+         "pscbe1": 601718429.6186373,
+         "pscbe2": 1.5342091871370788e-05,
+         "alpha0": 2.649249406667326e-06,
+         "beta0": 17.77825958334381,
+         "eu": 1.8102215572638354
+        },
+        "rs_ext_ohm_per_side": 211.10716595340713,
+        "temp_C": 27.0,
+        "noise_rel": 0.01,
+        "noise_seed": 920008,
+        "seed": 920001,
+        "attempts": 1,
+        "bin_index": 0,
+        "include_tags": [
+         "idvd@0.66",
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ]
+       },
+       "gf180_nmos_L5_W5": {
+        "fitted_params": {
+         "vth0": 0.6556815570461808,
+         "u0": 0.042272061304536104,
+         "nfactor": 1.0842103307918018,
+         "vsat": 79070.8045621248,
+         "delta": 0.002943527738936112,
+         "rdsw": 511.172372748887,
+         "eta0": 0.7214118261231569
+        },
+        "misspec_params": {
+         "a0": 1.1226887855253154,
+         "ags": 0.23933924600230522,
+         "keta": -0.021297409583963617,
+         "lpe0": 1.1041830476538419e-07,
+         "minv": -0.2252538547543613,
+         "etab": -0.38055941729165926,
+         "drout": 0.5181812609511562,
+         "pscbe1": 702058614.3572701,
+         "pscbe2": 1.815744213903725e-05,
+         "alpha0": 8.491896226305703e-05,
+         "beta0": 28.84689457690218,
+         "eu": 1.4467080025475938
+        },
+        "rs_ext_ohm_per_side": 12.838561849252093,
+        "temp_C": 27.0,
+        "noise_rel": 0.01,
+        "noise_seed": 920013,
+        "seed": 920006,
+        "attempts": 1,
+        "bin_index": 10,
+        "include_tags": [
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ]
+       },
+       "gf180_pmos_L1_W5": {
+        "fitted_params": {
+         "vth0": -0.8411575991089293,
+         "u0": 0.010067696497454611,
+         "nfactor": 0.8108913717665416,
+         "vsat": 94877.5391579936,
+         "delta": 0.009411028473788961,
+         "rdsw": 489.8570505885108,
+         "eta0": 0.2759379751423606
+        },
+        "misspec_params": {
+         "a0": 1.0766957292255948,
+         "ags": 0.21766883891992403,
+         "keta": -0.006250456560690476,
+         "lpe0": 2.8463676011709935e-08,
+         "minv": -0.10335234647006991,
+         "etab": -0.17309720534536255,
+         "drout": 0.5148247682520666,
+         "pscbe1": 581657583.1068857,
+         "pscbe2": 1.0235886669987548e-05,
+         "alpha0": 0.00010658744949194669,
+         "beta0": 39.898102771318555,
+         "eu": 1.8707632903290998
+        },
+        "rs_ext_ohm_per_side": 7.949844078531709,
+        "temp_C": 27.0,
+        "noise_rel": 0.01,
+        "noise_seed": 920019,
+        "seed": 920012,
+        "attempts": 1,
+        "bin_index": 9,
+        "include_tags": [
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ]
+       }
+      }
+     }
+    },
+    "c": {
+     "tier": "c",
+     "draw_set": "seven",
+     "pdk": "gf180mcuD@c6d73a35f524070e85faff4a6a9eef49553ebc2b",
+     "fit_temp_C": 27.0,
+     "options": {
+      "draw_set": "seven",
+      "misspec_width": 0.2,
+      "rext_range": [
+       25.0,
+       100.0
+      ],
+      "noise": 0.01,
+      "temp_offset": 0.0,
+      "c_misspec_width": 0.5,
+      "c_rext_k": [
+       1.0,
+       2.0
+      ],
+      "c_dtmax": [
+       20.0,
+       40.0
+      ],
+      "c_noise": 0.01,
+      "c_gain": 0.01
+     },
+     "base_seed": 930001,
+     "sets": {
+      "0": {
+       "gf180_nmos_L0p3_W0p3": {
+        "fitted_params": {
+         "vth0": 0.7145012441433309,
+         "u0": 0.02411948789242967,
+         "nfactor": 0.9118562332883722,
+         "vsat": 83645.06165692603,
+         "delta": 0.0037274216659948832,
+         "rdsw": 560.1486948319156,
+         "eta0": 0.7044376662310083
+        },
+        "misspec_params": {
+         "a0": 0.08578113759052766,
+         "ags": 0.29259405470184985,
+         "keta": -0.15441404125543662,
+         "lpe0": 8.644714293707293e-08,
+         "minv": -0.3411367435113698,
+         "etab": -0.2295777711204256,
+         "drout": 0.5388207246412148,
+         "pscbe1": 501937394.2267356,
+         "pscbe2": 1.2610438659582041e-05,
+         "alpha0": 2.6478831203940866e-06,
+         "beta0": 14.373179943060093,
+         "eu": 2.3929736485722644
+        },
+        "rs_ext_ohm_per_side": 935.3502452403181,
+        "temp_C": 27.0,
+        "noise_rel": 0.01,
+        "noise_seed": 930008,
+        "seed": 930001,
+        "attempts": 1,
+        "bin_index": 0,
+        "include_tags": [
+         "idvd@0.66",
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ],
+        "rext_k": 1.058887070083379,
+        "dT_max": 33.07370523950992,
+        "curve_temps_C": [
+         27.529767,
+         34.097453,
+         42.477351,
+         51.210465,
+         60.073705,
+         27.024566,
+         30.555505,
+         38.244866,
+         45.808863,
+         52.871363,
+         60.073705
+        ],
+        "curve_gains": [
+         1.00353294,
+         0.98594329,
+         1.00578265,
+         1.00436866,
+         0.98456123,
+         0.99360619,
+         1.00582982,
+         1.01303605,
+         0.99899317,
+         0.99143852,
+         1.00261577
+        ]
+       },
+       "gf180_nmos_L5_W5": {
+        "fitted_params": {
+         "vth0": 0.6814781080517944,
+         "u0": 0.044510781446345675,
+         "nfactor": 1.0934299499340283,
+         "vsat": 90001.16352919777,
+         "delta": 0.002691838293263051,
+         "rdsw": 503.42319208012026,
+         "eta0": 0.8228073701057856
+        },
+        "misspec_params": {
+         "a0": 0.9760546686033931,
+         "ags": 0.18884060278918527,
+         "keta": -0.015362604470427579,
+         "lpe0": 1.5634712326716784e-07,
+         "minv": -0.22090801719095168,
+         "etab": -0.33382380852948296,
+         "drout": 0.6538175198659651,
+         "pscbe1": 588629165.1575121,
+         "pscbe2": 1.4227166770245748e-05,
+         "alpha0": 9.776415361837351e-05,
+         "beta0": 36.145757902851926,
+         "eu": 1.4640728347484233
+        },
+        "rs_ext_ohm_per_side": 77.06210363889677,
+        "temp_C": 27.0,
+        "noise_rel": 0.01,
+        "noise_seed": 930013,
+        "seed": 930006,
+        "attempts": 1,
+        "bin_index": 10,
+        "include_tags": [
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ],
+        "rext_k": 1.4540019554508825,
+        "dT_max": 32.23610235613552,
+        "curve_temps_C": [
+         27.015814,
+         29.678459,
+         36.953731,
+         47.26809,
+         59.236102,
+         27.021903,
+         30.269994,
+         37.742356,
+         45.985687,
+         52.733751,
+         59.236102
+        ],
+        "curve_gains": [
+         0.98855295,
+         0.98612304,
+         1.0056162,
+         0.99508852,
+         1.00824,
+         1.02308799,
+         1.00841638,
+         0.99842006,
+         0.9858742,
+         0.99514269,
+         0.99473715
+        ]
+       },
+       "gf180_pmos_L1_W5": {
+        "fitted_params": {
+         "vth0": -0.7119196121444729,
+         "u0": 0.010995486712859243,
+         "nfactor": 0.8770118557420805,
+         "vsat": 89857.18936450801,
+         "delta": 0.009000449990900768,
+         "rdsw": 473.1774209279504,
+         "eta0": 0.23156897507593424
+        },
+        "misspec_params": {
+         "a0": 0.9943431274424588,
+         "ags": 0.18711447912923457,
+         "keta": -0.009242893386371907,
+         "lpe0": 3.181201740972472e-08,
+         "minv": -0.11730582864933076,
+         "etab": -0.20633268014711295,
+         "drout": 0.4099058720687336,
+         "pscbe1": 998447467.4429237,
+         "pscbe2": 1.0518879539422e-05,
+         "alpha0": 8.286851805717137e-05,
+         "beta0": 32.855354345733794,
+         "eu": 2.2357334039863175
+        },
+        "rs_ext_ohm_per_side": 63.43147656160983,
+        "temp_C": 27.0,
+        "noise_rel": 0.01,
+        "noise_seed": 930019,
+        "seed": 930012,
+        "attempts": 1,
+        "bin_index": 9,
+        "include_tags": [
+         "idvd@1.32",
+         "idvd@1.98",
+         "idvd@2.64",
+         "idvd@3.3",
+         "idvg@0.05",
+         "idvg@0.66",
+         "idvg@1.32",
+         "idvg@1.98",
+         "idvg@2.64",
+         "idvg@3.3"
+        ],
+        "rext_k": 1.3611904841547173,
+        "dT_max": 36.88869439053149,
+        "curve_temps_C": [
+         27.00772,
+         29.83787,
+         37.899097,
+         49.62978,
+         63.888694,
+         27.025239,
+         30.741076,
+         39.185876,
+         48.350553,
+         56.219609,
+         63.888694
+        ],
+        "curve_gains": [
+         1.01554945,
+         0.99743757,
+         0.99974843,
+         0.98831528,
+         0.99918666,
+         0.99225926,
+         0.99902955,
+         1.00625616,
+         1.01518063,
+         0.99896645,
+         0.99467825
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "polish": {
+   "function": "cryoml.ngspice_fit.polish",
+   "max_nfev": 300,
+   "diff_step": 0.01,
+   "irls_rounds": 3,
+   "active_only": true,
+   "start": "<tag>__local_<set> (truth's fitted-parameter projection)",
+   "score": "cryoml.pdk2.problem.final_score (fresh simulation)"
+  },
+  "git": {
+   "commit": "c9ff24e35d1a678b7c22dfe3c3414cc60414b1a8",
+   "branch": "widened-43-parameter-extraction",
+   "dirty_tracked_files": [
+    "scripts/research/pdk2/floors.py",
+    "scripts/research/polish_cards.py"
+   ]
+  },
+  "source_sha256": {
+   "scripts/research/pdk2/floors.py": "e7189961169f0cca4aee8360be51558aafa2b7457110352a56b2ba226e6e5871",
+   "scripts/research/pdk2/make_truth.py": "fc496c1b4a22836a34bd1660a43748819764158511bab0f01d59a04fdad237c2",
+   "src/cryoml/pdk2/boxes.py": "e47db6e606d94a0b2db130d1f154097249b6524549883cfba952c6e19b9faa66",
+   "src/cryoml/pdk2/problem.py": "ad546e71014372ef24a905c1638b0b34846114bdebc44f3a5d1ee0527ffbcdc2",
+   "src/cryoml/pdk2/metric.py": "365663dcab555753a4231c6a23a108a7bd58acb63512d9e6af7d38929f30bdc9",
+   "src/cryoml/pdk2/gf180.py": "d0a4aeb85da7935ec041924c4bb8486e16edd0e846b3b13a392804bb94def30c",
+   "src/cryoml/pdk2/ihp.py": "f9b3f3801d8474d31bbd431cbf31f110bd2b9ba80af2f9566c6094b30e013f18",
+   "src/cryoml/ngspice_fit.py": "773033bd54312b5f87a57c731b5b6d2e2dedb841a48d52d91d1d9b1033d73112"
+  },
+  "simulator": {
+   "binary": "/Users/anrunw/cryo-ng41/arm64/bin/ngspice",
+   "version": "ngspice-41 : Circuit level simulation program",
+   "pdk": "gf180mcuD@c6d73a35f524070e85faff4a6a9eef49553ebc2b",
+   "fit_temp_C": 27.0
+  },
+  "python": "3.14.3",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "host": "Mac.lan"
+ },
+ "rows": [
+  {
+   "tier": "a",
+   "device": "gf180_nmos_L0p3_W0p3",
+   "set": "seven",
+   "start": 0.0,
+   "floor": 0.0,
+   "noise": 0.0,
+   "n_sim": 32,
+   "runtime_s": 1.3
+  },
+  {
+   "tier": "a",
+   "device": "gf180_nmos_L5_W5",
+   "set": "seven",
+   "start": 0.0,
+   "floor": 0.0,
+   "noise": 0.0,
+   "n_sim": 32,
+   "runtime_s": 1.3
+  },
+  {
+   "tier": "a",
+   "device": "gf180_pmos_L1_W5",
+   "set": "seven",
+   "start": 0.0,
+   "floor": 0.0,
+   "noise": 0.0,
+   "n_sim": 32,
+   "runtime_s": 1.3
+  },
+  {
+   "tier": "b",
+   "device": "gf180_nmos_L0p3_W0p3",
+   "set": "seven",
+   "start": 0.03678,
+   "floor": 0.01386,
+   "noise": 0.01136,
+   "n_sim": 190,
+   "runtime_s": 7.7
+  },
+  {
+   "tier": "b",
+   "device": "gf180_nmos_L0p3_W0p3",
+   "set": "wide",
+   "start": 0.03678,
+   "floor": 0.01159,
+   "noise": 0.01136,
+   "n_sim": 281,
+   "runtime_s": 11.8
+  },
+  {
+   "tier": "b",
+   "device": "gf180_nmos_L5_W5",
+   "set": "seven",
+   "start": 0.0188,
+   "floor": 0.01303,
+   "noise": 0.01194,
+   "n_sim": 254,
+   "runtime_s": 10.9
+  },
+  {
+   "tier": "b",
+   "device": "gf180_nmos_L5_W5",
+   "set": "wide",
+   "start": 0.0188,
+   "floor": 0.01338,
+   "noise": 0.01194,
+   "n_sim": 281,
+   "runtime_s": 11.4
+  },
+  {
+   "tier": "b",
+   "device": "gf180_pmos_L1_W5",
+   "set": "seven",
+   "start": 0.02678,
+   "floor": 0.01397,
+   "noise": 0.01249,
+   "n_sim": 165,
+   "runtime_s": 6.1
+  },
+  {
+   "tier": "b",
+   "device": "gf180_pmos_L1_W5",
+   "set": "wide",
+   "start": 0.02678,
+   "floor": 0.01246,
+   "noise": 0.01249,
+   "n_sim": 281,
+   "runtime_s": 10.2
+  },
+  {
+   "tier": "c",
+   "device": "gf180_nmos_L0p3_W0p3",
+   "set": "seven",
+   "start": 0.17019,
+   "floor": 0.13,
+   "noise": 0.01965,
+   "n_sim": 174,
+   "runtime_s": 6.2
+  },
+  {
+   "tier": "c",
+   "device": "gf180_nmos_L0p3_W0p3",
+   "set": "wide",
+   "start": 0.17019,
+   "floor": 0.09353,
+   "noise": 0.01965,
+   "n_sim": 281,
+   "runtime_s": 9.9
+  },
+  {
+   "tier": "c",
+   "device": "gf180_nmos_L5_W5",
+   "set": "seven",
+   "start": 0.12514,
+   "floor": 0.0595,
+   "noise": 0.02317,
+   "n_sim": 286,
+   "runtime_s": 7.8
+  },
+  {
+   "tier": "c",
+   "device": "gf180_nmos_L5_W5",
+   "set": "wide",
+   "start": 0.12514,
+   "floor": 0.06303,
+   "noise": 0.02317,
+   "n_sim": 281,
+   "runtime_s": 10.0
+  },
+  {
+   "tier": "c",
+   "device": "gf180_pmos_L1_W5",
+   "set": "seven",
+   "start": 0.06265,
+   "floor": 0.03335,
+   "noise": 0.01998,
+   "n_sim": 151,
+   "runtime_s": 5.6
+  },
+  {
+   "tier": "c",
+   "device": "gf180_pmos_L1_W5",
+   "set": "wide",
+   "start": 0.06265,
+   "floor": 0.03246,
+   "noise": 0.01998,
+   "n_sim": 281,
+   "runtime_s": 8.9
+  }
+ ],
+ "summary": {
+  "a/seven": {
+   "mean_floor": 0.0,
+   "mean_noise": 0.0,
+   "mean_start": 0.0
+  },
+  "b/seven": {
+   "mean_floor": 0.01362,
+   "mean_noise": 0.01193,
+   "mean_start": 0.02745
+  },
+  "b/wide": {
+   "mean_floor": 0.01248,
+   "mean_noise": 0.01193,
+   "mean_start": 0.02745
+  },
+  "c/seven": {
+   "mean_floor": 0.07428,
+   "mean_noise": 0.02093,
+   "mean_start": 0.11933
+  },
+  "c/wide": {
+   "mean_floor": 0.06301,
+   "mean_noise": 0.02093,
+   "mean_start": 0.11933
+  }
+ }
+}

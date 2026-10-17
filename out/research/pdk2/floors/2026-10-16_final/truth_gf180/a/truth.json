@@ -1,0 +1,126 @@
+{
+ "tier": "a",
+ "draw_set": "seven",
+ "pdk": "gf180mcuD@c6d73a35f524070e85faff4a6a9eef49553ebc2b",
+ "fit_temp_C": 27.0,
+ "options": {
+  "draw_set": "seven",
+  "misspec_width": 0.2,
+  "rext_range": [
+   25.0,
+   100.0
+  ],
+  "noise": 0.01,
+  "temp_offset": 0.0,
+  "c_misspec_width": 0.5,
+  "c_rext_k": [
+   1.0,
+   2.0
+  ],
+  "c_dtmax": [
+   20.0,
+   40.0
+  ],
+  "c_noise": 0.01,
+  "c_gain": 0.01
+ },
+ "base_seed": 910001,
+ "sets": {
+  "0": {
+   "gf180_nmos_L0p3_W0p3": {
+    "fitted_params": {
+     "vth0": 0.7728329608071474,
+     "u0": 0.022055811168385574,
+     "nfactor": 0.9221318900649519,
+     "vsat": 88490.2177033899,
+     "delta": 0.0033367145969431084,
+     "rdsw": 525.2171831385288,
+     "eta0": 0.7142167891768894
+    },
+    "misspec_params": {},
+    "rs_ext_ohm_per_side": 0.0,
+    "temp_C": 27.0,
+    "noise_rel": 0.0,
+    "noise_seed": null,
+    "seed": 910001,
+    "attempts": 1,
+    "bin_index": 0,
+    "include_tags": [
+     "idvd@0.66",
+     "idvd@1.32",
+     "idvd@1.98",
+     "idvd@2.64",
+     "idvd@3.3",
+     "idvg@0.05",
+     "idvg@0.66",
+     "idvg@1.32",
+     "idvg@1.98",
+     "idvg@2.64",
+     "idvg@3.3"
+    ]
+   },
+   "gf180_nmos_L5_W5": {
+    "fitted_params": {
+     "vth0": 0.6663779032985082,
+     "u0": 0.04173667456785612,
+     "nfactor": 0.9087641876488027,
+     "vsat": 89518.49937554017,
+     "delta": 0.002804027667110051,
+     "rdsw": 565.1179076077757,
+     "eta0": 0.6887109070495752
+    },
+    "misspec_params": {},
+    "rs_ext_ohm_per_side": 0.0,
+    "temp_C": 27.0,
+    "noise_rel": 0.0,
+    "noise_seed": null,
+    "seed": 910006,
+    "attempts": 1,
+    "bin_index": 10,
+    "include_tags": [
+     "idvd@1.32",
+     "idvd@1.98",
+     "idvd@2.64",
+     "idvd@3.3",
+     "idvg@0.05",
+     "idvg@0.66",
+     "idvg@1.32",
+     "idvg@1.98",
+     "idvg@2.64",
+     "idvg@3.3"
+    ]
+   },
+   "gf180_pmos_L1_W5": {
+    "fitted_params": {
+     "vth0": -0.6986553706751699,
+     "u0": 0.010974060311611277,
+     "nfactor": 0.7986348704835555,
+     "vsat": 87810.33718273982,
+     "delta": 0.010935847507605782,
+     "rdsw": 451.0072983006736,
+     "eta0": 0.2528561210668969
+    },
+    "misspec_params": {},
+    "rs_ext_ohm_per_side": 0.0,
+    "temp_C": 27.0,
+    "noise_rel": 0.0,
+    "noise_seed": null,
+    "seed": 910012,
+    "attempts": 1,
+    "bin_index": 9,
+    "include_tags": [
+     "idvd@1.32",
+     "idvd@1.98",
+     "idvd@2.64",
+     "idvd@3.3",
+     "idvg@0.05",
+     "idvg@0.66",
+     "idvg@1.32",
+     "idvg@1.98",
+     "idvg@2.64",
+     "idvg@3.3"
+    ]
+   }
+  }
+ }
+}
