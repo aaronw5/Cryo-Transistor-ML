@@ -1146,8 +1146,19 @@ def finite_difference_surrogate_extract(
         validations.append({**row, "params": params,
                             "real_score": score_real(context, sims),
                             "simulations": sims})
-    validations.sort(key=lambda row: row["real_score"]["rrms"])
+    # Reject candidates whose included curves fail to simulate (rrms NaN
+    # after the metrics fix): finite scores first, then by paper RRMS.
+    def real_key(row):
+        rrms = row["real_score"]["rrms"]
+        bad = bool(row["real_score"].get("n_failed_curves")) or not np.isfinite(rrms)
+        return (bad, rrms if not bad else np.inf)
+
+    validations.sort(key=real_key)
     best = validations[0]
+    if real_key(best)[0]:
+        print(f"WARNING {context.tag}: every validated candidate has failed "
+              "included curves; the record has no valid paper RRMS",
+              flush=True)
     simulations = best.pop("simulations")
     record = {
         "method": "two_point_finite_difference_on_frozen_surrogate",
@@ -1168,6 +1179,8 @@ def finite_difference_surrogate_extract(
             best["surrogate_score"]["high_voltage_rrms"]),
         "oracle_lhc": oracle, "n_starts": len(starts),
         "n_validated": len(validations), "diff_step": diff_step,
+        "n_failed_candidates": int(sum(real_key(row)[0] for row in validations)),
+        "failed_tags": list(best["real_score"].get("failed_tags", [])),
         "max_nfev": max_nfev, "regularization": regularization,
         "optimization_objective": (
             "uniform mean squared per-curve normalized point residual plus "
@@ -1177,6 +1190,7 @@ def finite_difference_surrogate_extract(
             "start_index": row["start_index"],
             "candidate_kind": row["candidate_kind"],
             "rrms": float(row["real_score"]["rrms"]),
+            "n_failed_curves": int(row["real_score"].get("n_failed_curves", 0)),
             "high_voltage_rrms": float(
                 row["real_score"]["high_voltage_rrms"]),
             "surrogate_rrms": float(row["surrogate_score"]["rrms"]),

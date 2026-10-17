@@ -170,6 +170,12 @@ def device_rrms_new(
     scored. Used during optimization/selection so a candidate cannot game
     the sim-dependent exclusion rules; the official dynamic-inclusion score
     is this function with ``include_tags=None``.
+
+    As in upstream ``rrmsCalc.py`` (``np.mean`` over the included curves), a
+    device with any included curve that is non-finite -- or, with frozen
+    ``include_tags``, an included curve that is missing/empty -- has
+    ``rrms = sigma = rmse_uA = NaN``; ``failed_tags`` names those curves and
+    ``n_curves`` still counts the finite ones.
     """
     vg_floor, vd_floor = device_floors(dev_type, L_um, W_um)
     is_n100 = dev_type == "nmos" and L_um >= 99 and W_um >= 99
@@ -177,6 +183,7 @@ def device_rrms_new(
     per_curve: dict[str, dict] = {}
     included: list[float] = []
     rmses: list[float] = []
+    failed: list[str] = []
     for kind, biases, floor in (("idvd", VD_METRIC_BIASES, vd_floor),
                                 ("idvg", VG_METRIC_BIASES, vg_floor)):
         for b in biases:
@@ -184,12 +191,16 @@ def device_rrms_new(
             if (kind, b) not in tagged_sim or (kind, b) not in tagged_meas:
                 per_curve[tag] = {"rrms": None, "included": False,
                                   "reason": "missing"}
+                if include_tags is not None and tag in include_tags:
+                    failed.append(tag)
                 continue
             sim_t, meas_t = _trim_pair(tagged_sim[(kind, b)],
                                        tagged_meas[(kind, b)], floor)
             if len(meas_t) == 0:
                 per_curve[tag] = {"rrms": None, "included": False,
                                   "reason": "empty"}
+                if include_tags is not None and tag in include_tags:
+                    failed.append(tag)
                 continue
             mean_abs = float(np.mean(np.abs(meas_t)))
             if include_tags is not None:
@@ -210,7 +221,9 @@ def device_rrms_new(
             if keep and rrms is not None and np.isfinite(rrms):
                 included.append(rrms)
                 rmses.append(rrms * mean_abs)
-    if included:
+            elif keep:
+                failed.append(tag)          # simulated curve non-finite
+    if included and not failed:
         arr = np.asarray(included)
         rrms_bar = float(np.mean(arr))
         sigma = float(np.sqrt(np.mean((arr - rrms_bar) ** 2)))
@@ -222,6 +235,8 @@ def device_rrms_new(
         "sigma": sigma,
         "rmse_uA": rmse_uA,
         "n_curves": len(included),
+        "n_failed_curves": len(failed),
+        "failed_tags": failed,
         "per_curve": per_curve,
     }
 
