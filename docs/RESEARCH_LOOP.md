@@ -443,3 +443,11 @@ Nodes (all adversarially verified after fixes; 288 DEV jobs queued, about 17 h):
   lambda=1 reproduce the iteration-1 NGSpice-only and surrogate arms.
 - n2c: DFO-LS-style interpolation Gauss-Newton trust-region baseline
   (validated on the Moré-Garbow-Hillstrom set) and paired statistics.
+
+### 2026-10-17 07:20: sky130 tier-c calibration
+
+Calibration means of the polish floor on 6 devices: strength 0.5 → 0.0343, 1 → 0.0404,
+2 → 0.0545. The pre-registered range was 0.06-0.12. Strength 4 could not be drawn: every
+nmos_L1_W3 draw put u0 above 1 (BSIM4 unit switch) and was rejected. The rule (closest to
+0.09 among the evaluated strengths) selects strength 2; the range was not reached. The 84
+tier-c jobs that failed in cascade were requeued with --strength 2.
