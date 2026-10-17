@@ -451,3 +451,13 @@ Calibration means of the polish floor on 6 devices: strength 0.5 â†’ 0.0343, 1 â
 nmos_L1_W3 draw put u0 above 1 (BSIM4 unit switch) and was rejected. The rule (closest to
 0.09 among the evaluated strengths) selects strength 2; the range was not reached. The 84
 tier-c jobs that failed in cascade were requeued with --strength 2.
+
+## Architecture study, 43 parameters, round 1 (finished 2026-10-17 07:12)
+
+End-to-end with the pipeline's search, on the measured devices (diagnostic ablation, run before
+the DEV/TEST protocol), all-device RRMS (test loss): paper MLP 0.2348 (0.0331), wide MLP 0.2463
+(0.0324), ResMLP 0.2308 (0.0291), large ResMLP 0.2366 (0.0323), DeepONet 0.2274 (0.0326), FNO
+0.2549 (0.0259). Same search with NGSpice in place of the surrogate: 0.1125. Across the six
+architectures the end-to-end range is 0.227-0.255. The architecture with the lowest test loss
+(FNO) has the highest end-to-end RRMS.
+Report: out/research/report/2026-10-17_arch_study/.

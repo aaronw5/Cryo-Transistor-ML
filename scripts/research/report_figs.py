@@ -20,6 +20,10 @@ recorded in each summary/spec.
 
     PYTHONPATH=src .venv/bin/python scripts/research/report_figs.py \
         [--topic baseline_results] [--date YYYY-MM-DD]
+
+Topics: ``dev*`` (DEV comparison and failed-curve audit), ``arch*`` (surrogate
+architecture study on the round-1 43-parameter cache and the FD polish of the
+corrected pipeline cards), anything else (measured-data baseline results).
 """
 from __future__ import annotations
 
@@ -365,6 +369,127 @@ def records_status(directory: Path, method: str, per_device: dict) -> dict:
         LOG.note(f"{rel(directory)}: some devices have no {method} record; "
                  "their curve status is unknown")
     return status
+
+
+_FIXED: dict = {}
+
+
+def pipe_fixed_run(name: str, rnd: int):
+    """Corrected pipeline: the final selection rerun with failed-curve
+    rejection (``out/research/pipe_fixed/<name>``).  'this run' calls = the
+    round's bank + the rerun's NGSpice validation; 'cumulative' adds the
+    banks and stored validations of the earlier rounds (rounds 1..rnd-1 were
+    not rerun, so their stored picks set the later boxes)."""
+    if name in _FIXED:
+        return _FIXED[name]
+    _FIXED[name] = None
+    path = RESEARCH / "pipe_fixed" / name / "summary.json"
+    d = read_json(path, f"corrected pipeline {name}")
+    if d is None:
+        return None
+    m = d.get("methods", {}).get("surrogate_fd")
+    if m is None:
+        LOG.skip(f"corrected pipeline {name}", "summary has no surrogate_fd method")
+        return None
+    per_device, n_val, status = {}, [], {}
+    for dev in d.get("devices", []):
+        rec = dev.get("methods", {}).get("surrogate_fd", {})
+        per_device[dev["device"]] = num(rec.get("rrms"))
+        status[dev["device"]] = ss.record_status(rec, dev["device"])
+        if rec.get("n_validated") is not None:
+            n_val.append(rec["n_validated"])
+    bank_dir = f"data/processed/cold_loop/{d.get('parameter_set', 'full')}_r{rnd}"
+    run = _add(bank_mean_samples(bank_dir), float(np.mean(n_val))) if n_val else None
+    prior = [pipeline_round(d.get("parameter_set", "full"), k) for k in range(1, rnd)]
+    cum = (None if any(p is None for p in prior)
+           else _add(run, *[p["run_calls"] for p in prior]))
+    training = d.get("training", {})
+    res = {"family": "pipeline", "name": name, "n_params": d.get("n_parameters"), "round": rnd,
+           "all": num(m.get("all_device_mean_rrms")), "combined": num(m.get("combined_rrms")),
+           "nmos": num(m.get("nmos_rrms")), "pmos": num(m.get("pmos_rrms")),
+           "per_device": per_device, "run_calls": run, "cum_calls": cum,
+           "surrogate_per_device": {dev["device"]: num(dev.get("methods", {})
+                                                       .get("surrogate_fd", {})
+                                                       .get("surrogate_rrms"))
+                                    for dev in d.get("devices", [])},
+           "test_loss": num((training.get("test") or {}).get("loss")),
+           "epochs": training.get("epochs_completed"), "train_s": num(training.get("runtime_s")),
+           "n_start": sum(dev.get("methods", {}).get("surrogate_fd", {})
+                          .get("selected_candidate_kind") == "lhc_start"
+                          for dev in d.get("devices", [])),
+           "source": rel(path), "sources": [rel(path), f"{bank_dir}/manifest.json"],
+           "cards_key": (rel(path.parent), "surrogate_fd"), "fd": None,
+           "strict": ss.aggregate(status, per_device)}
+    _FIXED[name] = res
+    attach_fd(res)
+    return res
+
+
+ARCH_DIR = RESEARCH / "surrogate_arch" / "full_round_1"
+ARCH_ORDER = ("paper_mlp", "paper_mlp_wide", "resmlp", "resmlp_large", "deeponet", "fno")
+ARCH_PROTOCOL = ("The end-to-end search in this study ran on the 18 measured devices; it was "
+                 "queued before the DEV/TEST protocol was fixed. It is reported as a diagnostic "
+                 "ablation and is not used for method selection.")
+# commit a0e1e97 (2026-10-16 21:52): metrics.device_rrms_new returns NaN for a
+# device with a non-finite or missing included curve.  arch_full_r1 started
+# 2026-10-16 22:26 (done.txt), so its records are scored under that rule.
+ARCH_METRIC_NOTE = ("End-to-end records of the architecture study store rrms without "
+                    "per_curve. The run started 2026-10-16 22:26 (out/research/done.txt), after "
+                    "commit a0e1e97 (21:52), with which metrics.device_rrms_new returns NaN for a "
+                    "device whose frozen-inclusion curve is non-finite or missing and the "
+                    "pipeline's NGSpice validation sorts such candidates last. A finite stored "
+                    "rrms is therefore counted as a valid device and a non-finite one as failed.")
+
+
+def arch_record_status(rec: dict, tag: str) -> dict:
+    """Strict status of an architecture-study end-to-end record (no
+    per_curve): finite rrms = valid, non-finite = failed (see ARCH_METRIC_NOTE)."""
+    n = len(ss.include_tags(tag))
+    v = num(rec.get("rrms"))
+    if v is not None:
+        return {"status": ss.VALID, "basis": "metric_nan_rule", "n_included": n,
+                "n_finite": n, "n_failed": 0, "failed_tags": {},
+                "strict_rrms": v, "penalized_rrms": v}
+    return {"status": ss.FAILED, "basis": "metric_nan_rule", "n_included": n,
+            "n_finite": None, "n_failed": None, "failed_tags": {},
+            "strict_rrms": math.nan, "penalized_rrms": math.nan}
+
+
+def arch_run(arch: str):
+    path = ARCH_DIR / f"{arch}_f1.json"
+    d = read_json(path, f"architecture {arch}")
+    if d is None:
+        return None
+    e2e = d.get("end_to_end")
+    if not e2e:
+        LOG.skip(f"architecture {arch}", "report has no end_to_end block")
+        return None
+    devices = e2e.get("devices", {})
+    per_device = {t: num(v.get("rrms")) for t, v in devices.items()}
+    stats = family_stats(per_device)
+    for key, own in (("all", "all_device_mean_rrms"), ("combined", "combined_rrms"),
+                     ("nmos", "nmos_rrms"), ("pmos", "pmos_rrms")):
+        if (stats[key] is not None and num(e2e.get(own)) is not None
+                and abs(stats[key] - e2e[own]) > 1e-9):
+            LOG.note(f"{rel(path)}: recomputed {key} {stats[key]:.6f} differs from stored "
+                     f"{e2e[own]:.6f}")
+    test, rank = d.get("test", {}), d.get("ranking", {})
+    return {"arch": arch, "label": ARCH_LABEL.get(arch, arch),
+            "n_trainable": d.get("n_parameters"), "epochs": d.get("epochs"),
+            "train_s": num(d.get("train_s")), "test_loss": num(test.get("loss")),
+            "nrmse_median": num(test.get("curve_nrmse_median")),
+            "nrmse_mean": num(test.get("curve_nrmse_mean")),
+            "score_err": num(rank.get("mean_abs_score_error")),
+            "rank_sur": rank.get("direct_ranked_better_by_surrogate"),
+            "rank_ng": rank.get("direct_better_by_ngspice"),
+            "all": num(e2e.get("all_device_mean_rrms")), "combined": num(e2e.get("combined_rrms")),
+            "nmos": num(e2e.get("nmos_rrms")), "pmos": num(e2e.get("pmos_rrms")),
+            "search_s": num(e2e.get("search_s")), "options": e2e.get("options", {}),
+            "n_start": sum(v.get("selected_candidate_kind") == "lhc_start"
+                           for v in devices.values()),
+            "per_device": per_device, "source": rel(path),
+            "strict": ss.aggregate({t: arch_record_status(v, t) for t, v in devices.items()},
+                                   per_device)}
 
 
 def n_failed(res: dict | None):
@@ -1813,7 +1938,405 @@ def dev_sections(folder: Path, name, srcs, items: list, md_parts: list,
                              + " | ".join(bits) + ".")
 
 
+# ------------------------------------------------------ architecture study
+
+README_SECTIONS: list[tuple[str, list[str]]] = []   # (heading, paragraphs) before the figures
+
+
+def fig_arch_scatter(archs: list[dict], swap: dict | None, path: Path) -> None:
+    fig, ax = plt.subplots(figsize=(9.6, 7.4))
+    fig.subplots_adjust(left=0.11, right=0.97, top=0.84, bottom=0.11)
+    ax.grid(True, zorder=0)
+    pts = [(a["test_loss"], a["all"], a) for a in archs
+           if a["test_loss"] is not None and a["all"] is not None]
+    xs = [p[0] for p in pts]
+    ax.scatter(xs, [p[1] for p in pts], s=90, facecolor=BLUE, edgecolor=SURFACE,
+               linewidth=1.6, zorder=3)
+    bad = [p for p in pts if p[2]["strict"]["n_failed_devices"]]
+    if bad:
+        ax.scatter([p[0] for p in bad], [p[1] for p in bad], **FAILED_MARK)
+    # label placement (points offset): neighbours in this study sit within
+    # 0.001 test loss of each other, so labels alternate sides.
+    side = {"paper_mlp": (10, -2, "left"), "resmlp_large": (-10, 4, "right"),
+            "deeponet": (10, -6, "left"), "paper_mlp_wide": (-10, 2, "right"),
+            "resmlp": (10, 0, "left"), "fno": (10, 0, "left")}
+    for x, y, a in pts:
+        dx, dy, ha = side.get(a["arch"], (10, 0, "left"))
+        ax.annotate(f"{a['label']}  {y:.4f}", (x, y), xytext=(dx, dy),
+                    textcoords="offset points", ha=ha, va="center", fontsize=10.5, color=INK)
+    lo_x, hi_x = min(xs), max(xs)
+    pad_x = 0.25 * (hi_x - lo_x)
+    ax.set_xlim(lo_x - pad_x, hi_x + pad_x)
+    if swap and swap.get("all") is not None:
+        ax.axhline(swap["all"], color=ORANGE, lw=2.0, ls="--", zorder=2)
+        ax.text(lo_x - 0.9 * pad_x, swap["all"] * 1.04,
+                f"same search, NGSpice in place of the surrogate: {swap['all']:.4f}",
+                ha="left", va="bottom", fontsize=10.5, color=INK)
+    ax.set_ylim(0, max(p[1] for p in pts) * 1.12)
+    ax.set_xlabel("surrogate test loss on held-out bank samples (pipeline forward loss)")
+    ax.set_ylabel("end-to-end all-device RRMS, 18 measured devices")
+    fig.text(0.01, 0.975, "Surrogate test loss and end-to-end RRMS, 43 parameters, round 1",
+             fontsize=14, fontweight="bold", va="top")
+    fig.text(0.01, 0.925, "One point per surrogate architecture: the pipeline's search with that "
+             "surrogate frozen, selected card re-simulated in NGSpice.\nDiagnostic ablation on "
+             "the measured devices (queued before the DEV/TEST protocol); not used for method "
+             "selection.", fontsize=9.5, color=INK2, va="top")
+    fig.savefig(path, dpi=DPI)
+    plt.close(fig)
+
+
+def fig_arch_per_device(rows: list[tuple[str, dict]], path: Path) -> None:
+    """Annotated matrix: one row per search evaluator, one column per device
+    plus the all-device mean; single-hue log colour scale."""
+    from matplotlib.colors import LogNorm, LinearSegmentedColormap
+    tags = sorted({t for _l, r in rows for t in r["per_device"]}, key=device_key)
+    vals = np.array([[r["per_device"].get(t) if r["per_device"].get(t) is not None else np.nan
+                      for t in tags] + [r["all"] if r["all"] is not None else np.nan]
+                     for _l, r in rows], dtype=float)
+    finite = vals[np.isfinite(vals)]
+    norm = LogNorm(vmin=finite.min(), vmax=finite.max())
+    cmap = LinearSegmentedColormap.from_list("seq", ["#eef4fc", "#9cc1ee", BLUE, "#123f78"])
+    xs, x, prev = [], 0.0, None
+    for t in tags:
+        if prev is not None and family_of(t) != prev:
+            x += 0.35
+        xs.append(x)
+        x += 1.0
+        prev = family_of(t)
+    xs.append(x + 0.35)                       # all-device mean column
+    ys, y = [], 0.0
+    for i, (label, r) in enumerate(rows):
+        if i and r.get("family") == "swap":
+            y += 0.35
+        ys.append(y)
+        y += 1.0
+    fig = plt.figure(figsize=(17.5, 1.0 + 0.48 * len(rows) + 2.1))
+    ax = fig.add_axes([0.165, 0.25, 0.825, 0.58])
+    for i, (label, r) in enumerate(rows):
+        bad = set((r.get("strict") or {}).get("failed_devices", []))
+        for j, v in enumerate(vals[i]):
+            if not np.isfinite(v):
+                ax.add_patch(Rectangle((xs[j], ys[i]), 0.96, 0.92, facecolor=BAND,
+                                       edgecolor="none"))
+                ax.text(xs[j] + 0.48, ys[i] + 0.46, "–", ha="center", va="center", color=MUTED)
+                continue
+            ax.add_patch(Rectangle((xs[j], ys[i]), 0.96, 0.92, facecolor=cmap(norm(v)),
+                                   edgecolor="none"))
+            mark = " †" if j < len(tags) and tags[j] in bad else ""
+            ax.text(xs[j] + 0.48, ys[i] + 0.46, f"{v:.3f}{mark}", ha="center", va="center",
+                    fontsize=9.5, color=SURFACE if norm(v) > 0.62 else INK,
+                    fontweight="bold" if j == len(tags) else "normal")
+    ax.set_xlim(-0.1, xs[-1] + 1.05)
+    ax.set_ylim(ys[-1] + 1.0, -0.1)
+    ax.set_yticks([yy + 0.46 for yy in ys])
+    ax.set_yticklabels([label for label, _r in rows])
+    ax.set_xticks([xx + 0.48 for xx in xs])
+    ax.set_xticklabels([device_label(t) for t in tags] + ["all-device mean"],
+                       rotation=40, ha="right")
+    ax.tick_params(length=0)
+    for s in ax.spines.values():
+        s.set_visible(False)
+    n_end = max(i for i, t in enumerate(tags) if family_of(t) == "nmos")
+    for (a, b), fam in (((0, n_end), "nMOS"), ((n_end + 1, len(tags) - 1), "pMOS")):
+        ax.text((xs[a] + xs[b] + 0.96) / 2, -0.25, fam, ha="center", va="bottom",
+                fontsize=11, fontweight="bold")
+    sm = plt.cm.ScalarMappable(norm=norm, cmap=cmap)
+    cax = fig.add_axes([0.165, 0.05, 0.25, 0.03])
+    cb = fig.colorbar(sm, cax=cax, orientation="horizontal")
+    cb.outline.set_visible(False)
+    lo, hi = finite.min(), finite.max()
+    ticks = [m * 10.0 ** e for e in range(-4, 2) for m in (1, 2, 5) if lo <= m * 10.0 ** e <= hi]
+    cb.set_ticks(ticks)
+    cb.set_ticklabels([f"{t:g}" for t in ticks])
+    cax.text(1.03, 0.5, "device RRMS (paper metric, log colour scale)", transform=cax.transAxes,
+             ha="left", va="center", fontsize=10, color=INK2)
+    fig.text(0.01, 0.975, "End-to-end RRMS per device: the pipeline's search with each surrogate, "
+             "and with NGSpice in place of the surrogate", fontsize=14, fontweight="bold", va="top")
+    fig.text(0.01, 0.925, "43 parameters, round-1 box, 18 measured 77 K devices; each cell is the "
+             "selected card re-simulated in NGSpice. Diagnostic ablation, not used for method "
+             "selection.", fontsize=9.5, color=INK2, va="top")
+    fig.savefig(path, dpi=DPI)
+    plt.close(fig)
+
+
+def gap_rank_counts(per_device_surrogate: dict, per_device_ngspice: dict):
+    """Devices where the direct NGSpice cold card ranks better than the given
+    pipeline picks, by the pipeline's own surrogate and by NGSpice, from
+    ``out/research/surrogate_gap_full_round_1.json`` (reference entries)."""
+    g = read_json(RESEARCH / "surrogate_gap_full_round_1.json", "surrogate gap (ranking counts)")
+    if g is None:
+        return None, None
+    devs = g.get("devices", {})
+    sur = ng = 0
+    for t, v in devs.items():
+        rs, rn = num(v["reference"].get("surrogate_rrms")), num(v["reference"].get("ngspice_rrms"))
+        ps, pn = per_device_surrogate.get(t), per_device_ngspice.get(t)
+        if None in (rs, rn, ps, pn):
+            return None, None
+        sur += rs < ps
+        ng += rn < pn
+    return sur, ng
+
+
+def arch_sections(folder: Path, name, srcs, items: list, md_parts: list,
+                  summary_lines: list) -> None:
+    """Topic ``arch*``: the surrogate architecture study on the round-1
+    43-parameter cache and the FD polish of the corrected pipeline cards."""
+    README_SECTIONS.append(("Protocol caveat", [ARCH_PROTOCOL]))
+    archs = [a for a in (arch_run(k) for k in ARCH_ORDER) if a is not None]
+    swap = swap_run("full_round_1")
+    stored = pipeline_round("full", 1)
+    fixed1, fixed4 = pipe_fixed_run("full_r1", 1), pipe_fixed_run("full_r4", 4)
+    stored_sum = read_json(OUT / "cold_loop" / "full" / "round_1" / "extract" / "summary.json",
+                           "pipeline 43 round 1 (training block)")
+    direct_cold = direct_run("full_r1_direct_cold")
+    gap_src = "out/research/surrogate_gap_full_round_1.json"
+
+    # 1. main table ---------------------------------------------------------
+    if archs:
+        cols = [
+            {"key": "arch", "head": "surrogate in the search", "md": "surrogate in the search",
+             "kind": "text"},
+            {"key": "n_trainable", "head": "params", "group": "training",
+             "md": "trainable parameters", "kind": "int"},
+            {"key": "epochs", "head": "epochs", "group": "training", "md": "epochs", "kind": "int"},
+            {"key": "train_s", "head": "time (s)", "group": "training", "md": "train time (s)",
+             "kind": "int"},
+            {"key": "test_loss", "head": "loss", "group": "held-out bank samples",
+             "md": "test loss", "kind": "rrms"},
+            {"key": "nrmse_median", "head": "NRMSE med.", "group": "held-out bank samples",
+             "md": "curve NRMSE, median", "kind": "rrms"},
+            {"key": "nrmse_mean", "head": "NRMSE mean", "group": "held-out bank samples",
+             "md": "curve NRMSE, mean", "kind": "int"},
+            {"key": "score_err", "head": "|score err.|", "group": "reference cards",
+             "md": "mean absolute score error at the reference cards", "kind": "rrms"},
+            {"key": "rank_sur", "head": "surrogate", "group": "direct fit ranked better",
+             "md": "devices where the direct fit ranks better: surrogate", "kind": "int"},
+            {"key": "rank_ng", "head": "NGSpice", "group": "direct fit ranked better",
+             "md": "devices where the direct fit ranks better: NGSpice", "kind": "int"},
+            {"key": "all", "head": "all-device", "group": "end-to-end search, NGSpice RRMS",
+             "md": "end-to-end all-device", "kind": "rrms"},
+            {"key": "combined", "head": "combined", "group": "end-to-end search, NGSpice RRMS",
+             "md": "end-to-end combined", "kind": "rrms"},
+            {"key": "nmos", "head": "nMOS", "group": "end-to-end search, NGSpice RRMS",
+             "md": "end-to-end nMOS", "kind": "rrms", "family": True},
+            {"key": "pmos", "head": "pMOS", "group": "end-to-end search, NGSpice RRMS",
+             "md": "end-to-end pMOS", "kind": "rrms", "family": True},
+            {"key": "failed", "head": "failed dev.", "group": "end-to-end search, NGSpice RRMS",
+             "md": "failed devices (strict)", "kind": "int"},
+            {"key": "n_start", "head": "start picked", "group": "end-to-end search, NGSpice RRMS",
+             "md": "devices where a bank start is selected", "kind": "int"},
+        ]
+        rows = [{**{k: a[k] for k in ("n_trainable", "epochs", "train_s", "test_loss",
+                                     "nrmse_median", "nrmse_mean", "score_err", "rank_sur",
+                                     "rank_ng", "all", "combined", "nmos", "pmos",
+                                     "n_start")},
+                 "arch": a["label"], "failed": a["strict"]["n_failed_devices"]} for a in archs]
+        ref_notes = []
+        if swap:
+            swap_sum = read_json(swap["source"], "NGSpice swap (selected candidates)") or {}
+            rows.append({"arch": "Reference: NGSpice in place of the surrogate",
+                         **{k: swap[k] for k in ("all", "combined", "nmos", "pmos")},
+                         "failed": n_failed(swap),
+                         "n_start": sum(v.get("selected_candidate_kind") == "lhc_start"
+                                        for v in swap_sum.get("devices", {}).values())})
+        train = (stored_sum or {}).get("training", {})
+        if stored:
+            gap = read_json(gap_src, "surrogate gap (pipeline surrogate scores)")
+            sur_pd = {t: num(v["pipeline"].get("surrogate_rrms"))
+                      for t, v in (gap or {}).get("devices", {}).items()}
+            rs, rn = gap_rank_counts(sur_pd, stored["per_device"])
+            rows.append({"arch": "Reference: pipeline r1, stored",
+                         "epochs": train.get("epochs_completed"),
+                         "train_s": num(train.get("runtime_s")),
+                         "test_loss": num((train.get("test") or {}).get("loss")),
+                         "rank_sur": rs, "rank_ng": rn,
+                         **{k: stored[k] for k in ("all", "combined", "nmos", "pmos")},
+                         "failed": n_failed(stored),
+                         "n_start": sum(dev.get("methods", {}).get("surrogate_fd", {})
+                                        .get("selected_candidate_kind") == "lhc_start"
+                                        for dev in (stored_sum or {}).get("devices", []))})
+            ref_notes += strict_notes("Reference: pipeline r1, stored", stored)
+        if fixed1:
+            rs, rn = gap_rank_counts(fixed1["surrogate_per_device"], fixed1["per_device"])
+            rows.append({"arch": "Reference: pipeline r1, corrected",
+                         "epochs": fixed1["epochs"], "train_s": fixed1["train_s"],
+                         "test_loss": fixed1["test_loss"], "rank_sur": rs, "rank_ng": rn,
+                         **{k: fixed1[k] for k in ("all", "combined", "nmos", "pmos")},
+                         "failed": n_failed(fixed1), "n_start": fixed1["n_start"]})
+        opts = archs[0]["options"]
+        dc_failed = n_failed(direct_cold)
+        ratios = [a["nrmse_mean"] / a["nrmse_median"] for a in archs
+                  if a["nrmse_mean"] is not None and a["nrmse_median"]]
+        notes = [
+            "Training: every architecture uses the same cache (out/cold_loop/full/round_1/cache), "
+            "the same per-device train/validation/test split as the pipeline (seed 20260818; "
+            "85,853 training samples), the same loss (standardized signed-log MSE + "
+            "curve-normalized linear Huber) and the same recipe (AdamW, cosine schedule, early "
+            "stopping on validation loss, at most 200 epochs; FNO at most 80). time (s) = "
+            "training wall time.",
+            "loss = the pipeline's forward loss on the held-out bank samples. curve NRMSE = per "
+            "held-out sample, mean over the 11 curves of RMSE / max|I| of the simulated curve "
+            "(floor 1e-3 of the sample's largest curve); an emulator diagnostic, not the paper "
+            "RRMS. The mean curve NRMSE is "
+            + (f"{min(ratios):.1e} to {max(ratios):.1e} times the median" if ratios else "n/a")
+            + ".",
+            "|score err.| = mean over 18 devices and 3 reference cards (stored pipeline r1 pick, "
+            "direct NGSpice cold, direct NGSpice seeded) of |surrogate-predicted RRMS − NGSpice "
+            "RRMS|. direct fit ranked better = devices where the direct NGSpice cold card "
+            "(out/research/ngspice_direct/full_r1_direct_cold) has a lower RRMS than the stored "
+            "pipeline r1 pick, by the surrogate's prediction and by NGSpice"
+            + (f" (the direct cold run has {dc_failed} failed device(s))" if dc_failed else "")
+            + ". The stored pipeline r1 picks were made before the failed-curve fix"
+            + ("".join(f"; the pick for {t} has {stored['strict']['n_failed_curves'][t]} of "
+                       f"{len(ss.include_tags(t))} included curves failed, and its NGSpice "
+                       f"reference value {fmt(stored['per_device'].get(t), 'rrms')} averages "
+                       "the surviving curves"
+                       for t in stored["strict"]["failed_devices"]) if stored else "")
+            + ".",
+            "End-to-end = the pipeline's search (fps.finite_difference_surrogate_extract) with "
+            f"the trained surrogate frozen: {opts.get('n_starts')} starts, TRF max_nfev "
+            f"{opts.get('max_nfev')}, diff_step {opts.get('diff_step')}, regularization "
+            f"{opts.get('regularization')}, NGSpice validation of the top "
+            f"{opts.get('n_validate')} endpoints, the first {opts.get('n_validate')} starts and "
+            "the published fallback; RRMS of the selected card "
+            "re-simulated in NGSpice on the measured 77 K data. start picked = devices whose "
+            "selected card is one of the bank starts (selected_candidate_kind lhc_start) rather "
+            "than an FD endpoint. " + COMBINED_NOTE,
+            "Reference rows: NGSpice in place of the surrogate = the same search code with "
+            "NGSpice as the evaluator (out/research/swap_search/full_round_1). pipeline r1, "
+            "stored = the cold-loop round-1 extraction (out/cold_loop/full/round_1/extract). "
+            "pipeline r1, corrected = its final selection rerun with the same surrogate and "
+            "failed-curve rejection (out/research/pipe_fixed/full_r1). The pipeline rows' "
+            "training columns are the cold-loop round-1 forward model (same split and seed, "
+            "10,730 test samples); its ranking counts come from "
+            "out/research/surrogate_gap_full_round_1.json and the pipe_fixed records.",
+            ARCH_METRIC_NOTE, *ref_notes, ARCH_PROTOCOL]
+        t = Table("arch_main", "Surrogate architecture study, 43 parameters, round-1 box: "
+                  "training, held-out accuracy, ranking of reference cards and end-to-end "
+                  "search on the 18 measured devices", cols, rows, notes)
+        png_t = name("table_arch")
+        render_table(t, folder / png_t)
+        md_parts.append(table_markdown(t))
+        files = [a["source"] for a in archs]
+        ref_files = [r for r in ((swap or {}).get("source"), (stored or {}).get("source"),
+                                 (fixed1 or {}).get("source"), gap_src) if r]
+        items.append((png_t, "Table, one row per surrogate architecture plus three reference "
+                      "rows: trainable parameters, epochs, training time, test loss, median and "
+                      "mean curve NRMSE, mean absolute score error at the reference cards, devices "
+                      "where the surrogate and NGSpice rank the direct-fit card better, and "
+                      "end-to-end all-device, combined, nMOS and pMOS RRMS with the failed-device "
+                      f"count; sources: {srcs(files + ref_files)}."))
+
+        # 2. scatter ----------------------------------------------------------
+        png = name("arch_loss_vs_e2e")
+        fig_arch_scatter(archs, swap, folder / png)
+        items.append((png, "Scatter of surrogate test loss (x) against end-to-end all-device "
+                      "RRMS (y), one labelled point per architecture, with a horizontal line at "
+                      "the all-device RRMS of the same search with NGSpice in place of the "
+                      f"surrogate; sources: {srcs(files + ([swap['source']] if swap else []))}."))
+
+        # 3. per device -------------------------------------------------------
+        pd_rows = [(a["label"], {**a, "family": "arch"}) for a in archs]
+        if swap:
+            pd_rows.append(("NGSpice in place of the surrogate", swap))
+        png = name("arch_per_device")
+        fig_arch_per_device(pd_rows, folder / png)
+        items.append((png, "Matrix of end-to-end RRMS per device (columns) for each "
+                      "architecture and for the same search with NGSpice in place of the "
+                      "surrogate (rows), with the all-device mean in the last column; sources: "
+                      f"{srcs(files + ([swap['source']] if swap else []))}."))
+
+        lo = min(archs, key=lambda a: a["all"])
+        hi = max(archs, key=lambda a: a["all"])
+        best_loss = min(archs, key=lambda a: a["test_loss"])
+        rank = sorted(archs, key=lambda a: a["all"]).index(best_loss) + 1
+        line = (f"Surrogate architecture study, 43 parameters, round-1 box, {len(archs)} "
+                f"architectures: end-to-end all-device RRMS {lo['all']:.4f} ({lo['label']}) to "
+                f"{hi['all']:.4f} ({hi['label']})")
+        if swap:
+            line += f"; same search with NGSpice in place of the surrogate {swap['all']:.4f}"
+        if fixed1:
+            line += f"; corrected pipeline r1 {fixed1['all']:.4f}"
+        summary_lines.append(line + ".")
+        summary_lines.append(
+            f"Lowest test loss: {best_loss['label']} {best_loss['test_loss']:.4f}, end-to-end "
+            f"{best_loss['all']:.4f} (rank {rank} of {len(archs)}, 1 = lowest RRMS). Devices where "
+            "the surrogate ranks the direct-fit card better than the pipeline pick: "
+            + ", ".join(f"{a['label']} {a['rank_sur']}" for a in archs)
+            + f" (NGSpice: {archs[0]['rank_ng']} of 18).")
+    else:
+        LOG.skip("architecture table", "no architecture report with end_to_end")
+
+    # 4. corrected pipeline + FD ------------------------------------------------
+    fd_rows = []
+    for label, res in (("Corrected pipeline 43, round 1", fixed1),
+                       ("Corrected pipeline 43, round 4", fixed4)):
+        if res is None:
+            LOG.skip(f"row '{label}'", "result file missing")
+            continue
+        if not res.get("fd"):
+            LOG.skip(f"row '{label} + FD'", "FD-polished summary missing")
+        rows_ = stage_rows(label, res)
+        if res.get("fd") and res["all"] is not None and res["fd"]["all"] is not None:
+            rows_[1]["delta"] = res["fd"]["all"] - res["all"]
+        fd_rows += rows_
+    if fd_rows:
+        cols = [{"key": "method", "head": "cards", "md": "cards", "kind": "text"},
+                {"key": "stage", "head": "stage", "md": "stage", "kind": "text"},
+                *RRMS_COLS[:4],
+                {"key": "delta", "head": "FD − raw", "group": "change",
+                 "md": "all-device, FD − raw", "kind": "rrms"},
+                STRICT_COLS[0], *RRMS_COLS[4:]]
+        notes = [COMBINED_NOTE,
+                 "Corrected pipeline = the final selection rerun with the round's surrogate and "
+                 "the rule that rejects candidates with failed included curves "
+                 "(out/research/pipe_fixed/full_r1, full_r4). Rounds 2–3 were not rerun; the "
+                 "round-4 box comes from the stored round-3 pick.",
+                 "+ NGSpice FD = scripts/research/polish_cards.py (max_nfev 400, diff_step 0.01, "
+                 "irls 2) on those cards against the measured curves.",
+                 "NGSpice calls per device: raw 'this run' = the round's bank + the rerun's "
+                 "validation; 'cumulative' adds the banks and stored validations of the earlier "
+                 "rounds; + FD 'this run' = FD polish only. failed dev. = devices with a failed "
+                 "included curve (cryoml.strict_score)."]
+        for label, res in (("Corrected pipeline 43, round 1", fixed1),
+                           ("Corrected pipeline 43, round 4", fixed4)):
+            if res:
+                notes += strict_notes(label, res)
+                if res.get("fd") and res["fd"].get("start_mismatch"):
+                    notes.append(f"{label}: FD start re-score differs from the stored score on "
+                                 + "; ".join(res["fd"]["start_mismatch"]))
+        t = Table("pipe_fixed_fd", "Corrected pipeline 43 cards, measured 77 K data: raw and "
+                  "after NGSpice FD polish", cols, fd_rows, notes)
+        png_t = name("table_pipe_fixed_fd")
+        render_table(t, folder / png_t)
+        md_parts.append(table_markdown(t))
+        fd_files = [s for r in (fixed1, fixed4) if r for s in r["sources"]]
+        items.append((png_t, "Table of the corrected pipeline 43 cards (rounds 1 and 4) raw and "
+                      "after NGSpice FD polish: all-device, combined, nMOS and pMOS RRMS, the FD "
+                      "change in all-device RRMS, failed devices and NGSpice calls per device; "
+                      f"sources: {srcs(fd_files)}."))
+        parts = []
+        for res, r in ((fixed1, "r1"), (fixed4, "r4")):
+            if res and res.get("fd"):
+                parts.append(f"{r} {res['all']:.4f} → {res['fd']['all']:.4f} "
+                             f"({res['combined']:.4f} → {res['fd']['combined']:.4f}), "
+                             f"{kfmt(res['fd']['calls'])} FD calls/device, failed devices "
+                             f"{n_failed(res)} / {n_failed(res['fd'])}")
+        if parts:
+            summary_lines.append("Corrected pipeline 43 + NGSpice FD, all-device (combined), raw → "
+                                 "FD: " + "; ".join(parts) + ".")
+    summary_lines.append(ARCH_PROTOCOL)
+
+
 def candidate_files(topic: str = "") -> list[str]:
+    if topic.startswith("arch"):
+        pats = ["out/research/surrogate_arch/full_round_1/*.json",
+                "out/research/pipe_fixed/*/summary.json",
+                "out/research/polished/pipe43_r*_fixed_fd/real/summary.json",
+                "out/research/swap_search/full_round_1/summary.json",
+                "out/research/surrogate_gap_full_round_1.json"]
+        return sorted({rel(p) for pat in pats for p in ROOT.glob(pat)})
     if topic.startswith("dev"):
         pats = ["out/research/dev/compare.json", "out/research/dev/compare.md",
                 "out/research/dev/compare_curves.png", "out/research/audit/failed_curves.json",
@@ -1858,6 +2381,8 @@ def main() -> int:
 
     if topic.startswith("dev"):
         dev_sections(folder, name, srcs, items, md_parts, summary_lines)
+    elif topic.startswith("arch"):
+        arch_sections(folder, name, srcs, items, md_parts, summary_lines)
     else:
         baseline_sections(folder, name, srcs, items, md_parts, summary_lines)
 
@@ -1876,7 +2401,10 @@ def main() -> int:
     readme = [f"# Report batch {args.date} · {topic}", "",
               f"Generated {now} by `{cmd}` from result files only (no simulation). RRMS is the "
               "paper metric with frozen published-baseline curve inclusion, re-simulated in "
-              "NGSpice, unless an item says otherwise.", "", "## Figures and tables", ""]
+              "NGSpice, unless an item says otherwise.", ""]
+    for heading, paras in README_SECTIONS:
+        readme += [f"## {heading}", ""] + [p for para in paras for p in (para, "")]
+    readme += ["## Figures and tables", ""]
     readme += [f"- `{p}`: {s}" for p, s in items]
     readme += ["", "- `tables.md`: the tables above in markdown.", ""]
     if LOG.notes:

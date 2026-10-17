@@ -2,6 +2,17 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-17 · arch_study
+
+Folder: [2026-10-17_arch_study/](2026-10-17_arch_study/) · [tables.md](2026-10-17_arch_study/tables.md) · [README.md](2026-10-17_arch_study/README.md)
+
+- Surrogate architecture study, 43 parameters, round-1 box, 6 architectures: end-to-end all-device RRMS 0.2274 (DeepONet) to 0.2549 (FNO); same search with NGSpice in place of the surrogate 0.1125; corrected pipeline r1 0.2382.
+- Lowest test loss: FNO 0.0259, end-to-end 0.2549 (rank 6 of 6, 1 = lowest RRMS). Devices where the surrogate ranks the direct-fit card better than the pipeline pick: paper MLP 6, wide MLP 6, ResMLP 8, large ResMLP 5, DeepONet 6, FNO 6 (NGSpice: 18 of 18).
+- Corrected pipeline 43 + NGSpice FD, all-device (combined), raw → FD: r1 0.2382 → 0.1800 (0.2289 → 0.1703), 350 FD calls/device, failed devices 0 / 0; r4 0.1522 → 0.1477 (0.1437 → 0.1394), 381 FD calls/device, failed devices 0 / 0.
+- The end-to-end search in this study ran on the 18 measured devices; it was queued before the DEV/TEST protocol was fixed. It is reported as a diagnostic ablation and is not used for method selection.
+
+Figures and tables: [01_table_arch.png](2026-10-17_arch_study/01_table_arch.png) · [02_arch_loss_vs_e2e.png](2026-10-17_arch_study/02_arch_loss_vs_e2e.png) · [03_arch_per_device.png](2026-10-17_arch_study/03_arch_per_device.png) · [04_table_pipe_fixed_fd.png](2026-10-17_arch_study/04_table_pipe_fixed_fd.png)
+
 ## 2026-10-16 · dev_iteration1
 
 Folder: [2026-10-16_dev_iteration1/](2026-10-16_dev_iteration1/) · [tables.md](2026-10-16_dev_iteration1/tables.md) · [README.md](2026-10-16_dev_iteration1/README.md)
