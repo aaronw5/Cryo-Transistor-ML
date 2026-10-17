@@ -1,0 +1,100 @@
+{
+ "id": "prereg_iter2",
+ "node": "n2c",
+ "written": "2026-10-17T02:41:55-04:00",
+ "summary": "Pre-registered iteration-2 DEV comparisons C1-C6 on tier a (well-specified sim_targets) and tier c (sky130c misspecified targets) at NGSpice budgets 500, 2000 and 5000 per target: 36 tests, Holm at alpha 0.05 on the geometry-level Wilcoxon p.",
+ "data_state_at_writing": {
+  "existing_result_dirs_of_named_arms": [
+   "out/research/dev/sketch_surrogate_k8 (iteration 1, seed 0, tier a)",
+   "out/research/dev/sketch_none_k8 (iteration 1, seed 0, tier a)",
+   "out/research/dev/hybrid_surrogate (iteration 1, tier a)",
+   "out/research/dev/hybrid_none (iteration 1, tier a)"
+  ],
+  "note": "These four tier-a directories were read and analyzed in iteration 1 (out/research/report/2026-10-16_dev_iteration1, out/research/dev/stats_iter1). No directory of lam_curve_k8, dfols_style, the seed 1/2 replicates or any tier-c (out/research/dev_sky130c) run existed when this file was written and committed. C1 and C2 on tier a therefore include seed-0 data already analyzed in iteration 1; their seed 1/2 replicates (C1) and all tier-c data are new."
+ },
+ "comparisons": [
+  {
+   "id": "C1",
+   "a": "sketch_surrogate_k8",
+   "b": "sketch_none_k8",
+   "question": "surrogate term in the sketched trust region vs the same code without it"
+  },
+  {
+   "id": "C2",
+   "a": "hybrid_surrogate",
+   "b": "hybrid_none",
+   "question": "surrogate term in the full-Jacobian trust region vs the same code without it"
+  },
+  {
+   "id": "C3",
+   "a": "lam_curve_k8",
+   "b": "sketch_none_k8",
+   "question": "per-curve surrogate weight (n2b) vs the sketched trust region without surrogate"
+  },
+  {
+   "id": "C4",
+   "a": "lam_curve_k8",
+   "b": "sketch_surrogate_k8",
+   "question": "per-curve surrogate weight (n2b) vs the fixed full surrogate term"
+  },
+  {
+   "id": "C5",
+   "a": "dfols_style",
+   "b": "sketch_none_k8",
+   "question": "named DFO-LS-style baseline vs the sketched trust region without surrogate"
+  },
+  {
+   "id": "C6",
+   "a": "lam_curve_k8",
+   "b": "dfols_style",
+   "question": "per-curve surrogate weight (n2b) vs the named DFO-LS-style baseline"
+  }
+ ],
+ "difference": "A - B per target; negative = A has the lower endpoint value",
+ "tiers": {
+  "a": {
+   "targets_template": "out/research/sim_targets/{set}.npz",
+   "registry": "out/research/dev/arms_iter2.json",
+   "endpoint": "raw strict RRMS",
+   "definition": "paper RRMS of the final card with frozen published-baseline curve inclusion (one fresh NGSpice score); a target whose included curve fails enters at its penalized value (failed curves at RRMS 10) and is counted"
+  },
+  "c": {
+   "targets_template": "out/research/sim_targets_sky130c/{set}.npz",
+   "registry": "out/research/dev_sky130c/arms.json",
+   "floors": "out/research/sim_targets_sky130c/floors.json",
+   "endpoint": "excess over floor",
+   "definition": "strict RRMS as tier a minus the target's floor (floors.json 'floor', finalized = min(polish, reference)); unclipped"
+  }
+ },
+ "sets": [
+  "set_0",
+  "set_1"
+ ],
+ "budgets": [
+  500,
+  2000,
+  5000
+ ],
+ "n_tests": 36,
+ "per_target_value": "mean over the arm's seeds at that budget: seed 0 = the base label, seed n = the registry label '<arm>__seed<n>'",
+ "test": "two-sided Wilcoxon signed-rank test (scipy.stats.wilcoxon, zero_method 'wilcox') on the 18 geometry-mean differences (each geometry: mean of its set_0 and set_1 differences)",
+ "multiplicity": {
+  "method": "Holm",
+  "alpha": 0.05,
+  "family": "all 36 tests; a test that cannot be computed enters with p = 1"
+ },
+ "effect_size": "mean difference over the 36 targets with the geometry-clustered bootstrap 95% CI: 10,000 resamples (numpy default_rng seed 0) of the 18 geometries with replacement, a drawn geometry contributes both of its sets, an arm's seeds within a target are resampled when it has 2 or more; percentile interval",
+ "decision_rule": "a test is reported as a difference at the family level when its Holm-adjusted p <= 0.05; the direction is the sign of the mean difference; the clustered CI is the reported interval",
+ "secondary": [
+  "log10 RRMS on tier a (mean over seeds of log10(max(RRMS, 1e-6))), same statistics, outside the Holm family",
+  "i.i.d. bootstrap 95% CI over the 36 targets (dev_compare.paired), reported next to the clustered CI",
+  "Wilcoxon signed-rank over the 36 targets",
+  "win/tie/loss with dev_compare's tie rule (tie when |diff| < max(1e-6, 1% of the larger value))",
+  "leave-one-geometry-out maximum |change of the mean difference|",
+  "interquartile mean of the 36 differences",
+  "Dolan-More performance profiles per budget over the arms of C1-C6 (values floored at 1e-6)",
+  "More-Wild data profiles from the B5000 traces, tau in {0.1, 0.01, 0.001}, f_0 = bank-oracle RRMS"
+ ],
+ "analysis_command": "PYTHONPATH=src .venv/bin/python scripts/research/dev_stats.py --registry out/research/dev/arms_iter2.json --registry-c out/research/dev_sky130c/arms.json --floors out/research/sim_targets_sky130c/floors.json --prereg out/research/dev/prereg_iter2.json --out out/research/dev/stats_iter2",
+ "implementation": "scripts/research/dev_stats.py (prereg_family, run_family, compare, clustered_bootstrap, holm)"
+}
