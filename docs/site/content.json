@@ -51,16 +51,18 @@
     "question": "Does a trust-region fit that uses a neural surrogate as its model, corrected at each centre with the NGSpice value and Jacobian, reach direct-NGSpice accuracy with fewer NGSpice calls? Thesis under test: neural surrogates do not rank candidate cards in the order NGSpice ranks them, and inverse networks trained on simulations have large errors on measured devices (model misspecification).",
     "answer": [
      {
-      "text": "Same search with NGSpice in place of the surrogate, 43 parameters, round 1: all-device RRMS 0.2375 → 0.1125 (combined 0.2281 → 0.1053). The pipeline value has 1 failed device: 0.2395 over the 17 valid devices (swap over the same 17: 0.1176), 0.2920 penalized.",
+      "text": "Same search with NGSpice in place of the surrogate, 43 parameters, round 1: all-device RRMS 0.2382 → 0.1125 (combined 0.2289 → 0.1053). The pipeline value is from its final selection rerun with the same surrogate and the rule that rejects candidates with failed included curves; 18 of 18 devices are valid. Before the fix the stored pipeline value was 0.2375, with 1 failed device (0.2395 over the 17 valid devices, 0.2920 penalized).",
       "source": [
-       "out/research/audit/failed_curves.json",
-       "out/research/swap_search/full_round_1/summary.json"
+       "out/research/pipe_fixed/full_r1/summary.md",
+       "out/research/swap_search/full_round_1/summary.json",
+       "out/research/audit/failed_curves.json"
       ],
       "claim": "icml-swap"
      },
      {
-      "text": "The round-1 43-parameter surrogate orders its own picks and the direct-fit cards opposite to NGSpice on 17 of 18 devices (surrogate 0.2034 vs 0.5074; NGSpice 0.2375 vs 0.1269, all-device). The pipeline-pick NGSpice mean 0.2375 includes 1 device with a failed included curve (valid-only 0.2395 over 17).",
+      "text": "The round-1 43-parameter surrogate orders its own picks and the direct-fit cards opposite to NGSpice on 16 of 18 devices (surrogate 0.2474 vs 0.5074; NGSpice 0.2382 vs 0.1269, all-device), with the picks from the final selection rerun with failed-curve rejection. With the picks made before the fix the count was 17 of 18 (surrogate 0.2034; NGSpice 0.2375 stored, 1 device with a failed included curve).",
       "source": [
+       "out/research/pipe_fixed/full_r1/summary.md",
        "out/research/surrogate_gap_full_round_1.json"
       ],
       "claim": "icml-misrank"
@@ -117,7 +119,7 @@
       ]
      }
     ],
-    "updated": "2026-10-16"
+    "updated": "2026-10-17"
    },
    "sections": [
     {
@@ -281,9 +283,10 @@
     "question": "How low can the paper RRMS on the 18 measured 77 K SkyWater devices go from a cold start (no released 77 K multipliers in boxes, starts or fallback), and at how many NGSpice calls?",
     "answer": [
      {
-      "text": "43 parameters, after FD, all-device (combined): direct NGSpice round 3 0.1044 (0.0976); NGSpice-swap search round 1 0.1106 (0.1036); paper pipeline round 4 0.1465 (0.1380) stored, 1 failed device, 0.1539 (0.1410) over the 17 valid devices, 0.6455 (0.6994) penalized. Paper card, 43 parameters: 0.2038 (0.1905).",
+      "text": "43 parameters, after FD, all-device (combined): direct NGSpice round 3 0.1044 (0.0976); NGSpice-swap search round 1 0.1106 (0.1036). Paper pipeline round 4 + FD: superseded: FD rerun pending on the corrected cards. Paper pipeline round 4 raw, final selection rerun with failed-curve rejection: 0.1522 (0.1437), 18 of 18 devices valid; before the fix the stored value was 0.1513 (0.1427) with 1 failed device. Paper card, 43 parameters: 0.2038 (0.1905).",
       "source": [
        "out/research/report/2026-10-16_baseline_results/tables.md",
+       "out/research/pipe_fixed/full_r4/summary.md",
        "out/research/audit/failed_curves.json"
       ],
       "claim": "cryo-43"
@@ -324,7 +327,7 @@
       ]
      }
     ],
-    "updated": "2026-10-16"
+    "updated": "2026-10-17"
    },
    "sections": [
     {
@@ -591,30 +594,24 @@
   {
    "id": "icml-swap",
    "tab": "icml",
-   "statement": "Replacing the surrogate with NGSpice in the same search lowers the round-1 43-parameter all-device RRMS from 0.2375 (stored; 0.2395 over the 17 valid devices, 0.2920 penalized) to 0.1125.",
+   "statement": "Replacing the surrogate with NGSpice in the same search lowers the round-1 43-parameter all-device RRMS from 0.2382 to 0.1125, with the pipeline value taken from its final selection rerun with failed-curve rejection (18 of 18 devices valid).",
    "status": "verified",
    "headline": {
-    "value": "0.2375 → 0.1125",
-    "convention": "all-device, raw, 43 parameters, round 1 (combined 0.2281 → 0.1053); pipeline: 1 failed device, valid-only 0.2395, penalized 0.2920"
+    "value": "0.2382 → 0.1125",
+    "convention": "all-device, raw, 43 parameters, round 1 (combined 0.2289 → 0.1053); pipeline final selection rerun with failed-curve rejection, 18 of 18 devices valid; stored before the fix: 0.2375"
    },
    "numbers": [
     {
      "label": "Pipeline 43, round 1 (surrogate search), raw",
-     "value": "stored 0.2375 (0.2281); valid-only 0.2395 (0.2238) over 17 devices; penalized 0.2920 (0.2894); 1 failed device (`nmos_L0p15_W1p6`)",
-     "convention": "all-device (combined)",
-     "source": "out/research/audit/failed_curves.json"
+     "value": "0.2382 (0.2289); 18 of 18 devices valid; `nmos_L0p15_W1p6` 0.2035 → 0.2159",
+     "convention": "all-device (combined); final selection rerun with failed-curve rejection",
+     "source": "out/research/pipe_fixed/full_r1/summary.md"
     },
     {
      "label": "Pipeline 43, round 1, + FD",
-     "value": "stored 0.1824 (0.1730); valid-only 0.1853 (0.1698) over 17 devices; penalized 0.2373 (0.2347); 1 failed device (`nmos_L0p15_W1p6`)",
-     "convention": "all-device (combined)",
-     "source": "out/research/audit/failed_curves.json"
-    },
-    {
-     "label": "NGSpice swap 43, round 1, raw, over the same 17 devices",
-     "value": "0.1176",
-     "convention": "all-device mean without `nmos_L0p15_W1p6`; 0 failed devices",
-     "source": "out/research/swap_search/full_round_1/summary.json"
+     "value": "superseded: FD rerun pending on the corrected cards",
+     "convention": "the earlier FD run started from the card selected before the fix; its values are in the caveats",
+     "source": "out/research/polished/pipe43_r1_fd/real/summary.json"
     },
     {
      "label": "NGSpice swap 43, round 1, raw",
@@ -636,14 +633,18 @@
     },
     {
      "label": "Difference from the swap, raw",
-     "value": "0.1250 stored, 0.1219 over the 17 valid devices (43) / 0.0480 (7)",
-     "convention": "all-device",
-     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+     "value": "0.1258 (43) / 0.0480 (7)",
+     "convention": "all-device, 18 devices; 43: corrected pipeline value minus swap (unrounded means)",
+     "source": [
+      "out/research/pipe_fixed/full_r1/summary.md",
+      "out/research/swap_search/full_round_1/summary.json",
+      "out/research/report/2026-10-16_baseline_results/tables.md"
+     ]
     },
     {
      "label": "NGSpice calls per device, this run",
      "value": "10,009 / 19,854",
-     "convention": "pipeline 43 r1 (bank + validation) / swap 43 r1",
+     "convention": "pipeline 43 r1 (bank + validation, original run) / swap 43 r1",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     }
    ],
@@ -655,8 +656,9 @@
    ],
    "did": [
     "`swap_seven_r1` and `swap_full_r1`: `scripts/research/swap_search.py` on `out/cold_loop/{seven,full}/round_1` with bank `data/processed/cold_loop/{seven,full}_r1`; ended 2026-10-16 05:43 (245 s) and 06:16 (1,948 s).",
-    "`fd_swap_full_r1` (70 s) and `fd_pipe43_r1_real` (32 s): `scripts/research/polish_cards.py`, max_nfev 400, diff_step 0.01, irls 2.",
-    "Pipeline 43 round 1: `scripts/research/cold_loop.py --set full` (rounds 1–4 finished 2026-10-16 05:39, 12.4 h)."
+    "`fd_swap_full_r1` (70 s) and `fd_pipe43_r1_real` (32 s): `scripts/research/polish_cards.py`, max_nfev 400, diff_step 0.01, irls 2. `fd_pipe43_r1_real` polished the card selected before the fix and is superseded: FD rerun pending on the corrected cards.",
+    "Pipeline 43 round 1: `scripts/research/cold_loop.py --set full` (rounds 1–4 finished 2026-10-16 05:39, 12.4 h).",
+    "Final selection rerun for round 1 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r1`, with the round-1 surrogate (forward-model checksum identical to `out/cold_loop/full/round_1/extract/forward_model.pt`) and the rule that rejects candidates with failed included curves (commit a0e1e97). Only `nmos_L0p15_W1p6` changes: its selected card changes from an FD endpoint (0.2035, 1 of 10 included curves failed) to a bank start (0.2159). The other 17 devices keep the same card and score."
    ],
    "result": {
     "tables": [
@@ -670,7 +672,7 @@
        "NGSpice swap 43, round 1",
        "Direct NGSpice 43, round 1, cold"
       ],
-      "caption": "Round-1 rows: surrogate search, the same search on NGSpice, and direct NGSpice"
+      "caption": "Round-1 rows: surrogate search, the same search on NGSpice, and direct NGSpice (pipeline rows: values stored before the fix)"
      },
      {
       "batch": "2026-10-16_dev_iteration1",
@@ -679,7 +681,7 @@
        "pipeline 43, round 1",
        "NGSpice swap 43, round 1"
       ],
-      "caption": "Stored, valid-only and penalized values for the round-1 rows (failed-curve audit)"
+      "caption": "Stored, valid-only and penalized values for the round-1 rows before the fix (failed-curve audit)"
      }
     ],
     "figures": [
@@ -694,7 +696,7 @@
       "caption": "Per device, 43 parameters, round 1 (paper RRMS)",
       "columns": [
        {
-        "label": "pipeline raw",
+        "label": "pipeline raw, before the fix",
         "file": "out/research/swap_search/full_round_1/summary.json",
         "path": "devices.{device}.pipeline_rrms"
        },
@@ -704,7 +706,7 @@
         "path": "devices.{device}.rrms"
        },
        {
-        "label": "pipeline + FD",
+        "label": "pipeline + FD (superseded)",
         "file": "out/research/polished/pipe43_r1_fd/real/summary.json",
         "path": "devices.{device}.rrms"
        },
@@ -721,12 +723,18 @@
        }
       ],
       "notes": [
-       "pipeline raw = the pipeline's own score of its selected card (as in the summary tables)."
+       "pipeline raw, before the fix = the pipeline's own score of the card it selected before the fix (as in the summary tables). With the final selection rerun with failed-curve rejection only `nmos_L0p15_W1p6` changes, to 0.2159; the mean is 0.2382 (`out/research/pipe_fixed/full_r1/summary.md`).",
+       "pipeline + FD: superseded: FD rerun pending on the corrected cards. This column polished the cards selected before the fix."
       ]
      }
+    ],
+    "text": [
+     "The batch tables, the figure and the per-device column `pipeline raw, before the fix` show the pipeline values stored before the fix."
     ]
    },
    "caveats": [
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Values before the fix, pipeline 43 round 1, all-device (combined): raw stored 0.2375 (0.2281), valid-only 0.2395 (0.2238) over 17 devices, penalized 0.2920 (0.2894); + FD stored 0.1824 (0.1730), valid-only 0.1853 (0.1698), penalized 0.2373 (0.2347); 1 failed device (`nmos_L0p15_W1p6`). NGSpice swap over the same 17 devices: 0.1176. Difference from the swap, raw: 0.1250 stored, 0.1219 over the 17 valid devices (`out/research/audit/failed_curves.json`).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "Not a matched-budget comparison: the swap uses 19,854 NGSpice calls per device in this run against 10,009 for the pipeline (bank and validation). Matched-budget curves come from the DEV comparison.",
     "These runs used the real devices before the DEV/TEST protocol was defined; under the protocol the real devices are TEST data."
@@ -741,31 +749,32 @@
     "out/research/polished/swap_full_r1_fd/real/summary.json",
     "out/research/polished/pipe43_r1_fd/real/summary.json",
     "docs/RESEARCH_LOOP.md",
-    "out/research/audit/failed_curves.json"
+    "out/research/audit/failed_curves.json",
+    "out/research/pipe_fixed/full_r1/summary.json"
    ],
-   "updated": "2026-10-16"
+   "updated": "2026-10-17"
   },
   {
    "id": "icml-misrank",
    "tab": "icml",
-   "statement": "The round-1 43-parameter surrogate scores its own picks better than the direct-fit cards on 17 of 18 devices; NGSpice scores them the other way.",
+   "statement": "The round-1 43-parameter surrogate scores its own picks better than the direct-fit cards on 16 of 18 devices; NGSpice scores them the other way.",
    "status": "verified",
    "headline": {
-    "value": "17 of 18 devices",
-    "convention": "opposite ordering; surrogate 0.2034 vs 0.5074, NGSpice 0.2375 vs 0.1269 (all-device)"
+    "value": "16 of 18 devices",
+    "convention": "opposite ordering; surrogate 0.2474 vs 0.5074, NGSpice 0.2382 vs 0.1269 (all-device); picks from the final selection rerun with failed-curve rejection (17 of 18 with the picks made before the fix)"
    },
    "numbers": [
     {
      "label": "Pipeline picks: surrogate-predicted RRMS",
-     "value": "0.2034",
-     "convention": "all-device",
-     "source": "out/research/surrogate_gap_full_round_1.json"
+     "value": "0.2474",
+     "convention": "all-device; picks from the final selection rerun with failed-curve rejection",
+     "source": "out/research/pipe_fixed/full_r1/ml_*.json"
     },
     {
      "label": "Pipeline picks: NGSpice RRMS",
-     "value": "0.2375",
-     "convention": "all-device",
-     "source": "out/research/surrogate_gap_full_round_1.json"
+     "value": "0.2382",
+     "convention": "all-device; picks from the final selection rerun with failed-curve rejection",
+     "source": "out/research/pipe_fixed/full_r1/summary.md"
     },
     {
      "label": "Direct-fit cards: surrogate-predicted RRMS",
@@ -781,9 +790,12 @@
     },
     {
      "label": "Devices with opposite ordering",
-     "value": "17 / 18",
-     "convention": "surrogate prefers pipeline pick, NGSpice prefers direct card",
-     "source": "out/research/surrogate_gap_full_round_1.json"
+     "value": "16 / 18",
+     "convention": "surrogate prefers pipeline pick, NGSpice prefers direct card; `nmos_L0p15_W1p6` is not counted: its corrected pick has surrogate RRMS 0.8238 vs 0.7435 for the direct card",
+     "source": [
+      "out/research/pipe_fixed/full_r1/ml_*.json",
+      "out/research/surrogate_gap_full_round_1.json"
+     ]
     },
     {
      "label": "Seven parameters, round 1: own picks, surrogate vs NGSpice",
@@ -798,7 +810,8 @@
    ],
    "did": [
     "`scripts/research/surrogate_gap.py` (inference only; NGSpice scores taken from the existing summaries) → `out/research/surrogate_gap_full_round_1.json`.",
-    "Figure from `scripts/research/report_figs.py --topic baseline_results --date 2026-10-16`."
+    "Figure from `scripts/research/report_figs.py --topic baseline_results --date 2026-10-16`.",
+    "Corrected picks: `methods.surrogate_fd.surrogate_rrms` and `rrms` in `out/research/pipe_fixed/full_r1/ml_<device>.json`, scored by the same round-1 surrogate; direct-fit values from `out/research/surrogate_gap_full_round_1.json`. For the 17 unchanged picks the surrogate values agree with the gap file to within 3e-6."
    ],
    "result": {
     "figures": [
@@ -810,7 +823,7 @@
     "blocks": [
      {
       "type": "per_device",
-      "caption": "Per device: surrogate-predicted and NGSpice RRMS",
+      "caption": "Per device: surrogate-predicted and NGSpice RRMS, picks made before the fix",
       "columns": [
        {
         "label": "pick, surrogate",
@@ -839,9 +852,14 @@
        }
       ]
      }
+    ],
+    "text": [
+     "The figure and the per-device table use the picks made before the fix (`out/research/surrogate_gap_full_round_1.json`). They differ from the corrected picks only on `nmos_L0p15_W1p6`."
     ]
    },
    "caveats": [
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Before the fix, with the picks then stored: 17 of 18 devices with opposite ordering; picks surrogate 0.2034, NGSpice 0.2375 stored, which includes 1 device with a failed included curve (`nmos_L0p15_W1p6`; valid-only 0.2395 over 17).",
     "The direct-fit cards sit on the box faces (max |local| ≈ 1), where the Latin-hypercube bank is sparse and about 40% of round-1 bank samples did not converge.",
     "At seven parameters the surrogate's prediction for its own picks matched NGSpice (0.235 vs 0.2367); the swap shows that this did not hold for the cards it did not pick.",
     "Whether larger surrogates or neural operators change the ordering is the question of the queued architecture study (`arch_full_r1`, `archlc_full_r1`)."
@@ -851,9 +869,10 @@
     "out/research/surrogate_gap_full_round_1.json",
     "out/research/ngspice_direct/full_r1_direct_cold/summary.json",
     "out/cold_loop/full/round_1/extract/summary.json",
-    "docs/RESEARCH_LOOP.md"
+    "docs/RESEARCH_LOOP.md",
+    "out/research/pipe_fixed/full_r1/summary.json"
    ],
-   "updated": "2026-10-16"
+   "updated": "2026-10-17"
   },
   {
    "id": "icml-inverse",
@@ -1797,10 +1816,16 @@
      "source": "out/research/polished/swap_full_r1_fd/real/summary.json"
     },
     {
-     "label": "Pipeline 43, round 4: raw / + FD",
-     "value": "stored 0.1513 / 0.1465; valid-only 0.1586 / 0.1539 (17 devices); penalized 0.6500 / 0.6455",
-     "convention": "all-device; 1 failed device (`nmos_L8_W1p6`)",
-     "source": "out/research/audit/failed_curves.json"
+     "label": "Pipeline 43, round 4, raw",
+     "value": "0.1522 (0.1437); 18 of 18 devices valid; `nmos_L8_W1p6` 0.0263 → 0.0431",
+     "convention": "all-device (combined); final selection rerun with failed-curve rejection",
+     "source": "out/research/pipe_fixed/full_r4/summary.md"
+    },
+    {
+     "label": "Pipeline 43, round 4, + FD",
+     "value": "superseded: FD rerun pending on the corrected cards",
+     "convention": "the earlier FD run started from the card selected before the fix; its values are in the caveats",
+     "source": "out/research/polished/pipe43_r4_fd/real/summary.json"
     },
     {
      "label": "Paper card, 43 parameters",
@@ -1810,8 +1835,8 @@
     },
     {
      "label": "NGSpice calls per device, cumulative",
-     "value": "57,502 / 30,114 / 40,417",
-     "convention": "direct r3 + FD / swap r1 + FD / pipeline r4 + FD",
+     "value": "57,502 / 30,114",
+     "convention": "direct r3 + FD / swap r1 + FD; the pipeline r4 + FD count (40,417) belongs to the superseded FD run",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     }
    ],
@@ -1821,8 +1846,9 @@
    ],
    "did": [
     "Direct NGSpice 43: `full_r1_direct_seeded` → `full_r2_direct` → `full_r3_direct`, about 21.9k NGSpice calls per device in round 1 (TRF Jacobians included); `direct43_r3_fd` polish (314 calls per device).",
-    "Pipeline 43: `scripts/research/cold_loop.py --set full`, rounds 1–4, finished 2026-10-16 05:39 (12.4 h); `fd_pipe43_r4_real` (338 s).",
-    "All re-scored independently with `scripts/research/verify_direct.py` and `verify_cold_results.py`."
+    "Pipeline 43: `scripts/research/cold_loop.py --set full`, rounds 1–4, finished 2026-10-16 05:39 (12.4 h); `fd_pipe43_r4_real` (338 s) polished the round-4 card selected before the fix and is superseded: FD rerun pending on the corrected cards.",
+    "All re-scored independently with `scripts/research/verify_direct.py` and `verify_cold_results.py`.",
+    "Final selection rerun for round 4 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r4`, with the round-4 surrogate (forward-model checksum identical to `out/cold_loop/full/round_4/extract/forward_model.pt`) and the same rule. Only `nmos_L8_W1p6` changes: its selected card changes from an FD endpoint with 9 of 10 included curves failed (stored 0.0263) to another FD endpoint (0.0431). The other 17 devices keep the same card and score."
    ],
    "result": {
     "figures": [
@@ -1838,7 +1864,8 @@
     "tables": [
      {
       "batch": "2026-10-16_baseline_results",
-      "table": "Measured 77 K data"
+      "table": "Measured 77 K data",
+      "caption": "Measured 77 K data, 18 devices: paper RRMS by method, raw output and after NGSpice FD polish. Pipeline 43 rows: values stored before the fix; pipeline 43 + FD rows: superseded: FD rerun pending on the corrected cards."
      },
      {
       "batch": "2026-10-16_dev_iteration1",
@@ -1848,7 +1875,7 @@
        "NGSpice swap 43, round 1",
        "direct NGSpice 43, round 3"
       ],
-      "caption": "Stored, valid-only and penalized values, 43 parameters (failed-curve audit)"
+      "caption": "Stored, valid-only and penalized values, 43 parameters (failed-curve audit; pipeline rows from before the fix)"
      }
     ],
     "blocks": [
@@ -1862,7 +1889,7 @@
         "path": "paper_full43.devices.{device}.rrms"
        },
        {
-        "label": "pipeline 43 r4 + FD",
+        "label": "pipeline 43 r4 + FD (superseded)",
         "file": "out/research/polished/pipe43_r4_fd/real/summary.json",
         "path": "devices.{device}.rrms"
        },
@@ -1878,12 +1905,18 @@
        }
       ],
       "notes": [
-       "The paper-card mean row is the mean of the re-simulated per-device scores; the table above lists the paper's reported all-device value."
+       "The paper-card mean row is the mean of the re-simulated per-device scores; the table above lists the paper's reported all-device value.",
+       "pipeline 43 r4 + FD: superseded: FD rerun pending on the corrected cards. This column polished the round-4 cards selected before the fix."
       ]
      }
+    ],
+    "text": [
+     "The figures and the `Measured 77 K data` table show the pipeline-43 values stored before the fix."
     ]
    },
    "caveats": [
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Values before the fix, pipeline 43 round 4, all-device, raw / + FD: stored 0.1513 / 0.1465; valid-only 0.1586 / 0.1539 over 17 devices; penalized 0.6500 / 0.6455; 1 failed device (`nmos_L8_W1p6`, 9 of 10 included curves) (`out/research/audit/failed_curves.json`).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "About 6 of 43 parameters per device sit at the box edge in the direct fits (mostly secondary parameters held to ×3: dwg, k3b, pdiblc2, xj, prwg, k2). A physicality check is pending before any card is presented.",
     "Direct NGSpice 43-parameter fits used about 21.9k NGSpice calls per device per round (TRF Jacobian evaluations included), not 3.3k as first logged.",
@@ -1900,9 +1933,10 @@
     "out/research/reference_scores.json",
     "out/research/report/2026-10-16_baseline_results/README.md",
     "docs/RESEARCH_LOOP.md",
-    "out/research/audit/failed_curves.json"
+    "out/research/audit/failed_curves.json",
+    "out/research/pipe_fixed/full_r4/summary.json"
    ],
-   "updated": "2026-10-16"
+   "updated": "2026-10-17"
   },
   {
    "id": "cryo-seven-floor",
@@ -2029,11 +2063,11 @@
   {
    "id": "cryo-rounds",
    "tab": "cryo77k",
-   "statement": "Each cold-pipeline round lowers the 43-parameter all-device RRMS over valid devices: 0.2395 (17 devices), 0.1965, 0.1716, 0.1586 (17 devices) over rounds 1–4; stored values 0.2375, 0.1965, 0.1716, 0.1513.",
+   "statement": "Each cold-pipeline round lowers the 43-parameter all-device RRMS: 0.2382, 0.1965, 0.1716, 0.1522 over rounds 1–4, with 18 of 18 devices valid in each round (rounds 1 and 4 from the final selection rerun with failed-curve rejection, rounds 2 and 3 as stored).",
    "status": "verified",
    "headline": {
-    "value": "0.2395 → 0.1586",
-    "convention": "all-device over valid devices, raw, pipeline 43, rounds 1–4 (stored 0.2375 → 0.1513; rounds 1 and 4 have 1 failed device each)"
+    "value": "0.2382 → 0.1522",
+    "convention": "all-device, raw, pipeline 43, rounds 1–4 (combined 0.2289 → 0.1437); stored before the fix: 0.2375 → 0.1513"
    },
    "numbers": [
     {
@@ -2043,28 +2077,24 @@
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     },
     {
-     "label": "Pipeline 43, rounds 1–4, stored",
-     "value": "0.2375, 0.1965, 0.1716, 0.1513",
-     "convention": "all-device, raw",
-     "source": "out/cold_loop/full/round_{1..4}/extract/summary.json"
+     "label": "Pipeline 43, rounds 1–4",
+     "value": "0.2382, 0.1965, 0.1716, 0.1522",
+     "convention": "all-device, raw; rounds 1 and 4: final selection rerun with failed-curve rejection; rounds 2 and 3: stored, 0 failed devices",
+     "source": [
+      "out/research/pipe_fixed/full_r1/summary.md",
+      "out/research/pipe_fixed/full_r4/summary.md",
+      "out/cold_loop/full/round_{2,3}/extract/summary.json"
+     ]
     },
     {
-     "label": "Pipeline 43, rounds 1–4, valid-only",
-     "value": "0.2395, 0.1965, 0.1716, 0.1586",
-     "convention": "all-device over 17 / 18 / 18 / 17 devices",
-     "source": "out/research/audit/failed_curves.json"
-    },
-    {
-     "label": "Pipeline 43, rounds 1–4, penalized",
-     "value": "0.2920, 0.1965, 0.1716, 0.6500",
-     "convention": "all-device, failed included curves at RRMS 10",
-     "source": "out/research/audit/failed_curves.json"
-    },
-    {
-     "label": "Pipeline 43, failed devices, rounds 1 and 4",
-     "value": "`nmos_L0p15_W1p6` (1 of 10 included curves), `nmos_L8_W1p6` (9 of 10)",
-     "convention": "rounds 2 and 3: 0 failed devices",
-     "source": "out/research/audit/failed_curves.json"
+     "label": "Pipeline 43, rounds 1–4, combined",
+     "value": "0.2289, 0.1875, 0.1631, 0.1437",
+     "convention": "combined, raw; same rounds as the row above",
+     "source": [
+      "out/research/pipe_fixed/full_r1/summary.md",
+      "out/research/pipe_fixed/full_r4/summary.md",
+      "out/cold_loop/full/round_{2,3}/extract/summary.json"
+     ]
     },
     {
      "label": "A tandem 43, rounds 2 / 3 / 4: stored · valid-only · penalized",
@@ -2096,7 +2126,9 @@
    ],
    "did": [
     "`scripts/research/cold_loop.py --set seven` and `--set full`, rounds 1–4; 43-parameter rounds finished 2026-10-16 05:39 after 12.4 h; 40,035 cumulative NGSpice calls per device by round 4.",
-    "Direct NGSpice chain `full_r1_direct_seeded` → `full_r2_direct` → `full_r3_direct` (each spec's `source_run` names the previous round)."
+    "Direct NGSpice chain `full_r1_direct_seeded` → `full_r2_direct` → `full_r3_direct` (each spec's `source_run` names the previous round).",
+    "Final selection rerun for round 1 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r1`, with the round-1 surrogate (forward-model checksum identical to `out/cold_loop/full/round_1/extract/forward_model.pt`) and the rule that rejects candidates with failed included curves (commit a0e1e97). Only `nmos_L0p15_W1p6` changes: its selected card changes from an FD endpoint (0.2035, 1 of 10 included curves failed) to a bank start (0.2159). The other 17 devices keep the same card and score.",
+    "Final selection rerun for round 4 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r4`, with the round-4 surrogate (forward-model checksum identical to `out/cold_loop/full/round_4/extract/forward_model.pt`) and the same rule. Only `nmos_L8_W1p6` changes: its selected card changes from an FD endpoint with 9 of 10 included curves failed (stored 0.0263) to another FD endpoint (0.0431). The other 17 devices keep the same card and score."
    ],
    "result": {
     "figures": [
@@ -2108,7 +2140,8 @@
     "tables": [
      {
       "batch": "2026-10-16_baseline_results",
-      "table": "Measured 77 K data, 18 devices: paper RRMS by round"
+      "table": "Measured 77 K data, 18 devices: paper RRMS by round",
+      "caption": "Measured 77 K data, 18 devices: paper RRMS by round (values stored before the fix)"
      },
      {
       "caption": "Pipeline 43 by round, with the tandem inverse model A",
@@ -2124,9 +2157,9 @@
       "rows": [
        [
         "1",
-        "0.2375",
-        "0.2281",
-        "0.1435",
+        "0.2382",
+        "0.2289",
+        "0.1450",
         "0.3128",
         "0.0322",
         "0.592"
@@ -2151,16 +2184,21 @@
        ],
        [
         "4",
-        "0.1513",
-        "0.1427",
-        "0.0652",
+        "0.1522",
+        "0.1437",
+        "0.0673",
         "0.2201",
         "0.0085",
         "1.70"
        ]
       ],
       "source": [
-       "docs/RESEARCH_LOOP.md"
+       "docs/RESEARCH_LOOP.md",
+       "out/research/pipe_fixed/full_r1/summary.md",
+       "out/research/pipe_fixed/full_r4/summary.md"
+      ],
+      "notes": [
+       "Rounds 1 and 4: final selection rerun with failed-curve rejection (`out/research/pipe_fixed/`). Rounds 2 and 3: stored values, not rerun (0 failed devices). Stored before the fix (all-device / combined / nMOS / pMOS): round 1 0.2375 / 0.2281 / 0.1435 / 0.3128; round 4 0.1513 / 0.1427 / 0.0652 / 0.2201."
       ]
      },
      {
@@ -2172,13 +2210,18 @@
        "pipeline 7, round 4, raw",
        "A tandem"
       ],
-      "caption": "Stored, valid-only and penalized values (failed-curve audit)"
+      "caption": "Stored, valid-only and penalized values before the fix (failed-curve audit)"
      }
+    ],
+    "text": [
+     "The figure `03_rounds.png` and the batch tables show the pipeline-43 values stored before the fix."
     ]
    },
    "caveats": [
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "The round-2 box for `nmos_L0p15_W1p6` is centred on its round-1 card selected before the fix.",
     "At seven parameters, by round 4 the kept candidate is usually a raw NGSpice bank sample (FD endpoint on 3 of 18 devices), so the iterated loop acts mostly as an NGSpice cross-entropy search. The paper's own runs also kept bank samples on 11 of 18 devices.",
-    "Penalized convention, pipeline 43 rounds 1–4: 0.2920, 0.1965, 0.1716, 0.6500. Round 4 is above rounds 2 and 3 in this convention because `nmos_L8_W1p6` has 9 of 10 included curves failed.",
+    "Values before the fix, pipeline 43 rounds 1–4, all-device: stored 0.2375, 0.1965, 0.1716, 0.1513; valid-only 0.2395, 0.1965, 0.1716, 0.1586 over 17 / 18 / 18 / 17 devices; penalized 0.2920, 0.1965, 0.1716, 0.6500 (failed included curves at RRMS 10). The failed devices were `nmos_L0p15_W1p6` in round 1 (1 of 10 included curves) and `nmos_L8_W1p6` in round 4 (9 of 10). In the penalized convention round 4 was above rounds 2 and 3 (`out/research/audit/failed_curves.json`).",
     "The tandem model A at 43 parameters, rounds 2–4, all-device stored 5.8288, 2.2458, 1.6969; each round has 1 failed device (round 3, `nmos_L0p25_W1p6`: 10 of 10 included curves failed, logged as nan).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device."
    ],
@@ -2190,14 +2233,16 @@
     "out/cold_loop/seven/",
     "out/research/ngspice_direct/",
     "docs/RESEARCH_LOOP.md",
-    "out/research/audit/failed_curves.json"
+    "out/research/audit/failed_curves.json",
+    "out/research/pipe_fixed/full_r1/summary.json",
+    "out/research/pipe_fixed/full_r4/summary.json"
    ],
-   "updated": "2026-10-16"
+   "updated": "2026-10-17"
   },
   {
    "id": "cryo-fd",
    "tab": "cryo77k",
-   "statement": "The uniform NGSpice FD polish lowers measured-data RRMS for every method, by 0.12–0.46 for the inverse models and by 0.0005–0.055 for the search pipelines.",
+   "statement": "The uniform NGSpice FD polish lowers measured-data RRMS by 0.12–0.46 for the inverse models and by 0.0005–0.0054 for the search pipelines other than pipeline 43, whose FD rows are superseded: FD rerun pending on the corrected cards.",
    "status": "verified",
    "headline": {
     "value": "0.6857 → 0.2270",
@@ -2223,22 +2268,25 @@
      "source": "docs/RESEARCH_LOOP.md"
     },
     {
-     "label": "Pipeline 7 r4 / pipeline 43 r1 / pipeline 43 r4",
-     "value": "0.1697 → 0.1643 / 0.2375 → 0.1824 / 0.1513 → 0.1465",
-     "convention": "all-device, stored",
+     "label": "Pipeline 7 r4",
+     "value": "0.1697 → 0.1643",
+     "convention": "all-device",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "Pipeline 43 r1 / r4, + FD",
+     "value": "superseded: FD rerun pending on the corrected cards",
+     "convention": "corrected raw values 0.2382 / 0.1522 (all-device, final selection rerun with failed-curve rejection, 18 of 18 valid); the earlier FD runs started from the cards selected before the fix",
+     "source": [
+      "out/research/pipe_fixed/full_r1/summary.md",
+      "out/research/pipe_fixed/full_r4/summary.md"
+     ]
     },
     {
      "label": "Direct 7 / direct 43 r1 / direct 43 r3 / swap 43 r1",
      "value": "0.1676 → 0.1670 / 0.1201 → 0.1191 / 0.1049 → 0.1044 / 0.1125 → 0.1106",
      "convention": "all-device",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
-    },
-    {
-     "label": "Pipeline 43 r1 / r4, raw → + FD, valid-only and penalized",
-     "value": "valid-only 0.2395 → 0.1853 / 0.1586 → 0.1539; penalized 0.2920 → 0.2373 / 0.6500 → 0.6455",
-     "convention": "all-device; 1 failed device in each (17 valid devices)",
-     "source": "out/research/audit/failed_curves.json"
     }
    ],
    "what": [
@@ -2269,7 +2317,7 @@
        "combined",
        "NGSpice calls/device (this run)"
       ],
-      "caption": "Raw and + FD rows on the measured devices"
+      "caption": "Raw and + FD rows on the measured devices (pipeline 43 rows: values stored before the fix; their + FD rows are superseded: FD rerun pending on the corrected cards)"
      },
      {
       "batch": "2026-10-16_dev_iteration1",
@@ -2282,7 +2330,7 @@
        "NGSpice swap",
        "direct NGSpice"
       ],
-      "caption": "Stored, valid-only and penalized values before and after FD (failed-curve audit)"
+      "caption": "Stored, valid-only and penalized values before and after FD, from before the fix (failed-curve audit)"
      }
     ],
     "figures": [
@@ -2290,9 +2338,14 @@
       "batch": "2026-10-16_baseline_results",
       "file": "06_per_device.png"
      }
+    ],
+    "text": [
+     "The figure `06_per_device.png` shows pipeline 43 r4 + FD from the superseded FD run."
     ]
    },
    "caveats": [
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Values before the fix (FD runs started from the cards selected before the fix), pipeline 43 r1 / r4, all-device, raw → + FD: stored 0.2375 → 0.1824 / 0.1513 → 0.1465; valid-only 0.2395 → 0.1853 / 0.1586 → 0.1539 (17 valid devices each); penalized 0.2920 → 0.2373 / 0.6500 → 0.6455 (`out/research/audit/failed_curves.json`). With these values the upper end of the search-pipeline range was 0.055 (pipeline 43 r1, stored).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "FD is local: devices whose start lies in another basin stay there, so the inverse models' means stay above the search pipelines after FD.",
     "Simulated column, pipeline 43 r4 + FD: set 1 mean 0.113; sets 0 and 2 have means 4.9 and 5.0 from one device (`nmos_L1_W3`, RRMS ~87); median about 0.09–0.10. Sets 0 and 2 also have 1 failed device each (`pmos_L0p5_W0p42`, 1 of 9 included curves): set 0 stored 4.9243, valid-only 5.2116, penalized 4.9858; set 2 stored 5.0292, valid-only 5.3225, penalized 5.0907."
@@ -2304,9 +2357,11 @@
     "out/research/polished/",
     "out/research/report/2026-10-16_baseline_results/README.md",
     "docs/RESEARCH_LOOP.md",
-    "out/research/audit/failed_curves.json"
+    "out/research/audit/failed_curves.json",
+    "out/research/pipe_fixed/full_r1/summary.json",
+    "out/research/pipe_fixed/full_r4/summary.json"
    ],
-   "updated": "2026-10-16"
+   "updated": "2026-10-17"
   },
   {
    "id": "cryo-temp",
