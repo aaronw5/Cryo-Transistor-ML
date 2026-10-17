@@ -422,3 +422,11 @@ Reading: the surrogate lowers error below ~500 calls and raises it from about
 2000 calls on these zero-residual targets. Next: a misspecified DEV set (GF180/IHP
 tier c) and a surrogate weight that decays as the trust region contracts.
 Report: out/research/report/2026-10-16_dev_iteration1/.
+
+## Pipeline 43 re-scored with failed-curve rejection (2026-10-16 22:18)
+
+Final selection rerun with the round-1 and round-4 surrogates (out/research/pipe_fixed/).
+All 18 devices are valid. Round 1: 0.2382 all-device (combined 0.2289); stored was 0.2375,
+and nmos_L0p15_W1p6 changes 0.2035 → 0.2159. Round 4: 0.1522 (combined 0.1437); stored was
+0.1513, and nmos_L8_W1p6 changes 0.0263 → 0.0431. The round-4 box still reflects the
+round-3 pick made before the fix. TODO: update site claims icml-swap, cryo-rounds, cryo-43, cryo-fd.
