@@ -138,7 +138,18 @@ def choose_directions(J0: np.ndarray, r_c: np.ndarray, z_c: np.ndarray,
         columns.append(lsq_linear(A, b, bounds=(lo, hi)).x)
     n_sv = max(0, min(k - 2, n_free))
     if n_sv:
-        _, _, vt = np.linalg.svd(J_free, full_matrices=False)
+        # Non-finite prior entries (penalized probes) and LAPACK's rare
+        # non-convergence fall back to the eigenvectors of J^T J, then to
+        # random directions; finite, convergent cases are unchanged.
+        J_svd = np.nan_to_num(J_free, nan=0.0, posinf=0.0, neginf=0.0)
+        try:
+            _, _, vt = np.linalg.svd(J_svd, full_matrices=False)
+        except np.linalg.LinAlgError:
+            try:
+                _, vecs = np.linalg.eigh(J_svd.T @ J_svd)
+                vt = vecs[:, ::-1].T
+            except np.linalg.LinAlgError:
+                vt = rng.standard_normal((n_sv, n_free))
         columns.extend(vt[:n_sv])
     if k >= 2:
         columns.append(rng.standard_normal(n_free))
