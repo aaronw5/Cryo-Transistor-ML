@@ -54,12 +54,23 @@ def polish_job(job):
     start = problem.box.params_to_local(
         {**spec["published_by_device"][tag],
          **{k: v for k, v in card.items() if k in problem.box.names}})
-    before = problem.objective(start)
+    # Score the start with the same scorer as the end card (and as the
+    # method's own score).  problem.objective() is the optimizer's penalized
+    # objective: an included curve whose NGSpice sweep fails (non-finite)
+    # costs PENALTY there, while card_eval.score_card silently drops it from
+    # the mean.  Mixing the two made before -> after a scorer switch, so both
+    # conventions and the failed-curve counts are recorded explicitly.
+    before = final_score(problem, start)
     result = polish(problem, start, max_nfev=options["max_nfev"],
                     diff_step=options["diff_step"],
                     irls_rounds=options["irls"])
     scored = final_score(problem, result["local"])
-    return tag, {"before_rrms": before, "rrms": scored["rrms"],
+    return tag, {"before_rrms": before["rrms"], "rrms": scored["rrms"],
+                 "before_objective": result["history"][0],
+                 "objective": result["objective"],
+                 "n_included_curves": problem.n_curves,
+                 "before_failed_curves": problem.n_curves - before["n_curves"],
+                 "failed_curves": problem.n_curves - scored["n_curves"],
                  "official_dynamic_rrms": scored["official_dynamic_rrms"],
                  "params": scored["params"], "n_sim": problem.n_sim,
                  "history": result["history"],
@@ -88,9 +99,16 @@ def main() -> int:
         results = dict(pool.imap_unordered(
             polish_job, [(t, spec, cards[t], options) for t in tags]))
     before = {t: {"rrms": r["before_rrms"]} for t, r in results.items()}
+    failed = {stage: sorted(t for t, r in results.items() if r[key] > 0)
+              for stage, key in (("before", "before_failed_curves"),
+                                 ("after", "failed_curves"))}
+    if failed["before"] or failed["after"]:
+        print(f"WARNING: included curves failed to simulate (scores average "
+              f"only the finite curves): {failed}", file=sys.stderr)
     out = {"cards": args.cards, "method": args.method, "spec": args.spec,
            "target_override": target_override() is not None,
            "options": options, "devices": results,
+           "devices_with_failed_curves": failed,
            "before": aggregate(before), **aggregate(results),
            "mean_ngspice_calls_per_device": float(np.mean(
                [r["n_sim"] for r in results.values()])),
