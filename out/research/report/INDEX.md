@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-16 · dev_iteration1
+
+Folder: [2026-10-16_dev_iteration1/](2026-10-16_dev_iteration1/) · [tables.md](2026-10-16_dev_iteration1/tables.md) · [README.md](2026-10-16_dev_iteration1/README.md)
+
+- DEV, 36 simulated targets, pooled all-device mean RRMS at B500 / B5000: sketch_surrogate_k8 0.0313 / 0.0091; sketch_none_k8 0.0370 / 0.0021; hybrid_surrogate 0.0463 / 0.0114; hybrid_none 0.0579 / 0.0058; anytime_sur_presearch_race 0.0287 / 0.0070; anytime_none_race 0.0428 / 0.0082; cmaes_trf 0.0565 / 0.0109.
+- Paired mean difference [95% CI] and win rate: sketch_surrogate_k8 − sketch_none_k8: B500 -0.0058 [-0.0126, 0.0003], win rate 0.67; B1000 0.0028 [-0.0027, 0.0085], win rate 0.53; B2000 0.0057 [1.4e-05, 0.0127], win rate 0.44; B5000 0.0069 [0.0024, 0.0133], win rate 0.25 | hybrid_surrogate − hybrid_none: B500 -0.0116 [-0.0230, -0.0024], win rate 0.64; B1000 -0.0003 [-0.0129, 0.0138], win rate 0.64; B2000 0.0025 [-0.0022, 0.0070], win rate 0.56; B5000 0.0056 [0.0018, 0.0112], win rate 0.28.
+- Failed-curve audit: 16 of 227 audited runs have a device with a failed included curve; 14 of the 20 audited headline numbers come from runs with a failed device. Example: pipeline 43 round 4 raw all-device stored / valid-only / penalized 0.1513 / 0.1586 / 0.6500.
+
+Figures and tables: [01_compare_curves.png](2026-10-16_dev_iteration1/01_compare_curves.png) · [02_table_dev_primary.png](2026-10-16_dev_iteration1/02_table_dev_primary.png) · [03_table_dev_paired.png](2026-10-16_dev_iteration1/03_table_dev_paired.png) · [04_table_audit.png](2026-10-16_dev_iteration1/04_table_audit.png)
+
 ## 2026-10-16 · baseline_results
 
 Folder: [2026-10-16_baseline_results/](2026-10-16_baseline_results/) · [tables.md](2026-10-16_baseline_results/tables.md) · [README.md](2026-10-16_baseline_results/README.md)

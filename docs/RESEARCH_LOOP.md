@@ -407,3 +407,18 @@ implemented and adversarially verified:
 81 DEV jobs queued, about 6-9 h. The real-device hybrid runs were removed from the
 queue: real devices are TEST data and run once per frozen method. Tree:
 out/research/tree/tree.json.
+
+## DEV iteration 1 results (2026-10-16, 36 well-specified simulated targets)
+
+All-device mean RRMS at fixed NGSpice budgets (every call counted):
+B500: racing+surrogate 0.0287, sketch+surrogate 0.0313, sketch-only 0.0370,
+hybrid+surrogate 0.0463, CMA-ES+TRF 0.0565, hybrid-only 0.0579.
+B5000: sketch-only 0.0021, hybrid-only 0.0058, sketch+surrogate 0.0091,
+CMA-ES+TRF 0.0109, hybrid+surrogate 0.0114.
+Paired surrogate minus NGSpice-only (95% bootstrap CI): hybrid B500 -0.0116
+[-0.0230, -0.0024], B5000 +0.0056 [0.0018, 0.0112]; sketch B500 -0.0058
+[-0.0126, 0.0003], B5000 +0.0069 [0.0024, 0.0133].
+Reading: the surrogate lowers error below ~500 calls and raises it from about
+2000 calls on these zero-residual targets. Next: a misspecified DEV set (GF180/IHP
+tier c) and a surrogate weight that decays as the trust region contracts.
+Report: out/research/report/2026-10-16_dev_iteration1/.

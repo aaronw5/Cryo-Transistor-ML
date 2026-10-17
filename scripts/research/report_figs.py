@@ -450,7 +450,7 @@ class Table:
 
 
 def fmt(v, kind: str) -> str:
-    if kind == "text":
+    if kind in ("text", "rtext"):     # rtext: preformatted, right-aligned
         return "" if v is None else str(v)
     v = num(v)
     if v is None:
@@ -520,7 +520,7 @@ def render_table(t: Table, path: Path) -> None:
         ax.plot([x0, x1], [head_y0 + row_h * 0.92] * 2, color=MUTED, lw=0.8)
 
     def put(i, y, s, **kw):
-        if cols[i]["kind"] == "text":
+        if cols[i]["kind"] == "text":  # rtext and numbers: right-aligned
             ax.text(xs[i] + 0.8 * ch, y, s, ha="left", va="center", **kw)
         else:
             ax.text(xs[i + 1] - 1.2 * ch, y, s, ha="right", va="center", **kw)
@@ -532,7 +532,7 @@ def render_table(t: Table, path: Path) -> None:
     for r, row in enumerate(cells):
         y = body_y0 + row_h * (r + 0.5)
         for i, s in enumerate(row):
-            put(i, y, s, fontsize=10.5, color=INK if s != "—" else MUTED)
+            put(i, y, s, fontsize=10.5, color=INK if s not in ("—", "–") else MUTED)
         if r < len(cells) - 1:
             ax.plot([pad, xs[-1]], [body_y0 + row_h * (r + 1)] * 2, color=GRID, lw=0.6)
     ax.plot([pad, xs[-1]], [table_bottom] * 2, color=INK2, lw=1.0)
@@ -1229,43 +1229,10 @@ def update_index(date: str, topic: str, folder: Path, pngs: list[str], summary: 
     return text
 
 
-# --------------------------------------------------------------------- main
-
-def candidate_files() -> list[str]:
-    pats = ["out/cold_loop/seven/round_*/extract/summary.json",
-            "out/cold_loop/full/round_*/extract/summary.json",
-            "out/research/ngspice_direct/**/summary.json",
-            "out/research/swap_search/*/summary.json",
-            "out/research/polished/*/*/summary.json",
-            "out/research/surrogate_gap_full_round_1.json",
-            "out/research/temp/*/set_*.json", "out/research/temp/table.json"]
-    return sorted({rel(p) for pat in pats for p in ROOT.glob(pat)})
-
-
-def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--topic", default="baseline_results")
-    ap.add_argument("--date", default=dt.date.today().isoformat())
-    args = ap.parse_args()
-    try:
-        dt.date.fromisoformat(args.date)
-    except ValueError:
-        ap.error("--date must be YYYY-MM-DD")
-    topic = re.sub(r"[^A-Za-z0-9_-]+", "_", args.topic).strip("_") or "report"
-    folder = REPORT_ROOT / f"{args.date}_{topic}"
-    folder.mkdir(parents=True, exist_ok=True)
-
-    items: list[tuple[str, str]] = []   # (png name, README sentence)
-    md_parts: list[str] = []
-    summary_lines: list[str] = []
-    seq = iter(range(1, 100))
-
-    def name(stem: str) -> str:
-        return f"{next(seq):02d}_{stem}.png"
-
-    def srcs(files) -> str:
-        return ", ".join(f"`{f}`" for f in files)
-
+def baseline_sections(folder: Path, name, srcs, items: list, md_parts: list,
+                      summary_lines: list) -> None:
+    """Topic ``baseline_results`` (and any non-DEV topic): measured-data
+    methods, rounds, surrogate gap, per device, temperature."""
     # 1. real methods -----------------------------------------------------
     real = []
     for label, loader in REAL_SPEC:
@@ -1508,6 +1475,392 @@ def main() -> int:
         summary_lines.append("Temperature benchmark, held-out all-device RRMS (raw / +FD): "
                              + "; ".join(bits) + ".")
 
+
+# --------------------------------------------------------------------- DEV
+
+DEV_DIR = RESEARCH / "dev"
+AUDIT_DIR = RESEARCH / "audit"
+DEV_BUDGETS = (500, 1000, 2000, 5000)
+# Node of each DEV arm by label prefix (docs/site/content.json, icml-nodes).
+DEV_NODE = (("hybrid_", "hybrid TR"), ("sketch_", "n1a"), ("anytime_", "n1b"),
+            ("cmaes_trf", "n1c"), ("lq_cmaes", "n1c"))
+DEV_PAIRS = (("sketch_surrogate_k8", "sketch_none_k8"),
+             ("hybrid_surrogate", "hybrid_none"),
+             ("anytime_sur_presearch_race", "anytime_none_race"),
+             ("sketch_surrogate_k8", "cmaes_trf"),
+             ("sketch_none_k8", "hybrid_none"))
+N_BOOT, BOOT_SEED = 10_000, 0
+
+
+def dev_node(label: str) -> str:
+    return next((node for prefix, node in DEV_NODE if label.startswith(prefix)), "")
+
+
+def calls_text(v) -> str:
+    if v is None:
+        return "–"
+    return "never" if math.isinf(v) else f"{v:.0f}"
+
+
+def failed_per_budget(arm: dict, budgets) -> str:
+    cells = []
+    for b in budgets:
+        st = (arm["budgets"].get(str(b)) or {}).get("strict")
+        cells.append("–" if not st or not st.get("n_checked") else str(st["n_failed"]))
+    return "/".join(cells)
+
+
+def paired_stats(a: dict, b: dict) -> dict:
+    """``a`` vs ``b`` over their common DEV targets; diff = a - b (negative:
+    ``a`` has the lower RRMS).  Tie rule and bootstrap (10k resamples over
+    targets, seed 0, percentile 95% CI) as in dev_compare.paired; the win rate
+    uses the same resamples."""
+    common = sorted(set(a) & set(b))
+    x = np.array([a[t] for t in common], dtype=np.float64)
+    y = np.array([b[t] for t in common], dtype=np.float64)
+    diff = x - y
+    tie = np.abs(diff) < np.maximum(1e-6, 0.01 * np.maximum(np.abs(x), np.abs(y)))
+    win = (~tie & (diff < 0)).astype(np.float64)
+    rng = np.random.default_rng(BOOT_SEED)
+    idx = rng.integers(0, len(diff), (N_BOOT, len(diff)))
+    md, wr = diff[idx].mean(1), win[idx].mean(1)
+    return {"n": len(common), "mean_a": float(x.mean()), "mean_b": float(y.mean()),
+            "mean_diff": float(diff.mean()),
+            "ci": [float(np.percentile(md, 2.5)), float(np.percentile(md, 97.5))],
+            "win_rate": float(win.mean()),
+            "win_ci": [float(np.percentile(wr, 2.5)), float(np.percentile(wr, 97.5))],
+            "wins": int(win.sum()), "ties": int(tie.sum()),
+            "losses": int(np.sum(~tie & (diff > 0)))}
+
+
+def dev_sections(folder: Path, name, srcs, items: list, md_parts: list,
+                 summary_lines: list) -> None:
+    """Topic ``dev*``: the DEV comparison (``dev_compare.py`` output) and the
+    failed-curve audit (``audit_failed_curves.py`` output)."""
+    import shutil
+    cmp_json, cmp_md = DEV_DIR / "compare.json", DEV_DIR / "compare.md"
+    curves = DEV_DIR / "compare_curves.png"
+    report = read_json(cmp_json, "DEV comparison")
+    if report is not None and cmp_md.is_file():
+        LOG.used.add(rel(cmp_md))
+    sources = [rel(cmp_json), rel(cmp_md)]
+
+    # 1. the curves figure, copied ---------------------------------------
+    if curves.is_file():
+        png = name("compare_curves")
+        shutil.copy2(curves, folder / png)
+        LOG.used.add(rel(curves))
+        # dev_compare.plot zips its 8 series colours with the arms, so only
+        # the first 8 registry arms are drawn.
+        order = list((report or {}).get("arms", {}).items())
+        drawn = [lab for lab, a in order[:8] if "curve" in a]
+        left_out = [lab for lab, _a in order[8:]]
+        items.append((png, "Copy of the DEV comparison figure: best-so-far paper RRMS against "
+                      "cumulative NGSpice calls per target on the 36 DEV targets, with the "
+                      "all-device mean (solid line) and median (dashed line) of the arms "
+                      + ", ".join(drawn) + ", the fixed-budget run means as dots, and the "
+                      "bank-oracle, pipeline r1 and pipeline r1 + FD references as open markers"
+                      + (" (the arms " + ", ".join(left_out) + " are not drawn: "
+                         "dev_compare.py's plot has 8 colours and stops after the 8th arm)"
+                         if left_out else "")
+                      + f"; sources: {srcs([rel(curves), rel(cmp_json)])}."))
+        if left_out:
+            LOG.note("compare_curves.png draws only the first 8 arms of compare.json; not drawn: "
+                     + ", ".join(left_out))
+    else:
+        LOG.skip("DEV curves figure", f"{rel(curves)} not found")
+    if report is None:
+        return
+    arms, refs = report["arms"], report["references"]
+    n_targets = report.get("n_targets")
+    if report.get("partial"):
+        LOG.note("compare.json is a PARTIAL (--allow-partial) report")
+    bad_checks = [c for c in report.get("checks", []) if c["level"] != "PASS"]
+    if report.get("checks_failed"):
+        LOG.note("compare.json: hard checks failed: " + "; ".join(
+            f"{c['check']} ({c['detail']})" for c in bad_checks if c["level"] == "FAIL"))
+
+    # 2. primary pooled table --------------------------------------------
+    budgets = sorted({int(b) for a in arms.values() for b in a["budgets"]})
+    rows = []
+    for label, arm in arms.items():
+        row = {"node": dev_node(label), "arm": label, "mode": arm["mode"],
+               "auc": arm.get("auc"),
+               "c05": calls_text((arm.get("median_calls_to") or {}).get("0.05")),
+               "c01": calls_text((arm.get("median_calls_to") or {}).get("0.01")),
+               "failed": failed_per_budget(arm, budgets)}
+        for b in budgets:
+            row[f"B{b}"] = (arm["budgets"].get(str(b)) or {}).get("mean")
+        rows.append(row)
+    ref_txt = []
+    for ref in refs.values():
+        st = ref.get("strict") or {}
+        extra = ""
+        if st.get("n_failed"):
+            extra = (f"; {st['n_failed']} failed target(s), valid-only "
+                     f"{fmt(st['valid_mean'], 'rrms')} over {st['n_valid']}, penalized "
+                     f"{fmt(st['penalized_mean'], 'rrms')}")
+        ref_txt.append(f"{ref['label']} {fmt(ref['mean'], 'rrms')} at "
+                       f"{ref['mean_calls']:.0f} mean NGSpice calls{extra}")
+    notes = [f"Pooled all-device mean paper RRMS (frozen inclusion) over {n_targets} DEV targets "
+             f"({', '.join(report['sets'])}, 18 devices each) at fixed cumulative NGSpice budgets "
+             "per target; every NGSpice call counts, Jacobian probes included. Mode fixed = one "
+             "run directory per budget, value = one fresh NGSpice score of the final card.",
+             "AUC log10 = per-target mean of log10(max(best-so-far RRMS, 1e-6)) over a 40-point "
+             "log grid of calls (10 to the largest budget), averaged over targets (lower = lower "
+             "RRMS earlier).",
+             "Calls to 0.05 / 0.01 = median over targets of the first NGSpice call count at which "
+             "the best-so-far RRMS is at or below the threshold, from the largest-budget trace; "
+             "never = the median target does not reach it.",
+             "Failed targets = targets whose final card has a non-finite included metric curve, "
+             "per budget " + "/".join(f"B{b}" for b in budgets) + "; – = budget not run.",
+             "References: " + "; ".join(ref_txt) + "."]
+    if bad_checks:
+        notes.append("Non-PASS checks in compare.json: " + "; ".join(
+            f"{c['level']} {c['check']}" for c in bad_checks) + ".")
+    t = Table("dev_primary", f"DEV comparison, {n_targets} simulated targets: pooled all-device "
+              "mean paper RRMS by arm and NGSpice budget per target", [
+                  {"key": "node", "head": "node", "md": "node", "kind": "text"},
+                  {"key": "arm", "head": "arm", "md": "arm", "kind": "text"},
+                  {"key": "mode", "head": "mode", "md": "mode", "kind": "text"},
+                  *[{"key": f"B{b}", "head": f"B{b}", "group": "pooled mean RRMS at budget",
+                     "md": f"B{b}", "kind": "rrms"} for b in budgets],
+                  {"key": "auc", "head": "AUC log10", "md": "AUC log10", "kind": "rrms"},
+                  {"key": "c05", "head": "to 0.05", "group": "median calls", "md":
+                   "median calls to 0.05", "kind": "rtext"},
+                  {"key": "c01", "head": "to 0.01", "group": "median calls", "md":
+                   "median calls to 0.01", "kind": "rtext"},
+                  {"key": "failed", "head": "failed targets", "md": "failed targets (per budget)",
+                   "kind": "rtext"}], rows, notes)
+    png_t = name("table_dev_primary")
+    render_table(t, folder / png_t)
+    md_parts.append(table_markdown(t))
+    items.append((png_t, "Table of the pooled all-device mean paper RRMS of every DEV arm at "
+                  f"{', '.join(str(b) for b in budgets)} NGSpice calls per target, with AUC, "
+                  "median calls to RRMS 0.05 and 0.01 and failed targets per budget, plus the "
+                  f"reference values in the notes; sources: {srcs(sources)}."))
+    # cross-check against compare.md's primary table
+    md_rows = {}
+    if cmp_md.is_file():
+        for line in cmp_md.read_text().splitlines():
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if len(cells) > 2 and cells[0] in arms and cells[1] in ("fixed", "trace"):
+                md_rows.setdefault(cells[0], cells)
+    for r in rows:
+        cells = md_rows.get(r["arm"])
+        if cells is None:
+            LOG.note(f"compare.md has no primary row for {r['arm']}")
+            continue
+        for k, b in enumerate(budgets):
+            v, c = r[f"B{b}"], cells[2 + k]
+            if v is None:
+                continue
+            try:   # compare.md: 4 decimals, or 3 significant digits below 1e-3
+                tol = 0.006 * abs(v) if "e" in c else 0.5e-4 + 1e-12
+                ok = abs(float(c) - v) <= tol
+            except ValueError:
+                ok = False
+            if not ok:
+                LOG.note(f"compare.md {r['arm']} B{b} '{c}' differs from compare.json {v:.6f}")
+
+    # 3. paired comparisons -----------------------------------------------
+    prow, paired_out = [], {}
+    for a_lab, b_lab in DEV_PAIRS:
+        if a_lab not in arms or b_lab not in arms:
+            LOG.skip(f"pair {a_lab} vs {b_lab}", "arm missing from compare.json")
+            continue
+        for b in budgets:
+            sa, sb = arms[a_lab]["budgets"].get(str(b)), arms[b_lab]["budgets"].get(str(b))
+            if not sa or not sb:
+                continue
+            st = paired_stats(sa["values"], sb["values"])
+            paired_out[(a_lab, b_lab, b)] = st
+            bad = [f"{lab} {sx['strict']['n_failed']}" for lab, sx in ((a_lab, sa), (b_lab, sb))
+                   if (sx.get("strict") or {}).get("n_failed")]
+            prow.append({"pair": f"{a_lab} vs {b_lab}", "budget": f"B{b}", "n": st["n"],
+                         "mean_a": st["mean_a"], "mean_b": st["mean_b"],
+                         "diff": st["mean_diff"],
+                         "ci": f"[{fmt(st['ci'][0], 'rrms')}, {fmt(st['ci'][1], 'rrms')}]",
+                         "win": f"{st['win_rate']:.2f}",
+                         "win_ci": f"[{st['win_ci'][0]:.2f}, {st['win_ci'][1]:.2f}]",
+                         "wtl": f"{st['wins']}/{st['ties']}/{st['losses']}",
+                         "failed": ", ".join(bad) or "0"})
+            ref = next((p for p in report.get("paired", []) if p["arm"] == a_lab
+                        and p["reference"] == b_lab and int(p["budget"]) == b), None)
+            if ref is not None and (abs(ref["mean_diff"] - st["mean_diff"]) > 1e-12
+                                    or max(abs(u - v) for u, v in zip(ref["ci95"], st["ci"])) > 1e-12
+                                    or (ref["wins"], ref["ties"], ref["losses"])
+                                    != (st["wins"], st["ties"], st["losses"])):
+                LOG.note(f"paired {a_lab} vs {b_lab} B{b}: differs from compare.json paired row")
+    if prow:
+        t = Table("dev_paired", f"DEV paired comparisons over the {n_targets} targets: "
+                  "difference A − B of paper RRMS per target at each budget", [
+                      {"key": "pair", "head": "A vs B", "md": "A vs B", "kind": "text"},
+                      {"key": "budget", "head": "budget", "md": "budget", "kind": "rtext"},
+                      {"key": "n", "head": "n", "md": "n", "kind": "int"},
+                      {"key": "mean_a", "head": "A", "group": "pooled mean", "md": "mean A",
+                       "kind": "rrms"},
+                      {"key": "mean_b", "head": "B", "group": "pooled mean", "md": "mean B",
+                       "kind": "rrms"},
+                      {"key": "diff", "head": "mean", "group": "difference A − B",
+                       "md": "mean difference A − B", "kind": "rrms"},
+                      {"key": "ci", "head": "95% CI", "group": "difference A − B",
+                       "md": "95% CI", "kind": "rtext"},
+                      {"key": "win", "head": "rate", "group": "A lower (win)",
+                       "md": "win rate A", "kind": "rtext"},
+                      {"key": "win_ci", "head": "95% CI", "group": "A lower (win)",
+                       "md": "win rate 95% CI", "kind": "rtext"},
+                      {"key": "wtl", "head": "W/T/L", "md": "W/T/L", "kind": "rtext"},
+                      {"key": "failed", "head": "failed", "md": "failed targets (A, B)",
+                       "kind": "rtext"}], prow,
+                  ["Per-target values: compare.json arms.<arm>.budgets.<budget>.values (one fresh "
+                   "NGSpice score of each final card). Difference = A − B; negative = A has the "
+                   "lower RRMS.",
+                   "Win = A lower than B by more than the tie tolerance max(1e-6, 1% of the larger "
+                   "value) (dev_compare.paired); win rate = wins / n; W/T/L = wins, ties, losses "
+                   "of A.",
+                   f"95% CI: percentile bootstrap over targets, {N_BOOT:,} resamples, seed "
+                   f"{BOOT_SEED}; the mean difference and the win rate use the same resamples.",
+                   "failed = targets with a non-finite included curve in A or B at that budget."])
+        png_t = name("table_dev_paired")
+        render_table(t, folder / png_t)
+        md_parts.append(table_markdown(t))
+        items.append((png_t, "Table of paired per-target differences A − B at each budget for "
+                      + "; ".join(f"{a} vs {b}" for a, b in DEV_PAIRS)
+                      + ", with the mean difference, the win rate of A and their bootstrap 95% "
+                      f"CIs over the {n_targets} DEV targets; sources: {srcs([rel(cmp_json)])}."))
+
+    # 4. audit corrections ------------------------------------------------
+    audit_json, audit_md = AUDIT_DIR / "failed_curves.json", AUDIT_DIR / "failed_curves.md"
+    audit = read_json(audit_json, "failed-curve audit")
+    if audit is not None:
+        if audit_md.is_file():
+            LOG.used.add(rel(audit_md))
+        arow = []
+        for h in audit.get("headlines", []):
+            arow.append({"headline": h["headline"], "nfail": h["n_failed_devices"],
+                         "devs": ", ".join(h.get("failed_devices", [])) or "none",
+                         "s_all": h["reported_all_device_mean"], "s_comb": h["reported_combined"],
+                         "v_all": h["valid_all_device_mean"], "v_comb": h["valid_combined"],
+                         "p_all": h["penalized_all_device_mean"],
+                         "p_comb": h["penalized_combined"]})
+        conv = audit.get("conventions", {})
+        t = Table("audit", "Failed-curve audit: headline numbers as stored, valid devices only, "
+                  "and penalized", [
+                      {"key": "headline", "head": "headline", "md": "headline", "kind": "text"},
+                      {"key": "nfail", "head": "failed dev.", "md": "failed devices",
+                       "kind": "int"},
+                      {"key": "devs", "head": "failed device", "md": "failed device(s)",
+                       "kind": "text"},
+                      {"key": "s_all", "head": "all-device", "group": "stored",
+                       "md": "stored all-device", "kind": "rrms"},
+                      {"key": "s_comb", "head": "combined", "group": "stored",
+                       "md": "stored combined", "kind": "rrms"},
+                      {"key": "v_all", "head": "all-device", "group": "valid-only",
+                       "md": "valid-only all-device", "kind": "rrms", "family": True},
+                      {"key": "v_comb", "head": "combined", "group": "valid-only",
+                       "md": "valid-only combined", "kind": "rrms", "family": True},
+                      {"key": "p_all", "head": "all-device", "group": "penalized",
+                       "md": "penalized all-device", "kind": "rrms"},
+                      {"key": "p_comb", "head": "combined", "group": "penalized",
+                       "md": "penalized combined", "kind": "rrms"}], arow,
+                  [f"Runs audited: {audit.get('n_runs')}; runs with failed devices: "
+                   f"{audit.get('n_runs_with_failed_devices')}. Inclusion set: "
+                   f"{audit.get('include_source')}.",
+                   "stored = the value in the result file: for a failed device, "
+                   "metrics.device_rrms_new averages only the surviving included curves "
+                   "(upstream rrmsCalc.py gives NaN).",
+                   f"{conv.get('valid', 'valid-only')}; n = 18 minus failed devices.",
+                   f"{conv.get('penalized', 'penalized')}.",
+                   "all-device = mean over devices; combined = mean of the nMOS and pMOS family "
+                   "means."])
+        png_t = name("table_audit")
+        render_table(t, folder / png_t)
+        md_parts.append(table_markdown(t))
+        items.append((png_t, "Table of the failed-curve audit's headline numbers, each as stored, "
+                      "as the mean over valid devices only and in the penalized convention (failed "
+                      "included curves at RRMS 10), all-device and combined, with the failed-device "
+                      f"count and names; sources: {srcs([rel(audit_json), rel(audit_md)])}."))
+        hit = [h for h in audit.get("headlines", []) if h["n_failed_devices"]]
+        summary_lines.append(
+            f"Failed-curve audit: {audit.get('n_runs_with_failed_devices')} of "
+            f"{audit.get('n_runs')} audited runs have a device with a failed included curve; "
+            f"{len(hit)} of the {len(audit.get('headlines', []))} audited headline numbers come "
+            "from runs with a failed device. Example: "
+            "pipeline 43 round 4 raw all-device stored / valid-only / penalized "
+            + next((f"{h['reported_all_device_mean']:.4f} / {h['valid_all_device_mean']:.4f} / "
+                    f"{h['penalized_all_device_mean']:.4f}" for h in hit
+                    if h["headline"].startswith("pipeline 43, round 4, raw")), "n/a") + ".")
+
+    # index summary lines -------------------------------------------------
+    pick = [a for a in ("sketch_surrogate_k8", "sketch_none_k8", "hybrid_surrogate",
+                        "hybrid_none", "anytime_sur_presearch_race", "anytime_none_race",
+                        "cmaes_trf") if a in arms]
+    summary_lines.insert(0, f"DEV, {n_targets} simulated targets, pooled all-device mean RRMS at "
+                         "B500 / B5000: " + "; ".join(
+                             f"{a} {fmt((arms[a]['budgets'].get('500') or {}).get('mean'), 'rrms')}"
+                             f" / {fmt((arms[a]['budgets'].get('5000') or {}).get('mean'), 'rrms')}"
+                             for a in pick) + ".")
+    bits = []
+    for a_lab, b_lab in DEV_PAIRS[:2]:
+        vals = [f"B{b} {fmt(st['mean_diff'], 'rrms')} [{fmt(st['ci'][0], 'rrms')}, "
+                f"{fmt(st['ci'][1], 'rrms')}], win rate {st['win_rate']:.2f}"
+                for (x, y, b), st in paired_out.items() if (x, y) == (a_lab, b_lab)]
+        if vals:
+            bits.append(f"{a_lab} − {b_lab}: " + "; ".join(vals))
+    if bits:
+        summary_lines.insert(1, "Paired mean difference [95% CI] and win rate: "
+                             + " | ".join(bits) + ".")
+
+
+def candidate_files(topic: str = "") -> list[str]:
+    if topic.startswith("dev"):
+        pats = ["out/research/dev/compare.json", "out/research/dev/compare.md",
+                "out/research/dev/compare_curves.png", "out/research/audit/failed_curves.json",
+                "out/research/audit/failed_curves.md"]
+        return sorted({rel(p) for pat in pats for p in ROOT.glob(pat)})
+
+    pats = ["out/cold_loop/seven/round_*/extract/summary.json",
+            "out/cold_loop/full/round_*/extract/summary.json",
+            "out/research/ngspice_direct/**/summary.json",
+            "out/research/swap_search/*/summary.json",
+            "out/research/polished/*/*/summary.json",
+            "out/research/surrogate_gap_full_round_1.json",
+            "out/research/temp/*/set_*.json", "out/research/temp/table.json"]
+    return sorted({rel(p) for pat in pats for p in ROOT.glob(pat)})
+
+
+# --------------------------------------------------------------------- main
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("--topic", default="baseline_results")
+    ap.add_argument("--date", default=dt.date.today().isoformat())
+    args = ap.parse_args()
+    try:
+        dt.date.fromisoformat(args.date)
+    except ValueError:
+        ap.error("--date must be YYYY-MM-DD")
+    topic = re.sub(r"[^A-Za-z0-9_-]+", "_", args.topic).strip("_") or "report"
+    folder = REPORT_ROOT / f"{args.date}_{topic}"
+    folder.mkdir(parents=True, exist_ok=True)
+
+    items: list[tuple[str, str]] = []   # (png name, README sentence)
+    md_parts: list[str] = []
+    summary_lines: list[str] = []
+    seq = iter(range(1, 100))
+
+    def name(stem: str) -> str:
+        return f"{next(seq):02d}_{stem}.png"
+
+    def srcs(files) -> str:
+        return ", ".join(f"`{f}`" for f in files)
+
+    if topic.startswith("dev"):
+        dev_sections(folder, name, srcs, items, md_parts, summary_lines)
+    else:
+        baseline_sections(folder, name, srcs, items, md_parts, summary_lines)
+
     # ---------------------------------------------------------- write out
     pngs = [p for p, _s in items]
     for stale in folder.glob("*.png"):
@@ -1519,7 +1872,7 @@ def main() -> int:
                  "only. RRMS is the paper metric with frozen published-baseline curve inclusion, "
                  "re-simulated in NGSpice.\n\n" + "\n".join(md_parts))
     (folder / "tables.md").write_text(tables_md)
-    unused = [f for f in candidate_files() if f not in LOG.used]
+    unused = [f for f in candidate_files(topic) if f not in LOG.used]
     readme = [f"# Report batch {args.date} · {topic}", "",
               f"Generated {now} by `{cmd}` from result files only (no simulation). RRMS is the "
               "paper metric with frozen published-baseline curve inclusion, re-simulated in "

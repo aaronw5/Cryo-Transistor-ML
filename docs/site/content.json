@@ -51,14 +51,15 @@
     "question": "Does a trust-region fit that uses a neural surrogate as its model, corrected at each centre with the NGSpice value and Jacobian, reach direct-NGSpice accuracy with fewer NGSpice calls? Thesis under test: neural surrogates do not rank candidate cards in the order NGSpice ranks them, and inverse networks trained on simulations have large errors on measured devices (model misspecification).",
     "answer": [
      {
-      "text": "Same search with NGSpice in place of the surrogate, 43 parameters, round 1: all-device RRMS 0.2375 → 0.1125 (combined 0.2281 → 0.1053).",
+      "text": "Same search with NGSpice in place of the surrogate, 43 parameters, round 1: all-device RRMS 0.2375 → 0.1125 (combined 0.2281 → 0.1053). The pipeline value has 1 failed device: 0.2395 over the 17 valid devices (swap over the same 17: 0.1176), 0.2920 penalized.",
       "source": [
-       "out/research/report/2026-10-16_baseline_results/tables.md"
+       "out/research/audit/failed_curves.json",
+       "out/research/swap_search/full_round_1/summary.json"
       ],
       "claim": "icml-swap"
      },
      {
-      "text": "The round-1 43-parameter surrogate orders its own picks and the direct-fit cards opposite to NGSpice on 17 of 18 devices (surrogate 0.2034 vs 0.5074; NGSpice 0.2375 vs 0.1269, all-device).",
+      "text": "The round-1 43-parameter surrogate orders its own picks and the direct-fit cards opposite to NGSpice on 17 of 18 devices (surrogate 0.2034 vs 0.5074; NGSpice 0.2375 vs 0.1269, all-device). The pipeline-pick NGSpice mean 0.2375 includes 1 device with a failed included curve (valid-only 0.2395 over 17).",
       "source": [
        "out/research/surrogate_gap_full_round_1.json"
       ],
@@ -72,26 +73,33 @@
       "claim": "icml-inverse"
      },
      {
-      "text": "Hybrid trust-region fit: smoke runs on two DEV targets only. No DEV comparison yet.",
+      "text": "Hybrid trust-region fit: DEV results at 500–5000 calls on 36 targets are in [dev-iter1](#claim-dev-iter1).",
       "source": [
-       "out/research/dev/smoke/"
+       "out/research/dev/compare.json"
       ],
       "claim": "icml-hybrid"
+     },
+     {
+      "text": "DEV iteration 1, pooled all-device RRMS at B500 / B5000: sketch_surrogate_k8 0.0313 / 0.0091; sketch_none_k8 0.0370 / 0.0021; anytime_sur_presearch_race 0.0287 / 0.0070; cmaes_trf 0.0565 / 0.0109. Targets are well-specified.",
+      "source": [
+       "out/research/dev/compare.json",
+       "out/research/report/2026-10-16_dev_iteration1/tables.md"
+      ],
+      "claim": "dev-iter1"
      }
     ],
     "next": [
+     {
+      "text": "Misspecified DEV set from GF180/IHP tier c, then the same DEV comparison on it. Planned, not queued.",
+      "source": [
+       "out/research/dev/arms.json"
+      ]
+     },
      {
       "text": "Hybrid trust-region fit on the round-1 and round-4 43-parameter boxes, with the surrogate and with no model (`--model none`), equal and successive-halving schedules.",
       "queue_match": "^hybrid_tr_",
       "source": [
        "out/research/queue.txt"
-      ]
-     },
-     {
-      "text": "DEV comparison of all registered arms at 500, 1000, 2000 and 5000 NGSpice calls per target (36 targets).",
-      "source": [
-       "out/research/dev/arms.json",
-       "scripts/research/dev_compare.py"
       ]
      },
      {
@@ -119,7 +127,7 @@
      "blocks": [
       {
        "type": "text",
-       "text": "Each node is a method variant registered as a DEV arm in `out/research/dev/arms.json`. Method selection uses DEV only."
+       "text": "Each node is a method variant registered as a DEV arm in `out/research/dev/arms.json`. Method selection uses DEV only. DEV results for n1a, n1b and n1c: [dev-iter1](#claim-dev-iter1)."
       },
       {
        "type": "nodes",
@@ -132,8 +140,8 @@
           "src/cryoml/sketch_tr.py",
           "tests/test_sketch_tr.py"
          ],
-         "state": "implemented, adversarially verified; DEV runs queued (81 jobs)",
-         "chip": "running"
+         "state": "DEV results in",
+         "chip": "done"
         },
         {
          "name": "Hermite discrepancy correction",
@@ -149,8 +157,8 @@
           "scripts/research/cmaes_trace.py",
           "out/research/dev/verify_n1c/compare.md"
          ],
-         "state": "implemented, adversarially verified; DEV runs queued (81 jobs)",
-         "chip": "running"
+         "state": "DEV results in",
+         "chip": "done"
         },
         {
          "name": "n1b · anytime racing",
@@ -160,8 +168,8 @@
           "src/cryoml/racing.py",
           "tests/test_racing.py"
          ],
-         "state": "implemented, adversarially verified; DEV runs queued (81 jobs)",
-         "chip": "smoke"
+         "state": "DEV results in",
+         "chip": "done"
         }
        ],
        "source": [
@@ -273,9 +281,10 @@
     "question": "How low can the paper RRMS on the 18 measured 77 K SkyWater devices go from a cold start (no released 77 K multipliers in boxes, starts or fallback), and at how many NGSpice calls?",
     "answer": [
      {
-      "text": "43 parameters, after FD, all-device (combined): direct NGSpice round 3 0.1044 (0.0976); NGSpice-swap search round 1 0.1106 (0.1036); paper pipeline round 4 0.1465 (0.1380). Paper card, 43 parameters: 0.2038 (0.1905).",
+      "text": "43 parameters, after FD, all-device (combined): direct NGSpice round 3 0.1044 (0.0976); NGSpice-swap search round 1 0.1106 (0.1036); paper pipeline round 4 0.1465 (0.1380) stored, 1 failed device, 0.1539 (0.1410) over the 17 valid devices, 0.6455 (0.6994) penalized. Paper card, 43 parameters: 0.2038 (0.1905).",
       "source": [
-       "out/research/report/2026-10-16_baseline_results/tables.md"
+       "out/research/report/2026-10-16_baseline_results/tables.md",
+       "out/research/audit/failed_curves.json"
       ],
       "claim": "cryo-43"
      },
@@ -385,15 +394,21 @@
       ]
      },
      {
-      "text": "Refit floors, seven-parameter set, mean of 3 devices, tiers a/b/c: GF180 0 / 0.0136 / 0.0743; IHP 0 / 0.0146 / 0.1227.",
+      "text": "Refit floors, seven-parameter set, mean of 3 devices, tiers a/b/c: GF180 0 / 0.0136 / 0.0743; IHP 0 / 0.0146 / 0.1227 (final run; 3-device means vary by about 0.03 between truth draws).",
       "source": [
-       "out/research/pdk2/floors/floors_gf180/floors_gf180.json",
-       "out/research/pdk2/floors/floors_ihp2/floors_ihp.json"
+       "out/research/pdk2/floors/2026-10-16_final/floors_gf180.json",
+       "out/research/pdk2/floors/2026-10-16_final/floors_ihp.json",
+       "out/research/pdk2/floors/2026-10-16_final/floors_table.png"
       ],
       "claim": "icml-pdk2-floors"
      },
      {
-      "text": "GF180 and IHP truth sets and banks are not generated yet."
+      "text": "GF180/IHP truth sets and banks: finished `pdk2_truth` (21:38, rc=0), `pdk2_bank_seven` (21:44, rc=0), `pdk2_bank_wide` (21:50, rc=0), `pdk2_ihp_truth` (21:50, rc=0), `pdk2_ihp_bank_seven` (21:57, rc=0); queued or running `pdk2_ihp_bank_wide`.",
+      "queue_match": "^pdk2_",
+      "source": [
+       "out/research/done.txt",
+       "out/research/queue.txt"
+      ]
      }
     ],
     "next": [
@@ -576,30 +591,36 @@
   {
    "id": "icml-swap",
    "tab": "icml",
-   "statement": "Replacing the surrogate with NGSpice in the same search lowers the round-1 43-parameter RRMS from 0.2375 to 0.1125.",
+   "statement": "Replacing the surrogate with NGSpice in the same search lowers the round-1 43-parameter all-device RRMS from 0.2375 (stored; 0.2395 over the 17 valid devices, 0.2920 penalized) to 0.1125.",
    "status": "verified",
    "headline": {
     "value": "0.2375 → 0.1125",
-    "convention": "all-device, raw, 43 parameters, round 1 (combined 0.2281 → 0.1053)"
+    "convention": "all-device, raw, 43 parameters, round 1 (combined 0.2281 → 0.1053); pipeline: 1 failed device, valid-only 0.2395, penalized 0.2920"
    },
    "numbers": [
     {
      "label": "Pipeline 43, round 1 (surrogate search), raw",
-     "value": "0.2375 / 0.2281",
-     "convention": "all-device / combined",
-     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+     "value": "stored 0.2375 (0.2281); valid-only 0.2395 (0.2238) over 17 devices; penalized 0.2920 (0.2894); 1 failed device (`nmos_L0p15_W1p6`)",
+     "convention": "all-device (combined)",
+     "source": "out/research/audit/failed_curves.json"
+    },
+    {
+     "label": "Pipeline 43, round 1, + FD",
+     "value": "stored 0.1824 (0.1730); valid-only 0.1853 (0.1698) over 17 devices; penalized 0.2373 (0.2347); 1 failed device (`nmos_L0p15_W1p6`)",
+     "convention": "all-device (combined)",
+     "source": "out/research/audit/failed_curves.json"
+    },
+    {
+     "label": "NGSpice swap 43, round 1, raw, over the same 17 devices",
+     "value": "0.1176",
+     "convention": "all-device mean without `nmos_L0p15_W1p6`; 0 failed devices",
+     "source": "out/research/swap_search/full_round_1/summary.json"
     },
     {
      "label": "NGSpice swap 43, round 1, raw",
      "value": "0.1125 / 0.1053",
      "convention": "all-device / combined",
      "source": "out/research/swap_search/full_round_1/summary.json"
-    },
-    {
-     "label": "Pipeline 43, round 1, + FD",
-     "value": "0.1824 / 0.1730",
-     "convention": "all-device / combined",
-     "source": "out/research/polished/pipe43_r1_fd/real/summary.json"
     },
     {
      "label": "NGSpice swap 43, round 1, + FD",
@@ -615,7 +636,7 @@
     },
     {
      "label": "Difference from the swap, raw",
-     "value": "0.1250 (43) / 0.0480 (7)",
+     "value": "0.1250 stored, 0.1219 over the 17 valid devices (43) / 0.0480 (7)",
      "convention": "all-device",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     },
@@ -650,6 +671,15 @@
        "Direct NGSpice 43, round 1, cold"
       ],
       "caption": "Round-1 rows: surrogate search, the same search on NGSpice, and direct NGSpice"
+     },
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "table": "Failed-curve audit",
+      "rows": [
+       "pipeline 43, round 1",
+       "NGSpice swap 43, round 1"
+      ],
+      "caption": "Stored, valid-only and penalized values for the round-1 rows (failed-curve audit)"
      }
     ],
     "figures": [
@@ -697,7 +727,7 @@
     ]
    },
    "caveats": [
-    "Open check: the FD run's re-score of the pipeline 43 round-1 start differs from the method's own score on `nmos_L0p15_W1p6`: 0.2035 (own) vs 1.1832 (FD start). The method-output row uses the method's own score.",
+    "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "Not a matched-budget comparison: the swap uses 19,854 NGSpice calls per device in this run against 10,009 for the pipeline (bank and validation). Matched-budget curves come from the DEV comparison.",
     "These runs used the real devices before the DEV/TEST protocol was defined; under the protocol the real devices are TEST data."
    ],
@@ -710,7 +740,8 @@
     "out/cold_loop/full/round_1/extract/summary.json",
     "out/research/polished/swap_full_r1_fd/real/summary.json",
     "out/research/polished/pipe43_r1_fd/real/summary.json",
-    "docs/RESEARCH_LOOP.md"
+    "docs/RESEARCH_LOOP.md",
+    "out/research/audit/failed_curves.json"
    ],
    "updated": "2026-10-16"
   },
@@ -1069,7 +1100,8 @@
     {
      "type": "queue",
      "match": "^hybrid_tr_"
-    }
+    },
+    "DEV results for `hybrid_surrogate` and `hybrid_none` at 500–5000 calls on all 36 targets: see [dev-iter1](#claim-dev-iter1)."
    ],
    "result": {
     "tables": [
@@ -1248,32 +1280,212 @@
    "updated": "2026-10-16"
   },
   {
+   "id": "dev-iter1",
+   "tab": "icml",
+   "statement": "On the 36 simulated DEV targets, the sketched-Jacobian trust region (n1a) reaches pooled all-device RRMS 0.0313 with the surrogate and 0.0370 without it at 500 NGSpice calls per target, and 0.0091 and 0.0021 at 5000.",
+   "status": "in_progress",
+   "headline": {
+    "value": "B500 0.0313 / 0.0370 · B5000 0.0091 / 0.0021",
+    "convention": "pooled all-device mean paper RRMS, 36 DEV targets, sketch_surrogate_k8 / sketch_none_k8"
+   },
+   "numbers": [
+    {
+     "label": "n1a sketch_surrogate_k8",
+     "value": "0.0313 / 0.0221 / 0.0148 / 0.0091",
+     "convention": "B500 / B1000 / B2000 / B5000, pooled all-device mean",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1a sketch_none_k8 (no surrogate)",
+     "value": "0.0370 / 0.0193 / 0.0092 / 0.0021",
+     "convention": "B500 / B1000 / B2000 / B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1a k screen: k = 4 / k = 16 (surrogate)",
+     "value": "0.0090 / 0.0080",
+     "convention": "B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1a full-FD parity controls: surrogate / no model",
+     "value": "0.0101 / 0.0052",
+     "convention": "B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1b anytime_sur_presearch_race",
+     "value": "0.0287 / 0.0173 / 0.0134 / 0.0070",
+     "convention": "B500 / B1000 / B2000 / B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1b anytime_none_race (no surrogate)",
+     "value": "0.0428 / 0.0193 / 0.0112 / 0.0082",
+     "convention": "B500 / B1000 / B2000 / B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1b anytime_sur_presearch_equal",
+     "value": "0.0173 / 0.0083",
+     "convention": "B1000 / B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1c cmaes_trf",
+     "value": "0.0565 / 0.0337 / 0.0239 / 0.0109",
+     "convention": "B500 / B1000 / B2000 / B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "n1c lq_cmaes",
+     "value": "0.1814 / 0.1576 / 0.1386 / 0.0939",
+     "convention": "B500 / B1000 / B2000 / B5000",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "hybrid_surrogate / hybrid_none (hybrid TR, full FD Jacobian)",
+     "value": "0.0463 / 0.0313 / 0.0193 / 0.0114 · 0.0579 / 0.0316 / 0.0169 / 0.0058",
+     "convention": "B500 / B1000 / B2000 / B5000 each",
+     "source": "out/research/dev/compare.json"
+    },
+    {
+     "label": "Paired sketch_surrogate_k8 − sketch_none_k8",
+     "value": "B500 -0.0058 [-0.0126, 0.0003], win rate 0.67 [0.50, 0.81]; B1000 0.0028 [-0.0027, 0.0085], win rate 0.53 [0.36, 0.69]; B5000 0.0069 [0.0024, 0.0133], win rate 0.25 [0.11, 0.39]",
+     "convention": "mean difference [bootstrap 95% CI], win rate of the surrogate arm [95% CI]",
+     "source": "out/research/report/2026-10-16_dev_iteration1/tables.md"
+    },
+    {
+     "label": "Paired hybrid_surrogate − hybrid_none",
+     "value": "B500 -0.0116 [-0.0230, -0.0024], win rate 0.64 [0.47, 0.78]; B1000 -0.0003 [-0.0129, 0.0138], win rate 0.64 [0.47, 0.78]; B5000 0.0056 [0.0018, 0.0112], win rate 0.28 [0.14, 0.44]",
+     "convention": "mean difference [95% CI], win rate [95% CI]",
+     "source": "out/research/report/2026-10-16_dev_iteration1/tables.md"
+    },
+    {
+     "label": "Paired anytime_sur_presearch_race − anytime_none_race",
+     "value": "B500 -0.0141 [-0.0258, -0.0045], win rate 0.78 [0.64, 0.92]; B5000 -0.0012 [-0.0056, 0.0025], win rate 0.47 [0.31, 0.64]",
+     "convention": "mean difference [95% CI], win rate [95% CI]",
+     "source": "out/research/report/2026-10-16_dev_iteration1/tables.md"
+    },
+    {
+     "label": "References: bank oracle / pipeline r1 / pipeline r1 + FD",
+     "value": "0.2046 at 0 mean NGSpice calls · 0.1590 at 9 mean NGSpice calls (2 failed targets; valid-only 0.1554 over 34, penalized 0.2109) · 0.0802 at 376 mean NGSpice calls (2 failed targets; valid-only 0.0775 over 34, penalized 0.1326)",
+     "convention": "pooled all-device mean, 36 targets",
+     "source": "out/research/dev/compare.json"
+    }
+   ],
+   "what": [
+    "Question: at a fixed number of NGSpice calls per target, which fitting arm gives the lowest paper RRMS on simulated targets, and does the surrogate model lower it compared with the same code without a surrogate?",
+    "n1a, sketched Jacobians (`scripts/research/sketch_tr.py`): the trust-region loop of `hybrid_tr` with the 43-call FD Jacobian replaced at most centres by k directional NGSpice probes (Gauss-Newton step, top singular vectors of the transported prior, one Gaussian direction) plus secant and Broyden updates; a full FD Jacobian at the first centre, every 6 iterations and on prior mismatch; subproblem max_nfev 30. Arms: `sketch_surrogate_k8` (surrogate model r_s), `sketch_none_k8` (r_s = 0), the k screen `sketch_surrogate_k4` and `sketch_surrogate_k16` (B5000 only), and the parity controls `sketch_fullfd_surrogate` and `sketch_fullfd_none` (full FD Jacobian at every centre, max_nfev 30, B5000 only).",
+    "n1b, anytime racing (`scripts/research/anytime_tr.py`, `src/cryoml/racing.py`): `anytime_sur_presearch_equal` runs 8 zero-call surrogate TRF presearches from bank starts, validates them with 8 NGSpice calls, and splits the budget equally over the 2 best endpoints and 2 bank starts without restarts; `anytime_sur_presearch_race` uses the presearch starts, allocates calls by predicted reduction per NGSpice call, drops runs by an optimistic bound and restarts from surrogate-proposed points; `anytime_none_race` uses 4 bank starts, Gauss-Newton trust regions, the same racing and drops, and bank-start restarts, with no presearch.",
+    "n1c, CMA-ES call-trace baselines (`scripts/research/cmaes_trace.py`): `cmaes_trf` (CMA-ES with sigma0 0.3 for 60% of the budget, then bounded TRF with diff_step 1e-3 and regularization 1e-4) and `lq_cmaes` (lq-CMA-ES, 9 restarts), on the same oracle, bank start, objective and call accounting as the trust-region arms.",
+    "Earlier arms in the same table: `hybrid_surrogate` and `hybrid_none` (`scripts/research/hybrid_tr.py`, full FD Jacobian at every centre, subproblem max_nfev 100; see [icml-hybrid](#claim-icml-hybrid)).",
+    "DEV protocol: 36 targets, `set_0` and `set_1` × 18 devices. Each target is the NGSpice I–V of one seven-parameter card per device, drawn log-uniformly from the seven-parameter round-4 box and clipped into the round-1 box (seed 777001), simulated on the device's measured bias grid with no noise, so a zero-residual card exists in the fitted box (well-specified). Every arm fits in the full round-1 43-parameter box. Every NGSpice call counts, Jacobian probes included; each budget (500, 1000, 2000, 5000 calls per target) is a separate run; the final card is scored by one fresh NGSpice simulation. `dev_compare.py` checks 18 records per set, calls within budget, fresh RRMS equal to the trace value, `target_override` and the bank-oracle identity of each set; it takes no minimum over arms."
+   ],
+   "did": [
+    "86 queue jobs `dev_*` from 2026-10-16 16:26 to 22:06 (`out/research/done.txt`): the round-1 pipeline and its FD polish on both sets, every registered arm at its budgets on set_0 and set_1, the retries listed below and the `dev_compare` runs.",
+    "`dev_sketch_sur_k4_B5000_s1` and `dev_anytime_sur_race_B5000_s0` ended rc=1 with `numpy.linalg.LinAlgError: SVD did not converge` in SciPy's bounded TRF subproblem, and again in the first retries (`_retry`). Commits c9ff24e (sketch_tr: fall back when the prior-Jacobian SVD does not converge) and 15d1f3e (trust_region and anytime presearch: a LinAlgError or ValueError in the subproblem ends that start) handle the error. Second retries: `dev_sketch_sur_k4_B5000_s1_retry2` rc=0; `dev_anytime_sur_race_B5000_s0_retry2` rc=0.",
+    "`scripts/research/dev_compare.py` (queue job `dev_compare2`, rc=0) wrote `out/research/dev/compare.md`, `compare.json` and `compare_curves.png`; hard checks all pass.",
+    "Report batch `2026-10-16_dev_iteration1`: `scripts/research/report_figs.py --topic dev_iteration1 --date 2026-10-16`; the paired table recomputes differences, win rates and bootstrap CIs from the per-target values in `compare.json`."
+   ],
+   "result": {
+    "text": [
+     "Lowest pooled mean at B500: `anytime_sur_presearch_race` 0.0287; at B5000: `sketch_none_k8` 0.0021.",
+     "`sketch_surrogate_k8` minus `sketch_none_k8`: B500 -0.0058 [-0.0126, 0.0003], win rate 0.67 [0.50, 0.81]; B1000 0.0028 [-0.0027, 0.0085], win rate 0.53 [0.36, 0.69]; B2000 0.0057 [1.4e-05, 0.0127], win rate 0.44 [0.28, 0.61]; B5000 0.0069 [0.0024, 0.0133], win rate 0.25 [0.11, 0.39].",
+     "`hybrid_surrogate` minus `hybrid_none`: B500 -0.0116 [-0.0230, -0.0024], win rate 0.64 [0.47, 0.78]; B1000 -0.0003 [-0.0129, 0.0138], win rate 0.64 [0.47, 0.78]; B2000 0.0025 [-0.0022, 0.0070], win rate 0.56 [0.39, 0.72]; B5000 0.0056 [0.0018, 0.0112], win rate 0.28 [0.14, 0.44].",
+     "`sketch_none_k8` minus `hybrid_none`: B500 -0.0209 [-0.0330, -0.0112], win rate 0.97 [0.92, 1.00]; B5000 -0.0037 [-0.0058, -0.0020], win rate 1.00 [1.00, 1.00]."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "file": "01_compare_curves.png"
+     },
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "file": "05_dev_families.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "table": "DEV comparison"
+     },
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "table": "DEV paired"
+     }
+    ]
+   },
+   "caveats": [
+    "DEV targets are zero-residual (well-specified), which favours Gauss-Newton end-games without the surrogate. The real and tier-(c) problems are misspecified; a misspecified DEV set (GF180/IHP tier c) is planned.",
+    "The pooled mean weights every target's RRMS equally, so targets with large RRMS move it most; `compare.md` lists the median, geometric mean, worst target and per-set values for every arm and budget.",
+    "The bootstrap resamples the 36 targets; each device geometry appears once in each of the two sets.",
+    "These are DEV results only; no TEST run (the 18 measured devices, `set_2`) of these arms is reported.",
+    "01_compare_curves.png draws the first 8 arms only; 05_dev_families.png shows the surrogate and NGSpice-only arms of each family with CMA-ES + TRF."
+   ],
+   "sources": [
+    "scripts/research/sketch_tr.py",
+    "src/cryoml/sketch_tr.py",
+    "scripts/research/anytime_tr.py",
+    "src/cryoml/racing.py",
+    "scripts/research/cmaes_trace.py",
+    "scripts/research/hybrid_tr.py",
+    "scripts/research/dev_compare.py",
+    "scripts/research/make_sim_targets.py",
+    "out/research/dev/arms.json",
+    "out/research/dev/compare.json",
+    "out/research/dev/compare.md",
+    "out/research/sim_targets/truth.json",
+    "out/research/report/2026-10-16_dev_iteration1/README.md",
+    "out/research/done.txt"
+   ],
+   "updated": "2026-10-16"
+  },
+  {
    "id": "icml-pdk2-floors",
    "tab": "icml",
    "statement": "The GF180MCU and IHP SG13G2 truth tiers a/b/c leave seven-parameter refit floors of 0 / 0.0136 / 0.0743 (GF180) and 0 / 0.0146 / 0.1227 (IHP).",
    "status": "verified",
    "headline": {
     "value": "GF180 0 / 0.0136 / 0.0743 · IHP 0 / 0.0146 / 0.1227",
-    "convention": "mean paper RRMS over 3 devices per PDK, seven-parameter set, tiers a / b / c"
+    "convention": "mean paper RRMS over 3 devices per PDK, seven-parameter set, tiers a / b / c, one truth draw (final run)"
    },
    "numbers": [
     {
      "label": "GF180, seven: tier a / b / c floor",
      "value": "0 / 0.0136 / 0.0743",
-     "convention": "mean of 3 devices, 1 set",
-     "source": "out/research/pdk2/floors/floors_gf180/floors_gf180.json"
+     "convention": "mean of 3 devices, 1 truth set",
+     "source": "out/research/pdk2/floors/2026-10-16_final/floors_gf180.json"
     },
     {
-     "label": "IHP, seven: tier a floor",
-     "value": "0",
-     "convention": "mean of 3 devices, 1 set",
+     "label": "GF180, wide (21): tier b / c floor",
+     "value": "0.0125 / 0.0630",
+     "convention": "mean of 3 devices",
+     "source": "out/research/pdk2/floors/2026-10-16_final/floors_gf180.json"
+    },
+    {
+     "label": "IHP, seven: tier a / b / c floor",
+     "value": "0 / 0.0146 / 0.1227",
+     "convention": "mean of 3 devices, 1 truth set",
+     "source": "out/research/pdk2/floors/2026-10-16_final/floors_ihp.json"
+    },
+    {
+     "label": "IHP, wide (12): tier b / c floor",
+     "value": "0.0135 / 0.1118",
+     "convention": "mean of 3 devices",
+     "source": "out/research/pdk2/floors/2026-10-16_final/floors_ihp.json"
+    },
+    {
+     "label": "IHP, seven, earlier draw (run 1): tier b / c floor",
+     "value": "0.0365 / 0.0914",
+     "convention": "mean of 3 devices, different truth draw",
      "source": "out/research/pdk2/floors/floors_ihp/floors_ihp.json"
     },
     {
-     "label": "IHP, seven: tier b / c floor",
-     "value": "0.0146 / 0.1227",
-     "convention": "mean of 3 devices, 1 set",
-     "source": "out/research/pdk2/floors/floors_ihp2/floors_ihp.json"
+     "label": "Table image",
+     "value": "floors_table.png",
+     "convention": "final run, both PDKs",
+     "source": "out/research/pdk2/floors/2026-10-16_final/floors_table.png"
     }
    ],
    "what": [
@@ -1281,13 +1493,16 @@
     "For each (tier, device, fitted set): start = paper RRMS of the truth card's projection onto the fitted parameters; floor = after `ngspice_fit.polish` from that start; noise = the truth's own noise-free curves scored against its observed curves. Tiers are defined on the [Benchmark tab](#bench-tiers). Metric: paper RRMS with a 1e-10 A trim floor and target-frozen inclusion."
    ],
    "did": [
-    "`scripts/research/pdk2/floors.py --pdk gf180 --devices gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5` (nfev 300, irls 3; one fresh truth set), 2026-10-16 14:44.",
-    "`scripts/research/pdk2/floors.py --pdk ihp` on `ihp_nmos_L0p13_W0p2`, `ihp_nmos_L2_W2`, `ihp_pmos_L0p5_W2`: first run 14:48 (tiers a, b, c), second run 14:52 (tiers b, c)."
+    "Final run `out/research/pdk2/floors/2026-10-16_final/` (commit 60aa8e1): `scripts/research/pdk2/floors.py --pdk gf180 --devices gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5` (21:31–21:33, 111 s) and `--pdk ihp --devices ihp_nmos_L0p13_W0p2,ihp_nmos_L2_W2,ihp_pmos_L0p5_W2` (21:33–21:36, 149 s); nfev 300, irls 3, one truth set per tier from `make_truth.py` / `ihp_make_truth.py` with default settings; the JSON files record the full truth-generator argv, options and seed offsets.",
+    "Earlier runs: `floors_gf180/`, `floors_ihp/` (IHP run 1, tiers a, b, c) and `floors_ihp2/` (IHP run 2, tiers b, c) under `out/research/pdk2/floors/`, 2026-10-16 14:44–14:52."
    ],
    "result": {
+    "text": [
+     "Table image of the final run: `out/research/pdk2/floors/2026-10-16_final/floors_table.png`."
+    ],
     "tables": [
      {
-      "caption": "Refit floors, mean over 3 devices (paper RRMS)",
+      "caption": "Refit floors, mean over 3 devices (paper RRMS), final run unless marked",
       "columns": [
        "PDK",
        "tier",
@@ -1317,7 +1532,7 @@
         "GF180",
         "b",
         "seven (7)",
-        "0.0275",
+        "0.0274",
         "0.0136",
         "0.0119"
        ],
@@ -1325,7 +1540,7 @@
         "GF180",
         "b",
         "wide (21)",
-        "0.0275",
+        "0.0274",
         "0.0125",
         "0.0119"
        ],
@@ -1346,7 +1561,7 @@
         "0.0209"
        ],
        [
-        "IHP (run 1)",
+        "IHP",
         "a",
         "seven (7)",
         "0",
@@ -1354,7 +1569,7 @@
         "0"
        ],
        [
-        "IHP (run 2)",
+        "IHP",
         "b",
         "seven (7)",
         "0.0296",
@@ -1362,7 +1577,7 @@
         "0.0124"
        ],
        [
-        "IHP (run 2)",
+        "IHP",
         "b",
         "wide (12)",
         "0.0296",
@@ -1370,7 +1585,7 @@
         "0.0124"
        ],
        [
-        "IHP (run 2)",
+        "IHP",
         "c",
         "seven (7)",
         "0.5576",
@@ -1378,7 +1593,7 @@
         "0.0235"
        ],
        [
-        "IHP (run 2)",
+        "IHP",
         "c",
         "wide (12)",
         "0.5576",
@@ -1386,7 +1601,7 @@
         "0.0235"
        ],
        [
-        "IHP (run 1)",
+        "IHP (earlier draw, run 1)",
         "b",
         "seven (7)",
         "0.1214",
@@ -1394,7 +1609,7 @@
         "0.0124"
        ],
        [
-        "IHP (run 1)",
+        "IHP (earlier draw, run 1)",
         "c",
         "seven (7)",
         "0.2230",
@@ -1403,24 +1618,28 @@
        ]
       ],
       "source": [
-       "out/research/pdk2/floors/floors_gf180/floors_gf180.json",
-       "out/research/pdk2/floors/floors_ihp/floors_ihp.json",
-       "out/research/pdk2/floors/floors_ihp2/floors_ihp.json"
+       "out/research/pdk2/floors/2026-10-16_final/floors_gf180.json",
+       "out/research/pdk2/floors/2026-10-16_final/floors_ihp.json",
+       "out/research/pdk2/floors/floors_ihp/floors_ihp.json"
       ]
      }
     ]
    },
    "caveats": [
-    "3 of 16 devices per PDK and one truth set each; the full truth sets are queued (`pdk2_truth`, `pdk2_ihp_truth`).",
-    "IHP run 1 and run 2 give different tier b and c floors (b seven 0.0365 vs 0.0146; c seven 0.0914 vs 0.1227). The headline uses run 2 for tiers b and c and run 1 for tier a. Which truth-generator settings each run used is not recorded in the result files (`truth_args` is empty in both).",
-    "The result files are in out/research/pdk2/floors/ (copied from the session scratchpad on 2026-10-16)."
+    "3-device means vary by about 0.03 between truth draws: IHP seven-parameter floors are 0.0365 (tier b) and 0.0914 (tier c) in the earlier draw (run 1) and 0.0146 and 0.1227 in the final run.",
+    "3 of 16 devices per PDK and one truth set per tier.",
+    "The earlier IHP runs did not record their truth-generator settings (`truth_args` empty); the final run records them in `settings.truth_generator`."
    ],
    "sources": [
     "scripts/research/pdk2/floors.py",
     "scripts/research/pdk2/make_truth.py",
     "scripts/research/pdk2/ihp_make_truth.py",
     "src/cryoml/pdk2/",
-    "out/research/pdk2/floors/"
+    "out/research/pdk2/floors/2026-10-16_final/",
+    "out/research/pdk2/floors/2026-10-16_final/floors_table.png",
+    "out/research/pdk2/floors/2026-10-16_final/floors_gf180.json",
+    "out/research/pdk2/floors/2026-10-16_final/floors_ihp.json",
+    "out/research/pdk2/floors/floors_ihp/floors_ihp.json"
    ],
    "updated": "2026-10-16"
   },
@@ -1579,9 +1798,9 @@
     },
     {
      "label": "Pipeline 43, round 4: raw / + FD",
-     "value": "0.1513 / 0.1465",
-     "convention": "all-device",
-     "source": "out/research/polished/pipe43_r4_fd/real/summary.json"
+     "value": "stored 0.1513 / 0.1465; valid-only 0.1586 / 0.1539 (17 devices); penalized 0.6500 / 0.6455",
+     "convention": "all-device; 1 failed device (`nmos_L8_W1p6`)",
+     "source": "out/research/audit/failed_curves.json"
     },
     {
      "label": "Paper card, 43 parameters",
@@ -1620,6 +1839,16 @@
      {
       "batch": "2026-10-16_baseline_results",
       "table": "Measured 77 K data"
+     },
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "table": "Failed-curve audit",
+      "rows": [
+       "pipeline 43, round 4",
+       "NGSpice swap 43, round 1",
+       "direct NGSpice 43, round 3"
+      ],
+      "caption": "Stored, valid-only and penalized values, 43 parameters (failed-curve audit)"
      }
     ],
     "blocks": [
@@ -1655,7 +1884,7 @@
     ]
    },
    "caveats": [
-    "Open check: the FD run's re-score of the pipeline 43 round-4 start differs from the method's own score on `nmos_L8_W1p6`: 0.0263 (own) vs 9.0026 (FD start). The method-output row uses the method's own score.",
+    "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "About 6 of 43 parameters per device sit at the box edge in the direct fits (mostly secondary parameters held to ×3: dwg, k3b, pdiblc2, xj, prwg, k2). A physicality check is pending before any card is presented.",
     "Direct NGSpice 43-parameter fits used about 21.9k NGSpice calls per device per round (TRF Jacobian evaluations included), not 3.3k as first logged.",
     "These runs used the real devices, which are TEST data under the ICML protocol defined later the same day."
@@ -1670,7 +1899,8 @@
     "out/research/polished/swap_full_r1_fd/real/summary.json",
     "out/research/reference_scores.json",
     "out/research/report/2026-10-16_baseline_results/README.md",
-    "docs/RESEARCH_LOOP.md"
+    "docs/RESEARCH_LOOP.md",
+    "out/research/audit/failed_curves.json"
    ],
    "updated": "2026-10-16"
   },
@@ -1799,11 +2029,11 @@
   {
    "id": "cryo-rounds",
    "tab": "cryo77k",
-   "statement": "Each cold-pipeline round lowers the 43-parameter all-device RRMS: 0.2375, 0.1965, 0.1716, 0.1513 over rounds 1–4.",
+   "statement": "Each cold-pipeline round lowers the 43-parameter all-device RRMS over valid devices: 0.2395 (17 devices), 0.1965, 0.1716, 0.1586 (17 devices) over rounds 1–4; stored values 0.2375, 0.1965, 0.1716, 0.1513.",
    "status": "verified",
    "headline": {
-    "value": "0.2375 → 0.1513",
-    "convention": "all-device, raw, pipeline 43, rounds 1–4 (combined 0.2281 → 0.1427)"
+    "value": "0.2395 → 0.1586",
+    "convention": "all-device over valid devices, raw, pipeline 43, rounds 1–4 (stored 0.2375 → 0.1513; rounds 1 and 4 have 1 failed device each)"
    },
    "numbers": [
     {
@@ -1813,10 +2043,34 @@
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     },
     {
-     "label": "Pipeline 43, rounds 1–4",
+     "label": "Pipeline 43, rounds 1–4, stored",
      "value": "0.2375, 0.1965, 0.1716, 0.1513",
      "convention": "all-device, raw",
-     "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+     "source": "out/cold_loop/full/round_{1..4}/extract/summary.json"
+    },
+    {
+     "label": "Pipeline 43, rounds 1–4, valid-only",
+     "value": "0.2395, 0.1965, 0.1716, 0.1586",
+     "convention": "all-device over 17 / 18 / 18 / 17 devices",
+     "source": "out/research/audit/failed_curves.json"
+    },
+    {
+     "label": "Pipeline 43, rounds 1–4, penalized",
+     "value": "0.2920, 0.1965, 0.1716, 0.6500",
+     "convention": "all-device, failed included curves at RRMS 10",
+     "source": "out/research/audit/failed_curves.json"
+    },
+    {
+     "label": "Pipeline 43, failed devices, rounds 1 and 4",
+     "value": "`nmos_L0p15_W1p6` (1 of 10 included curves), `nmos_L8_W1p6` (9 of 10)",
+     "convention": "rounds 2 and 3: 0 failed devices",
+     "source": "out/research/audit/failed_curves.json"
+    },
+    {
+     "label": "A tandem 43, rounds 2 / 3 / 4: stored · valid-only · penalized",
+     "value": "5.8288 / 2.2458 / 1.6969 · 6.0969 / 2.2458 / 1.7538 · 5.9743 / 2.6766 / 1.8114",
+     "convention": "all-device; 1 failed device in each round",
+     "source": "out/research/audit/failed_curves.json"
     },
     {
      "label": "Direct NGSpice 43, rounds 1–3",
@@ -1908,12 +2162,25 @@
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
+     },
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "table": "Failed-curve audit",
+      "rows": [
+       "pipeline 43, round 1, raw",
+       "pipeline 43, round 4, raw",
+       "pipeline 7, round 4, raw",
+       "A tandem"
+      ],
+      "caption": "Stored, valid-only and penalized values (failed-curve audit)"
      }
     ]
    },
    "caveats": [
     "At seven parameters, by round 4 the kept candidate is usually a raw NGSpice bank sample (FD endpoint on 3 of 18 devices), so the iterated loop acts mostly as an NGSpice cross-entropy search. The paper's own runs also kept bank samples on 11 of 18 devices.",
-    "The tandem model A is unstable at 43 parameters (5.83, nan, 1.70 in rounds 2–4)."
+    "Penalized convention, pipeline 43 rounds 1–4: 0.2920, 0.1965, 0.1716, 0.6500. Round 4 is above rounds 2 and 3 in this convention because `nmos_L8_W1p6` has 9 of 10 included curves failed.",
+    "The tandem model A at 43 parameters, rounds 2–4, all-device stored 5.8288, 2.2458, 1.6969; each round has 1 failed device (round 3, `nmos_L0p25_W1p6`: 10 of 10 included curves failed, logged as nan).",
+    "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device."
    ],
    "sources": [
     "scripts/research/cold_loop.py",
@@ -1922,7 +2189,8 @@
     "out/cold_loop/full/",
     "out/cold_loop/seven/",
     "out/research/ngspice_direct/",
-    "docs/RESEARCH_LOOP.md"
+    "docs/RESEARCH_LOOP.md",
+    "out/research/audit/failed_curves.json"
    ],
    "updated": "2026-10-16"
   },
@@ -1957,7 +2225,7 @@
     {
      "label": "Pipeline 7 r4 / pipeline 43 r1 / pipeline 43 r4",
      "value": "0.1697 → 0.1643 / 0.2375 → 0.1824 / 0.1513 → 0.1465",
-     "convention": "all-device",
+     "convention": "all-device, stored",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     },
     {
@@ -1965,6 +2233,12 @@
      "value": "0.1676 → 0.1670 / 0.1201 → 0.1191 / 0.1049 → 0.1044 / 0.1125 → 0.1106",
      "convention": "all-device",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
+    },
+    {
+     "label": "Pipeline 43 r1 / r4, raw → + FD, valid-only and penalized",
+     "value": "valid-only 0.2395 → 0.1853 / 0.1586 → 0.1539; penalized 0.2920 → 0.2373 / 0.6500 → 0.6455",
+     "convention": "all-device; 1 failed device in each (17 valid devices)",
+     "source": "out/research/audit/failed_curves.json"
     }
    ],
    "what": [
@@ -1996,6 +2270,19 @@
        "NGSpice calls/device (this run)"
       ],
       "caption": "Raw and + FD rows on the measured devices"
+     },
+     {
+      "batch": "2026-10-16_dev_iteration1",
+      "table": "Failed-curve audit",
+      "rows": [
+       "pipeline 43, round 1",
+       "pipeline 43, round 4",
+       "pipeline 43 r4 + FD",
+       "pipeline 7",
+       "NGSpice swap",
+       "direct NGSpice"
+      ],
+      "caption": "Stored, valid-only and penalized values before and after FD (failed-curve audit)"
      }
     ],
     "figures": [
@@ -2006,9 +2293,9 @@
     ]
    },
    "caveats": [
-    "Open check: the FD run's re-score of its start differs from the method's own score on two devices: pipeline 43 round 1 `nmos_L0p15_W1p6` 0.2035 vs 1.1832, and pipeline 43 round 4 `nmos_L8_W1p6` 0.0263 vs 9.0026 (own vs FD start). The method-output rows use the method's own scores.",
+    "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "FD is local: devices whose start lies in another basin stay there, so the inverse models' means stay above the search pipelines after FD.",
-    "Simulated column, pipeline 43 r4 + FD: set 1 mean 0.113; sets 0 and 2 have means 4.9 and 5.0 from one device (`nmos_L1_W3`, RRMS ~87); median about 0.09–0.10."
+    "Simulated column, pipeline 43 r4 + FD: set 1 mean 0.113; sets 0 and 2 have means 4.9 and 5.0 from one device (`nmos_L1_W3`, RRMS ~87); median about 0.09–0.10. Sets 0 and 2 also have 1 failed device each (`pmos_L0p5_W0p42`, 1 of 9 included curves): set 0 stored 4.9243, valid-only 5.2116, penalized 4.9858; set 2 stored 5.0292, valid-only 5.3225, penalized 5.0907."
    ],
    "sources": [
     "scripts/research/polish_cards.py",
@@ -2016,7 +2303,8 @@
     "scripts/real_fd_polish.py",
     "out/research/polished/",
     "out/research/report/2026-10-16_baseline_results/README.md",
-    "docs/RESEARCH_LOOP.md"
+    "docs/RESEARCH_LOOP.md",
+    "out/research/audit/failed_curves.json"
    ],
    "updated": "2026-10-16"
   },
