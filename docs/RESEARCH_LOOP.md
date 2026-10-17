@@ -430,3 +430,16 @@ All 18 devices are valid. Round 1: 0.2382 all-device (combined 0.2289); stored w
 and nmos_L0p15_W1p6 changes 0.2035 → 0.2159. Round 4: 0.1522 (combined 0.1437); stored was
 0.1513, and nmos_L8_W1p6 changes 0.0263 → 0.0431. The round-4 box still reflects the
 round-3 pick made before the fix. TODO: update site claims icml-swap, cryo-rounds, cryo-43, cryo-fd.
+
+## Research loop iteration 2 (2026-10-17)
+
+Nodes (all adversarially verified after fixes; 288 DEV jobs queued, about 17 h):
+- n2a: SkyWater tier-c misspecified DEV targets (sky130c sets 0 and 1) with
+  calibrated mismatch strength, refit floors, and a DEV registry so every arm
+  runs on tier a and tier c.
+- n2b: per-curve remainder-weighted corrected model. lambda_j is estimated by least
+  squares from the NGSpice second-order remainder at trial points already
+  simulated (no extra calls). It keeps first-order consistency, and lambda=0 and
+  lambda=1 reproduce the iteration-1 NGSpice-only and surrogate arms.
+- n2c: DFO-LS-style interpolation Gauss-Newton trust-region baseline
+  (validated on the Moré-Garbow-Hillstrom set) and paired statistics.
