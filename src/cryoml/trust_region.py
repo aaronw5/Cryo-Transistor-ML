@@ -151,11 +151,18 @@ class TrustRegionRun:
         lo = np.maximum(-1.0, self.z_c - self.delta)
         hi = np.minimum(1.0, self.z_c + self.delta)
         t0 = time.time()
-        solution = least_squares(
-            self.model.residual, self.z_c, jac=self.model.jacobian,
-            bounds=(lo, hi), method="trf", x_scale=1.0,
-            ftol=self.settings.sub_tol, xtol=self.settings.sub_tol,
-            gtol=self.settings.sub_tol, max_nfev=self.settings.sub_max_nfev)
+        try:
+            solution = least_squares(
+                self.model.residual, self.z_c, jac=self.model.jacobian,
+                bounds=(lo, hi), method="trf", x_scale=1.0,
+                ftol=self.settings.sub_tol, xtol=self.settings.sub_tol,
+                gtol=self.settings.sub_tol, max_nfev=self.settings.sub_max_nfev)
+        except (np.linalg.LinAlgError, ValueError):
+            # Non-finite model Jacobian or LAPACK non-convergence: report no
+            # predicted reduction, so the loop treats the centre as stationary.
+            self.seconds["subproblem"] += time.time() - t0
+            self.subproblem_failures = getattr(self, "subproblem_failures", 0) + 1
+            return self.z_c.copy(), 0.0
         z_new = np.clip(solution.x, lo, hi)
         predicted = self.model.cost(self.z_c) - self.model.cost(z_new)
         self.seconds["subproblem"] += time.time() - t0

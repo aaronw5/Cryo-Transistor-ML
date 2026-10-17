@@ -45,6 +45,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
+from cryoml import strict_score as ss  # noqa: E402  (result reader only)
 
 STATUS_LABEL = {
     "verified": "verified",
@@ -347,6 +349,47 @@ class Site:
         source = [f"out/research/report/{blk['batch']}/tables.md"]
         return self._table_html(cols, rows, align, caption, notes, source)
 
+    @staticmethod
+    def _cell_record(col: dict, obj, device: str):
+        """The per-device result record behind an RRMS cell, for the strict
+        failed-curve check; None when the column is not an NGSpice paper RRMS
+        or its record cannot be found.  Lookup order: an explicit
+        ``record: {dir, method}`` on the column; the value's parent object
+        when it carries per_curve / polish history; ``ml_<device>.json`` next
+        to the file (swap search); the pipeline records named by a swap
+        summary (``pipeline_rrms``) or by a surrogate-gap file name."""
+        keys = col["path"].replace("{device}", device).split(".")
+        if "rrms" not in keys[-1] or keys[-1].startswith("surrogate"):
+            return None
+
+        def from_dir(directory, method=None):
+            f = ROOT / directory / f"ml_{device}.json"
+            if not f.is_file():
+                return None
+            methods = json.loads(f.read_text()).get("methods", {})
+            if method is None:
+                method = (next(iter(methods)) if len(methods) == 1
+                          else "surrogate_fd")
+            return methods.get(method)
+
+        if col.get("record"):
+            return from_dir(col["record"]["dir"], col["record"].get("method"))
+        parent = obj
+        for key in keys[:-1]:
+            parent = parent.get(key) if isinstance(parent, dict) else None
+        if isinstance(parent, dict) and any(
+                k in parent for k in ("per_curve", "history", "failed_curves")):
+            return parent
+        if keys[-1] == "pipeline_rrms" and isinstance(obj.get("pipeline"), dict):
+            return from_dir(obj["pipeline"].get("dir", ""), "surrogate_fd")
+        m = re.match(r"surrogate_gap_(\w+?)_round_(\d+)\.json$", Path(col["file"]).name)
+        if m and len(keys) >= 2 and keys[-2] == "pipeline":
+            return from_dir(f"out/cold_loop/{m.group(1)}/round_{m.group(2)}/extract",
+                            "surrogate_fd")
+        if len(keys) == 3 and keys[0] == "devices":
+            return from_dir(str(Path(col["file"]).parent))
+        return None
+
     def per_device(self, blk: dict) -> str:
         devices = blk.get("devices") or self.devices
         cols = ["device"] + [c["label"] for c in blk["columns"]]
@@ -359,25 +402,67 @@ class Site:
             data.append(json.loads(p.read_text()))
             if c["file"] not in sources:
                 sources.append(c["file"])
-        rows = []
+        rows, values, status = [], [], []
         for d in devices:
-            row = [f"`{d}`"]
+            row, vals, sts = [f"`{d}`"], [], []
             for c, obj in zip(blk["columns"], data):
                 v = obj
                 for key in c["path"].replace("{device}", d).split("."):
                     v = v.get(key) if isinstance(v, dict) else None
                     if v is None:
                         break
-                row.append("–" if not isinstance(v, (int, float)) else c.get("format", fmt).format(v))
+                ok = isinstance(v, (int, float)) and not isinstance(v, bool)
+                rec = self._cell_record(c, obj, d) if ok else None
+                st = None
+                if rec is not None:
+                    try:
+                        st = ss.record_status(rec, d)
+                    except KeyError:      # not a frozen-baseline device
+                        st = None
+                failed = st is not None and st["status"] == ss.FAILED
+                row.append("–" if not ok else c.get("format", fmt).format(v)
+                           + (" †" if failed else ""))
+                vals.append(float(v) if ok else None)
+                sts.append(st)
             rows.append(row)
+            values.append(vals)
+            status.append(sts)
+        notes = list(blk.get("notes") or [])
         if blk.get("mean_row", True):
-            mean = ["mean (all-device)"]
-            for j, c in enumerate(blk["columns"], start=1):
-                vals = [float(r[j].replace(",", "")) for r in rows if r[j] != "–"]
-                ok = vals and len(vals) == len(rows)
-                mean.append(c.get("format", fmt).format(sum(vals) / len(vals)) if ok else "–")
+            mean, penal, any_failed = ["mean (all-device)"], ["mean, penalized"], False
+            for j, c in enumerate(blk["columns"]):
+                col_vals = [v[j] for v in values]
+                f = c.get("format", fmt)
+                if any(v is None for v in col_vals):
+                    mean.append("–")
+                    penal.append("–")
+                    continue
+                bad = [i for i, st in enumerate(status)
+                       if st[j] is not None and st[j]["status"] == ss.FAILED]
+                if not bad:
+                    mean.append(f.format(sum(col_vals) / len(col_vals)))
+                    penal.append(mean[-1] if "rrms" in c["path"].rsplit(".", 1)[-1]
+                                 else "")
+                    continue
+                # Never average over missing curves: valid devices only, and
+                # the penalized convention on its own row.
+                any_failed = True
+                good = [v for i, v in enumerate(col_vals) if i not in bad]
+                mean.append((f.format(sum(good) / len(good)) if good else "–")
+                            + f" ‡ ({len(bad)} failed)")
+                pen = [status[i][j]["penalized_rrms"] if i in bad else v
+                       for i, v in enumerate(col_vals)]
+                penal.append(f.format(sum(pen) / len(pen)))
             rows.append(mean)
-        return self._table_html(cols, rows, None, blk.get("caption"), blk.get("notes"),
+            if any_failed:
+                rows.append(penal)
+                notes.append(
+                    "† an included metric curve of this device failed to simulate: the value "
+                    "averages only the surviving curves and is not a valid paper RRMS. "
+                    "‡ mean over the valid devices only. Penalized row: every device, each "
+                    f"failed curve at RRMS {ss.PENALTY:g} (penalized convention, not the paper "
+                    "metric; `cryoml.strict_score`).")
+        return self._table_html(cols, rows, None, blk.get("caption"), notes or None,
                                 sources, compact=True)
 
     # ---- other blocks

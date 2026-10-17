@@ -30,6 +30,15 @@ reference arm: wins/ties/losses (tie when |diff| < max(1e-6, 1% of the
 larger value)), Wilcoxon signed-rank p, bootstrap 95% CI of the mean
 difference (10k resamples over targets, seed 0).
 
+Strict curve check (reported, never a selection): a target whose record has
+a non-finite included (frozen-inclusion) metric curve has no valid paper
+RRMS (``metrics.device_rrms_new`` averages the surviving curves; upstream
+``rrmsCalc.py`` gives NaN).  Every arm/budget and reference reports the
+number of failed targets, the pooled mean over valid targets only and the
+penalized pooled mean (failed curves at RRMS 10, ``cryoml.strict_score``);
+the primary values are left as stored.  Trace-mode budgets below the top
+have no record of their card, so their status is not checked.
+
 Hard checks (each printed; any failure exits 1 unless ``--allow-partial``):
 18 records per set; every ``n_ngspice_calls`` within its budget; the fresh
 ``rrms`` equals ``best_at(trace, budget)``; every run's ``summary.json`` says
@@ -57,6 +66,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "scripts" / "research"))
 
 from hybrid_tr import BUDGET_MARKS, best_at  # noqa: E402
+from cryoml import strict_score as ss  # noqa: E402
 
 DEV = ROOT / "out" / "research" / "dev"
 N_DEVICES = 18
@@ -145,12 +155,47 @@ def per_set(values: dict, sets: list[str]) -> dict:
     return out
 
 
+def target_status(record: dict, tag: str) -> dict | None:
+    """Strict status of one DEV target record (None: device not in the
+    frozen baseline, e.g. a test fixture)."""
+    try:
+        include = ss.include_tags(tag)
+    except KeyError:
+        return None
+    return ss.record_status(record, tag, include)
+
+
+def strict_summary(values: dict, status: dict, sets: list[str]) -> dict:
+    """Failed-target count, valid-only and penalized pooled means.  Targets
+    without a status (unchecked) are counted, never dropped silently."""
+    known = {k: st for k, st in status.items() if st is not None and k in values}
+    agg = ss.aggregate(known, {k: values[k] for k in known})
+    unchecked = sorted(set(values) - set(known))
+    return {"n_targets": len(values), "n_checked": len(known),
+            "n_unchecked": len(unchecked),
+            "n_failed": agg["n_failed_devices"],
+            "failed_targets": {k: agg["n_failed_curves"][k]
+                               for k in agg["failed_devices"]},
+            "per_set_failed": {name: sum(1 for k in agg["failed_devices"]
+                                         if k.startswith(name + "/"))
+                               for name in sets},
+            "valid_mean": agg["valid"]["all_device_mean_rrms"],
+            "n_valid": agg["n_valid_devices"],
+            "penalized_mean": (agg["penalized"]["all_device_mean_rrms"]
+                               if not unchecked else math.nan)}
+
+
 # --------------------------------------------------------------------- checks
 
 class Checks:
     def __init__(self, allow_partial: bool):
         self.allow_partial = allow_partial
         self.rows: list[dict] = []
+
+    def warn(self, name: str, detail: str = "") -> None:
+        """A reported finding that does not fail the run."""
+        self.rows.append({"check": name, "level": "WARN", "detail": detail})
+        print(f"[WARN] {name}{': ' + detail if detail else ''}", flush=True)
 
     def __call__(self, name: str, ok: bool, detail: str = "",
                  partial_ok: bool = False) -> bool:
@@ -300,6 +345,7 @@ def evaluate_arm(arm: dict, sets: list[str], checks: Checks,
         b for b in BUDGET_MARKS if b <= top]
     values = {b: {} for b in marks}
     calls = {b: {} for b in marks}
+    status = {b: {} for b in marks}
     traces, dirs = {}, []
     for set_name in sets:
         runs = {}
@@ -318,16 +364,21 @@ def evaluate_arm(arm: dict, sets: list[str], checks: Checks,
                 for tag, record in runs.get(b, {}).items():
                     values[b][f"{set_name}/{tag}"] = float(record["rrms"])
                     calls[b][f"{set_name}/{tag}"] = record["n_ngspice_calls"]
+                    status[b][f"{set_name}/{tag}"] = target_status(record, tag)
             else:
                 for tag, record in runs.get(top, {}).items():
                     values[b][f"{set_name}/{tag}"] = best_at(record["trace"], b)
                     calls[b][f"{set_name}/{tag}"] = min(
                         b, record["n_ngspice_calls"])
+                    # Only the top budget's card is on record.
+                    status[b][f"{set_name}/{tag}"] = (
+                        target_status(record, tag) if b == top else None)
     values = {b: v for b, v in values.items() if v}
     if not values:
         return None
     return {"label": arm["label"], "mode": arm["mode"], "budgets": values,
-            "calls": calls, "traces": traces, "dirs": dirs, "top": top}
+            "calls": calls, "status": status, "traces": traces, "dirs": dirs,
+            "top": top}
 
 
 def load_references(registry: dict, sets: list[str], checks: Checks,
@@ -336,7 +387,7 @@ def load_references(registry: dict, sets: list[str], checks: Checks,
     for ref in registry["arms"]:
         if ref.get("mode") != "reference":
             continue
-        kind, values, calls = ref["kind"], {}, {}
+        kind, values, calls, status = ref["kind"], {}, {}, {}
         for set_name in sets:
             if kind == "bank_oracle":
                 tags = sorted({k.split("/", 1)[1] for arm in arms.values()
@@ -347,6 +398,7 @@ def load_references(registry: dict, sets: list[str], checks: Checks,
                     else:
                         values[f"{set_name}/{tag}"] = oracle.seen[(set_name, tag)]
                     calls[f"{set_name}/{tag}"] = 0
+                    status[f"{set_name}/{tag}"] = None   # bank currents, no card record
             elif kind == "pipeline":
                 directory = ROOT / ref["dir_template"].format(set=set_name)
                 records = load_run(directory, ref["method_key"], None, set_name,
@@ -355,6 +407,7 @@ def load_references(registry: dict, sets: list[str], checks: Checks,
                 for tag, record in (records or {}).items():
                     values[f"{set_name}/{tag}"] = float(record["rrms"])
                     calls[f"{set_name}/{tag}"] = int(record[ref["calls_key"]])
+                    status[f"{set_name}/{tag}"] = target_status(record, tag)
             elif kind == "polished":
                 path = ROOT / ref["summary_template"].format(set=set_name)
                 if not path.exists():
@@ -376,11 +429,14 @@ def load_references(registry: dict, sets: list[str], checks: Checks,
                     key = f"{set_name}/{tag}"
                     values[key] = float(row["rrms"])
                     calls[key] = base_calls.get(key, 0) + int(row["n_sim"])
+                    # polish summaries: failed_curves, else history[-1] vs rrms
+                    status[key] = target_status(row, tag)
         if values:
             out[ref["label"]] = {"label": ref["label"], "kind": kind,
                                  "note": ref.get("note", ""), "values": values,
                                  "calls": calls, **pooled(values),
                                  "per_set": per_set(values, sets),
+                                 "strict": strict_summary(values, status, sets),
                                  "mean_calls": float(np.mean(list(calls.values())))}
     return out
 
@@ -392,6 +448,7 @@ def summarize_arm(arm: dict, sets: list[str], grid: np.ndarray) -> dict:
     for b, values in arm["budgets"].items():
         out["budgets"][str(b)] = {
             **pooled(values), "per_set": per_set(values, sets),
+            "strict": strict_summary(values, arm.get("status", {}).get(b, {}), sets),
             "mean_calls": float(np.mean(list(arm["calls"][b].values()))),
             "values": values}
     if traces:
@@ -423,8 +480,11 @@ def plot(arms: dict, refs: dict, path: Path, grid: np.ndarray) -> None:
         if "curve" not in arm:
             continue
         x = arm["curve"]["grid"]
+        bad = max((s.get("strict", {}).get("n_failed", 0)
+                   for s in arm["budgets"].values()), default=0)
         ax.plot(x, arm["curve"]["mean"], color=color, lw=2,
-                label=f"{arm['label']} (mean, n={arm['curve']['n_targets']})")
+                label=f"{arm['label']} (mean, n={arm['curve']['n_targets']})"
+                + (f" [{bad} failed target(s)]" if bad else ""))
         ax.plot(x, arm["curve"]["median"], color=color, lw=1.2, ls="--")
         if arm["mode"] == "fixed":
             bs = sorted(int(b) for b in arm["budgets"])
@@ -437,6 +497,8 @@ def plot(arms: dict, refs: dict, path: Path, grid: np.ndarray) -> None:
         name = ref["label"] + (" (0 calls, " + BANK_NOTE + ")"
                                if ref["kind"] == "bank_oracle"
                                else f" ({ref['mean_calls']:.0f} calls)")
+        if ref.get("strict", {}).get("n_failed"):
+            name += f" [{ref['strict']['n_failed']} failed target(s)]"
         ax.plot([x], [ref["mean"]], markers.get(ref["kind"], "o"), color=ink,
                 ms=8, mfc="none", mew=1.5, label=name)
         ax.plot([x], [ref["median"]], markers.get(ref["kind"], "o"),
@@ -494,19 +556,27 @@ def markdown(report: dict) -> str:
              + ("**PARTIAL (smoke) report.**" if report["partial"] else ""), "",
              "## Primary: pooled all-device mean", "",
              "| arm | mode | " + " | ".join(f"B{b}" for b in marks)
-             + " | AUC log10 | median calls to 0.05 | to 0.01 |",
-             "|---|---|" + "---:|" * (len(marks) + 3)]
+             + " | AUC log10 | median calls to 0.05 | to 0.01 | failed targets "
+             "(per budget) |",
+             "|---|---|" + "---:|" * (len(marks) + 4)]
+
+    def n_bad(stats):
+        st = (stats or {}).get("strict")
+        return "–" if not st or not st["n_checked"] else str(st["n_failed"])
+
     for arm in arms.values():
         cells = [fmt(arm["budgets"].get(str(b), {}).get("mean")) for b in marks]
         reach = arm.get("median_calls_to", {})
+        bad = "/".join(n_bad(arm["budgets"].get(str(b))) for b in marks)
         lines.append(f"| {arm['label']} | {arm['mode']} | " + " | ".join(cells)
                      + f" | {fmt(arm.get('auc'))} | {fmt_calls(reach.get('0.05'))}"
-                     f" | {fmt_calls(reach.get('0.01'))} |")
-    lines += ["", "| reference | calls (mean) | pooled mean | median | note |",
-              "|---|---:|---:|---:|---|"]
+                     f" | {fmt_calls(reach.get('0.01'))} | {bad} |")
+    lines += ["", "| reference | calls (mean) | pooled mean | median | failed targets "
+              "| note |", "|---|---:|---:|---:|---:|---|"]
     for ref in refs.values():
         lines.append(f"| {ref['label']} | {ref['mean_calls']:.0f} | "
-                     f"{fmt(ref['mean'])} | {fmt(ref['median'])} | {ref['note']} |")
+                     f"{fmt(ref['mean'])} | {fmt(ref['median'])} | {n_bad(ref)} | "
+                     f"{ref['note']} |")
     lines += ["", "## Secondary columns (never exclude a device)", "",
               "| arm | budget | pooled mean | "
               + " | ".join(f"{s} mean | {s} combined" for s in sets)
@@ -523,6 +593,26 @@ def markdown(report: dict) -> str:
                      f"{fmt(s['median'])} | {fmt(s['geomean'])} | "
                      f"{fmt(s['worst'])} ({s['worst_target']}) | "
                      f"{s['frac_below_1e-2']:.2f} | {s['frac_below_1e-3']:.2f} |")
+    lines += ["", "## Strict curve check (failed included curves)", "",
+              "A failed target has a non-finite included metric curve; its stored "
+              "RRMS averages only the surviving curves (not a valid paper RRMS). "
+              "valid-only = pooled mean over valid targets; penalized = every "
+              f"target, failed curves at RRMS {ss.PENALTY:g} (penalized convention, "
+              "not the paper metric). Unchecked = no card record (trace-mode "
+              "budgets below the top, bank oracle).", "",
+              "| arm | budget | failed / checked | stored pooled mean | valid-only "
+              "(n) | penalized | failed targets (failed curves) |",
+              "|---|---:|---:|---:|---:|---:|---|"]
+    for label, b, s in rows:
+        st = s.get("strict")
+        if not st:
+            continue
+        lines.append(
+            f"| {label} | {b} | {st['n_failed']} / {st['n_checked']} | "
+            f"{fmt(s['mean'])} | {fmt(st['valid_mean'])} ({st['n_valid']}) | "
+            f"{fmt(st['penalized_mean'])} | "
+            + (", ".join(f"{k} ({n})" for k, n in st["failed_targets"].items())
+               or "none") + " |")
     lines += ["", "## Paired tests (diff = arm - reference; negative = arm better)",
               "", "| arm | reference | budget | n | W/T/L | mean diff | 95% CI | "
               "Wilcoxon p |", "|---|---|---:|---:|---|---:|---|---:|"]
@@ -589,6 +679,19 @@ def main() -> int:
     grid = log_grid(top)
     arms = {label: summarize_arm(arm, sets, grid) for label, arm in raw.items()}
     refs = load_references(registry, sets, checks, oracle, raw)
+    for label, arm in arms.items():
+        for b, stats in arm["budgets"].items():
+            st = stats["strict"]
+            if st["n_failed"]:
+                checks.warn(f"{label} B{b}: {st['n_failed']} target(s) with failed "
+                            "included curves (stored mean drops them)",
+                            ", ".join(f"{k} ({n})" for k, n in st["failed_targets"].items()))
+    for label, ref in refs.items():
+        st = ref["strict"]
+        if st["n_failed"]:
+            checks.warn(f"{label}: {st['n_failed']} target(s) with failed included "
+                        "curves (stored mean drops them)",
+                        ", ".join(f"{k} ({n})" for k, n in st["failed_targets"].items()))
     targets = sorted({k for arm in raw.values() for k in arm["traces"]})
     if not args.allow_partial:
         checks(f"{N_DEVICES * len(sets)} DEV targets",

@@ -42,6 +42,9 @@ from matplotlib.lines import Line2D  # noqa: E402
 from matplotlib.patches import Rectangle  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
+from cryoml import strict_score as ss  # noqa: E402  (result reader only)
+
 OUT = ROOT / "out"
 RESEARCH = OUT / "research"
 REPORT_ROOT = RESEARCH / "report"
@@ -236,10 +239,11 @@ def pipeline_round(pset: str, rnd: int):
         if m is None:
             LOG.skip(f"pipeline {pset} round {rnd}", "summary has no surrogate_fd method")
         else:
-            per_device, n_val = {}, []
+            per_device, n_val, status = {}, [], {}
             for dev in d.get("devices", []):
                 rec = dev.get("methods", {}).get("surrogate_fd", {})
                 per_device[dev["device"]] = num(rec.get("rrms"))
+                status[dev["device"]] = ss.record_status(rec, dev["device"])
                 if rec.get("n_validated") is not None:
                     n_val.append(rec["n_validated"])
             bank_dir = f"data/processed/cold_loop/{pset}_r{rnd}"
@@ -251,7 +255,8 @@ def pipeline_round(pset: str, rnd: int):
                    "pmos": num(m.get("pmos_rrms")), "per_device": per_device,
                    "run_calls": run, "source": rel(path),
                    "sources": [rel(path), f"{bank_dir}/manifest.json"],
-                   "cards_key": (rel(path.parent), "surrogate_fd"), "fd": None}
+                   "cards_key": (rel(path.parent), "surrogate_fd"), "fd": None,
+                   "strict": ss.aggregate(status, per_device)}
     _PIPE[key] = res
     return res
 
@@ -283,6 +288,7 @@ def direct_run(name: str):
     opts = d.get("options", {})
     spec = read_json(d.get("spec", ""), f"spec of {name}", mark=False) or {}
     per_device = {t: num(v.get("rrms")) for t, v in d.get("devices", {}).items()}
+    status = {t: ss.record_status(v, t) for t, v in d.get("devices", {}).items()}
     run = num(d.get("mean_ngspice_calls_per_device"))
     sources = [rel(path)]
     cum = _add(run, bank_mean_samples(opts.get("bank")))
@@ -310,7 +316,8 @@ def direct_run(name: str):
            "nmos": num(d.get("nmos_rrms")), "pmos": num(d.get("pmos_rrms")),
            "per_device": per_device, "run_calls": run, "cum_calls": cum,
            "source": rel(path), "sources": sources,
-           "cards_key": (rel(path), None), "fd": None}
+           "cards_key": (rel(path), None), "fd": None,
+           "strict": ss.aggregate(status, per_device)}
     _DIRECT[name] = res
     attach_fd(res)
     return res
@@ -323,18 +330,52 @@ def swap_run(name: str):
         return None
     m = re.search(r"round_(\d+)", d.get("round_dir", ""))
     run = num(d.get("mean_ngspice_calls_per_device"))
+    per_device = {t: num(v.get("rrms")) for t, v in d.get("devices", {}).items()}
     res = {"family": "swap", "name": name,
            "n_params": n_params_of_spec(Path(d.get("round_dir", "")) / "spec.json"),
            "round": int(m.group(1)) if m else None,
            "all": num(d.get("all_device_mean_rrms")), "combined": num(d.get("combined_rrms")),
            "nmos": num(d.get("nmos_rrms")), "pmos": num(d.get("pmos_rrms")),
-           "per_device": {t: num(v.get("rrms")) for t, v in d.get("devices", {}).items()},
+           "per_device": per_device,
            "run_calls": run, "cum_calls": _add(run, bank_mean_samples(d.get("bank"))),
            "source": rel(path),
            "sources": [rel(path)] + ([f"{rel(d['bank'])}/manifest.json"] if d.get("bank") else []),
-           "cards_key": (rel(path.parent), "surrogate_fd"), "fd": None}
+           "cards_key": (rel(path.parent), "surrogate_fd"), "fd": None,
+           "strict": ss.aggregate(records_status(path.parent, "surrogate_fd", per_device),
+                                  per_device)}
     attach_fd(res)
     return res
+
+
+def records_status(directory: Path, method: str, per_device: dict) -> dict:
+    """Strict status per device from a run's ``ml_<device>.json`` records
+    (frozen-inclusion per_curve); devices without a record are unknown."""
+    status = {}
+    for tag in per_device:
+        f = directory / f"ml_{tag}.json"
+        rec = None
+        if f.is_file():
+            try:
+                rec = json.loads(f.read_text())["methods"][method]
+            except (OSError, ValueError, KeyError):
+                rec = None
+        status[tag] = (ss.record_status(rec, tag) if rec is not None
+                       else ss.device_status(None, ss.include_tags(tag)))
+    if any(s["status"] == ss.UNKNOWN for s in status.values()):
+        LOG.note(f"{rel(directory)}: some devices have no {method} record; "
+                 "their curve status is unknown")
+    return status
+
+
+def n_failed(res: dict | None):
+    return None if not res or "strict" not in res else res["strict"]["n_failed_devices"]
+
+
+def failed_text(res: dict) -> str:
+    st = res["strict"]
+    return ", ".join(f"{t} ({st['n_failed_curves'][t]} curve"
+                     f"{'s' if st['n_failed_curves'][t] != 1 else ''})"
+                     for t in st["failed_devices"])
 
 
 _POLISHED: dict | None = None
@@ -374,10 +415,15 @@ def attach_fd(res: dict) -> None:
     p, d = hit
     LOG.used.add(rel(p))
     devices = d.get("devices", {})
+    fd_per_device = {t: num(v.get("rrms")) for t, v in devices.items()}
     res["fd"] = {"all": num(d.get("all_device_mean_rrms")), "combined": num(d.get("combined_rrms")),
                  "nmos": num(d.get("nmos_rrms")), "pmos": num(d.get("pmos_rrms")),
-                 "per_device": {t: num(v.get("rrms")) for t, v in devices.items()},
-                 "calls": num(d.get("mean_ngspice_calls_per_device")), "source": rel(p)}
+                 "per_device": fd_per_device,
+                 "calls": num(d.get("mean_ngspice_calls_per_device")), "source": rel(p),
+                 # polish summaries carry no per_curve: the status comes from
+                 # failed_curves or the penalized objective history[-1] vs rrms.
+                 "strict": ss.aggregate({t: ss.record_status(v, t) for t, v in devices.items()},
+                                        fd_per_device)}
     res["sources"].append(rel(p))
     diffs = []
     for tag, v in sorted(devices.items(), key=lambda kv: device_key(kv[0])):
@@ -388,7 +434,9 @@ def attach_fd(res: dict) -> None:
         res["fd"]["start_mismatch"] = diffs
         LOG.note(f"{rel(p)}: FD start re-score differs from the method's own score on "
                  f"{len(diffs)} device(s): " + "; ".join(diffs)
-                 + " (method's own score shown as raw)")
+                 + " (method's own score shown as raw; polish summaries without "
+                 "before_failed_curves stored the penalized start objective, where each failed "
+                 "included curve costs " f"{ss.PENALTY:g})")
 
 
 # ------------------------------------------------------------------- tables
@@ -508,19 +556,67 @@ CALLS_NOTE = ("NGSpice calls per device: 'this run' is the run's own count (pipe
               "round or seed run named in the summary/spec provenance.")
 COMBINED_NOTE = ("all-device = mean over 18 devices; combined = mean of the nMOS (8) and pMOS (10) "
                  "family means.")
+STRICT_COLS = [
+    {"key": "failed", "head": "failed dev.", "group": "strict check (all-device)",
+     "md": "failed devices", "kind": "int"},
+    {"key": "valid_all", "head": "valid-only", "group": "strict check (all-device)",
+     "md": "all-device, valid devices only", "kind": "rrms"},
+    {"key": "pen_all", "head": "penalized", "group": "strict check (all-device)",
+     "md": "all-device, penalized", "kind": "rrms"},
+]
+STRICT_NOTE = ("failed dev. = devices with an included (frozen-inclusion) metric curve that failed "
+               "to simulate; their stored RRMS averages only the surviving curves, so it is not a "
+               "valid paper RRMS (upstream rrmsCalc.py gives NaN). The all-device/combined/family "
+               "columns are the stored values; valid-only = all-device mean over the valid devices; "
+               f"penalized = every device, failed curves at RRMS {ss.PENALTY:g} (ngspice_fit.PENALTY; "
+               "penalized convention, not the paper metric). Source: cryoml.strict_score.")
+
+
+def strict_cells(strict: dict | None) -> dict:
+    if not strict:
+        return {"failed": None, "valid_all": None, "pen_all": None}
+    return {"failed": strict["n_failed_devices"],
+            "valid_all": num(strict["valid"]["all_device_mean_rrms"]),
+            "pen_all": num(strict["penalized"]["all_device_mean_rrms"])}
+
+
+def strict_notes(label: str, res: dict) -> list[str]:
+    notes = []
+    for stage, r in (("method output", res), ("+ NGSpice FD", res.get("fd"))):
+        st = (r or {}).get("strict")
+        if st and st["n_failed_devices"]:
+            notes.append(
+                f"{label} ({stage}): {st['n_failed_devices']} failed device(s): "
+                + ", ".join(f"{t} ({st['n_failed_curves'][t]} included curve(s) non-finite)"
+                            for t in st["failed_devices"])
+                + f"; valid-only all-device {fmt(st['valid']['all_device_mean_rrms'], 'rrms')} "
+                f"over {st['n_valid_devices']} devices, combined "
+                f"{fmt(st['valid']['combined_rrms'], 'rrms')}; penalized all-device "
+                f"{fmt(st['penalized']['all_device_mean_rrms'], 'rrms')}.")
+    return notes
 
 
 def stage_rows(label: str, res: dict, extra: dict | None = None) -> list[dict]:
     extra = extra or {}
     rows = [{"method": label, "stage": "method output", **extra,
              **{k: res.get(k) for k in ("all", "combined", "nmos", "pmos")},
-             "run": res.get("run_calls"), "cum": res.get("cum_calls")}]
+             "run": res.get("run_calls"), "cum": res.get("cum_calls"),
+             **strict_cells(res.get("strict"))}]
     fd = res.get("fd")
     if fd:
         rows.append({"method": label, "stage": "+ NGSpice FD", **extra,
                      **{k: fd.get(k) for k in ("all", "combined", "nmos", "pmos")},
-                     "run": fd.get("calls"), "cum": _add(res.get("cum_calls"), fd.get("calls"))})
+                     "run": fd.get("calls"), "cum": _add(res.get("cum_calls"), fd.get("calls")),
+                     **strict_cells(fd.get("strict"))})
     return rows
+
+
+FAILED_MARK = dict(marker="x", s=46, color=RED, linewidths=1.8, zorder=6)
+
+
+def failed_handle(text: str = "red ×: the run has devices with a failed included curve "
+                  "(stored mean drops those curves; see table)") -> Line2D:
+    return Line2D([], [], ls="none", marker="x", ms=8, mew=1.8, color=RED, label=text)
 
 
 # ------------------------------------------------------------- real methods
@@ -544,10 +640,14 @@ def reference_rows() -> list[dict]:
     rows = []
     for label, _short, value, key in REFERENCES:
         r = (ref or {}).get(key, {})
+        devs = r.get("devices", {})
+        strict = (ss.aggregate({t: ss.record_status(v, t) for t, v in devs.items()},
+                               {t: num(v.get("rrms")) for t, v in devs.items()})
+                  if devs else None)
         rows.append({"method": f"Reference: {label}", "stage": "published card",
                      "all": value, "combined": num(r.get("combined_rrms")),
                      "nmos": num(r.get("nmos_rrms")), "pmos": num(r.get("pmos_rrms")),
-                     "run": None, "cum": None})
+                     "run": None, "cum": None, **strict_cells(strict)})
         own = num(r.get("all_device_mean_rrms"))
         if own is not None and abs(own - value) > 5e-6:
             LOG.note(f"reference_scores.json {key} all-device {own:.5f} differs from {value}")
@@ -588,13 +688,18 @@ def fig_real_methods(rows: list[tuple[str, dict]], path: Path) -> list[str]:
                 ax.scatter(raw, yy, s=72, facecolor=SURFACE, edgecolor=c, linewidth=2, zorder=3)
             if fd is not None:
                 ax.scatter(fd, yy, s=72, facecolor=c, edgecolor=SURFACE, linewidth=1.5, zorder=4)
+            if raw is not None and n_failed(r):
+                ax.scatter(raw, yy, **FAILED_MARK)
+            if fd is not None and n_failed(r["fd"]):
+                ax.scatter(fd, yy, **FAILED_MARK)
         ax.set_xlim(*xlim)
     for (label, short, value, _key), ls in zip(REFERENCES, REF_STYLES):
         ax1.axvline(value, color=INK2, lw=1.1, ls=ls, zorder=1)
         ax1.text(value, 0.01, f"{short} {value:.4f} ", transform=ax1.get_xaxis_transform(),
                  ha="right", va="bottom", rotation=90, fontsize=9, color=INK2)
     ax1.set_yticks(ys)
-    ax1.set_yticklabels([label for label, _r in rows], fontsize=10.5, color=INK)
+    ax1.set_yticklabels([label + (" †" if n_failed(r) or n_failed(r["fd"]) else "")
+                         for label, r in rows], fontsize=10.5, color=INK)
     ax1.set_ylim(ys[-1] + 0.7, ys[0] - 0.7)
     plt.setp(ax2.get_yticklabels(), visible=False)
     ax2.tick_params(axis="y", length=0)
@@ -621,6 +726,9 @@ def fig_real_methods(rows: list[tuple[str, dict]], path: Path) -> list[str]:
                        label="open: method output"),
                 Line2D([], [], ls="none", marker="o", ms=9, mfc=INK2, mec=INK2,
                        label="filled: after NGSpice FD polish")]
+    if any(n_failed(r) or n_failed(r["fd"]) for _l, r in rows):
+        handles.append(failed_handle("† / red ×: devices with a failed included curve "
+                                     "(stored mean drops it; see table)"))
     fig.legend(handles=handles, loc="lower left", ncol=3, bbox_to_anchor=(0.01, 0.0),
                fontsize=10, columnspacing=1.6, handletextpad=0.4)
     fig.text(0.01, 1 - 0.18 / fig.get_figheight(),
@@ -676,6 +784,12 @@ def fig_rounds(series: list[dict], swaps: list[dict], path: Path) -> list[str]:
                    label=s["label"])
         ax.annotate(s["label"], (x[-1], yv[-1]), xytext=(10, 0), textcoords="offset points",
                     va="center", fontsize=10, color=INK)
+        for r in s["results"]:
+            if r["all"] is not None and n_failed(r):
+                ax.scatter(r["round"] + s["dx"], r["all"], **FAILED_MARK)
+                ax.annotate(f"{n_failed(r)} failed", (r["round"] + s["dx"], r["all"]),
+                            xytext=(6, -12), textcoords="offset points", fontsize=8.5,
+                            color=RED)
         sources += [src for r in s["results"] for src in r["sources"] if "polished" not in src]
     for r, dx in swaps:
         if r["all"] is None or r["round"] is None:
@@ -685,6 +799,8 @@ def fig_rounds(series: list[dict], swaps: list[dict], path: Path) -> list[str]:
                    facecolor=ORANGE if filled else SURFACE,
                    edgecolor=SURFACE if filled else ORANGE, linewidth=2,
                    label=f"NGSpice swap {r['n_params']}, round {r['round']}")
+        if n_failed(r):
+            ax.scatter(r["round"] + dx, r["all"], **FAILED_MARK)
         sources += [src for src in r["sources"] if "polished" not in src]
     for (label, short, value, _key), ls in zip(REFERENCES, REF_STYLES):
         ax.axhline(value, color=INK2, lw=1.0, ls=ls, zorder=1)
@@ -696,7 +812,12 @@ def fig_rounds(series: list[dict], swaps: list[dict], path: Path) -> list[str]:
     ax.set_xlim(min(rounds) - 0.35, max(rounds) + 0.55)
     ax.set_xlabel("round (each round re-centers every device's box on the previous selected card)")
     ax.set_ylabel("all-device mean RRMS (18 devices)")
-    ax.legend(loc="upper left", bbox_to_anchor=(1.0, 0.55), fontsize=10, handletextpad=0.4)
+    handles, labels = ax.get_legend_handles_labels()
+    if any(n_failed(r) for s in series for r in s["results"]) or any(
+            n_failed(r) for r, _dx in swaps):
+        handles.append(failed_handle("red ×: devices with failed included\ncurves (count annotated)"))
+    ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(1.0, 0.55), fontsize=10,
+              handletextpad=0.4)
     fig.text(0.01, 0.97, "All-device RRMS by round, measured 77 K data", fontsize=14,
              fontweight="bold", va="top")
     fig.text(0.01, 0.92, "Raw method output (no FD polish). Direct NGSpice 43 round 1 is the run "
@@ -766,6 +887,15 @@ def fig_surrogate_gap(path: Path):
                 x, yv = zip(*xy)
                 ax.scatter(x, yv, s=70, marker=marker, facecolor=color, edgecolor=SURFACE,
                            linewidth=1.5, zorder=3)
+    gap_failed = []
+    for k, run in (("pipeline", pipeline("full", int(pipe_name.split()[-1]))
+                    if pipe_name else None),
+                   ("reference", direct_run(ref_name) if ref_name else None)):
+        bad = [t for t in ((run or {}).get("strict") or {}).get("failed_devices", [])
+               if t in pts[k]]
+        gap_failed += [f"{k} {t}" for t in bad]
+        if bad:
+            ax.scatter([pts[k][t][0] for t in bad], [pts[k][t][1] for t in bad], **FAILED_MARK)
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlim(lo, hi)
@@ -781,6 +911,11 @@ def fig_surrogate_gap(path: Path):
                Line2D([], [], ls="none", marker="o", ms=8, mfc=INK2, mec=INK2, label="nMOS device"),
                Line2D([], [], ls="none", marker="^", ms=8, mfc=INK2, mec=INK2, label="pMOS device"),
                Line2D([], [], color=MUTED, lw=0.9, label="same device")]
+    if gap_failed:
+        handles.append(failed_handle("red ×: NGSpice RRMS drops failed included curve(s)"))
+        LOG.note("surrogate gap: NGSpice RRMS of " + ", ".join(gap_failed)
+                 + " averages only the finite included curves (failed curve(s); not a valid "
+                 "paper RRMS)")
     fig.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.06, 0.0), ncol=2, fontsize=10)
     s = g.get("summary", {})
     fig.text(0.02, 0.975, "Round-1 43-parameter surrogate: predicted vs NGSpice RRMS per device",
@@ -831,6 +966,13 @@ def fig_per_device(series: list[tuple[str, str, dict]], path: Path):
         py = [r["fd"]["per_device"][t] for t in tags if r["fd"]["per_device"].get(t) is not None]
         ax.scatter(px, py, s=64, facecolor=color, edgecolor=SURFACE, linewidth=1.3, zorder=3,
                    label=f"{label} (all-device {fmt(r['fd']['all'], 'rrms')})")
+        bad = set((r["fd"].get("strict") or {}).get("failed_devices", []))
+        fx = [xx + dx for xx, t in zip(xs, tags) if t in bad
+              and r["fd"]["per_device"].get(t) is not None]
+        fy = [r["fd"]["per_device"][t] for t in tags if t in bad
+              and r["fd"]["per_device"].get(t) is not None]
+        if fx:
+            ax.scatter(fx, fy, **FAILED_MARK)
     if paper43:
         px = [xx for xx, t in zip(xs, tags) if paper43.get(t) is not None]
         py = [paper43[t] for t in tags if paper43.get(t) is not None]
@@ -853,7 +995,12 @@ def fig_per_device(series: list[tuple[str, str, dict]], path: Path):
     ax.set_xlim(xs[0] - 0.6, xs[-1] + 0.6)
     ax.set_ylabel("device RRMS (paper metric, log scale)")
     ax.set_xlabel("device (L and W in µm)")
-    ax.legend(loc="upper left", bbox_to_anchor=(0.0, -0.27), ncol=2, fontsize=10)
+    handles, _labels = ax.get_legend_handles_labels()
+    if any((r["fd"].get("strict") or {}).get("n_failed_devices") for _l, _c, r in series):
+        handles.append(failed_handle("red ×: included curve(s) failed to simulate; value "
+                                     "averages the surviving curves only (not a valid RRMS)"))
+    ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.0, -0.27), ncol=2,
+              fontsize=10)
     fig.text(0.01, 0.975, "Per-device RRMS after NGSpice FD polish, 43 parameters, measured 77 K data",
              fontsize=14, fontweight="bold", va="top")
     fig.text(0.01, 0.925, "Each marker: one device's RRMS after the same NGSpice FD polish. "
@@ -986,7 +1133,20 @@ def load_temperature():
                 if abs(t[a] - row[b]) > 1e-9:
                     LOG.note(f"temp/table.json {tname} {a} {t[a]:.6f} differs from set files "
                              f"{row[b]:.6f}")
+    # temp_fit penalizes failed curves (PENALTY each): screen for values at the
+    # penalty floor PENALTY / n_curves, which only a failed curve (or a very
+    # poor fit) reaches.
+    n_floor = 0
+    for sets in sets_by_method.values():
+        for d in sets:
+            for t, v in d["devices"].items():
+                floor = ss.PENALTY / max(1, len(ss.include_tags(t)))
+                for key in ("raw", "fd"):
+                    for val in (v.get(key, {}).get("per_temp") or {}).values():
+                        n_floor += int(val is None or not math.isfinite(val)
+                                       or val >= floor - 1e-12)
     return {"rows": methods, "split": split, "files": files, "bank": bank,
+            "n_penalty_floor": n_floor,
             "bank_file": rel(meta_files[0]) if bank else None}
 
 
@@ -1127,18 +1287,21 @@ def main() -> int:
             rows += stage_rows(label, res)
         notes = [COMBINED_NOTE, CALLS_NOTE,
                  "Reference rows: all-device values are the paper's reported values; combined/nMOS/"
-                 "pMOS from out/research/reference_scores.json."]
+                 "pMOS from out/research/reference_scores.json.", STRICT_NOTE]
+        for label, res in real:
+            notes += strict_notes(label, res)
         for label, res in real:
             if res["fd"] and res["fd"].get("start_mismatch"):
                 notes.append(f"{label}: the FD run's re-score of its start differs from the "
                              f"method's own score on " + "; ".join(res["fd"]["start_mismatch"])
                              + " (own vs FD start); the method-output row uses the method's own "
-                             "score.")
+                             "score. A large FD-start value is the penalized start objective of "
+                             "a card with failed included curves (see failed dev.).")
         t = Table("real_methods", "Measured 77 K data, 18 devices: paper RRMS by method, raw "
                   "output and after NGSpice FD polish", [
                       {"key": "method", "head": "method", "md": "method", "kind": "text"},
                       {"key": "stage", "head": "stage", "md": "stage", "kind": "text"},
-                      *RRMS_COLS], rows, notes)
+                      *RRMS_COLS, *STRICT_COLS], rows, notes)
         png_t = name("table_real_methods")
         render_table(t, folder / png_t)
         md_parts.append(table_markdown(t))
@@ -1152,7 +1315,10 @@ def main() -> int:
             r = pick.get(label)
             if r:
                 fd = f" / {fmt(r['fd']['all'], 'rrms')}" if r["fd"] else ""
-                parts.append(f"{label} {fmt(r['all'], 'rrms')}{fd}")
+                bad = [f"{n_failed(x)} failed device(s) {stage}" for stage, x in
+                       (("raw", r), ("+FD", r["fd"])) if n_failed(x)]
+                parts.append(f"{label} {fmt(r['all'], 'rrms')}{fd}"
+                             + (f" ({'; '.join(bad)})" if bad else ""))
         if parts:
             summary_lines.append("Measured 77 K data, all-device RRMS (raw / +FD): " + "; ".join(parts)
                                  + ". References: " + ", ".join(f"{s} {v:.4f}" for _l, s, v, _k
@@ -1192,21 +1358,31 @@ def main() -> int:
             for r in s["results"]:
                 rows.append({"series": s["label"], "round": str(r["round"]),
                              **{k: r.get(k) for k in ("all", "combined", "nmos", "pmos")},
-                             "run": r.get("run_calls"), "cum": r.get("cum_calls")})
+                             "run": r.get("run_calls"), "cum": r.get("cum_calls"),
+                             **strict_cells(r.get("strict"))})
         for r, _dx in swaps:
             rows.append({"series": f"NGSpice swap {r['n_params']}", "round": str(r["round"]),
                          **{k: r.get(k) for k in ("all", "combined", "nmos", "pmos")},
-                         "run": r.get("run_calls"), "cum": r.get("cum_calls")})
+                         "run": r.get("run_calls"), "cum": r.get("cum_calls"),
+                         **strict_cells(r.get("strict"))})
         chain_txt = " -> ".join(r["name"] for r in chain)
         notes = [COMBINED_NOTE, CALLS_NOTE.replace("; +FD rows: FD polish only", ""),
-                 "Raw method output; no FD polish in this table."]
+                 "Raw method output; no FD polish in this table.", STRICT_NOTE]
+        for s_ in series:
+            for r in s_["results"]:
+                notes += [n.replace(" (method output)", "") for n in
+                          strict_notes(f"{s_['label']} round {r['round']}", {**r, "fd": None})]
+        for r, _dx in swaps:
+            notes += [n.replace(" (method output)", "") for n in
+                      strict_notes(f"NGSpice swap {r['n_params']} round {r['round']}",
+                                   {**r, "fd": None})]
         if chain:
             notes.append(f"Direct NGSpice 43 rounds are the runs {chain_txt} (each spec's "
                          "source_run names the previous round).")
         t = Table("rounds", "Measured 77 K data, 18 devices: paper RRMS by round", [
             {"key": "series", "head": "series", "md": "series", "kind": "text"},
             {"key": "round", "head": "round", "md": "round", "kind": "text"},
-            *RRMS_COLS], rows, notes)
+            *RRMS_COLS, *STRICT_COLS], rows, notes)
         png_t = name("table_rounds")
         render_table(t, folder / png_t)
         md_parts.append(table_markdown(t))
@@ -1296,6 +1472,10 @@ def main() -> int:
                   ], rows,
                   [f"Means over simulated sets of 18 devices. {COMBINED_NOTE} Values below "
                    "0.0001 are shown in scientific notation.",
+                   "Failed curves: temp_fit scores a non-finite included curve at RRMS "
+                   f"{ss.PENALTY:g} (penalized convention), so no curve is silently dropped here; "
+                   f"{temp['n_penalty_floor']} device-temperature value(s) reach the penalty floor "
+                   "10 / n_curves.",
                    "NGSpice calls per device: method output = calls before FD (search and "
                    "validation); +FD rows = total including the FD polish.", *bank_note])
         png_t = name("table_temperature")

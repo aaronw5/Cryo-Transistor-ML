@@ -113,10 +113,18 @@ def surrogate_trf(surrogate, z0: np.ndarray, weight: float,
         return np.vstack([surrogate.jacobian(z), prior])
 
     t0 = time.time()
-    solution = least_squares(
-        fun, np.clip(np.asarray(z0, dtype=np.float64), -1.0, 1.0), jac=jac,
-        bounds=(-np.ones(n), np.ones(n)), method="trf", x_scale=1.0,
-        ftol=1e-8, xtol=1e-8, gtol=1e-8, max_nfev=max_nfev)
+    z0 = np.clip(np.asarray(z0, dtype=np.float64), -1.0, 1.0)
+    try:
+        solution = least_squares(
+            fun, z0, jac=jac,
+            bounds=(-np.ones(n), np.ones(n)), method="trf", x_scale=1.0,
+            ftol=1e-8, xtol=1e-8, gtol=1e-8, max_nfev=max_nfev)
+    except (np.linalg.LinAlgError, ValueError):
+        # Non-finite surrogate Jacobian: keep the start unchanged.
+        r = fun(z0)
+        return {"z": z0, "surrogate_F": 0.5 * float(r @ r), "nfev": 0,
+                "njev": 0, "status": -99,
+                "seconds": round(time.time() - t0, 3)}
     z = np.clip(solution.x, -1.0, 1.0)
     r = fun(z)
     return {"z": z, "surrogate_F": 0.5 * float(r @ r),
