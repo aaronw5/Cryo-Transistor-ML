@@ -641,7 +641,13 @@ def decide(argv: list[str]) -> int:
            "ci_used": source.ci_used,
            "checks": {"available": check_rows is not None,
                       "n_rows": len(check_rows or []),
-                      "n_fail": len(fail_rows), "fail_rows": fail_rows},
+                      "n_fail": len(fail_rows), "fail_rows": fail_rows,
+                      # WARN rows do not withdraw a candidate; listed so the
+                      # batched-probe score gaps (dev_compare
+                      # BATCHED_PROBE_KINDS) stay visible.
+                      "warn_rows": [r for r in (check_rows or [])
+                                    if r.get("level") == "WARN"
+                                    and "batched-probe" in r["check"]]},
            "inputs": {"registry_a": args.registry_a,
                       "registry_c": args.registry_c, "floors": args.floors,
                       "floors_meta": getattr(source, "floors_meta", None),

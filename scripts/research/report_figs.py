@@ -21,7 +21,9 @@ recorded in each summary/spec.
     PYTHONPATH=src .venv/bin/python scripts/research/report_figs.py \
         [--topic baseline_results] [--date YYYY-MM-DD]
 
-Topics: ``dev*`` (DEV comparison and failed-curve audit), ``arch*`` (surrogate
+Topics: ``dev_iteration2*`` (iteration-2 DEV ablation on tiers a and c, the
+pre-registered C1-C6 family and the n2b λ decision), ``dev*`` (DEV comparison
+and failed-curve audit), ``arch*`` (surrogate
 architecture study on the round-1 43-parameter cache and the FD polish of the
 corrected pipeline cards), anything else (measured-data baseline results).
 """
@@ -2329,6 +2331,508 @@ def arch_sections(folder: Path, name, srcs, items: list, md_parts: list,
     summary_lines.append(ARCH_PROTOCOL)
 
 
+# ------------------------------------------------- DEV iteration 2 (ablation)
+
+DEV2_BUDGETS = (500, 1000, 2000, 5000)
+DEV2_PAIR_BUDGETS = (500, 2000, 5000)
+DEV2_TIERS = {
+    "a": {"title": "tier a: well-specified simulated targets (sim_targets set_0, set_1)",
+          "short": "tier a", "registry": "out/research/dev/arms_iter2.json", "floors": None,
+          "compare": "out/research/dev/compare_iter2/compare.json",
+          "endpoint": "pooled mean paper RRMS (strict)"},
+    "c": {"title": "tier c: misspecified sky130c targets (set_0, set_1), excess over the "
+                   "per-target floor",
+          "short": "tier c", "registry": "out/research/dev_sky130c/arms.json",
+          "floors": "out/research/sim_targets_sky130c/floors.json",
+          "compare": "out/research/dev_sky130c/compare/compare.json",
+          "endpoint": "pooled mean excess over floor (RRMS − floor)"},
+}
+# (label, family, description); table order.
+DEV2_ARMS = (
+    ("sketch_surrogate_k8", "sketched k=8", "surrogate term on (λ = 1)"),
+    ("sketch_none_k8", "sketched k=8", "NGSpice only (λ = 0)"),
+    ("lam_curve_k8", "sketched k=8", "λ per curve (n2b)"),
+    ("lam_scalar_k8", "sketched k=8", "λ scalar (n2b ablation)"),
+    ("lam_cusum_k8", "sketched k=8", "λ CUSUM (n2b ablation)"),
+    ("lam_radius_k8", "sketched k=8", "λ radius (n2b ablation)"),
+    ("sketch_surrogate_k4", "sketched k=8", "k = 4, surrogate (screen)"),
+    ("sketch_surrogate_k16", "sketched k=8", "k = 16, surrogate (screen)"),
+    ("sketch_fullfd_surrogate", "sketched k=8", "full FD every centre, surrogate"),
+    ("sketch_fullfd_none", "sketched k=8", "full FD every centre, NGSpice only"),
+    ("hybrid_surrogate", "full Jacobian", "surrogate term on (λ = 1)"),
+    ("hybrid_none", "full Jacobian", "NGSpice only (λ = 0)"),
+    ("hyb_lam_curve", "full Jacobian", "λ per curve (n2b)"),
+    ("anytime_sur_presearch_race", "racing", "surrogate presearch, racing"),
+    ("anytime_sur_presearch_equal", "racing", "surrogate presearch, equal split"),
+    ("anytime_none_race", "racing", "NGSpice only, racing"),
+    ("dfols_style", "baseline", "DFO-LS-style, 4 starts"),
+    ("dfols_style_1start", "baseline", "DFO-LS-style, 1 start"),
+    ("cmaes_trf", "baseline", "CMA-ES + TRF"),
+    ("lq_cmaes", "baseline", "lq-CMA-ES"),
+)
+# Anytime panels: (title, [(label, colour, linestyle, legend text)]).
+DEV2_PANELS = (
+    ("Sketched Jacobian, k = 8", [
+        ("sketch_surrogate_k8", BLUE, "-", "surrogate (λ = 1)"),
+        ("sketch_none_k8", ORANGE, "--", "NGSpice only (λ = 0)"),
+        ("lam_curve_k8", AQUA, "-", "λ per curve"),
+        ("lam_scalar_k8", YELLOW, "-", "λ scalar"),
+        ("lam_cusum_k8", MAGENTA, "-", "λ CUSUM"),
+        ("lam_radius_k8", GREEN, "-", "λ radius")]),
+    ("Full Jacobian (hybrid TR)", [
+        ("hybrid_surrogate", BLUE, "-", "surrogate (λ = 1)"),
+        ("hybrid_none", ORANGE, "--", "NGSpice only (λ = 0)"),
+        ("hyb_lam_curve", AQUA, "-", "λ per curve")]),
+    ("Budget-aware racing", [
+        ("anytime_sur_presearch_race", BLUE, "-", "surrogate presearch"),
+        ("anytime_none_race", ORANGE, "--", "NGSpice only")]),
+    ("Baselines", [
+        ("dfols_style", VIOLET, "-", "DFO-LS-style, 4 starts"),
+        ("dfols_style_1start", VIOLET, ":", "DFO-LS-style, 1 start"),
+        ("cmaes_trf", INK2, "-", "CMA-ES + TRF"),
+        ("lq_cmaes", MUTED, "--", "lq-CMA-ES")]),
+)
+DEV2_SHARED = (("cmaes_trf", "CMA-ES + TRF"), ("dfols_style", "DFO-LS-style"))
+# Paired tables: (stem, caption, [(A, B)]).
+DEV2_PAIR_GROUPS = (
+    ("table_paired_lambda", "λ arms vs λ = 0 and λ = 1 (same code, surrogate weight varied)", [
+        ("lam_curve_k8", "sketch_none_k8"), ("lam_curve_k8", "sketch_surrogate_k8"),
+        ("lam_scalar_k8", "sketch_none_k8"), ("lam_scalar_k8", "sketch_surrogate_k8"),
+        ("lam_cusum_k8", "sketch_none_k8"), ("lam_cusum_k8", "sketch_surrogate_k8"),
+        ("lam_radius_k8", "sketch_none_k8"), ("lam_radius_k8", "sketch_surrogate_k8"),
+        ("hyb_lam_curve", "hybrid_none"), ("hyb_lam_curve", "hybrid_surrogate")]),
+    ("table_paired_surrogate", "surrogate term vs NGSpice-only control, same code", [
+        ("sketch_surrogate_k8", "sketch_none_k8"), ("hybrid_surrogate", "hybrid_none"),
+        ("anytime_sur_presearch_race", "anytime_none_race"),
+        ("sketch_fullfd_surrogate", "sketch_fullfd_none")]),
+    ("table_paired_dfols", "DFO-LS-style baseline vs the other arms", [
+        ("dfols_style", "sketch_none_k8"), ("dfols_style", "sketch_surrogate_k8"),
+        ("lam_curve_k8", "dfols_style"), ("dfols_style", "hybrid_none"),
+        ("dfols_style", "cmaes_trf"), ("dfols_style", "dfols_style_1start")]),
+)
+DEV2_LAMBDA = DEV_DIR / "lambda_decision.json"
+DEV2_PREREG = DEV_DIR / "prereg_iter2.json"
+DEV2_STATS = DEV_DIR / "stats_iter2" / "stats.json"
+
+
+def dev2_load_tiers():
+    """dev_stats tiers (dev_compare's hard checks; seed-mean per target;
+    tier c endpoint = RRMS - floor) or None when dev_stats is unavailable."""
+    for p in (ROOT / "scripts", ROOT / "scripts" / "research"):
+        if str(p) not in sys.path:
+            sys.path.insert(0, str(p))
+    import dev_compare
+    import dev_stats
+    checks = dev_compare.Checks(True)
+    tiers, floors_mean = {}, {}
+    for key, spec in DEV2_TIERS.items():
+        if not (ROOT / spec["registry"]).is_file():
+            LOG.skip(f"DEV {spec['short']}", f"{spec['registry']} not found")
+            continue
+        table = None
+        if spec["floors"]:
+            fp = ROOT / spec["floors"]
+            if not fp.is_file():
+                LOG.skip(f"DEV {spec['short']} floors", f"{spec['floors']} not found")
+                continue
+            table, _meta = dev_stats.load_floors(fp)
+            LOG.used.add(rel(fp))
+            vals = [v for k, v in table.items() if k.split("/", 1)[0] in ("set_0", "set_1")]
+            floors_mean[key] = float(np.mean(vals))
+        LOG.used.add(rel(ROOT / spec["registry"]))
+        tiers[key] = dev_stats.Tier(key, spec["registry"], checks, True, table)
+    return dev_stats, checks, tiers, floors_mean
+
+
+def dev2_level(tier, label: str, budget: int) -> dict | None:
+    """Pooled endpoint over the 36 targets (mean over the arm's seeds per
+    target; failed targets at their penalized value) at one budget."""
+    if not tier.load(label):
+        return None
+    keys = tier.targets(label, budget)
+    if not keys:
+        return None
+    geoms = sorted({k.split("/", 1)[1] for k in keys})
+    V, seeds, failed, missing = tier.matrix(label, budget, geoms)
+    if missing or len(geoms) != 18:
+        LOG.note(f"tier {tier.name} {label} B{budget}: incomplete ({len(geoms)} geometries, "
+                 f"{len(missing)} missing values); not shown")
+        return None
+    T = tier.endpoint(V, geoms)
+    return {"mean": float(T.mean(-1).mean()), "raw": float(V.mean(-1).mean()),
+            "seeds": seeds, "n_failed": len(failed), "n": int(T.shape[0] * T.shape[1])}
+
+
+def dev2_curves(compare: dict, label: str, shift: float):
+    """Seed-mean of the all-device mean best-so-far curve (compare.json),
+    minus ``shift`` (tier c: the mean floor over the 36 targets)."""
+    arms = compare.get("arms", {})
+    rows = [arms[k]["curve"] for k in arms
+            if (k == label or re.fullmatch(re.escape(label) + r"__seed\d+", k))
+            and "curve" in arms[k]]
+    if not rows:
+        return None
+    grids = {tuple(np.round(r["grid"], 6)) for r in rows}
+    if len(grids) != 1:
+        rows = [arms[label]["curve"]] if "curve" in arms.get(label, {}) else rows[:1]
+    grid = np.asarray(rows[0]["grid"], dtype=np.float64)
+    mean = np.mean([np.asarray(r["mean"], dtype=np.float64) for r in rows], axis=0) - shift
+    return grid, mean, len(rows)
+
+
+def fig_dev2_families(key: str, compare: dict, levels: dict, shift: float, path: Path) -> list:
+    spec = DEV2_TIERS[key]
+    fig, axes = plt.subplots(1, 4, figsize=(17, 6.6), sharey=True)
+    drawn = []
+    lo, hi = math.inf, 0.0
+    for ax, (title, series) in zip(axes, DEV2_PANELS):
+        own = {s[0] for s in series}
+        for label, text in DEV2_SHARED:
+            if label in own:
+                continue
+            got = dev2_curves(compare, label, shift)
+            if got is not None:
+                ax.plot(got[0], got[1], color="#b5b4ae", lw=1.3,
+                        ls="-" if label == "cmaes_trf" else "-.", zorder=1,
+                        label=f"{text} (shared)")
+        for label, color, ls, text in series:
+            got = dev2_curves(compare, label, shift)
+            if got is None:
+                LOG.skip(f"tier {key} curve {label}", "arm missing from compare.json")
+                continue
+            grid, mean, n_seeds = got
+            ax.plot(grid, mean, color=color, ls=ls, lw=2, zorder=3,
+                    label=text + (f" ({n_seeds} seeds)" if n_seeds > 1 else ""))
+            pos = mean[mean > 0]
+            if len(pos):
+                lo, hi = min(lo, pos.min()), max(hi, pos.max())
+            pts = [(b, levels.get((label, b))) for b in DEV2_BUDGETS]
+            pts = [(b, v["mean"]) for b, v in pts if v and v["mean"] > 0]
+            if pts:
+                ax.scatter(*zip(*pts), s=36, color=color, edgecolor=SURFACE, linewidth=1.2,
+                           zorder=4)
+            drawn.append(label)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_title(title)
+        ax.set_xlabel("NGSpice calls per target (probes included)")
+        ax.grid(True, which="major")
+        ax.legend(fontsize=8.5, loc="upper left", bbox_to_anchor=(0.0, -0.17), ncol=1)
+    if hi > 0:
+        axes[0].set_ylim(lo * 0.8, hi * 1.25)
+    axes[0].set_ylabel("all-device mean RRMS, best so far" if key == "a"
+                       else "mean excess over floor, best so far")
+    fig.suptitle(f"DEV iteration 2, {spec['title']}: anytime curves by method family "
+                 "(36 targets)", fontsize=12)
+    fig.tight_layout()
+    fig.savefig(path, dpi=DPI)
+    plt.close(fig)
+    return drawn
+
+
+def dev2_sections(folder: Path, name, srcs, items: list, md_parts: list,
+                  summary_lines: list) -> None:
+    """Topic ``dev_iteration2*``: the iteration-2 DEV ablation on tier a and
+    tier c (registries through dev_stats / dev_compare checks), the
+    pre-registered C1-C6 family (``stats_iter2/stats.json``) and the n2b λ
+    decision (``lambda_decision.json``)."""
+    dev_stats, checks, tiers, floors_mean = dev2_load_tiers()
+    stats = read_json(DEV2_STATS, "pre-registered C1-C6 statistics")
+    decision = read_json(DEV2_LAMBDA, "n2b λ decision")
+    prereg = read_json(DEV2_PREREG, "pre-registration")
+    prereg_rows = {}
+    for t in (stats or {}).get("results", {}).get("tests", []):
+        prereg_rows[(t["a"], t["b"], t["tier"], int(t["budget"]))] = t
+
+    levels: dict = {}
+    for key, tier in tiers.items():
+        for label, _fam, _desc in DEV2_ARMS:
+            for b in DEV2_BUDGETS:
+                levels[(key, label, b)] = dev2_level(tier, label, b)
+
+    # 1-2. anytime figures, one per tier -----------------------------------
+    for key, tier in tiers.items():
+        spec = DEV2_TIERS[key]
+        compare = read_json(ROOT / spec["compare"], f"DEV {spec['short']} compare.json")
+        if compare is None:
+            continue
+        shift = floors_mean.get(key, 0.0)
+        png = name(f"anytime_families_tier_{key}")
+        lv = {(lab, b): v for (k, lab, b), v in levels.items() if k == key}
+        drawn = fig_dev2_families(key, compare, lv, shift, folder / png)
+        endpoint = ("the all-device mean of the best-so-far paper RRMS" if key == "a" else
+                    "the mean over targets of best-so-far RRMS minus the target's floor "
+                    f"(compare.json mean curve minus the mean floor {shift:.4f} of the 36 "
+                    "targets, exact because the floor is constant per target)")
+        items.append((png, f"Anytime curves, {spec['title']}: {endpoint} against cumulative "
+                      "NGSpice calls per target from the largest-budget traces, one panel per "
+                      "method family (sketched k = 8 with the λ arms, full-Jacobian hybrid TR, "
+                      "racing, baselines); in each panel the λ = 1 surrogate arm is blue solid, "
+                      "the λ = 0 NGSpice-only control orange dashed, CMA-ES + TRF and "
+                      "DFO-LS-style are drawn in light grey as shared baselines; seed-replicated "
+                      "arms show the mean of their seed curves; dots = the fixed-budget fresh "
+                      "NGSpice values (seed mean) at B500/B1000/B2000/B5000; arms drawn: "
+                      + ", ".join(drawn) + f"; sources: {srcs([spec['compare']])}."))
+
+    # 3-4. primary table per tier -------------------------------------------
+    for key, tier in tiers.items():
+        spec = DEV2_TIERS[key]
+        rows = []
+        compare = read_json(ROOT / spec["compare"], mark=False) or {}
+        for label, fam, desc in DEV2_ARMS:
+            vals = [levels.get((key, label, b)) for b in DEV2_BUDGETS]
+            if not any(vals):
+                continue
+            row = {"family": fam, "arm": label, "desc": desc,
+                   "seeds": "/".join(str(len(v["seeds"])) if v else "–" for v in vals),
+                   "failed": "/".join(str(v["n_failed"]) if v else "–" for v in vals),
+                   "auc": (compare.get("arms", {}).get(label) or {}).get("auc")}
+            for b, v in zip(DEV2_BUDGETS, vals):
+                row[f"B{b}"] = v["mean"] if v else None
+                if key == "c":
+                    row[f"R{b}"] = v["raw"] if v else None
+            rows.append(row)
+        cols = [{"key": "family", "head": "family", "md": "family", "kind": "text"},
+                {"key": "arm", "head": "arm", "md": "arm", "kind": "text"},
+                {"key": "desc", "head": "variant", "md": "variant", "kind": "text"},
+                *[{"key": f"B{b}", "head": f"B{b}", "group": spec["endpoint"],
+                   "md": f"B{b}", "kind": "rrms"} for b in DEV2_BUDGETS]]
+        if key == "c":
+            cols += [{"key": f"R{b}", "head": f"B{b}", "group": "raw RRMS", "md": f"raw B{b}",
+                      "kind": "rrms", "family": True} for b in (500, 5000)]
+        cols += [{"key": "auc", "head": "AUC log10", "md": "AUC log10 (seed 0, raw RRMS)",
+                  "kind": "rrms"},
+                 {"key": "seeds", "head": "seeds", "md": "seeds per budget", "kind": "rtext"},
+                 {"key": "failed", "head": "failed", "md": "failed targets per budget",
+                  "kind": "rtext"}]
+        notes = [f"{spec['title']}. 36 targets = set_0 and set_1 × 18 devices; budgets are "
+                 "NGSpice calls per target, Jacobian probes included; each budget is a separate "
+                 "run scored by one fresh NGSpice simulation of the final card.",
+                 "Per-target value = mean over the arm's seeds (seed 0 = base label, seeds 1, 2 = "
+                 "'__seed<n>' runs); a target with a failed included curve enters at its "
+                 "penalized value (dev_stats, as pre-registered); seeds and failed columns list "
+                 "B500/B1000/B2000/B5000; – = budget not run."]
+        if key == "c":
+            notes.append(f"Floor = per-target refit floor (floors.json, finalized = min(polish, "
+                         f"reference)); mean floor over the 36 targets {floors_mean['c']:.4f}. "
+                         "Excess = RRMS − floor, unclipped. raw RRMS columns are the same runs "
+                         "without the floor subtracted.")
+        notes.append("AUC log10 = dev_compare's per-target mean of log10(best-so-far raw RRMS) "
+                     "over a 40-point log grid of calls, seed-0 run only.")
+        t = Table(f"dev2_primary_{key}", f"DEV iteration 2, {spec['title']}: {spec['endpoint']} "
+                  "by arm and budget (ablation)", cols, rows, notes)
+        png = name(f"table_primary_tier_{key}")
+        render_table(t, folder / png)
+        md_parts.append(table_markdown(t))
+        items.append((png, f"Table of the {spec['endpoint']} of every iteration-2 arm on "
+                      f"{spec['short']} at B500/B1000/B2000/B5000"
+                      + (" with raw RRMS at B500 and B5000" if key == "c" else "")
+                      + ", seed counts and failed targets; per-target values through "
+                      "dev_stats (dev_compare hard checks); sources: "
+                      + srcs([spec["registry"]] + ([spec["floors"]] if spec["floors"] else []))
+                      + "."))
+
+    # 5-7. paired tables ------------------------------------------------------
+    paired_cache = {}
+    for stem, caption, pairs in DEV2_PAIR_GROUPS:
+        tests = [{"id": f"{a}-{b}-{tk}-{bud}", "a": a, "b": b, "tier": tk, "budget": bud}
+                 for a, b in pairs for tk in tiers for bud in DEV2_PAIR_BUDGETS]
+        fam = {"name": stem, "alpha": 0.05, "secondary_log10_tier_a": False, "tests": tests}
+        result = dev_stats.run_family(fam, tiers)["tests"]
+        rows = []
+        for a, b in pairs:
+            for tk in tiers:
+                row = {"pair": f"{a} − {b}", "tier": tk}
+                ids = []
+                for bud in DEV2_PAIR_BUDGETS:
+                    r = next(x for x in result if x["a"] == a and x["b"] == b
+                             and x["tier"] == tk and x["budget"] == bud)
+                    p = r.get("primary")
+                    if p is None:
+                        row[f"d{bud}"], row[f"ci{bud}"], row[f"p{bud}"] = None, "–", "–"
+                        continue
+                    paired_cache[(a, b, tk, bud)] = p
+                    row[f"d{bud}"] = p["mean_diff"]
+                    lo_, hi_ = p["ci95_clustered"]
+                    row[f"ci{bud}"] = f"[{fmt(lo_, 'rrms')}, {fmt(hi_, 'rrms')}]"
+                    pre = prereg_rows.get((a, b, tk, bud))
+                    ptxt = f"{p['wilcoxon_p_geometry']:.4f}"
+                    if pre is not None:
+                        ptxt += f" (Holm {pre['holm_p']:.3f})"
+                        ids.append(pre["comparison"])
+                    row[f"p{bud}"] = ptxt
+                    row[f"w{bud}"] = f"{p['wins']}/{p['ties']}/{p['losses']}"
+                row["prereg"] = ids[0] if ids else ""
+                rows.append(row)
+        cols = [{"key": "pair", "head": "A − B", "md": "A − B", "kind": "text"},
+                {"key": "tier", "head": "tier", "md": "tier", "kind": "text"},
+                {"key": "prereg", "head": "pre-reg.", "md": "pre-registered id", "kind": "text"}]
+        for bud in DEV2_PAIR_BUDGETS:
+            g = f"B{bud}"
+            cols += [{"key": f"d{bud}", "head": "mean", "group": g, "md": f"B{bud} mean A − B",
+                      "kind": "rrms"},
+                     {"key": f"ci{bud}", "head": "95% CI", "group": g,
+                      "md": f"B{bud} clustered 95% CI", "kind": "rtext"},
+                     {"key": f"p{bud}", "head": "p", "group": g,
+                      "md": f"B{bud} Wilcoxon p (geometry)", "kind": "rtext"},
+                     {"key": f"w{bud}", "head": "W/T/L", "group": g, "md": f"B{bud} W/T/L",
+                      "kind": "rtext"}]
+        t = Table(f"dev2_{stem}", f"DEV iteration 2 paired comparisons: {caption}", cols, rows,
+                  ["Difference A − B over the 36 targets (negative: A lower). Tier a: strict "
+                   "paper RRMS; tier c: excess over floor (a difference of excesses equals the "
+                   "difference of raw RRMS). Per-target value = mean over the arm's seeds.",
+                   "95% CI: geometry-clustered bootstrap (10,000 resamples of the 18 geometries, "
+                   "seed 0; seeds resampled within a target when an arm has 2 or more). p: "
+                   "two-sided Wilcoxon signed-rank on the 18 geometry-mean differences, "
+                   "unadjusted; rows with a pre-registered id (C1-C6, prereg_iter2.json) also "
+                   "give the Holm-adjusted p over the 36 pre-registered tests "
+                   "(stats_iter2/stats.json). Rows without an id are ablations, not "
+                   "pre-registered, and carry no multiplicity correction.",
+                   "W/T/L: wins/ties/losses of A over the 36 targets, tie when |diff| < "
+                   "max(1e-6, 1% of the larger value) (dev_compare.paired)."])
+        png = name(stem)
+        render_table(t, folder / png)
+        md_parts.append(table_markdown(t))
+        items.append((png, f"Table of paired differences A − B at B500/B2000/B5000 on both tiers "
+                      f"for {caption}: "
+                      + "; ".join(f"{a} − {b}" for a, b in pairs)
+                      + ", with geometry-clustered 95% CIs, Wilcoxon p (Holm p for the "
+                      "pre-registered C1-C6 rows) and W/T/L; sources: "
+                      + srcs([DEV2_TIERS[k]["registry"] for k in tiers] + [rel(DEV2_STATS)])
+                      + "."))
+
+    # 8. λ decision table -----------------------------------------------------
+    dec_text = []
+    if decision is not None:
+        rows = []
+        for fam_name, fam in decision["families"].items():
+            for e in fam["evaluated"]:
+                for r in e["rules"]:
+                    rows.append({"family": fam_name, "arm": e["arm"], "role": "evaluated",
+                                 "rule": r["rule"], "cond": f"tier {r['tier']}, B{r['budget']}",
+                                 "ref": r["reference"], "diff": r.get("mean_diff"),
+                                 "ci": (f"[{fmt(r['ci'][0], 'rrms')}, {fmt(r['ci'][1], 'rrms')}]"
+                                        if r.get("ci") else "–"),
+                                 "bound": ("< " if r["strict_inequality"] else "≤ ")
+                                 + f"{r['bound']:g}",
+                                 "pass": "pass" if r["pass"] else "fail"})
+        for arm, rules in decision.get("ablations_reported_not_selected", {}).items():
+            for r in rules:
+                rows.append({"family": "sketch", "arm": arm, "role": "ablation",
+                             "rule": r["rule"], "cond": f"tier {r['tier']}, B{r['budget']}",
+                             "ref": r["reference"], "diff": r.get("mean_diff"),
+                             "ci": (f"[{fmt(r['ci'][0], 'rrms')}, {fmt(r['ci'][1], 'rrms')}]"
+                                    if r.get("ci") else "–"),
+                             "bound": ("< " if r["strict_inequality"] else "≤ ") + f"{r['bound']:g}",
+                             "pass": "pass" if r["pass"] else "fail"})
+        cands = decision["frozen_candidates"]
+        dec_text = [
+            f"Status: {decision['status']}. Result: {decision['result']}. Frozen candidate per "
+            "family: " + "; ".join(f"{f} family: {c if c else 'none'}" for f, c in cands.items())
+            + f". TEST run: {decision['test_run']}.",
+            "Rule: an arm is frozen when the upper end of its 95% CI meets all of A1-A4; order "
+            "lam_curve_k8, lam_scalar_k8, lam_cusum_k8 (sketch family) and hyb_lam_curve (hybrid "
+            "family); lam_radius_k8 is reported, not selectable. CI: " + decision["ci_used"] + "."]
+        for fam_name, fam in decision["families"].items():
+            dec_text.append(f"{fam_name} family controls: "
+                            + ", ".join(f"{k} = {v}" for k, v in fam["controls"].items())
+                            + f" ({fam['controls_resolution']['status']}); candidate before the "
+                            f"validity rule: {fam['candidate_before_validity'] or 'none'}.")
+        n_warn = len(decision["checks"].get("warn_rows", []))
+        dec_text.append(f"Hard checks: {decision['checks']['n_fail']} FAIL rows of "
+                        f"{decision['checks']['n_rows']}; {n_warn} WARN rows for batched-probe "
+                        "score gaps (see README).")
+        t = Table("dev2_lambda_decision", "Pre-registered λ decision (n2b): rules A1-A4 per "
+                  "evaluated arm", [
+                      {"key": "family", "head": "family", "md": "family", "kind": "text"},
+                      {"key": "arm", "head": "arm", "md": "arm", "kind": "text"},
+                      {"key": "role", "head": "role", "md": "role", "kind": "text"},
+                      {"key": "rule", "head": "rule", "md": "rule", "kind": "text"},
+                      {"key": "cond", "head": "tier, budget", "md": "tier, budget", "kind": "text"},
+                      {"key": "ref", "head": "control", "md": "control", "kind": "text"},
+                      {"key": "diff", "head": "mean", "group": "arm − control",
+                       "md": "mean arm − control", "kind": "rrms"},
+                      {"key": "ci", "head": "95% CI", "group": "arm − control",
+                       "md": "95% CI", "kind": "rtext"},
+                      {"key": "bound", "head": "CI upper", "md": "required CI upper",
+                       "kind": "rtext"},
+                      {"key": "pass", "head": "rule", "md": "pass/fail", "kind": "rtext"}],
+                  rows, dec_text + ["A1: tier a B500 vs λ = 1 control, CI upper ≤ +0.002; A2: tier "
+                                    "a B5000 vs λ = 0 control, ≤ +0.0005; A3: tier c B500 vs λ = 0 "
+                                    "control, < 0; A4: tier c B5000 vs λ = 0 control, ≤ +0.001."])
+        png = name("table_lambda_decision")
+        render_table(t, folder / png)
+        md_parts.append(table_markdown(t))
+        items.append((png, "Table of the pre-registered n2b λ decision: rules A1-A4 for each "
+                      "evaluated λ arm and the reported ablation arms, with mean difference, "
+                      "clustered 95% CI, required bound and pass/fail, and the outcome in the "
+                      f"notes; sources: {srcs([rel(DEV2_LAMBDA)])}."))
+
+    # README sections ---------------------------------------------------------
+    README_SECTIONS.append(("Scope", [
+        "Ablation report of DEV iteration 2. DEV = simulated targets set_0 and set_1 (18 devices "
+        "each, 36 targets); TEST (set_2 and the 18 measured devices) is not used. Tier a: "
+        "well-specified targets (out/research/sim_targets). Tier c: misspecified sky130c targets "
+        "(out/research/sim_targets_sky130c, strength 2), scored as excess over the per-target "
+        "refit floor. No per-target or cross-arm minimum is taken."]))
+    if dec_text:
+        README_SECTIONS.append(("Pre-registered λ decision (n2b)", dec_text + [
+            "Pre-registration: lambda_tr.py PRE_REGISTERED (n2b, rules A1-A4) and "
+            "out/research/dev/prereg_iter2.json (n2c, comparisons C1-C6, Holm over 36 tests)"
+            + (f", committed {prereg.get('written')}" if prereg else "") + "."]))
+    if stats is not None:
+        res = stats["results"]
+        rej = [t["id"] for t in res["tests"] if t.get("holm_reject")]
+        README_SECTIONS.append(("Pre-registered C1-C6 (n2c)", [
+            f"{res['n_computed']} of {res['n_tests']} tests computed; {res['n_holm_reject']} "
+            "Holm-adjusted p ≤ 0.05: " + (", ".join(rej) or "none") + ". Per-test values are in "
+            "the paired tables (rows with a pre-registered id) and in "
+            "out/research/dev/stats_iter2/stats.md."]))
+    README_SECTIONS.append(("Check change in this batch", [
+        "The first runs of the seven comparison jobs (2026-10-17) exited 1 for two reasons. (1) "
+        "The registries listed the seed-1/2 replicate arms (sketch_surrogate_k8__seed1/2, "
+        "sketch_none_k8__seed1/2) before their runs existed; the runs finished later the same "
+        "day and are present now. (2) dev_compare's check 'fresh rrms == best_at(trace)' failed "
+        "on 14 tier-c records, all pmos_L8_W0p84, with relative gaps 2.5e-5 to 4.6e-5: the "
+        "in-loop best was a Jacobian probe simulated in a multi-card altermod NGSpice process "
+        "after a non-converged card in the same process, and its fresh single-process score "
+        "differs. A reproduction of lam_scalar_k8 set_0 B1000 shows the gap at call 225 (batch "
+        "of 8, cards 0, 4, 5 failed, best = card 3: in-loop 0.0870815702, fresh 0.0870854113); "
+        "every new best from a batch without failed cards matches exactly.",
+        "dev_compare.py now reports such a gap as a WARN row when the record's best_kind is a "
+        "batched probe and the relative gap is at most 1e-4; any other gap remains a FAIL. The "
+        "fresh rrms is the value used in every table. lambda_tr.py decide lists these WARN rows. "
+        "Under the pre-registered validity rule these rows had withdrawn the sketch-family "
+        "candidate; no arm passed A1-A4 before or after the change, so the decision outcome does "
+        "not depend on it."]))
+
+    # index summary ------------------------------------------------------------
+    for key in tiers:
+        bits = []
+        for label in ("sketch_surrogate_k8", "sketch_none_k8", "lam_curve_k8", "hybrid_surrogate",
+                      "hybrid_none", "dfols_style", "cmaes_trf"):
+            v5, v50 = levels.get((key, label, 500)), levels.get((key, label, 5000))
+            if v5 or v50:
+                bits.append(f"{label} {fmt(v5['mean'] if v5 else None, 'rrms')} / "
+                            f"{fmt(v50['mean'] if v50 else None, 'rrms')}")
+        summary_lines.append(f"DEV iteration 2 (ablation), {DEV2_TIERS[key]['short']}, "
+                             f"{DEV2_TIERS[key]['endpoint']} at B500 / B5000: "
+                             + "; ".join(bits) + ".")
+    if decision is not None:
+        summary_lines.append(f"Pre-registered λ decision (n2b): {decision['result']}; frozen "
+                             "candidate per family: " + "; ".join(
+                                 f"{f} family: {c or 'none'}" for f, c in
+                                 decision["frozen_candidates"].items()) + ".")
+    if stats is not None:
+        summary_lines.append("Pre-registered C1-C6: " + ", ".join(
+            t["id"] for t in stats["results"]["tests"] if t.get("holm_reject"))
+            + " have Holm p ≤ 0.05.")
+    bad = [r for r in checks.rows if r["level"] == "FAIL"]
+    if bad:
+        LOG.note(f"{len(bad)} FAIL check rows while loading the registries: "
+                 + "; ".join(r["check"] for r in bad[:5]))
+
+
 def candidate_files(topic: str = "") -> list[str]:
     if topic.startswith("arch"):
         pats = ["out/research/surrogate_arch/full_round_1/*.json",
@@ -2336,6 +2840,14 @@ def candidate_files(topic: str = "") -> list[str]:
                 "out/research/polished/pipe43_r*_fixed_fd/real/summary.json",
                 "out/research/swap_search/full_round_1/summary.json",
                 "out/research/surrogate_gap_full_round_1.json"]
+        return sorted({rel(p) for pat in pats for p in ROOT.glob(pat)})
+    if topic.startswith("dev_iteration2"):
+        pats = ["out/research/dev/compare_iter2/compare.json",
+                "out/research/dev_sky130c/compare/compare.json",
+                "out/research/dev_sky130c/compare_floor_lambda/compare_floor.json",
+                "out/research/dev/stats_iter2/stats.json",
+                "out/research/dev/lambda_decision.json",
+                "out/research/dev/prereg_iter2.json"]
         return sorted({rel(p) for pat in pats for p in ROOT.glob(pat)})
     if topic.startswith("dev"):
         pats = ["out/research/dev/compare.json", "out/research/dev/compare.md",
@@ -2379,7 +2891,9 @@ def main() -> int:
     def srcs(files) -> str:
         return ", ".join(f"`{f}`" for f in files)
 
-    if topic.startswith("dev"):
+    if topic.startswith("dev_iteration2"):
+        dev2_sections(folder, name, srcs, items, md_parts, summary_lines)
+    elif topic.startswith("dev"):
         dev_sections(folder, name, srcs, items, md_parts, summary_lines)
     elif topic.startswith("arch"):
         arch_sections(folder, name, srcs, items, md_parts, summary_lines)

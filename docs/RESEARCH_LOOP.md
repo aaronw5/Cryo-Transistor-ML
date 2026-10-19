@@ -461,3 +461,14 @@ the DEV/TEST protocol), all-device RRMS (test loss): paper MLP 0.2348 (0.0331), 
 architectures the end-to-end range is 0.227-0.255. The architecture with the lowest test loss
 (FNO) has the highest end-to-end RRMS.
 Report: out/research/report/2026-10-17_arch_study/.
+
+## Iteration-2 DEV results (ablation; reported 2026-10-19)
+
+B500 / B5000. Tier a: RRMS. Tier c (misspecified sky130, strength 2): excess over the per-target floor.
+sketch+surrogate 0.0334/0.0082 and 0.0221/0.0047; sketch NGSpice-only 0.0367/0.0024 and 0.0225/0.0022;
+lambda per-curve 0.0317/0.0062 and 0.0200/0.0039; hybrid+surrogate 0.0463/0.0114 and 0.0304/0.0064;
+hybrid NGSpice-only 0.0579/0.0058 and 0.0401/0.0041; DFO-LS-style 0.0579/0.0076 and 0.0406/0.0062.
+Pre-registered lambda decision: negative (no arm passed rules A1-A4). No TEST run.
+The search-efficiency line ends here as an ablation (see memory exploration-phase).
+Fixes: dev_compare tolerates a <=1e-4 fresh-vs-trace gap only on batched-probe bests (WARN);
+temp_study FNO OOM (low-memory kill) fixed; rerun queued as temp_sur_fno_r.

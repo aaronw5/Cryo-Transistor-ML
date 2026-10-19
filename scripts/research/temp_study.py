@@ -322,8 +322,18 @@ def load_training(temps):
             np.stack(scales).astype(np.float32), orders)
 
 
+def release_device_memory(device) -> None:
+    """Return the allocator's cached blocks (MPS keeps freed training tensors
+    and activation buffers reserved; on unified memory that is host RAM)."""
+    import gc
+    import torch
+    gc.collect()
+    if getattr(device, "type", str(device)) == "mps":
+        torch.mps.empty_cache()
+
+
 def train_surrogate(arch: str, out_dir: Path, epochs: int, batch_size: int,
-                    patience: int, seed: int = 20261016):
+                    patience: int, seed: int = 20261016, eval_batch: int = 4096):
     import torch
     import torch.nn.functional as F
     from cryoml.foundation import current_from_signed_log, signed_log
@@ -335,9 +345,11 @@ def train_surrogate(arch: str, out_dir: Path, epochs: int, batch_size: int,
     mean, std = slog.mean(0), slog.std(0).clamp_min(1e-3)
     model = build(arch, feats.shape[1], temperature=True).to(device)
     if path.exists():
+        del feats, current, ids, sample_ids, scales, slog
         state = torch.load(path, map_location=device, weights_only=False)
         model.load_state_dict(state["state"])
         model.eval()
+        release_device_memory(device)
         return model, state["mean"].to(device), state["std"].to(device), orders, device
     rng = np.random.default_rng(seed)
     n_samples = sample_ids.max() + 1
@@ -379,8 +391,9 @@ def train_surrogate(arch: str, out_dir: Path, epochs: int, batch_size: int,
         scheduler.step()
         model.eval()
         with torch.no_grad():
-            val = sum(float(loss_fn(val_idx[s:s + 4096])) * len(val_idx[s:s + 4096])
-                      for s in range(0, len(val_idx), 4096)) / len(val_idx)
+            val = sum(float(loss_fn(val_idx[s:s + eval_batch]))
+                      * len(val_idx[s:s + eval_batch])
+                      for s in range(0, len(val_idx), eval_batch)) / len(val_idx)
         history.append({"epoch": epoch + 1, "train": total / len(train_idx), "val": val})
         print(f"{arch} epoch {epoch + 1} train {total / len(train_idx):.5f} val {val:.5f} "
               f"{time.time() - t0:.0f}s", flush=True)
@@ -399,11 +412,18 @@ def train_surrogate(arch: str, out_dir: Path, epochs: int, batch_size: int,
         "arch": arch, "best_val": best, "epochs": len(history),
         "train_s": round(time.time() - t0, 1), "n_train": int(len(train_idx)),
         "history": history}, indent=1) + "\n")
+    # The training tensors (full bank on the device, ~12 GB for 4 temperatures)
+    # and the cached activation buffers are not needed after training.
+    del X, Y, C, D, S, train_idx, val_idx, loss_fn, optimizer, best_state
+    del feats, current, ids, sample_ids, scales, slog
+    release_device_memory(device)
     return model, mean_d, std_d, orders, device
 
 
-def heldout_emulator_error(model, mean, std, device):
-    """Emulator loss at observed vs held-out temperatures on bank samples."""
+def heldout_emulator_error(model, mean, std, device, eval_batch: int = 4096):
+    """Emulator loss at observed vs held-out temperatures on bank samples.
+    Only the 40,000 sampled rows are kept from each full-bank load, so the
+    two temperature sets are never resident together."""
     import torch
     from cryoml.foundation import current_from_signed_log
     out = {}
@@ -411,10 +431,12 @@ def heldout_emulator_error(model, mean, std, device):
         feats, current, ids, sample_ids, scales, _ = load_training(temps)
         rng = np.random.default_rng(7)
         pick = rng.choice(len(feats), size=min(40000, len(feats)), replace=False)
+        feats, current = feats[pick], current[pick]
+        del ids, sample_ids, scales
         errors = []
         with torch.no_grad():
-            for s in range(0, len(pick), 4096):
-                index = pick[s:s + 4096]
+            for s in range(0, len(pick), eval_batch):
+                index = np.arange(s, min(s + eval_batch, len(pick)))
                 pred = current_from_signed_log(
                     model(torch.tensor(feats[index], device=device)) * std + mean).cpu().numpy()
                 true = current[index]
@@ -423,6 +445,8 @@ def heldout_emulator_error(model, mean, std, device):
                 peak = np.maximum(peak, 1e-3 * peak.max(-1, keepdims=True))
                 errors.append((np.sqrt((err ** 2).mean(-1)) / peak).mean(-1))
         errors = np.concatenate(errors)
+        del feats, current
+        release_device_memory(device)
         out[name] = {"curve_nrmse_median": float(np.median(errors)),
                      "curve_nrmse_mean": float(np.mean(errors))}
     return out
@@ -491,8 +515,9 @@ def validate_job(job):
 def cmd_surrogate(args):
     out_dir = RESULTS / f"surrogate_{args.arch}"
     model, mean, std, orders, device = train_surrogate(
-        args.arch, out_dir, args.epochs, args.batch_size, args.patience)
-    emulator = heldout_emulator_error(model, mean, std, device)
+        args.arch, out_dir, args.epochs, args.batch_size, args.patience,
+        eval_batch=args.eval_batch)
+    emulator = heldout_emulator_error(model, mean, std, device, args.eval_batch)
     print("emulator", json.dumps(emulator), flush=True)
     (model, mean, std, target), timings = search_device(
         args.search_device, model, mean, std, orders,
@@ -717,6 +742,9 @@ def main() -> int:
     p.add_argument("--epochs", type=int, default=150)
     p.add_argument("--batch-size", type=int, default=1024)
     p.add_argument("--patience", type=int, default=20)
+    p.add_argument("--eval-batch", type=int, default=4096,
+                   help="rows per no-grad forward pass (validation loss, emulator "
+                        "error); FNO activations are ~0.5 MB per row")
     p.add_argument("--polish-nfev", type=int, default=400)
     p.add_argument("--workers", type=int, default=10)
     p.add_argument("--search-device", default="auto", choices=("auto", "cpu", "mps"),

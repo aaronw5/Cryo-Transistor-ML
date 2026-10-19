@@ -2,6 +2,17 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-19 · dev_iteration2_ablation
+
+Folder: [2026-10-19_dev_iteration2_ablation/](2026-10-19_dev_iteration2_ablation/) · [tables.md](2026-10-19_dev_iteration2_ablation/tables.md) · [README.md](2026-10-19_dev_iteration2_ablation/README.md)
+
+- DEV iteration 2 (ablation), tier a, pooled mean paper RRMS (strict) at B500 / B5000: sketch_surrogate_k8 0.0334 / 0.0082; sketch_none_k8 0.0367 / 0.0024; lam_curve_k8 0.0317 / 0.0062; hybrid_surrogate 0.0463 / 0.0114; hybrid_none 0.0579 / 0.0058; dfols_style 0.0579 / 0.0076; cmaes_trf 0.0565 / 0.0109.
+- DEV iteration 2 (ablation), tier c, pooled mean excess over floor (RRMS − floor) at B500 / B5000: sketch_surrogate_k8 0.0221 / 0.0047; sketch_none_k8 0.0225 / 0.0022; lam_curve_k8 0.0200 / 0.0039; hybrid_surrogate 0.0304 / 0.0064; hybrid_none 0.0401 / 0.0041; dfols_style 0.0406 / 0.0062; cmaes_trf 0.0388 / 0.0151.
+- Pre-registered λ decision (n2b): negative; frozen candidate per family: sketch family: none; hybrid family: none.
+- Pre-registered C1-C6: C1_a_B5000, C2_a_B500, C3_a_B5000, C5_a_B500, C5_a_B2000, C5_a_B5000, C5_c_B500, C5_c_B2000, C5_c_B5000, C6_a_B500, C6_c_B500, C6_c_B2000 have Holm p ≤ 0.05.
+
+Figures and tables: [01_anytime_families_tier_a.png](2026-10-19_dev_iteration2_ablation/01_anytime_families_tier_a.png) · [02_anytime_families_tier_c.png](2026-10-19_dev_iteration2_ablation/02_anytime_families_tier_c.png) · [03_table_primary_tier_a.png](2026-10-19_dev_iteration2_ablation/03_table_primary_tier_a.png) · [04_table_primary_tier_c.png](2026-10-19_dev_iteration2_ablation/04_table_primary_tier_c.png) · [05_table_paired_lambda.png](2026-10-19_dev_iteration2_ablation/05_table_paired_lambda.png) · [06_table_paired_surrogate.png](2026-10-19_dev_iteration2_ablation/06_table_paired_surrogate.png) · [07_table_paired_dfols.png](2026-10-19_dev_iteration2_ablation/07_table_paired_dfols.png) · [08_table_lambda_decision.png](2026-10-19_dev_iteration2_ablation/08_table_lambda_decision.png)
+
 ## 2026-10-17 · arch_study
 
 Folder: [2026-10-17_arch_study/](2026-10-17_arch_study/) · [tables.md](2026-10-17_arch_study/tables.md) · [README.md](2026-10-17_arch_study/README.md)

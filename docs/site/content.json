@@ -1637,7 +1637,8 @@
     "The pooled mean weights every target's RRMS equally, so targets with large RRMS move it most; `compare.md` lists the median, geometric mean, worst target and per-set values for every arm and budget.",
     "The bootstrap resamples the 36 targets; each device geometry appears once in each of the two sets.",
     "These are DEV results only; no TEST run (the 18 measured devices, `set_2`) of these arms is reported.",
-    "01_compare_curves.png draws the first 8 arms only; 05_dev_families.png shows the surrogate and NGSpice-only arms of each family with CMA-ES + TRF."
+    "01_compare_curves.png draws the first 8 arms only; 05_dev_families.png shows the surrogate and NGSpice-only arms of each family with CMA-ES + TRF.",
+    "Iteration 2 (seed replicates, λ arms, DFO-LS-style baseline, tier c misspecified targets) is reported as an ablation in [dev-iter2](#claim-dev-iter2)."
    ],
    "sources": [
     "scripts/research/sketch_tr.py",
@@ -1656,6 +1657,142 @@
     "out/research/done.txt"
    ],
    "updated": "2026-10-16"
+  },
+  {
+   "id": "dev-iter2",
+   "tab": "icml",
+   "statement": "Ablation, DEV iteration 2: on 36 well-specified (tier a) and 36 misspecified sky130c (tier c) simulated targets, no λ-weighted surrogate arm met the pre-registered rules A1-A4, so the n2b λ decision is negative and no TEST run follows; at 5000 NGSpice calls the NGSpice-only sketched trust region has the lowest pooled value on both tiers (tier a RRMS 0.0024, tier c excess over floor 0.0022).",
+   "status": "verified",
+   "headline": {
+    "value": "λ decision negative · B5000 sketch_none_k8 0.0024 (a) / 0.0022 (c)",
+    "convention": "ablation; pooled mean over 36 DEV targets, seed mean per target; tier a strict paper RRMS, tier c RRMS − per-target floor"
+   },
+   "numbers": [
+    {
+     "label": "tier a, sketch_surrogate_k8 / sketch_none_k8 / lam_curve_k8",
+     "value": "B500 0.0334 / 0.0367 / 0.0317 · B5000 0.0082 / 0.0024 / 0.0062",
+     "convention": "pooled mean strict RRMS, 3 seeds each",
+     "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
+    },
+    {
+     "label": "tier a, hybrid_surrogate / hybrid_none / hyb_lam_curve",
+     "value": "B500 0.0463 / 0.0579 / 0.0447 · B5000 0.0114 / 0.0058 / 0.0050",
+     "convention": "pooled mean strict RRMS, 1 seed",
+     "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
+    },
+    {
+     "label": "tier a, dfols_style / dfols_style_1start / cmaes_trf",
+     "value": "B500 0.0579 / 0.0461 / 0.0565 · B5000 0.0076 / 0.0056 / 0.0109",
+     "convention": "pooled mean strict RRMS",
+     "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
+    },
+    {
+     "label": "tier c, sketch_surrogate_k8 / sketch_none_k8 / lam_curve_k8",
+     "value": "B500 0.0221 / 0.0225 / 0.0200 · B5000 0.0047 / 0.0022 / 0.0039",
+     "convention": "pooled mean excess over floor (mean floor 0.0478), 3 seeds each",
+     "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
+    },
+    {
+     "label": "tier c, hybrid_surrogate / hybrid_none / hyb_lam_curve",
+     "value": "B500 0.0304 / 0.0401 / 0.0303 · B5000 0.0064 / 0.0041 / 0.0054",
+     "convention": "pooled mean excess over floor",
+     "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
+    },
+    {
+     "label": "tier c, dfols_style / dfols_style_1start / cmaes_trf",
+     "value": "B500 0.0406 / 0.0329 / 0.0388 · B5000 0.0062 / 0.0055 / 0.0151",
+     "convention": "pooled mean excess over floor",
+     "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
+    },
+    {
+     "label": "n2b λ decision",
+     "value": "negative; frozen candidate per family: sketch none, hybrid none; TEST run: none (negative result)",
+     "convention": "pre-registered rules A1-A4 (lambda_tr.py PRE_REGISTERED), geometry-clustered 95% CI",
+     "source": "out/research/dev/lambda_decision.json"
+    },
+    {
+     "label": "Pre-registered C1-C6 with Holm p ≤ 0.05",
+     "value": "C1_a_B5000, C2_a_B500, C3_a_B5000, C5_a_B500, C5_a_B2000, C5_a_B5000, C5_c_B500, C5_c_B2000, C5_c_B5000, C6_a_B500, C6_c_B500, C6_c_B2000",
+     "convention": "36 tests, Holm at 0.05 on the geometry-level Wilcoxon p",
+     "source": "out/research/dev/stats_iter2/stats.json"
+    }
+   ],
+   "what": [
+    "Question: does a per-curve or adaptive surrogate weight λ (n2b: `lam_curve_k8`, `lam_scalar_k8`, `lam_cusum_k8`, `lam_radius_k8`, `hyb_lam_curve`) lower the paper RRMS at a fixed NGSpice budget compared with λ = 0 (NGSpice only) and λ = 1 (full surrogate term), on well-specified and on misspecified targets; and how the named DFO-LS-style baseline (`dfols_style`) compares.",
+    "Tier a: `out/research/sim_targets` set_0 and set_1 (zero-residual targets). Tier c: `out/research/sim_targets_sky130c` set_0 and set_1 at strength 2 (misspecified; scored as RRMS minus the per-target refit floor from `floors.json`). 18 devices per set, 36 targets per tier; budgets 500, 1000, 2000, 5000 NGSpice calls per target, Jacobian probes included.",
+    "This is an ablation report. Per-target value = mean over the arm's seeds; pre-registered tests: `out/research/dev/prereg_iter2.json` (C1-C6) and `lambda_tr.py` PRE_REGISTERED (A1-A4)."
+   ],
+   "did": [
+    "Seven comparison jobs of 2026-10-17 (`dev_compare_iter2_r`, `dev_compare_sky130c_r`, `dev_compare_floor_sky130c_r`, `dev_compare_iter2_lambda`, `dev_compare_sky130c_lambda`, `dev_compare_floor_lambda`, `dev_lambda_decision`) ended rc=1. Causes: the seed-1/2 replicate arms were in the registries before their runs finished; and dev_compare's 'fresh rrms == best_at(trace)' check failed on 14 tier-c pmos_L8_W0p84 records (relative gaps 2.5e-5 to 4.6e-5), where the in-loop best was a Jacobian probe scored in a multi-card altermod NGSpice process after a non-converged card.",
+    "`dev_compare.py` now reports a gap of at most 1e-4 relative on a batched-probe best as a WARN row (fresh RRMS stays the value); other gaps remain FAIL. The seven jobs were rerun on 2026-10-19 with rc=0 (logs `out/research/logs/*_rerun.log`); `dev_stats.py --prereg` wrote `out/research/dev/stats_iter2`.",
+    "Report batch `2026-10-19_dev_iteration2_ablation`: `scripts/research/report_figs.py --topic dev_iteration2_ablation --date 2026-10-19`."
+   ],
+   "result": {
+    "text": [
+     "n2b λ decision (pre-registered): result negative. Rules failed: lam_curve_k8 A2, A3, A4; lam_scalar_k8 A2, A3, A4; lam_cusum_k8 A2, A3; hyb_lam_curve A1, A4. Frozen candidates: none in the sketch family, none in the hybrid family. No TEST run follows. Controls resolved by exact P1 parity to the iteration-1 controls (sketch_none_k8 / sketch_surrogate_k8, hybrid_none / hybrid_surrogate).",
+     "Before the check change the decision file read 'hard checks failed (candidate withdrawn)'; no arm passed A1-A4 then either, so the outcome is the same.",
+     "C1 `sketch_surrogate_k8` − `sketch_none_k8`: tier a B500 -0.0033 [-0.0121, +0.0047], Holm p 1.000; tier a B5000 +0.0058 [+0.0020, +0.0117], Holm p 0.010; tier c B500 -0.0004 [-0.0054, +0.0050], Holm p 1.000; tier c B5000 +0.0025 [+0.0010, +0.0042], Holm p 0.151.",
+     "C3 `lam_curve_k8` − `sketch_none_k8`: tier a B500 -0.0050 [-0.0123, +0.0017], Holm p 1.000; tier a B5000 +0.0038 [+0.0016, +0.0068], Holm p 0.024; tier c B500 -0.0025 [-0.0068, +0.0023], Holm p 1.000; tier c B5000 +0.0017 [+0.0005, +0.0030], Holm p 0.197.",
+     "C5 `dfols_style` − `sketch_none_k8`: tier a B500 +0.0212 [+0.0053, +0.0377], Holm p 0.043; tier a B5000 +0.0052 [+0.0031, +0.0076], Holm p 0.013; tier c B500 +0.0181 [+0.0090, +0.0314], Holm p 0.000; tier c B5000 +0.0040 [+0.0018, +0.0066], Holm p 0.043."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "file": "01_anytime_families_tier_a.png"
+     },
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "file": "02_anytime_families_tier_c.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "table": "DEV iteration 2, tier a"
+     },
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "table": "DEV iteration 2, tier c"
+     },
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "table": "DEV iteration 2 paired comparisons: λ arms"
+     },
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "table": "DEV iteration 2 paired comparisons: surrogate term"
+     },
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "table": "DEV iteration 2 paired comparisons: DFO-LS"
+     },
+     {
+      "batch": "2026-10-19_dev_iteration2_ablation",
+      "table": "Pre-registered λ decision"
+     }
+    ]
+   },
+   "caveats": [
+    "Ablation on DEV targets only; no TEST (set_2, measured devices) result is reported.",
+    "Only sketch_surrogate_k8, sketch_none_k8 and lam_curve_k8 have three seeds; the other arms have one.",
+    "Paired rows without a pre-registered id carry no multiplicity correction.",
+    "The tier-c floor is the per-target refit floor (finalized = min(polish, reference)); excess values can be negative for a target."
+   ],
+   "sources": [
+    "scripts/research/dev_compare.py",
+    "scripts/research/dev_compare_floor.py",
+    "scripts/research/dev_stats.py",
+    "scripts/research/lambda_tr.py",
+    "scripts/research/report_figs.py",
+    "out/research/dev/arms_iter2.json",
+    "out/research/dev_sky130c/arms.json",
+    "out/research/sim_targets_sky130c/floors.json",
+    "out/research/dev/prereg_iter2.json",
+    "out/research/dev/lambda_decision.json",
+    "out/research/dev/stats_iter2/stats.json",
+    "out/research/report/2026-10-19_dev_iteration2_ablation/README.md"
+   ],
+   "updated": "2026-10-19"
   },
   {
    "id": "icml-pdk2-floors",

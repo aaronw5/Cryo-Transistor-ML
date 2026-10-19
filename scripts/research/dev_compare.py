@@ -41,7 +41,9 @@ have no record of their card, so their status is not checked.
 
 Hard checks (each printed; any failure exits 1 unless ``--allow-partial``):
 18 records per set; every ``n_ngspice_calls`` within its budget; the fresh
-``rrms`` equals ``best_at(trace, budget)``; every run's ``summary.json`` says
+``rrms`` equals ``best_at(trace, budget)`` (a gap up to 1e-4 relative on a
+record whose in-loop best is a batched altermod probe is a WARN row, see
+``BATCHED_PROBE_KINDS``); every run's ``summary.json`` says
 ``target_override`` true and every record's bank-oracle score equals the one
 recomputed from that set's override targets (so TEST or real-device runs, or
 a run on the other set, are refused); no cross-arm best-of.
@@ -73,6 +75,14 @@ N_DEVICES = 18
 FLOOR = 1e-6
 THRESHOLDS = (0.05, 0.01)
 BANK_NOTE = "pre-paid bank 10k/geometry, shared by all arms"
+# In-loop best kinds scored inside a multi-card altermod NGSpice process
+# (hybrid_tr.NgspiceResiduals._simulate_many, cmaes_trace TRF probes).  A card
+# that follows a non-converged card in the same process can differ from its
+# own fresh single-process simulation (measured: pmos_L8_W0p84 on the sky130c
+# targets, relative gap 4.4e-5).  Such a gap up to PROBE_DRIFT_REL is reported
+# as a WARN row; the record's fresh ``rrms`` stays the primary value.
+BATCHED_PROBE_KINDS = ("jacobian_probe", "trf_jacobian_probe")
+PROBE_DRIFT_REL = 1e-4
 
 
 # ----------------------------------------------------------------- statistics
@@ -327,11 +337,23 @@ def load_run(directory: Path, method_key: str, budget: int | None,
         over = [t for t, r in records.items()
                 if r["n_ngspice_calls"] > budget or r.get("budget") != budget]
         checks(f"{where}: n_ngspice_calls <= {budget}", not over, f"{over}")
-        drift = [t for t, r in records.items()
-                 if abs(r["rrms"] - best_at(r["trace"], budget))
-                 > 1e-6 * max(1.0, abs(r["rrms"]))]
+        drift, probe_drift = [], []
+        for t, r in records.items():
+            gap = abs(r["rrms"] - best_at(r["trace"], budget))
+            if gap <= 1e-6 * max(1.0, abs(r["rrms"])):
+                continue
+            if (r.get("best_kind") in BATCHED_PROBE_KINDS
+                    and gap <= PROBE_DRIFT_REL * abs(r["rrms"])):
+                probe_drift.append(f"{t} ({gap / abs(r['rrms']):.1e})")
+            else:
+                drift.append(t)
         checks(f"{where}: fresh rrms == best_at(trace, {budget})", not drift,
                f"{drift}")
+        if probe_drift:
+            checks.warn(f"{where}: batched-probe in-loop score != fresh "
+                        f"single-process score (relative gap <= "
+                        f"{PROBE_DRIFT_REL:g}; the fresh rrms is the value)",
+                        f"{probe_drift}")
     return records
 
 
