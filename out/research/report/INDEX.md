@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-19 · explore_e4p7_e5
+
+Folder: [2026-10-19_explore_e4p7_e5/](2026-10-19_explore_e4p7_e5/) · [tables.md](2026-10-19_explore_e4p7_e5/tables.md) · [README.md](2026-10-19_explore_e4p7_e5/README.md)
+
+- E4 p7 (secondary), held-out all-device: vd single 1.4536, ens 1.5017, learned 0.8253 (< single on 10/12, C2 yes; coverage 0.980, C1 no; C3 no vs crossinterp 0.1607); ens coverage 0.650 (C1 no): rule output KILL. vg single 0.2527, ens and Laplace C1 yes (coverage 0.757, 0.766), C2 no: PARTIAL_CALIBRATION_ONLY. sparse single 8.5733: KILL. The E4 decision (p43 vd, PARTIAL_CALIBRATION_ONLY) is unchanged.
+- E4 p7 vs p43, single card held-out all-device: vd 1.4536 vs 0.4177, sparse 8.5733 vs 0.3945, vg 0.2527 vs 0.2070; crossinterp is lower than single on 12/12 devices in every p7 split.
+- E5 stage 1 (decision, 43-parameter base, LODO), all-device (combined): A0 0.1073 (0.0981), A2 0.2004 (0.2024); reduction -0.868, A2 < A0 on 1/12: KILL. A1 0.1221, A4 0.1681, A3 oracle 0.0343. Stage 2 (diagnostic): joint refit 0.1235 vs control polish 0.1072, reduction -0.152, 3/12.
+
+Figures and tables: [01_table_e4p7_decision.png](2026-10-19_explore_e4p7_e5/01_table_e4p7_decision.png) · [02_e4p7_per_device.png](2026-10-19_explore_e4p7_e5/02_e4p7_per_device.png) · [03_table_e4p7_results.png](2026-10-19_explore_e4p7_e5/03_table_e4p7_results.png) · [04_table_e4_p43_vs_p7.png](2026-10-19_explore_e4p7_e5/04_table_e4_p43_vs_p7.png) · [05_table_e5_decision.png](2026-10-19_explore_e4p7_e5/05_table_e5_decision.png) · [06_e5_per_device.png](2026-10-19_explore_e4p7_e5/06_e5_per_device.png) · [07_table_e5_results.png](2026-10-19_explore_e4p7_e5/07_table_e5_results.png)
+
 ## 2026-10-19 · explore_e2_e3_e4
 
 Folder: [2026-10-19_explore_e2_e3_e4/](2026-10-19_explore_e2_e3_e4/) · [tables.md](2026-10-19_explore_e2_e3_e4/tables.md) · [README.md](2026-10-19_explore_e2_e3_e4/README.md)

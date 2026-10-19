@@ -308,6 +308,12 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
+      "text": "Iteration 1 complete (2026-10-19): every probe E1-E5 has a pre-registered rule output on REAL_DEV. E1 stage 1 and stage 2 fail their checks; E2 KILL; E3 KILL; E4 PARTIAL_CALIBRATION_ONLY (continue only as a calibration component of another direction); E5 KILL.",
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
+     },
+     {
       "text": "E1 stage 1 (post-hoc correction on the fixed card), REAL_DEV LODO, all-device: M 0.1276 vs C0 0.1073 and T1 0.0865. Fails 4 of 5 pre-registered checks.",
       "source": [
        "out/research/explore/E1/real_dev_lodo/results.json",
@@ -331,11 +337,12 @@
       "claim": "e1-sim-logo"
      },
      {
-      "text": "E5 light (stage 1, light settings): shared MLP delta 0.1809 vs control 0.1073 all-device, 2 of 12 devices improved; kill condition met.",
+      "text": "E5 decision run (stage 1, 43-parameter base), all-device (combined): A0 control 0.1073 (0.0981), A2 shared MLP delta 0.2004 (0.2024); reduction -0.868, A2 lower on 1 of 12: KILL. A3 in-sample oracle 0.0343. Stage 2 (diagnostic): joint refit 0.1235 vs control polish 0.1072, 3 of 12.",
       "source": [
-       "out/research/explore/E5/stage1_light.json"
+       "out/research/explore/E5/stage1.json",
+       "out/research/explore/E5/stage2_diagnostic.json"
       ],
-      "claim": "e5-light"
+      "claim": "e5"
      },
      {
       "text": "E2 decision run (seeds 0-2), REAL_DEV raw penalized all-device (combined): N0 11.241 (9.738), M 6.265 (5.513), S 19.581 (16.955); S / N0 = 1.742, S lower on 6 of 12. K1 met: KILL, as in the seed-0 light run (1.145). Nearest bank sample without a network: 0.905.",
@@ -352,36 +359,27 @@
       "claim": "e3-temp"
      },
      {
-      "text": "E4 p43 vd (decision): ensemble calibrated (90% coverage 0.744) but not more accurate than the single card (0.4418 vs 0.4177, 6 of 12); Laplace and learned fail calibration: PARTIAL_CALIBRATION_ONLY. Non-learned crossinterp control 0.0977. Secondary: sparse KILL, vg PARTIAL_CALIBRATION_ONLY.",
+      "text": "E4 p43 vd (decision): ensemble calibrated (90% coverage 0.744) but not more accurate than the single card (0.4418 vs 0.4177, 6 of 12); Laplace and learned fail calibration: PARTIAL_CALIBRATION_ONLY. Non-learned crossinterp control 0.0977. Secondary: p43 sparse KILL, vg PARTIAL_CALIBRATION_ONLY; p7 (seven parameters) vd KILL (single 1.4536), sparse KILL (8.5733), vg PARTIAL_CALIBRATION_ONLY (0.2527).",
       "source": [
-       "out/research/explore/E4/p43/vd/summary_strict.json"
+       "out/research/explore/E4/p43/vd/summary_strict.json",
+       "out/research/explore/E4/p7/vd/summary_strict.json"
       ],
       "claim": "e4-heldout"
      }
     ],
     "next": [
      {
-      "text": "E4 seven-parameter runs (p7 vd, vg finished; sparse running), then the p7 report.",
-      "queue_match": "^E4_p7",
-      "source": [
-       "out/research/queue.txt"
-      ],
-      "claim": "e4-heldout"
-     },
-     {
-      "text": "E5 stage 1 and stage 2 with the pre-registered settings.",
-      "queue_match": "^E5_",
-      "source": [
-       "out/research/queue.txt"
-      ],
-      "claim": "e5-light"
-     },
-     {
       "text": "E1 iteration 2 candidate: the correction inside the refit (stage-2 setting) with a new pre-registration; not queued.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ],
       "claim": "e1-stage2"
+     },
+     {
+      "text": "Selection of the directions for iteration 2 from the iteration-1 rule outputs, by about 2026-11-15; no exploration job is queued.",
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ]
      }
     ],
     "updated": "2026-10-19"
@@ -3371,7 +3369,7 @@
    ],
    "result": {
     "text": [
-     "Kill condition met in the light run (reduction −69%, 2 of 12 devices improved). The pre-registered stage 1 and stage 2 are queued (`E5_stage1`, `E5_stage2`)."
+     "Kill condition met in the light run (reduction -69%, 2 of 12 devices improved). The pre-registered run (#claim-e5) gives the same outcome."
     ]
    },
    "caveats": [
@@ -3381,6 +3379,111 @@
     "out/research/explore/E5/prereg.json",
     "out/research/explore/E5/stage1_light.json",
     "out/research/explore/E5/stage2_light.json"
+   ],
+   "updated": "2026-10-19"
+  },
+  {
+   "id": "e5",
+   "tab": "explore",
+   "statement": "E5 decision run (stage 1, 43-parameter base): a shared MLP discrepancy trained on the other 11 REAL_DEV devices raises held-out all-device RRMS from 0.1073 to 0.2004 and lowers it on 1 of 12 devices; the kill condition is met. The stage-2 joint refit (diagnostic) gives 0.1235 vs 0.1072 for the control polish.",
+   "status": "refuted",
+   "headline": {
+    "value": "reduction -0.868, 1/12 (KILL)",
+    "convention": "A2 shared delta vs A0 control, all-device, 43-parameter base, REAL_DEV leave-one-device-out, 3000 steps, seeds 0-4"
+   },
+   "numbers": [
+    {
+     "label": "43-parameter base, all-device: A0 / A1 const / A2 MLP / A4 no geometry / A3 oracle",
+     "value": "0.1073 / 0.1221 / 0.2004 / 0.1681 / 0.0343",
+     "convention": "12 devices, 0 failed in every arm; A3 is trained in-sample on the held-out device (not a method)",
+     "source": "out/research/explore/E5/stage1.json"
+    },
+    {
+     "label": "43-parameter base, combined: A0 / A1 / A2 / A4 / A3",
+     "value": "0.0981 / 0.1110 / 0.2024 / 0.1625 / 0.0322",
+     "convention": "mean of nMOS (5) and pMOS (7) family means",
+     "source": "out/research/explore/E5/stage1.json"
+    },
+    {
+     "label": "43-parameter base, nMOS / pMOS: A0 vs A2",
+     "value": "0.0433 / 0.1530 vs 0.2147 / 0.1902",
+     "convention": "family means",
+     "source": "out/research/explore/E5/stage1.json"
+    },
+    {
+     "label": "Devices improved vs A0 (43-parameter base): A1 / A2 / A4 / A3",
+     "value": "0 / 1 / 5 / 12 of 12",
+     "convention": "kill if reduction < 0.05 or <= 6 of 12",
+     "source": "out/research/explore/E5/stage1.json"
+    },
+    {
+     "label": "Seven-parameter base (secondary), all-device: A0 / A1 / A2 / A4 / A3",
+     "value": "0.1735 / 0.2184 / 0.2252 / 0.2922 / 0.0419",
+     "convention": "combined 0.1600 / 0.2002 / 0.2175 / 0.2882 / 0.0387; A2 lower on 3/12",
+     "source": "out/research/explore/E5/stage1.json"
+    },
+    {
+     "label": "Stage 2 (diagnostic), all-device: control polish / joint refit / joint-refit card without delta",
+     "value": "0.1072 / 0.1235 / 0.1890",
+     "convention": "combined 0.0981 / 0.1206 / 0.1842; joint lower than control on 3/12; reduction -0.152",
+     "source": "out/research/explore/E5/stage2_diagnostic.json"
+    }
+   ],
+   "what": [
+    "Question: after the best per-device 43-parameter fit, is the signed-log residual log|I_meas| - log|I_sim| shared across devices as a function of family, log L, log W, |Vg|, |Vd| and log|I_sim|, so that a residual model trained on the other REAL_DEV devices lowers the held-out device's paper RRMS?",
+    "Correction: I_corr = I_sim x exp(delta), delta = tanh(raw), |delta| <= 1. Loss: weighted MSE of delta against the log residual, weights (|I_meas| / den)^2 per curve, equal total weight per device.",
+    "Arms: A0 no correction; A1 per-family constant delta; A2 (primary) MLP 2 x 64 tanh, 3000 full-batch steps, ensemble of 5 seeds, leave-one-device-out; A4 = A2 without log L, log W; A3 = A2 trained in-sample on the held-out device (upper bound, not a method). Bases: direct NGSpice 43-parameter round-3 + FD cards (primary) and seven-parameter + FD cards (secondary).",
+    {
+     "type": "list",
+     "items": [
+      "Stage 1: CONTINUE if (A0 - A2) / A0 >= 0.15 and A2 < A0 on >= 8 of 12 devices",
+      "KILL if the reduction is < 0.05 or A2 < A0 on <= 6 of 12; otherwise AMBIGUOUS, decided on stage 2",
+      "Stage 2 (joint refit of the card with the fold's A2 delta in the residual): CONTINUE if (control - joint) / control >= 0.15 and joint < control on >= 8 of 12, otherwise KILL"
+     ]
+    }
+   ],
+   "did": [
+    "Queue job `E5_stage1` (2026-10-19 14:19-14:29, 625 s): `scripts/research/explore/e5_shared_discrepancy.py stage1` with the pre-registered settings (3000 steps, seeds 0-4) on both bases. Recorded deviations from the prereg text: torch AdamW (decoupled weight decay 1e-4); weights renormalized to sum 1 per device; MPS float32.",
+    "Queue job `E5_stage2` (14:29-14:30, 64 s): per fold, bounded TRF polish of the 43-parameter card (max_nfev 400, diff_step 0.01, irls 2, round-3 box) with the fold's A2 delta frozen in the residual; control: the same polish without delta from the same start. Run as a diagnostic because the stage-1 output is KILL.",
+    "Report: `scripts/research/plot_explore_e4p7_e5.py` recomputes the rule from the per-device values and checks it against the stored verdicts."
+   ],
+   "result": {
+    "text": [
+     "Stage 1 (decision): reduction -0.868, A2 < A0 on 1/12 devices (pmos_L0p35_W0p55, 0.308 vs 0.409): KILL. The light run (800 steps, 3 seeds) gave -0.686 and 2/12 with the same outcome.",
+     "A2 raises the nMOS mean from 0.0433 to 0.2147 (nmos_L20_W0p64 0.049 -> 0.551, nmos_L100_W100 0.073 -> 0.276) and the pMOS mean from 0.1530 to 0.1902. A4 (without geometry inputs) is lower than A2 (0.1681 vs 0.2004) and lower than A0 on 5/12. A1 (per-family constant) is above A0 on 12/12.",
+     "A3, trained in-sample on the held-out device, reaches 0.0343 (12/12 below A0): the network class can represent each device's residual; the residual learned on the other devices does not transfer to the held-out device.",
+     "Seven-parameter base (secondary): A0 0.1735, A2 0.2252 (reduction -0.298, 3/12), A3 0.0419.",
+     "Stage 2 (diagnostic): the control polish changes the base cards by at most 0.0005 per device (0.1073 -> 0.1072). The joint refit lowers the corrected RRMS from the stage-1 A2 value (0.2004 -> 0.1235) but stays above the control (reduction -0.152, 3/12: pmos_L0p35_W0p55 0.266 vs 0.409, pmos_L0p35_W5 0.101 vs 0.112, pmos_L2_W5 0.053 vs 0.080). Rule output KILL; it does not change the decision."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e4p7_e5",
+      "file": "05_table_e5_decision.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e4p7_e5",
+      "file": "06_e5_per_device.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e4p7_e5",
+      "file": "07_table_e5_results.png"
+     }
+    ]
+   },
+   "caveats": [
+    "12 REAL_DEV devices; REAL_TEST is not loaded.",
+    "Stage 2 was run after a stage-1 KILL; it is a diagnostic and not a decision input.",
+    "The optimizer (AdamW), the per-device weight renormalization and float32 on MPS differ from the prereg text; they are recorded in stage1.json."
+   ],
+   "sources": [
+    "out/research/explore/E5/prereg.json",
+    "out/research/explore/E5/stage1.json",
+    "out/research/explore/E5/stage2_diagnostic.json",
+    "out/research/explore/E5/models/b43_A2_folds.json",
+    "out/research/explore/E5/models/b7_A2_folds.json",
+    "scripts/research/explore/e5_shared_discrepancy.py",
+    "scripts/research/plot_explore_e4p7_e5.py",
+    "docs/RESEARCH_LOOP.md"
    ],
    "updated": "2026-10-19"
   },
@@ -3639,11 +3742,11 @@
   {
    "id": "e4-heldout",
    "tab": "explore",
-   "statement": "E4 decision run (43 parameters, split vd): the near-optimal ensemble meets the calibration check (90% coverage 0.744, width within the limit) but not the accuracy check (held-out RRMS 0.4418 vs 0.4177 for the single card, lower on 6 of 12 devices); Laplace and the learned discrepancy fail calibration. Rule output: PARTIAL_CALIBRATION_ONLY. The seven-parameter runs are in progress.",
-   "status": "in_progress",
+   "statement": "E4 decision run (43 parameters, split vd): the near-optimal ensemble meets the calibration check (90% coverage 0.744, width within the limit) but not the accuracy check (held-out RRMS 0.4418 vs 0.4177 for the single card, lower on 6 of 12 devices); Laplace and the learned discrepancy fail calibration. Rule output: PARTIAL_CALIBRATION_ONLY. The seven-parameter runs (secondary) give rule outputs KILL on vd and sparse and PARTIAL_CALIBRATION_ONLY on vg.",
+   "status": "refuted",
    "headline": {
     "value": "PARTIAL_CALIBRATION_ONLY",
-    "convention": "p43, split vd, 12 REAL_DEV devices, strict selection; p7 in progress"
+    "convention": "p43, split vd, 12 REAL_DEV devices, strict selection (decision); p7 vd, sparse, vg secondary"
    },
    "what": [
     "Question: when a device's 43-parameter card is fitted to a subset of its measured I-V curves, do an ensemble of near-optimal cards, a Gauss-Newton Laplace approximation, or a discrepancy model learned on other devices give calibrated predictive intervals and lower RRMS on the unmeasured curves than the single best-fit card?",
@@ -3662,7 +3765,8 @@
    "did": [
     "Queue jobs `E4_p43_vd` (2026-10-19 12:23-12:46, 1347 s), `E4_p43_sparse` (12:46-13:11, 1487 s), `E4_p43_vg` (13:11-13:35, 1470 s): `e4_fit.py` on the 12 REAL_DEV devices, then `e4_analyze.py --select strict` (with `--decide` on vd) and `--select feasible` on vd.",
     "For this report: `e4_analyze.py --select feasible` on sparse and vg (reads the fitted records only), and the pre-registered `decide()` applied to the stored sparse and vg summaries for reporting. Feasible selection gives the same values as strict on all three splits.",
-    "Seven-parameter runs: `E4_p7_vd` and `E4_p7_vg` finished; `E4_p7_sparse` running at report time. Not reported yet."
+    "Queue jobs `E4_p7_vd` (2026-10-19 13:35-13:50, 862 s), `E4_p7_vg` (13:50-14:09, 1164 s), `E4_p7_sparse` (14:09-14:19, 594 s): `e4_fit.py` with the seven-parameter box (`out/cold_loop/seven/round_1/spec.json`) and the same budgets and feasibility penalty, then `e4_analyze.py --select strict` without `--decide` (prereg.json lists p7 vd and p7 vg as secondary without a decision; sparse is secondary by amendment 1). About 13,000-14,000 NGSpice calls per device.",
+    "For the p7 report: `e4_analyze.py --run p7 --select feasible` on vd, sparse and vg (reads the fitted records only, no NGSpice); feasible equals strict for every value. The same `decide()` function was applied to the p7 strict summaries for reporting. Report script: `scripts/research/plot_explore_e4p7_e5.py`."
    ],
    "sources": [
     "out/research/explore/E4/prereg.json",
@@ -3673,7 +3777,11 @@
     "out/research/explore/E4/p43/vg/summary_strict.json",
     "scripts/research/explore/e4_fit.py",
     "scripts/research/explore/e4_analyze.py",
-    "scripts/research/plot_explore_e2_e3_e4.py"
+    "scripts/research/plot_explore_e2_e3_e4.py",
+    "out/research/explore/E4/p7/vd/summary_strict.json",
+    "out/research/explore/E4/p7/sparse/summary_strict.json",
+    "out/research/explore/E4/p7/vg/summary_strict.json",
+    "scripts/research/plot_explore_e4p7_e5.py"
    ],
    "updated": "2026-10-19",
    "numbers": [
@@ -3706,6 +3814,42 @@
      "value": "vd 12/12, sparse 11/12, vg 12/12",
      "convention": "non-learned control, not a candidate",
      "source": "out/research/explore/E4/p43/"
+    },
+    {
+     "label": "p7 vd held-out all-device: single / ens / Laplace / learned / crossinterp",
+     "value": "1.4536 / 1.5017 / 1146.5 / 0.8253 / 0.1607",
+     "convention": "combined 1.2764 / 1.3178 / 982.8 / 0.7558 / 0.1433; median 0.692 / 0.646 / 0.897 / 0.418 / 0.101; 0 failed devices; secondary",
+     "source": "out/research/explore/E4/p7/vd/summary_strict.json"
+    },
+    {
+     "label": "p7 vd 90% coverage / width: ens, Laplace, learned",
+     "value": "0.650 / 1.881; 0.608 / 2.213; 0.980 / 78.48",
+     "convention": "C1: coverage in [0.70, 0.95] and width <= 4 x 1.4536 = 5.814; no candidate meets C1; rule output KILL",
+     "source": "out/research/explore/E4/p7/vd/summary_strict.json"
+    },
+    {
+     "label": "p7 sparse held-out all-device: single / ens / Laplace / learned / crossinterp",
+     "value": "8.5733 / 8.7947 / 1.299e5 / 1.9220 / 0.6817",
+     "convention": "combined 7.3723 / 7.5614 / 1.113e5 / 1.6786 / 0.6031; median 0.695 / 0.714 / 0.873 / 0.293 / 0.460; ens coverage 0.618, Laplace 0.604, learned 0.968: rule output KILL",
+     "source": "out/research/explore/E4/p7/sparse/summary_strict.json"
+    },
+    {
+     "label": "p7 vg held-out all-device: single / ens / Laplace / learned / crossinterp",
+     "value": "0.2527 / 0.2589 / 0.3125 / 0.0555 / 0.0436",
+     "convention": "combined 0.2249 / 0.2307 / 0.2898 / 0.0573 / 0.0401; ens and Laplace C1 yes (coverage 0.757, 0.766), C2 no (1/12); learned C2 yes (11/12), C1 no (coverage 0.988), C3 no: rule output PARTIAL_CALIBRATION_ONLY",
+     "source": "out/research/explore/E4/p7/vg/summary_strict.json"
+    },
+    {
+     "label": "p7 single above p43 single (devices)",
+     "value": "vd 12/12, sparse 11/12, vg 7/12",
+     "convention": "held-out RRMS of the single best-fit card, same split",
+     "source": "out/research/explore/E4/p7/, out/research/explore/E4/p43/"
+    },
+    {
+     "label": "crossinterp lower than single, p7 (devices)",
+     "value": "vd 12/12, sparse 12/12, vg 12/12",
+     "convention": "non-learned control, not a candidate",
+     "source": "out/research/explore/E4/p7/"
     }
    ],
    "result": {
@@ -3713,7 +3857,11 @@
      "vd (decision): ens C1 yes (coverage 0.744, width 1.006 <= 1.671), C2 no (0.4418 > 0.3968; 6/12); laplace C1 no (width 7.44), C2 no; learned C1 no (coverage 0.963, width 5846), C2 no, C3 no (10.87 vs 0.098). Rule output PARTIAL_CALIBRATION_ONLY: per the pre-registration E4 continues only as a calibration component of another direction, not as a standalone contribution.",
      "The non-learned crossinterp control (single card + measured-minus-simulated residual of the train curves at the bias points where they cross the held-out curve, interpolated along the sweep) has the lowest held-out RRMS on every split: vd 0.0977 vs single 0.4177, sparse 0.2718 vs 0.3945, vg 0.0466 vs 0.2070.",
      "The single 43-parameter card has train objective 0.130 (vd) and held-out RRMS 0.418; the held-out error does not correlate with the share of held-out sensitivity in the sloppy subspace (Spearman rho -0.07 vd, 0.03 sparse, -0.17 vg).",
-     "Laplace means are dominated by single devices (vd pmos_L0p35_W5 5983). The learned model's inner leave-one-device-out MSE is about 7.5e6 (vd) and 4.5e6 (sparse) in every fold that has pmos_L0p35_W0p55 in its training set, and 1.1 (vd) and 0.15 (sparse) in the fold that holds it out; on vg it is 0.02-0.03 in every fold."
+     "p43: Laplace means are dominated by single devices (vd pmos_L0p35_W5 5983). The learned model's inner leave-one-device-out MSE is about 7.5e6 (vd) and 4.5e6 (sparse) in every fold that has pmos_L0p35_W0p55 in its training set, and 1.1 (vd) and 0.15 (sparse) in the fold that holds it out; on vg it is 0.02-0.03 in every fold.",
+     "p7 (seven parameters, secondary, no decision): vd rule output KILL (ens coverage 0.650, Laplace 0.608, learned 0.980 with width 78.5; no candidate meets C1). The learned discrepancy is below the single card on 10/12 devices (0.8253 vs 1.4536, C2 yes) and above crossinterp (0.1607, C3 no). sparse: KILL. vg: ens and Laplace meet C1 (coverage 0.757 and 0.766, widths 0.363 and 0.592 <= 1.011) and are lower than single on 1/12 devices (C2 no): PARTIAL_CALIBRATION_ONLY. The E4 decision (p43 vd) is unchanged.",
+     "The seven-parameter single card has higher held-out RRMS than the 43-parameter one on every split: vd 1.4536 vs 0.4177 (higher on 12/12 devices), sparse 8.5733 vs 0.3945 (11/12), vg 0.2527 vs 0.2070 (7/12). Mean train objective: vd 0.149 vs 0.130, sparse 0.139 vs 0.113, vg 0.178 vs 0.139.",
+     "p7 means are determined by single devices: vd single pmos_L0p35_W0p55 7.01 (other devices 0.12-2.37); sparse single pmos_L0p35_W5 96.0 (other devices 0.11-1.79); Laplace pmos_L0p35_W0p55 13746 (vd) and 1.56e6 (sparse). The learned model's inner leave-one-device-out MSE on p7 vd is 1.16e8 in every fold with pmos_L0p35_W5 in training and 0.187 in the fold that holds it out; on sparse 0.06-0.16 and on vg 0.011-0.027.",
+     "Spearman correlation across devices between the single card's held-out RRMS and the sloppy-subspace share of held-out sensitivity, p7: vd 0.35 (p 0.27), sparse 0.57 (p 0.051), vg -0.83 (p 0.001); p43: -0.07, 0.03, -0.17. Reported without a criterion."
     ],
     "figures": [
      {
@@ -3731,14 +3879,30 @@
      {
       "batch": "2026-10-19_explore_e2_e3_e4",
       "file": "09_table_e4_results.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e4p7_e5",
+      "file": "01_table_e4p7_decision.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e4p7_e5",
+      "file": "02_e4p7_per_device.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e4p7_e5",
+      "file": "04_table_e4_p43_vs_p7.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e4p7_e5",
+      "file": "03_table_e4p7_results.png"
      }
     ]
    },
    "caveats": [
     "12 REAL_DEV devices; REAL_TEST is not loaded.",
     "Interval widths are mean (hi - lo) / den, in the units of the per-curve RRMS; conformal and learned widths on vd and sparse are > 1000 x the single card's RRMS.",
-    "The sparse and vg verdicts are secondary; only vd is the pre-registered decision.",
-    "p7 (seven parameters) results are pending."
+    "The sparse and vg rule outputs and all p7 rule outputs are secondary; only p43 vd is the pre-registered decision.",
+    "p7 single-card means on vd and sparse are each determined by one pMOS device; medians: vd 0.692, sparse 0.695, vg 0.272."
    ]
   }
  ]

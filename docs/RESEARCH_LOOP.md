@@ -559,3 +559,43 @@ ens C1 yes C2 no, learned 0.0664 (11/12, C2 yes) with coverage 0.965 (C1 no) and
 crossinterp is lower than single on 12/12 (vd), 11/12 (sparse), 12/12 (vg). The learned model's inner
 leave-one-device-out MSE is about 7.5e6 (vd) and 4.5e6 (sparse) in every fold with pmos_L0p35_W0p55 in training.
 Seven-parameter runs: p7 vd and p7 vg finished, p7 sparse running; reported when complete.
+
+## Exploration E4, seven parameters (2026-10-19 14:19): held-out bias curves, secondary runs
+
+Queue jobs `E4_p7_vd` (13:35-13:50), `E4_p7_vg` (13:50-14:09), `E4_p7_sparse` (14:09-14:19), seven-parameter box
+`out/cold_loop/seven/round_1/spec.json`, 12 REAL_DEV devices, about 13,000-14,000 NGSpice calls per device, same
+budgets and held-out-bias feasibility penalty as p43. prereg.json lists p7 vd and p7 vg as secondary without a
+decision; sparse is secondary by amendment 1. `e4_analyze.py --run p7 --select feasible` was run for the report
+(fitted records only); feasible equals strict on all three splits. 0 failed single-card devices.
+Held-out all-device (combined): vd single 1.4536 (1.2764), ens 1.5017 (1.3178), Laplace 1146.5 (982.8),
+learned 0.8253 (0.7558), crossinterp 0.1607 (0.1433); sparse single 8.5733 (7.3723), ens 8.7947, learned 1.9220,
+crossinterp 0.6817 (0.6031); vg single 0.2527 (0.2249), ens 0.2589, Laplace 0.3125, learned 0.0555 (0.0573),
+crossinterp 0.0436 (0.0401).
+Rule outputs with the pre-registered decide(), reporting only: vd KILL (coverage ens 0.650, Laplace 0.608, learned
+0.980 with width 78.5; learned C2 yes, 10/12, C3 no); sparse KILL; vg PARTIAL_CALIBRATION_ONLY (ens and Laplace C1
+yes, coverage 0.757 and 0.766, C2 no, 1/12; learned C2 yes, 11/12, C1 no, C3 no). The E4 decision (p43 vd,
+PARTIAL_CALIBRATION_ONLY) is unchanged.
+p7 single is above p43 single on vd 12/12, sparse 11/12, vg 7/12 devices. p7 means are determined by single devices:
+vd pmos_L0p35_W0p55 7.01, sparse pmos_L0p35_W5 96.0 (single card). crossinterp is below single on 12/12 in every p7
+split. Learned inner leave-one-device-out MSE on p7 vd: 1.16e8 in every fold with pmos_L0p35_W5 in training.
+Spearman (single held-out RRMS vs sloppy fraction), p7: vd 0.35, sparse 0.57 (p 0.051), vg -0.83 (p 0.001).
+Report batch: `out/research/report/2026-10-19_explore_e4p7_e5/`.
+
+## Exploration E5 decision run (2026-10-19 14:30): shared discrepancy
+
+Queue jobs `E5_stage1` (14:19-14:29, 625 s; 3000 steps, seeds 0-4) and `E5_stage2` (14:29-14:30, 64 s),
+`scripts/research/explore/e5_shared_discrepancy.py`. REAL_DEV leave-one-device-out, 0 failed devices in every arm.
+43-parameter base (decision), all-device (combined): A0 0.1073 (0.0981), A1 const 0.1221 (0.1110), A2 MLP 0.2004
+(0.2024), A4 no geometry 0.1681 (0.1625), A3 in-sample oracle 0.0343 (0.0322).
+Stage-1 rule: reduction (A0 - A2) / A0 = -0.868, A2 < A0 on 1/12: KILL (light run: -0.686, 2/12).
+Seven-parameter base (secondary): A0 0.1735, A2 0.2252 (-0.298, 3/12), A3 0.0419.
+A2 raises nMOS from 0.0433 to 0.2147 (nmos_L20_W0p64 0.049 -> 0.551); A4 is below A2 and below A0 on 5/12.
+Stage 2 (diagnostic, stage 1 not AMBIGUOUS): control polish 0.1072, joint refit with the fold's A2 delta 0.1235
+(reduction -0.152, 3/12), joint-refit card without delta 0.1890. E5 is stopped.
+Recorded deviations from the prereg text: AdamW, per-device weight renormalization, MPS float32.
+Report batch: `out/research/report/2026-10-19_explore_e4p7_e5/`.
+
+## Exploration iteration 1 complete (2026-10-19)
+
+Rule outputs on REAL_DEV: E1 stage 1 and stage 2 fail their checks; E2 KILL; E3 KILL; E4 PARTIAL_CALIBRATION_ONLY
+(continue only as a calibration component of another direction); E5 KILL. No exploration job is queued.
