@@ -1,0 +1,96 @@
+{
+ "id": "E3b",
+ "title": "E3 rerun with the BSIM4 u0 unit-switch fix: learned shared temperature law vs parametric law",
+ "written": "2026-10-19",
+ "status": "pre-registered before any E3b run; the smoke run (runs/smoke) is a pipeline check and is not a decision input",
+ "relation_to_E3": [
+  "The E3 verdict KILL (queue job E3_full_M, out/research/explore/E3/runs/full) stands and is not revised by E3b.",
+  "E3b is a new probe. It is motivated by the I2-0 diagnosis (out/research/explore/I2_0/diagnosis.md, part B): E3 tier-M truths and fitted cards could cross the BSIM4 u0 > 1 unit switch (BSIM4 reads u0 > 1 as cm^2/Vs and divides it by 1e4); the test device nmos_L1_W3__2 had truth u0 above 1 at 77-110 K and every method gave RRMS 676-1060 in its 110 K cell.",
+  "The decision rule below is the E3 rule copied without change. It was not changed after seeing the I2-0 without-device diagnostic (part C: E3 rule output CONTINUE without nmos_L1_W3__2)."
+ ],
+ "source_prereg": {
+  "file": "out/research/explore/E3/prereg.json",
+  "commit": "773abe3",
+  "sha256": "b59e680d2541b55261ece57e5299e2bdf02a3496320c1afacafa780a7c1b8bc4",
+  "addendum": "out/research/explore/E3/prereg_addendum.json (sha256 d2ec12bd32d63d03384ceb82e84a2b078f24e465cd979b24528843994f818db3); its implementation changes (zero-initialised NetLaw output layer, lrn_noH skipped on a grid without non-anchor temperatures) remain in effect and its review notes apply to E3b."
+ },
+ "copied_from_E3_prereg_verbatim": {
+  "hypothesis": "On simulated 77-300 K devices whose truth has a temperature law outside the fitted parametric family (logistic knee + bump, nonzero 300 K offset, extrinsic series resistance with linear temperature coefficient), a temperature law learned from a densely characterised device population and shared across devices (MLP on per-temperature 7-parameter fits, sensitivity-weighted loss) predicts the 7-parameter card at held-out temperatures 110/190/260 K with lower NGSpice RRMS than the parametric law x(T) = c + (mu - c) w(T)^g fitted per device (O4) or with population-pooled g (O2).",
+  "data_protocol": {
+   "real_devices": "No real I-V is used. Only REAL_DEV geometries (out/research/explore/real_split.json) are used as simulated device geometries; REAL_TEST geometries are rejected by the script.",
+   "world": "src/cryoml/explore/e3_temp.py: SkyWater 77 K corner bin, tnom = 27 C, seven paper parameters numeric per temperature, x = log(p/p_stock).",
+   "tier_M": "x(T) = c + (mu - c) s(T) + b 4w(1-w); s = normalised logistic in T with device knee U[120,230] K (+-25 K per parameter), width U[10,35] K; c ~ U(+-0.05) vth0, U(+-0.10) others; b ~ U(+-0.05) vth0, U(+-0.15) u0 and rdsw, 0 others; extrinsic drain and source resistors R(T) = R300 (1 + alpha (T - 300.15 K)), R300 = U[0.3,1.0] * rdsw_stock / (2 W), alpha ~ U[0.002, 0.0035]/K. mu uniform in the 0.75x cold-loop round-4 anchor box.",
+   "tier_W": "x(T) = mu w(T)^g, g log-uniform [1/3, 3] (secondary check only).",
+   "training_population": "n_train = 6 truth draws per REAL_DEV geometry (72 devices), each observed on the dense grid 77,90,100,110,130,150,170,190,210,225,245,260,280,300 K; per-temperature 7-parameter NGSpice fits (LM, batched FD Jacobians, bank-screened starts) give x_hat(T) and H(T) = J^T J.",
+   "test_population": "n_test = 3 truth draws per REAL_DEV geometry (36 devices), different random stream; observed at O4 = {77,150,225,300} K or O2 = {77,300} K; scored at held-out H = {110,190,260} K."
+  },
+  "methods": {
+   "par3": "per-device law x = c + (mu - c) w^g (21 numbers) fitted jointly on NGSpice to the observed temperatures (LM, chain-rule Jacobian, init from per-temperature fits). O4 primary control.",
+   "par14": "cryoml.temperature family (c = 0, free g) fitted the same way. O4 secondary control.",
+   "par3_pop": "law with g_k pooled over the training population (H-weighted grid search), per-device mu and c fitted on NGSpice. O2 primary control; O4 secondary.",
+   "par3_g1, par14_g1": "O2 secondary controls with g = 1.",
+   "pt_interp": "linear interpolation in T of the per-temperature anchor fits (no learning).",
+   "lrn": "PRIMARY learned method: x(T) = x_lin(T) + phi_O(T) sigma MLP(geometry, anchors, T); 2x64 SiLU, 5-seed ensemble, loss d^T Hn d + 0.1 mean((d/sigma)^2), Hn = 7H/tr(H); trained on all non-anchor dense temperatures of the training population.",
+   "lrn_param, lrn_noH, lrn_mean": "secondary: parameter-MSE loss; training without 110/190/260 K; population-mean correction per device type (no network).",
+   "floor": "per-temperature 7-parameter fit at each held-out temperature using held-out data (reference for gap closure only, not a method)."
+  },
+  "metric": "Per (device, held-out temperature): frozen-inclusion paper RRMS (published-baseline included curve set, curve_trim on the truth target) of the NGSpice re-simulated card against the simulated truth curves, mean over included curves; strict: any non-finite included curve makes the cell NaN. Per device: mean over 110/190/260 K. Aggregate: all-device mean over the 36 tier-M test devices (devices finite for all compared methods).",
+  "primary_comparison": "R_S = 1 - mean(lrn) / mean(control_S) for S in {O4 (control par3), O2 (control par3_pop)}, paired percentile bootstrap over test devices (4000 resamples).",
+  "criterion": {
+   "CONTINUE": "for at least one S: R_S >= 0.25 AND bootstrap 95% CI lower bound of R_S > 0 AND lrn reduces held-out RRMS by >= 10% vs pt_interp in the same S AND failed-cell fraction <= 10% for lrn, control_S and pt_interp.",
+   "KILL": "R_S < 0.10 for both S, OR lrn is worse than pt_interp (reduction < 0) for both S.",
+   "INCONCLUSIVE": "otherwise; one revision allowed only with a new pre-registration file.",
+   "secondary_reported_not_decisive": [
+    "tier W run E3_full_W: lrn held-out RRMS vs par3/par3_pop (expect parametric to win; reported)",
+    "lrn vs lrn_mean (does the network add over a population-mean shape)",
+    "lrn_noH vs lrn (dependence on training at the held-out temperatures)",
+    "gap closed to floor",
+    "per-temperature breakdown"
+   ]
+  },
+  "known_limitations": [
+   "The learned law is trained on devices from the same generator as the test devices; the result measures transfer within a population whose law is shared, not transfer to a different physical law.",
+   "Parameter fits at non-anchor temperatures are themselves misspecified (series R absorbed by rdsw), so floor > 0 on tier M."
+  ]
+ },
+ "settings": {
+  "decision_run": "queue job E3b_full_M: tier M, all 12 REAL_DEV geometries, n_train 6, n_test 3, dense grid 77,90,100,110,130,150,170,190,210,225,245,260,280,300 K, seed 20261019, law_iter 15, learn_seeds 5, workers 8. The decision is made once on this run.",
+  "secondary_run": "queue job E3b_full_W: same settings, tier W (reported, not decisive; as E3_full_W).",
+  "command": ".venv/bin/python scripts/research/explore/e3_temp_misspec.py --study E3b --name full --tier M --n-train 6 --n-test 3 --law-iter 15 --learn-seeds 5 --workers 8",
+  "output": "out/research/explore/E3b/runs/full/tier_M and tier_W (E3 outputs under out/research/explore/E3 are not overwritten)"
+ },
+ "changes_from_E3": {
+  "a_u0_fix": {
+   "code": "src/cryoml/explore/e3_temp.py (patch out/research/explore/I2_0/proposed_e3_u0_switch.patch plus helper functions u0_upper_x, at_or_above_u0_switch, clip_u0, truth_u0_max)",
+   "switch": "x_u0 at which the card value |u0| = 1: u0_switch_x = log(1 / |u0_stock|).",
+   "truth_draws": "draw_truth rejects a draw whose x_u0 is at or above u0_switch_x - 0.02 at any dense temperature and draws again from the same generator stream (at most 50 attempts; the number of rejected draws is stored in the truth as u0_switch_rejections).",
+   "fit_bounds": "x_bounds: upper bound of x_u0 = min(previous bound, u0_switch_x - 0.02). This changes the bound for nmos_L1_W3 (4.874 -> 3.635) and nmos_L0p25_W1p6 (4.213 -> 3.638); the other 10 geometries keep their bounds. The forward FD step (0.01) from the bound stays below the switch. All other parameters and bounds are unchanged.",
+   "law_and_interpolation_cards": "par3, par14, par3_pop, par3_g1, par14_g1 predict x(T) = c + (mu - c) w^g with mu and c inside the fit bounds and w^g in [0, 1], and pt_interp interpolates fitted anchors linearly; both stay inside the bounds without a clip.",
+   "learned_cards": "lrn, lrn_param, lrn_noH and lrn_mean add phi_O(T) sigma correction(T) to the linear interpolation; this is not bounded. In E3b the x_u0 of every evaluated card (every method, every test temperature) is clipped to the x_u0 upper fit bound before NGSpice evaluation. Only x_u0 and only its upper side are changed. The clip is a no-op for fitted, law and interpolation cards. The number of clipped cards per setting and method is recorded (u0_switch_check.json, summary.json u0_switch_check.n_evaluated_cards_u0_clipped). preds.json stores the predictions before the clip."
+  },
+  "b_regenerated_truths": {
+   "rule": "Truths for tiers M and W are drawn with the patched draw_truth from the E3 streams (seed 20261019, rng [seed, tier, split, geometry index, draw]). A draw that does not cross the switch is identical to the E3 draw; only crossing draws are replaced.",
+   "known_before_run": "Computed from the generator without NGSpice. Tier M: 4 truths regenerated (train nmos_L1_W3 draws 1, 2, 3; test nmos_L1_W3 draw 2) with 7 rejected draws in total (1, 1, 2, 3). Tier W: 2 truths regenerated (train nmos_L1_W3 draw 2; test nmos_L1_W3 draw 0) with 2 rejected draws (1, 1). The other 104 truths per tier are unchanged.",
+   "output_names": "queue jobs E3b_full_M and E3b_full_W; directory out/research/explore/E3b/runs/full/tier_M and tier_W."
+  },
+  "c_switch_assertion": {
+   "checked": "every training and test truth at every dense temperature; every per-temperature fitted card (training fits, test O4, O2 and floor fits); every predicted card (counted before the clip); every evaluated card (after the clip).",
+   "condition": "x_u0 >= u0_switch_x (card u0 at or above 1).",
+   "recorded": "counts per category in out/research/explore/E3b/runs/<name>/tier_<T>/u0_switch_check.json and summary.json u0_switch_check, with the number of rejected and regenerated truth draws.",
+   "validity": "The run is valid only if 0 truths, 0 fitted cards and 0 evaluated cards are at or above the switch. If the check fails, summary.json verdict_rule_output is INVALID (the rule output computed on the run is kept under verdict_rule_output_if_valid). An INVALID run is not counted as CONTINUE, KILL or INCONCLUSIVE."
+  },
+  "d_secondary_paired_statistic": {
+   "decides": false,
+   "definition": "For S in {O4 (control par3), O2 (control par3_pop)}: per test device, ratio lrn / control_S of the held-out per-device RRMS (mean over 110/190/260 K), on the devices finite for lrn, control_S and pt_interp. Reported: geometric mean of the ratios exp(mean log ratio), paired percentile bootstrap 95% CI over test devices (4000 resamples, seed 0), and the number of devices with lrn < control_S (wins).",
+   "location": "summary.json decisions.<S>.secondary_paired_ratio_lrn_over_control",
+   "note": "Reported, not a decision input. The decision uses only the copied E3 criterion."
+  }
+ },
+ "unchanged": "Hypothesis, data protocol (except the truth rejection), methods, metric, primary comparison, CONTINUE/KILL/INCONCLUSIVE rule, settings (n_train 6, n_test 3, dense grid, seed, law_iter 15, learn_seeds 5) and the driver stages are the same as E3.",
+ "files": [
+  "src/cryoml/explore/e3_temp.py",
+  "src/cryoml/explore/e3_learn.py",
+  "scripts/research/explore/e3_temp_misspec.py (option --study E3b)",
+  "tests/test_e3_temp.py"
+ ]
+}
