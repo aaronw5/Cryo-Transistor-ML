@@ -472,3 +472,13 @@ Pre-registered lambda decision: negative (no arm passed rules A1-A4). No TEST ru
 The search-efficiency line ends here as an ablation (see memory exploration-phase).
 Fixes: dev_compare tolerates a <=1e-4 fresh-vs-trace gap only on batched-probe bests (WARN);
 temp_study FNO OOM (low-memory kill) fixed; rerun queued as temp_sur_fno_r.
+
+## Exploration E1 stage 2 (2026-10-19 10:08): correction inside the refit, REAL_DEV LODO
+
+Each held-out card was re-polished (TRF, 400 nfev) with that fold's correction in the residual.
+All-device mean (combined): no-correction re-polish C0 0.1072 (0.0981); deployable MLP correction M
+0.0871 (0.0842); per-tag gain table T1 (not deployable) 0.0820 (0.0760); 0 failed devices.
+Pre-registered checks: M <= 0.090 yes; M < T1 mean no; M beats T1 on >= 8/12 no; M beats C0 on
+>= 8/12 yes. Stage 2 does not pass (it requires M to beat T1). M reduces held-out RRMS by 19% relative to
+the physics-only re-polish when the card is refit with the correction in the loop. In stage 1
+(fixed card), the same correction increased RRMS.
