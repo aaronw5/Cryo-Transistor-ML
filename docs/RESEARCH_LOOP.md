@@ -514,3 +514,48 @@ Same search with NGSpice in place of the surrogate: 0.1125 all-device (0.1053 co
 falls 4.8-5.4x over the 8x data range; end-to-end RRMS falls by 0.024 (paper MLP) and 0.031
 (DeepONet) and rises by 0.005 (FNO), and stays 0.11-0.15 above the NGSpice swap at every size.
 0 failed devices in all 12 runs. Report batch: `out/research/report/2026-10-19_explore_e1_lc/`.
+
+## Exploration E2 decision run (2026-10-19 11:52): one-pass network with output augmentation
+
+Queue jobs `E2_full` (11:26-11:40) and `E2_fd_sim` (11:40-11:52), seeds 0-2, `scripts/research/explore/e2_direct.py`.
+REAL_DEV raw (one forward pass + one NGSpice validation), penalized mean over 12 devices, seed mean per device,
+all-device (combined): N0 11.241 (9.738), M 6.265 (5.513), S 19.581 (16.955), nearest bank sample 0.905 (0.979);
+failed device-seed pairs 9/36, 6/36, 4/36, 0/12. Medians: N0 5.490, M 2.795, S 1.621, nearest bank sample 0.396.
+Pre-registered checks: C1 no (S / N0 = 1.742); C2 no (gap ratio 1.754); C3 no (S lower on 6/12); C4 guard yes
+(tier a 14.89 vs 20.56); K1 met; K2 not met. Verdict: KILL. The seed-0 light run (S / N0 = 1.145) had the same
+check outcomes; the three-seed run confirms it. Attribution check R(S) <= 0.90 x R(M): no (3.126).
+FD polish (100 nfev), REAL_DEV all-device: N0 1.067, M 0.521, S 0.711, nearest bank sample 0.310; D (direct
+NGSpice 7 + FD) 0.1735; released card 0.2848. Tier a raw mean: nearest bank sample 0.286, trained arms 6.12-14.89.
+The penalized means are dominated by pmos_L0p35_W0p55 and pmos_L0p35_W5. E2 is stopped.
+Report batch: `out/research/report/2026-10-19_explore_e2_e3_e4/`.
+
+## Exploration E3 decision run (2026-10-19 12:23): temperature law under misspecification
+
+Queue jobs `E3_full_M` (11:52-12:07, decision) and `E3_full_W` (12:07-12:23, secondary). Tier M: 72 training and
+36 test simulated devices on the 12 REAL_DEV geometries; held-out 110/190/260 K; 0 failed cells.
+All-device mean held-out RRMS: O4 lrn 9.801, par3 (control) 9.123, pt_interp 10.118, par3_pop 7.376;
+O2 lrn 7.102, par3_pop (control) 6.858, pt_interp 9.592; floor 0.0136.
+R_O4 = -0.074 (CI -0.090 to 0.504), R_O2 = -0.036 (CI -0.055 to 0.288); lrn vs pt_interp O4 0.031, O2 0.260.
+R_S < 0.10 for both S: verdict KILL. E3 is stopped.
+One test device, nmos_L1_W3__2, has held-out RRMS 226-353 for every method (110 K cell 676-1060; floor 0.007)
+and determines the means. Diagnostics, not decision inputs: medians O4 lrn 0.168 vs par3 0.312 (lrn lower on
+27/36), O2 0.354 vs 0.406 (21/36); means without that device O4 lrn 0.267 vs par3 0.423, O2 0.484 vs 0.610.
+Tier W (truth inside the parametric family): O4 lrn 0.113 vs par3 0.067 (R -0.632); O2 lrn 0.490 vs par3_pop
+0.746 (R 0.343); rule output INCONCLUSIVE.
+
+## Exploration E4, 43 parameters (2026-10-19 13:35): held-out bias curves with intervals
+
+Queue jobs `E4_p43_vd` (decision), `E4_p43_sparse`, `E4_p43_vg` (12:23-13:35), 12 REAL_DEV devices, about
+22,000 NGSpice calls per device. `e4_analyze.py --select feasible` on sparse and vg was run for this report
+(reads fitted records only); feasible equals strict on all three splits.
+vd held-out all-device (combined): single 0.4177 (0.3751), ens 0.4418 (0.3968), Laplace 500.2 (428.8),
+learned 10.87 (9.82), crossinterp control 0.0977 (0.0897); 0 failed devices.
+Checks on vd: ens C1 yes (coverage 0.744, width 1.006 <= 1.671), C2 no (6/12); Laplace C1 no (coverage 0.900,
+width 7.44); learned C1 no (coverage 0.963, width 5846), C2 no, C3 no. Verdict: PARTIAL_CALIBRATION_ONLY
+(continue only as a calibration component of another direction).
+Secondary: sparse single 0.3945, ens coverage 0.676, crossinterp 0.2718, rule output KILL; vg single 0.2070,
+ens C1 yes C2 no, learned 0.0664 (11/12, C2 yes) with coverage 0.965 (C1 no) and above crossinterp 0.0466
+(C3 no), rule output PARTIAL_CALIBRATION_ONLY.
+crossinterp is lower than single on 12/12 (vd), 11/12 (sparse), 12/12 (vg). The learned model's inner
+leave-one-device-out MSE is about 7.5e6 (vd) and 4.5e6 (sparse) in every fold with pmos_L0p35_W0p55 in training.
+Seven-parameter runs: p7 vd and p7 vg finished, p7 sparse running; reported when complete.

@@ -338,34 +338,31 @@
       "claim": "e5-light"
      },
      {
-      "text": "E2 light (seed 0): structured augmentation S / no augmentation N0 = 1.145 (penalized mean raw RRMS on REAL_DEV), S lower on 6 of 12 devices; kill condition K1 met. The pre-registered three-seed run is running.",
+      "text": "E2 decision run (seeds 0-2), REAL_DEV raw penalized all-device (combined): N0 11.241 (9.738), M 6.265 (5.513), S 19.581 (16.955); S / N0 = 1.742, S lower on 6 of 12. K1 met: KILL, as in the seed-0 light run (1.145). Nearest bank sample without a network: 0.905.",
       "source": [
-       "out/research/explore/E2/prereg.json",
-       "out/research/explore/E2/table.json (light run, commit 773abe3)"
+       "out/research/explore/E2/table.json"
       ],
-      "claim": "e2-light"
-     }
-    ],
-    "next": [
-     {
-      "text": "E2 full three-seed run (decision run) and FD on simulated sets.",
-      "queue_match": "^E2_",
-      "source": [
-       "out/research/queue.txt"
-      ],
-      "claim": "e2-light"
+      "claim": "e2"
      },
      {
-      "text": "E3 full runs, tiers M and W.",
-      "queue_match": "^E3_",
+      "text": "E3 decision run (tier M, 36 simulated test devices): R_O4 = -0.074 vs par3, R_O2 = -0.036 vs par3_pop; both below 0.10: KILL. One test device (RRMS 226-353 for every method) determines the means; medians: lrn 0.168 vs par3 0.312 (O4). Tier W: INCONCLUSIVE (secondary).",
       "source": [
-       "out/research/queue.txt"
+       "out/research/explore/E3/runs/full/tier_M/summary.json"
       ],
       "claim": "e3-temp"
      },
      {
-      "text": "E4 fits and analyses, 43 and 7 parameters, three held-out-curve splits.",
-      "queue_match": "^E4_",
+      "text": "E4 p43 vd (decision): ensemble calibrated (90% coverage 0.744) but not more accurate than the single card (0.4418 vs 0.4177, 6 of 12); Laplace and learned fail calibration: PARTIAL_CALIBRATION_ONLY. Non-learned crossinterp control 0.0977. Secondary: sparse KILL, vg PARTIAL_CALIBRATION_ONLY.",
+      "source": [
+       "out/research/explore/E4/p43/vd/summary_strict.json"
+      ],
+      "claim": "e4-heldout"
+     }
+    ],
+    "next": [
+     {
+      "text": "E4 seven-parameter runs (p7 vd, vg finished; sparse running), then the p7 report.",
+      "queue_match": "^E4_p7",
       "source": [
        "out/research/queue.txt"
       ],
@@ -3390,8 +3387,8 @@
   {
    "id": "e2-light",
    "tab": "explore",
-   "statement": "E2 light (seed 0): a one-pass network trained with structured misspecification augmentation has a REAL_DEV penalized mean raw RRMS 1.145 times that of the unaugmented network; kill condition K1 is met in the exploratory run, and the three-seed decision run is running.",
-   "status": "in_progress",
+   "statement": "E2 light (seed 0): a one-pass network trained with structured misspecification augmentation has a REAL_DEV penalized mean raw RRMS 1.145 times that of the unaugmented network; kill condition K1 is met in this exploratory run. The three-seed decision run is reported in [E2 decision run](#claim-e2).",
+   "status": "refuted",
    "headline": {
     "value": "S / N0 = 1.145",
     "convention": "REAL_DEV, raw (one forward pass + one NGSpice validation), penalized mean, seed 0 only"
@@ -3414,11 +3411,12 @@
     "Question: does training a one-pass I–V → seven-parameter network on simulated currents distorted by output-space misspecification components (series R, per-curve heating, gain error, Vd-dependent noise, floor) lower the NGSpice-validated RRMS on measured devices by ≥ 30% vs no augmentation?"
    ],
    "did": [
-    "Light run: seed 0 only, raw on all sets, FD on REAL_DEV only (`scripts/research/explore/e2_direct.py`). Decision run `E2_full` (seeds 0–2) started 2026-10-19 11:26."
+    "Light run: seed 0 only, raw on all sets, FD on REAL_DEV only (`scripts/research/explore/e2_direct.py`)."
    ],
    "result": {
     "text": [
-     "Light verdict: KILL (exploratory, 1 seed; C1 no, C2 no, C3 no, K1 yes, K2 no). The decision uses the three-seed run."
+     "Light verdict: KILL (exploratory, 1 seed; C1 no, C2 no, C3 no, K1 yes, K2 no).",
+     "The three-seed decision run gives the same verdict (K1 met, S / N0 = 1.742); see [E2 decision run](#claim-e2)."
     ]
    },
    "caveats": [
@@ -3431,48 +3429,317 @@
    "updated": "2026-10-19"
   },
   {
-   "id": "e3-temp",
+   "id": "e2",
    "tab": "explore",
-   "statement": "E3: temperature law learned across a device population vs the per-device parametric law, on simulated 77–300 K devices with a misspecified temperature law; full runs are queued.",
-   "status": "in_progress",
+   "statement": "E2 decision run (seeds 0-2): the one-pass seven-parameter network trained with structured misspecification augmentation (S) has a REAL_DEV penalized mean raw RRMS of 19.58 vs 11.24 without augmentation (N0), S / N0 = 1.742; kill condition K1 is met and E2 is stopped.",
+   "status": "refuted",
    "headline": {
-    "value": "queued",
-    "convention": "smoke only: parametric law 0.6–0.7, population shapes 0.27–0.32 (2 devices)"
+    "value": "S / N0 = 1.742 (KILL)",
+    "convention": "REAL_DEV, raw (one forward pass + one NGSpice validation), penalized mean over 12 devices, seed mean per device, seeds 0-2"
    },
+   "numbers": [
+    {
+     "label": "REAL_DEV raw all-device: N0 / M / S / nearest bank sample",
+     "value": "11.241 / 6.265 / 19.581 / 0.905",
+     "convention": "penalized (10 per failed included curve); failed device-seed pairs 9/36, 6/36, 4/36, 0/12",
+     "source": "out/research/explore/E2/table.json"
+    },
+    {
+     "label": "REAL_DEV raw combined: N0 / M / S / nearest bank sample",
+     "value": "9.738 / 5.513 / 16.955 / 0.979",
+     "convention": "mean of nMOS (5) and pMOS (7) family means",
+     "source": "out/research/report/2026-10-19_explore_e2_e3_e4/tables.md"
+    },
+    {
+     "label": "REAL_DEV raw median: N0 / M / S / nearest bank sample",
+     "value": "5.490 / 2.795 / 1.621 / 0.396",
+     "convention": "12 devices",
+     "source": "out/research/explore/E2/table.json"
+    },
+    {
+     "label": "S lower than N0 (devices)",
+     "value": "6 of 12",
+     "convention": "C3 needs >= 8; K2 kills below 6",
+     "source": "out/research/explore/E2/table.json"
+    },
+    {
+     "label": "REAL_DEV after FD polish, all-device: N0 / M / S / nearest bank sample",
+     "value": "1.067 / 0.521 / 0.711 / 0.310",
+     "convention": "combined 0.947 / 0.470 / 0.635 / 0.310; failed pairs 8/36, 2/36, 3/36, 0/12; secondary",
+     "source": "out/research/explore/E2/table.json"
+    },
+    {
+     "label": "References on REAL_DEV: released card / D (direct NGSpice 7 + FD)",
+     "value": "0.2848 / 0.1735",
+     "convention": "all-device; combined 0.2608 / 0.1600",
+     "source": "out/research/explore/E2/eval/refs.json, out/research/polished/direct7_fd/real/summary.json"
+    }
+   ],
    "what": [
-    "Pre-registered rule: continue if, for at least one control S, R_S = 1 − mean(lrn)/mean(control_S) ≥ 0.25 with bootstrap CI lower bound > 0, lrn ≥ 10% below pt_interp and failed cells ≤ 10%; kill if R_S < 0.10 for both S or lrn is worse than pt_interp for both."
+    "Question: does training a one-pass I-V -> seven-parameter network on simulated currents distorted by output-space misspecification components lower the NGSpice-validated RRMS on measured devices by >= 30% relative to the same network without augmentation?",
+    "Network: pooled across the 18 devices; input 2046 standardized signed-log currents + 2046 bank-median-scaled linear currents + device one-hot; MLP 1024-1024-512 GELU, 7 outputs in ParameterBox local coordinates (round-1 seven box); AdamW 1e-3, cosine, 30 epochs, batch 1024. Training data: simulated seven_r1 banks only; no measured data enters training or model selection.",
+    "Arms: N0 no augmentation; M measurement-only augmentation (per-curve gain, Vd-dependent multiplicative noise, additive floor); S structured + measurement augmentation (first-order external series resistance, per-curve self-heating, plus the M components); augmentation probability 0.8, redrawn each epoch. Control without training: nearest bank sample in standardized signed-log features.",
+    {
+     "type": "list",
+     "items": [
+      "C1: R_raw(S) <= 0.70 x R_raw(N0)",
+      "C2: R_raw(S) - D <= 0.70 x (R_raw(N0) - D), D = 0.173493",
+      "C3: S lower than N0 on >= 8 of 12 REAL_DEV devices",
+      "C4 guard: tier a mean raw RRMS(S) <= 1.5 x tier a RRMS(N0) + 0.01",
+      "CONTINUE if C1-C4 all hold; KILL if K1: R_raw(S) > 0.85 x R_raw(N0) or K2: S lower on fewer than 6 of 12; otherwise INCONCLUSIVE"
+     ]
+    }
    ],
    "did": [
-    "Smoke runs only (`out/research/explore/E3/runs/smoke`). Queue: `E3_full_M`, `E3_full_W`."
+    "Queue job `E2_full` (2026-10-19 11:26-11:40, 796 s): trained N0, M, S for seeds 1 and 2 (seed 0 from the light run), one forward pass per target, one NGSpice validation per target on REAL_DEV (12), tier a sets 0-1 and tier c sets 0-1 (36 + 36 simulated targets); FD polish on REAL_DEV.",
+    "Queue job `E2_fd_sim` (11:40-11:52, 722 s): the same FD polish (`ngspice_fit.polish`, round-1 seven box, max_nfev 100, diff_step 0.01, irls 1) on the simulated sets for all arms and seeds.",
+    "Scoring: strict paper RRMS with frozen published-baseline inclusion; per device the penalized value is averaged over seeds first, then over devices. Report: `scripts/research/plot_explore_e2_e3_e4.py`."
+   ],
+   "result": {
+    "text": [
+     "Checks (seeds 0-2): C1 no (S / N0 = 1.742); C2 no (gap ratio 1.754); C3 no (6/12); C4 guard yes (14.89 vs 20.56); K1 met; K2 not met. Rule output: KILL. The seed-0 light run had S / N0 = 1.145 with the same check outcomes.",
+     "M (measurement-only augmentation) has the lowest mean among the trained arms (6.265, 0.557 x N0). Secondary attribution check R(S) <= 0.90 x R(M): no (3.126).",
+     "The nearest bank sample, which uses no trained network, has a lower raw RRMS than every trained arm on REAL_DEV (0.905) and on tier a (0.286 vs 6.12-14.89), although the trained networks have lower parameter error on tier a (mean |local error| 0.25 vs 0.36).",
+     "After the FD polish the order on REAL_DEV is nearest bank sample 0.310, M 0.521, S 0.711, N0 1.067; all are above D = 0.1735 and the released card 0.2848."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "01_table_e2_decision.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "02_e2_per_device.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "03_table_e2_results.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The penalized means are dominated by pmos_L0p35_W0p55 and pmos_L0p35_W5 (seed-mean values 18-116 for the trained arms) and by failed included curves on pmos_L0p5_W0p42 and pmos_L4_W7. The median order (S 1.621 < M 2.795 < N0 5.490) differs from the mean order; the pre-registered aggregate is the mean.",
+    "Arm S uses the same component types as the tier c generator; tier c results for S are partly in-distribution. The decision uses REAL_DEV only.",
+    "The series-R and heating transforms are first-order output-space approximations, not NGSpice simulations.",
+    "12 REAL_DEV devices; REAL_TEST is not evaluated."
    ],
    "sources": [
-    "out/research/explore/E3/prereg.json",
-    "out/research/explore/E3/prereg_addendum.json",
-    "scripts/research/explore/e3_temp_misspec.py"
+    "out/research/explore/E2/prereg.json",
+    "out/research/explore/E2/table.json",
+    "out/research/explore/E2/eval/",
+    "scripts/research/explore/e2_direct.py",
+    "scripts/research/plot_explore_e2_e3_e4.py",
+    "docs/RESEARCH_LOOP.md"
    ],
    "updated": "2026-10-19"
   },
   {
-   "id": "e4-heldout",
+   "id": "e3-temp",
    "tab": "explore",
-   "statement": "E4: prediction of unmeasured bias curves with predictive intervals (single card, near-optimal ensemble, Laplace, learned cross-device discrepancy); six runs are queued.",
-   "status": "in_progress",
+   "statement": "E3 decision run (tier M): the temperature law learned across a simulated device population does not lower held-out-temperature RRMS relative to the pre-registered parametric controls (R_O4 = -0.074 vs par3, R_O2 = -0.036 vs par3_pop); kill condition R_S < 0.10 for both S is met and E3 is stopped.",
+   "status": "refuted",
    "headline": {
-    "value": "queued",
-    "convention": "code checks and light 43-parameter runs only"
+    "value": "R_O4 = -0.074, R_O2 = -0.036 (KILL)",
+    "convention": "tier M, 36 simulated test devices, all-device mean held-out RRMS at 110/190/260 K; R_S = 1 - lrn / control"
    },
    "what": [
-    "Pre-registered rule: continue if a candidate method has 90% coverage in [0.70, 0.95] with width ≤ 4 × the single card's held-out RRMS (C1), held-out RRMS ≤ 0.95 × single and lower on ≥ 8 of 12 devices (C2), and for the learned method RRMS ≤ the cross-device interpolation control (C3); kill if no candidate meets C1."
+    "Question: on simulated 77-300 K devices whose truth temperature law is outside the fitted parametric family (logistic knee + bump, nonzero 300 K offset, extrinsic series resistance with a linear temperature coefficient), does a temperature law learned on a densely characterised population and shared across devices predict the seven-parameter card at held-out 110/190/260 K with lower NGSpice RRMS than the parametric law fitted per device (O4) or with population-pooled exponent (O2)?",
+    "Methods: lrn = x_lin(T) + phi_O(T) sigma MLP(geometry, anchors, T), 2 x 64 SiLU, 5-seed ensemble, sensitivity-weighted loss, trained on 72 training devices (6 draws per REAL_DEV geometry, 14 temperatures); par3 = per-device law x = c + (mu - c) w^g; par3_pop = law with population-pooled g; pt_interp = linear interpolation of the per-temperature fits; floor = per-temperature fit on the held-out data.",
+    {
+     "type": "list",
+     "items": [
+      "CONTINUE if for at least one S: R_S >= 0.25 AND bootstrap 95% CI lower bound > 0 AND lrn >= 10% below pt_interp AND failed cells <= 10% for lrn, control and pt_interp",
+      "KILL if R_S < 0.10 for both S, or lrn worse than pt_interp for both S; otherwise INCONCLUSIVE",
+      "O4 observes 77/150/225/300 K (control par3); O2 observes 77/300 K (control par3_pop)"
+     ]
+    }
    ],
    "did": [
-    "Queue: `E4_p43_vd`, `E4_p43_sparse`, `E4_p43_vg`, `E4_p7_vd`, `E4_p7_vg`, `E4_p7_sparse` (`scripts/research/explore/e4_fit.py`, `e4_analyze.py`)."
+    "Queue job `E3_full_M` (2026-10-19 11:52-12:07, 906 s): tier M truths for 12 REAL_DEV geometries (no measured I-V), 72 training and 36 test devices, per-temperature NGSpice fits, law fits, learned law training, NGSpice evaluation at the held-out temperatures.",
+    "Queue job `E3_full_W` (12:07-12:23, 985 s): tier W (truth x = mu w^g, inside the parametric family), same protocol; secondary.",
+    "Report: `scripts/research/plot_explore_e2_e3_e4.py` reads summary.json and eval/*.json."
+   ],
+   "sources": [
+    "out/research/explore/E3/prereg.json",
+    "out/research/explore/E3/prereg_addendum.json",
+    "out/research/explore/E3/runs/full/tier_M/summary.json",
+    "out/research/explore/E3/runs/full/tier_W/summary.json",
+    "scripts/research/explore/e3_temp_misspec.py",
+    "src/cryoml/explore/e3_learn.py",
+    "scripts/research/plot_explore_e2_e3_e4.py"
+   ],
+   "updated": "2026-10-19",
+   "numbers": [
+    {
+     "label": "O4 all-device: lrn / par3 (control) / pt_interp / par3_pop",
+     "value": "9.801 / 9.123 / 10.118 / 7.376",
+     "convention": "tier M, 36 test devices, 0 failed cells; combined 11.69 / 10.84 / 12.04 / 8.69",
+     "source": "out/research/explore/E3/runs/full/tier_M/summary.json"
+    },
+    {
+     "label": "O2 all-device: lrn / par3_pop (control) / pt_interp",
+     "value": "7.102 / 6.858 / 9.592",
+     "convention": "tier M; combined 8.40 / 8.06 / 11.25",
+     "source": "out/research/explore/E3/runs/full/tier_M/summary.json"
+    },
+    {
+     "label": "R_S with bootstrap 95% CI",
+     "value": "O4 -0.074 [-0.090, 0.504]; O2 -0.036 [-0.055, 0.288]",
+     "convention": "paired percentile bootstrap over test devices, 4000 resamples",
+     "source": "out/research/explore/E3/runs/full/tier_M/summary.json"
+    },
+    {
+     "label": "lrn vs pt_interp (1 - lrn / pt_interp)",
+     "value": "O4 0.031; O2 0.260",
+     "convention": "tier M",
+     "source": "out/research/explore/E3/runs/full/tier_M/summary.json"
+    },
+    {
+     "label": "Median over test devices: lrn / control",
+     "value": "O4 0.168 / 0.312; O2 0.354 / 0.406",
+     "convention": "tier M; lrn lower on 27/36 (O4) and 21/36 (O2) devices; not a decision input",
+     "source": "out/research/explore/E3/runs/full/tier_M/eval/"
+    },
+    {
+     "label": "Tier W (secondary): R_O4 / R_O2",
+     "value": "-0.632 / 0.343",
+     "convention": "lrn 0.113 vs par3 0.067 (O4); lrn 0.490 vs par3_pop 0.746 (O2); rule output INCONCLUSIVE",
+     "source": "out/research/explore/E3/runs/full/tier_W/summary.json"
+    }
+   ],
+   "result": {
+    "text": [
+     "Checks, tier M: O4 R_S -0.074 (>= 0.25 no, CI lower bound > 0 no), lrn vs pt_interp 0.031 (>= 0.10 no); O2 R_S -0.036 (no, no), lrn vs pt_interp 0.260 (yes); failed cells 0 for all. R_S < 0.10 for both S: rule output KILL.",
+     "The all-device means are dominated by one test device, nmos_L1_W3__2: its held-out RRMS is 226-353 for every method (floor 0.007), from the 110 K cell (676-1060). Without that device (diagnostic, not the pre-registered aggregate) the O4 means are lrn 0.267, par3 0.423, pt_interp 0.370, and the O2 means are lrn 0.484, par3_pop 0.610.",
+     "lrn vs lrn_mean (population-mean correction without a network): O4 0.007, O2 0.208. lrn vs par3_pop in O4: -0.329.",
+     "Tier W (truth inside the parametric family): par3 is lower than lrn in O4 (0.067 vs 0.113); lrn is lower than par3_pop in O2 (0.490 vs 0.746); rule output INCONCLUSIVE (secondary)."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "04_table_e3_decision.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "05_e3_per_device.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "06_table_e3_results.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The pre-registered aggregate is the mean over test devices; one device with RRMS > 200 for every method determines the sign of R_S in both settings. The median and the outlier-excluded means are reported as diagnostics and do not change the rule output.",
+    "The learned law is trained on devices from the same generator as the test devices (all knees in 120-230 K); a law-shift test was listed in the addendum as required before any robustness claim.",
+    "In O4 the control par3 uses no population information, while lrn, lrn_mean and par3_pop do.",
+    "Simulated devices only; no measured temperature data."
+   ]
+  },
+  {
+   "id": "e4-heldout",
+   "tab": "explore",
+   "statement": "E4 decision run (43 parameters, split vd): the near-optimal ensemble meets the calibration check (90% coverage 0.744, width within the limit) but not the accuracy check (held-out RRMS 0.4418 vs 0.4177 for the single card, lower on 6 of 12 devices); Laplace and the learned discrepancy fail calibration. Rule output: PARTIAL_CALIBRATION_ONLY. The seven-parameter runs are in progress.",
+   "status": "in_progress",
+   "headline": {
+    "value": "PARTIAL_CALIBRATION_ONLY",
+    "convention": "p43, split vd, 12 REAL_DEV devices, strict selection; p7 in progress"
+   },
+   "what": [
+    "Question: when a device's 43-parameter card is fitted to a subset of its measured I-V curves, do an ensemble of near-optimal cards, a Gauss-Newton Laplace approximation, or a discrepancy model learned on other devices give calibrated predictive intervals and lower RRMS on the unmeasured curves than the single best-fit card?",
+    "Fit per device: CMA-ES (6000 + 2 x 3000 evaluations) on the mean train-curve RRMS, bounded TRF polish with batched NGSpice Jacobians, 8 perturbation starts; held-out-bias feasibility penalty (amendment 1). About 22,000 NGSpice calls per device.",
+    "Splits: vd (decision) holds out the Id-Vd curves except the highest gate bias; sparse holds out every curve except Id-Vg at Vd 0.01/1.85 and Id-Vd at the highest gate bias; vg holds out Id-Vg at Vd 0.37/0.74/1.11/1.48.",
+    {
+     "type": "list",
+     "items": [
+      "C1 calibration: all-device 90% coverage in [0.70, 0.95] and width <= 4 x single's held-out RRMS",
+      "C2 accuracy: held-out RRMS <= 0.95 x single (valid-only and paired) and lower on >= 8 of 12 devices",
+      "C3 (learned only): held-out RRMS <= crossinterp (valid-only and paired)",
+      "CONTINUE if a candidate (ens, laplace, learned) meets C1-C3; PARTIAL_CALIBRATION_ONLY if one meets only C1; KILL if none meets C1"
+     ]
+    }
+   ],
+   "did": [
+    "Queue jobs `E4_p43_vd` (2026-10-19 12:23-12:46, 1347 s), `E4_p43_sparse` (12:46-13:11, 1487 s), `E4_p43_vg` (13:11-13:35, 1470 s): `e4_fit.py` on the 12 REAL_DEV devices, then `e4_analyze.py --select strict` (with `--decide` on vd) and `--select feasible` on vd.",
+    "For this report: `e4_analyze.py --select feasible` on sparse and vg (reads the fitted records only), and the pre-registered `decide()` applied to the stored sparse and vg summaries for reporting. Feasible selection gives the same values as strict on all three splits.",
+    "Seven-parameter runs: `E4_p7_vd` and `E4_p7_vg` finished; `E4_p7_sparse` running at report time. Not reported yet."
    ],
    "sources": [
     "out/research/explore/E4/prereg.json",
     "out/research/explore/E4/prereg_amendment_1.json",
-    "out/research/explore/E4/prereg_amendment_2.json"
+    "out/research/explore/E4/prereg_amendment_2.json",
+    "out/research/explore/E4/p43/vd/summary_strict.json",
+    "out/research/explore/E4/p43/sparse/summary_strict.json",
+    "out/research/explore/E4/p43/vg/summary_strict.json",
+    "scripts/research/explore/e4_fit.py",
+    "scripts/research/explore/e4_analyze.py",
+    "scripts/research/plot_explore_e2_e3_e4.py"
    ],
-   "updated": "2026-10-19"
+   "updated": "2026-10-19",
+   "numbers": [
+    {
+     "label": "vd held-out all-device: single / ens / Laplace / learned / crossinterp",
+     "value": "0.4177 / 0.4418 / 500.2 / 10.87 / 0.0977",
+     "convention": "combined 0.3751 / 0.3968 / 428.8 / 9.82 / 0.0897; 0 failed devices",
+     "source": "out/research/explore/E4/p43/vd/summary_strict.json"
+    },
+    {
+     "label": "vd 90% coverage / width: ens, Laplace, learned",
+     "value": "0.744 / 1.006; 0.900 / 7.44; 0.963 / 5846",
+     "convention": "C1: coverage in [0.70, 0.95] and width <= 4 x 0.4177 = 1.671",
+     "source": "out/research/explore/E4/p43/vd/summary_strict.json"
+    },
+    {
+     "label": "sparse (secondary) held-out all-device: single / ens / crossinterp / learned",
+     "value": "0.3945 / 0.4322 / 0.2718 / 3.089",
+     "convention": "ens coverage 0.676 (C1 no); rule output KILL",
+     "source": "out/research/explore/E4/p43/sparse/summary_strict.json"
+    },
+    {
+     "label": "vg (secondary) held-out all-device: single / ens / crossinterp / learned",
+     "value": "0.2070 / 0.2070 / 0.0466 / 0.0664",
+     "convention": "ens C1 yes, C2 no; learned C2 yes, C1 no (coverage 0.965), C3 no; rule output PARTIAL_CALIBRATION_ONLY",
+     "source": "out/research/explore/E4/p43/vg/summary_strict.json"
+    },
+    {
+     "label": "crossinterp lower than single (devices)",
+     "value": "vd 12/12, sparse 11/12, vg 12/12",
+     "convention": "non-learned control, not a candidate",
+     "source": "out/research/explore/E4/p43/"
+    }
+   ],
+   "result": {
+    "text": [
+     "vd (decision): ens C1 yes (coverage 0.744, width 1.006 <= 1.671), C2 no (0.4418 > 0.3968; 6/12); laplace C1 no (width 7.44), C2 no; learned C1 no (coverage 0.963, width 5846), C2 no, C3 no (10.87 vs 0.098). Rule output PARTIAL_CALIBRATION_ONLY: per the pre-registration E4 continues only as a calibration component of another direction, not as a standalone contribution.",
+     "The non-learned crossinterp control (single card + measured-minus-simulated residual of the train curves at the bias points where they cross the held-out curve, interpolated along the sweep) has the lowest held-out RRMS on every split: vd 0.0977 vs single 0.4177, sparse 0.2718 vs 0.3945, vg 0.0466 vs 0.2070.",
+     "The single 43-parameter card has train objective 0.130 (vd) and held-out RRMS 0.418; the held-out error does not correlate with the share of held-out sensitivity in the sloppy subspace (Spearman rho -0.07 vd, 0.03 sparse, -0.17 vg).",
+     "Laplace means are dominated by single devices (vd pmos_L0p35_W5 5983). The learned model's inner leave-one-device-out MSE is about 7.5e6 (vd) and 4.5e6 (sparse) in every fold that has pmos_L0p35_W0p55 in its training set, and 1.1 (vd) and 0.15 (sparse) in the fold that holds it out; on vg it is 0.02-0.03 in every fold."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "07_table_e4_decision.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "08_e4_per_device.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "10_e4_calibration.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e2_e3_e4",
+      "file": "09_table_e4_results.png"
+     }
+    ]
+   },
+   "caveats": [
+    "12 REAL_DEV devices; REAL_TEST is not loaded.",
+    "Interval widths are mean (hi - lo) / den, in the units of the per-curve RRMS; conformal and learned widths on vd and sparse are > 1000 x the single card's RRMS.",
+    "The sparse and vg verdicts are secondary; only vd is the pre-registered decision.",
+    "p7 (seven parameters) results are pending."
+   ]
   }
  ]
 }

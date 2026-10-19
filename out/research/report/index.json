@@ -1,6 +1,29 @@
 [
  {
   "date": "2026-10-19",
+  "topic": "explore_e2_e3_e4",
+  "folder": "2026-10-19_explore_e2_e3_e4",
+  "pngs": [
+   "01_table_e2_decision.png",
+   "02_e2_per_device.png",
+   "03_table_e2_results.png",
+   "04_table_e3_decision.png",
+   "05_e3_per_device.png",
+   "06_table_e3_results.png",
+   "07_table_e4_decision.png",
+   "08_e4_per_device.png",
+   "09_table_e4_results.png",
+   "10_e4_calibration.png"
+  ],
+  "summary": [
+   "E2 decision run (seeds 0-2), REAL_DEV raw penalized RRMS all-device: N0 11.241, M 6.265, S 19.581; S/N0 = 1.742, S < N0 on 6/12. K1 met: KILL (confirms the seed-0 light run, S/N0 = 1.145). Nearest bank sample 0.905; released card 0.285.",
+   "E3 decision run (tier M, 36 test devices): R_O4 = -0.074 vs par3, R_O2 = -0.036 vs par3_pop; both < 0.10: KILL. Means are dominated by test device nmos_L1_W3__2 (held-out RRMS 226-353 for all methods). Tier W secondary: rule output INCONCLUSIVE.",
+   "E4 p43 vd (decision): single held-out RRMS 0.4177; ens coverage 0.744, width 1.006 (C1 yes), RRMS 0.4418, < single on 6/12 (C2 no); laplace and learned fail C1. Rule output PARTIAL_CALIBRATION_ONLY. crossinterp control 0.0977. Secondary: sparse KILL, vg PARTIAL_CALIBRATION_ONLY. p7 in progress."
+  ],
+  "generated": "2026-10-19T14:14:41"
+ },
+ {
+  "date": "2026-10-19",
   "topic": "explore_e1_lc",
   "folder": "2026-10-19_explore_e1_lc",
   "pngs": [

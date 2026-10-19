@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-19 · explore_e2_e3_e4
+
+Folder: [2026-10-19_explore_e2_e3_e4/](2026-10-19_explore_e2_e3_e4/) · [tables.md](2026-10-19_explore_e2_e3_e4/tables.md) · [README.md](2026-10-19_explore_e2_e3_e4/README.md)
+
+- E2 decision run (seeds 0-2), REAL_DEV raw penalized RRMS all-device: N0 11.241, M 6.265, S 19.581; S/N0 = 1.742, S < N0 on 6/12. K1 met: KILL (confirms the seed-0 light run, S/N0 = 1.145). Nearest bank sample 0.905; released card 0.285.
+- E3 decision run (tier M, 36 test devices): R_O4 = -0.074 vs par3, R_O2 = -0.036 vs par3_pop; both < 0.10: KILL. Means are dominated by test device nmos_L1_W3__2 (held-out RRMS 226-353 for all methods). Tier W secondary: rule output INCONCLUSIVE.
+- E4 p43 vd (decision): single held-out RRMS 0.4177; ens coverage 0.744, width 1.006 (C1 yes), RRMS 0.4418, < single on 6/12 (C2 no); laplace and learned fail C1. Rule output PARTIAL_CALIBRATION_ONLY. crossinterp control 0.0977. Secondary: sparse KILL, vg PARTIAL_CALIBRATION_ONLY. p7 in progress.
+
+Figures and tables: [01_table_e2_decision.png](2026-10-19_explore_e2_e3_e4/01_table_e2_decision.png) · [02_e2_per_device.png](2026-10-19_explore_e2_e3_e4/02_e2_per_device.png) · [03_table_e2_results.png](2026-10-19_explore_e2_e3_e4/03_table_e2_results.png) · [04_table_e3_decision.png](2026-10-19_explore_e2_e3_e4/04_table_e3_decision.png) · [05_e3_per_device.png](2026-10-19_explore_e2_e3_e4/05_e3_per_device.png) · [06_table_e3_results.png](2026-10-19_explore_e2_e3_e4/06_table_e3_results.png) · [07_table_e4_decision.png](2026-10-19_explore_e2_e3_e4/07_table_e4_decision.png) · [08_e4_per_device.png](2026-10-19_explore_e2_e3_e4/08_e4_per_device.png) · [09_table_e4_results.png](2026-10-19_explore_e2_e3_e4/09_table_e4_results.png) · [10_e4_calibration.png](2026-10-19_explore_e2_e3_e4/10_e4_calibration.png)
+
 ## 2026-10-19 · explore_e1_lc
 
 Folder: [2026-10-19_explore_e1_lc/](2026-10-19_explore_e1_lc/) · [tables.md](2026-10-19_explore_e1_lc/tables.md) · [README.md](2026-10-19_explore_e1_lc/README.md)
