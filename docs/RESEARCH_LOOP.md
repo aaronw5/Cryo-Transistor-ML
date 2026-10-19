@@ -599,3 +599,27 @@ Report batch: `out/research/report/2026-10-19_explore_e4p7_e5/`.
 
 Rule outputs on REAL_DEV: E1 stage 1 and stage 2 fail their checks; E2 KILL; E3 KILL; E4 PARTIAL_CALIBRATION_ONLY
 (continue only as a calibration component of another direction); E5 KILL. No exploration job is queued.
+
+## Iteration 2, I2-0 (2026-10-19): diagnosis of the devices that determined the iteration-1 means
+
+`scripts/research/explore/i2_0_diagnose.py`; stored records plus about 40 single-device NGSpice runs; no stored
+verdict changed. Output: `out/research/explore/I2_0/` (diagnosis.md, JSON tables, PNGs).
+A. pmos_L0p35_W5 and pmos_L0p35_W0p55 are the only REAL_DEV devices with included curves whose denominator is
+below 1e-3 of the device's largest (ranges 5106 and 8409; other devices 37-342): W5 idvd@0.74 (1.2e-7 A) and
+W0p55 idvd@0.37 and idvd@0.74 (4.3e-9 and 1.8e-8 A; 1 nA and 10 nA SMU steps, 8 and 3 distinct values).
+The failing predictions over-predict subthreshold current: E2 cards with nfactor at the box upper edge (top curve
+idvd@0.74, 79-98 % of the W5 curve sum); E4 p43 Laplace = mean of 64 draws, 2 draws above RRMS 10 (max 1.15e6,
+condition 1.4e16); E4 p7 sparse card extrapolated to 8e-5 A at |Vg| 0.74 V; E4 learned target divided by a
+1e-12 A predicted scale (inner MSE 7.5e6 and 1.16e8). E5 means are set by nMOS (nmos_L20_W0p64 0.049 -> 0.551).
+Re-simulation reproduces all stored values; no pipeline bug.
+B. nmos_L1_W3__2 (E3 tier M): truth u0 is 1.28 at 77 K and 1.10 at 110 K, above the BSIM4 u0 > 1 unit switch
+(divided by 1e4), and 0.54 at 150 K. Every method's 110 K card is below the switch (lrn 0.833) and gives
+RRMS 676-1060; the lrn card with only u0 set to the truth value gives 0.156. Pipeline bug in
+`src/cryoml/explore/e3_temp.py` (no u0-switch guard; 3 training truths also cross); proposed patch
+`out/research/explore/I2_0/proposed_e3_u0_switch.patch`, not applied.
+C. Diagnostic only: rule outputs without the devices: E1, E4, E5 unchanged; E2 KILL -> INCONCLUSIVE without both
+pMOS devices (S/N0 0.534, wins 6/10, C4 fails); E3 KILL -> CONTINUE without nmos_L1_W3__2 (R_O4 0.369,
+CI 0.168-0.533, lrn vs pt_interp 0.278). Proposals for new pre-registrations: E3 rerun after the u0 fix; a paired
+per-device statistic (geometric-mean RRMS ratio with bootstrap CI) as the decision aggregate; a data-quality and
+denominator-ratio secondary score fixed from measured data only; Laplace MAP/median point predictor and a
+device-level scale for the E4 learned target.
