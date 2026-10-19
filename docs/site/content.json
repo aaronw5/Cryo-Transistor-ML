@@ -81,6 +81,18 @@
       "claim": "arch-ablation"
      },
      {
+      "text": "Learning curves, paper MLP / DeepONet / FNO at 10,732 → 85,853 training samples: test loss 4.8–5.4× lower; end-to-end all-device 0.2588 → 0.2348, 0.2581 → 0.2274, 0.2494 → 0.2549 (combined 0.2483 → 0.2248, 0.2477 → 0.2193, 0.2397 → 0.2448); NGSpice swap 0.1125. Diagnostic ablation.",
+      "source": [
+       "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
+       "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
+       "out/research/surrogate_arch/full_round_1/fno_f1.json",
+       "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
+       "out/research/surrogate_arch/full_round_1/deeponet_f0.125.json",
+       "out/research/surrogate_arch/full_round_1/fno_f0.125.json"
+      ],
+      "claim": "arch-lc"
+     },
+     {
       "text": "Tandem inverse network (A), seven parameters: median device RRMS 0.0258 on held-out simulated devices, 0.6344 on measured devices.",
       "source": [
        "docs/RESEARCH_LOOP.md"
@@ -132,7 +144,7 @@
       ]
      }
     ],
-    "updated": "2026-10-17"
+    "updated": "2026-10-19"
    },
    "sections": [
     {
@@ -279,6 +291,119 @@
        ],
        "source": [
         "~/.claude/projects/-Users-anrunw-Documents-cryo-ml/memory/icml-target.md"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "explore",
+   "kind": "paper",
+   "label": "Exploration",
+   "title": "Exploration phase: directions E1–E5",
+   "subtitle": "Each direction has a cheap probe and a pre-registered continue or kill rule, judged on REAL_DEV (12 measured devices) and simulated sets; REAL_TEST is not loaded. Directions to continue are chosen by about 2026-11-15.",
+   "state": "active",
+   "status": {
+    "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
+    "answer": [
+     {
+      "text": "E1 stage 1 (post-hoc correction on the fixed card), REAL_DEV LODO, all-device: M 0.1276 vs C0 0.1073 and T1 0.0865. Fails 4 of 5 pre-registered checks.",
+      "source": [
+       "out/research/explore/E1/real_dev_lodo/results.json",
+       "out/research/explore/E1/outcome_stage1.json"
+      ],
+      "claim": "e1-stage1"
+     },
+     {
+      "text": "E1 stage 2 (card refit with the correction in the loop), all-device (combined): C0 refit 0.1072 (0.0981), M 0.0871 (0.0842), T1 0.0820 (0.0760). M is 19% below the no-correction refit; the pre-registered rule fails because M does not beat T1 (mean, and 6 of 12 devices).",
+      "source": [
+       "out/research/explore/E1/real_dev_refit/results.json"
+      ],
+      "claim": "e1-stage2"
+     },
+     {
+      "text": "E1 simulated, leave-one-geometry-out, post-hoc correction: M above C0 on GF180 (0.0496 vs 0.0474) and IHP (0.1553 vs 0.1012); criterion_S fails on both PDKs (secondary).",
+      "source": [
+       "out/research/explore/E1/gf180_c_logo/results.json",
+       "out/research/explore/E1/ihp_c_logo/results.json"
+      ],
+      "claim": "e1-sim-logo"
+     },
+     {
+      "text": "E5 light (stage 1, light settings): shared MLP delta 0.1809 vs control 0.1073 all-device, 2 of 12 devices improved; kill condition met.",
+      "source": [
+       "out/research/explore/E5/stage1_light.json"
+      ],
+      "claim": "e5-light"
+     },
+     {
+      "text": "E2 light (seed 0): structured augmentation S / no augmentation N0 = 1.145 (penalized mean raw RRMS on REAL_DEV), S lower on 6 of 12 devices; kill condition K1 met. The pre-registered three-seed run is running.",
+      "source": [
+       "out/research/explore/E2/prereg.json",
+       "out/research/explore/E2/table.json (light run, commit 773abe3)"
+      ],
+      "claim": "e2-light"
+     }
+    ],
+    "next": [
+     {
+      "text": "E2 full three-seed run (decision run) and FD on simulated sets.",
+      "queue_match": "^E2_",
+      "source": [
+       "out/research/queue.txt"
+      ],
+      "claim": "e2-light"
+     },
+     {
+      "text": "E3 full runs, tiers M and W.",
+      "queue_match": "^E3_",
+      "source": [
+       "out/research/queue.txt"
+      ],
+      "claim": "e3-temp"
+     },
+     {
+      "text": "E4 fits and analyses, 43 and 7 parameters, three held-out-curve splits.",
+      "queue_match": "^E4_",
+      "source": [
+       "out/research/queue.txt"
+      ],
+      "claim": "e4-heldout"
+     },
+     {
+      "text": "E5 stage 1 and stage 2 with the pre-registered settings.",
+      "queue_match": "^E5_",
+      "source": [
+       "out/research/queue.txt"
+      ],
+      "claim": "e5-light"
+     },
+     {
+      "text": "E1 iteration 2 candidate: the correction inside the refit (stage-2 setting) with a new pre-registration; not queued.",
+      "source": [
+       "docs/RESEARCH_LOOP.md"
+      ],
+      "claim": "e1-stage2"
+     }
+    ],
+    "updated": "2026-10-19"
+   },
+   "sections": [
+    {
+     "id": "explore-prereg",
+     "title": "Pre-registration files",
+     "position": "after_claims",
+     "blocks": [
+      {
+       "type": "list",
+       "items": [
+        "E1: `out/research/explore/E1/prereg.json`",
+        "E2: `out/research/explore/E2/prereg.json`",
+        "E3: `out/research/explore/E3/prereg.json`, `out/research/explore/E3/prereg_addendum.json`",
+        "E4: `out/research/explore/E4/prereg.json`, amendments 1 and 2",
+        "E5: `out/research/explore/E5/prereg.json`",
+        "Device split: `out/research/explore/real_split.json` (REAL_DEV 12, REAL_TEST 6)"
        ]
       }
      ]
@@ -877,7 +1002,7 @@
     "Before the fix, with the picks then stored: 17 of 18 devices with opposite ordering; picks surrogate 0.2034, NGSpice 0.2375 stored, which includes 1 device with a failed included curve (`nmos_L0p15_W1p6`; valid-only 0.2395 over 17).",
     "The direct-fit cards sit on the box faces (max |local| ≈ 1), where the Latin-hypercube bank is sparse and about 40% of round-1 bank samples did not converge.",
     "At seven parameters the surrogate's prediction for its own picks matched NGSpice (0.235 vs 0.2367); the swap shows that this did not hold for the cards it did not pick.",
-    "Larger surrogates and neural operators: `arch_full_r1` finished; with six architectures the surrogate ranks the direct-fit card better on 5 to 8 of 18 devices ([arch-ablation](#claim-arch-ablation)). The learning-curve runs (`archlc_full_r1`) are queued."
+    "Larger surrogates and neural operators: `arch_full_r1` finished; with six architectures the surrogate ranks the direct-fit card better on 5 to 8 of 18 devices ([arch-ablation](#claim-arch-ablation)). Learning curves (`archlc_full_r1`): [arch-lc](#claim-arch-lc)."
    ],
    "sources": [
     "scripts/research/surrogate_gap.py",
@@ -1052,7 +1177,7 @@
     "Curve NRMSE is an emulator diagnostic on bank samples, not the paper RRMS; its mean is 2.8e4 to 2.8e6 times its median.",
     "The failed-curve status of the end-to-end records is inferred from the metric rule in force when the run started (commit a0e1e97); the records carry no per_curve.",
     "Not a matched-budget comparison: the swap uses 19,854 NGSpice calls per device; each surrogate search uses the 10k-sample round-1 bank (shared by all architectures) and at most 9 NGSpice validation simulations per device.",
-    "Learning curves at 1/8, 1/4 and 1/2 of the training data (`archlc_full_r1`) are queued and not part of this claim."
+    "Learning curves at 1/8, 1/4 and 1/2 of the training data (`archlc_full_r1`) finished 2026-10-19 10:05: [arch-lc](#claim-arch-lc)."
    ],
    "sources": [
     "scripts/research/surrogate_arch_study.py",
@@ -1070,6 +1195,171 @@
     "out/research/report/2026-10-17_arch_study/README.md"
    ],
    "updated": "2026-10-17"
+  },
+  {
+   "id": "arch-lc",
+   "tab": "icml",
+   "statement": "Learning curves (paper MLP, DeepONet, FNO at 1/8, 1/4, 1/2 and all of 85,853 training samples): test loss falls 4.8–5.4× from the smallest to the full set, while end-to-end all-device RRMS on the 18 measured devices moves from 0.249–0.259 to 0.227–0.255; the same search with NGSpice gives 0.1125.",
+   "status": "verified",
+   "headline": {
+    "value": "0.2274–0.2549 at 85,853 samples; 0.2494–0.2588 at 10,732",
+    "convention": "all-device, end-to-end search with each surrogate, selected card re-simulated in NGSpice; NGSpice in place of the surrogate 0.1125; diagnostic ablation"
+   },
+   "numbers": [
+    {
+     "label": "Test loss, 10,732 → 85,853 samples",
+     "value": "paper MLP 0.1579 → 0.0331; DeepONet 0.1683 → 0.0326; FNO 0.1394 → 0.0259",
+     "convention": "pipeline forward loss on held-out bank samples",
+     "source": [
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/fno_f1.json"
+     ]
+    },
+    {
+     "label": "End-to-end all-device, fractions 1/8, 1/4, 1/2, 1",
+     "value": "paper MLP 0.2588, 0.2599, 0.2504, 0.2348; DeepONet 0.2581, 0.2497, 0.2360, 0.2274; FNO 0.2494, 0.2549, 0.2468, 0.2549",
+     "convention": "all-device, 18 devices, 0 failed in every run",
+     "source": [
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/fno_f1.json"
+     ]
+    },
+    {
+     "label": "End-to-end combined, fractions 1/8, 1/4, 1/2, 1",
+     "value": "paper MLP 0.2483, 0.2493, 0.2405, 0.2248; DeepONet 0.2477, 0.2401, 0.2269, 0.2193; FNO 0.2397, 0.2448, 0.2372, 0.2448",
+     "convention": "mean of the nMOS (8) and pMOS (10) family means",
+     "source": [
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/fno_f1.json"
+     ]
+    },
+    {
+     "label": "Same search, NGSpice in place of the surrogate",
+     "value": "0.1125 (combined 0.1053)",
+     "convention": "all-device (combined)",
+     "source": "out/research/swap_search/full_round_1/summary.json"
+    },
+    {
+     "label": "Devices where the selected card is a bank start, fractions 1/8 → 1",
+     "value": "paper MLP 17, 18, 13, 11; DeepONet 17, 15, 13, 9; FNO 15, 16, 15, 16",
+     "convention": "of 18; selected_candidate_kind lhc_start",
+     "source": [
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/fno_f1.json"
+     ]
+    },
+    {
+     "label": "Mean absolute score error at the reference cards, 1/8 → 1",
+     "value": "paper MLP 1.099 → 0.288; DeepONet 1.057 → 0.252; FNO 0.918 → 0.243",
+     "convention": "|surrogate-predicted − NGSpice RRMS|, 18 devices × 3 card sets",
+     "source": [
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.125.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.25.json",
+      "out/research/surrogate_arch/full_round_1/fno_f0.5.json",
+      "out/research/surrogate_arch/full_round_1/fno_f1.json"
+     ]
+    }
+   ],
+   "what": [
+    "Question: does more training data for the forward surrogate change the end-to-end result of the pipeline's search on the measured devices?",
+    "Same cache, split (seed 20260818), loss, recipe and search as [arch-ablation](#claim-arch-ablation). The training subset at fraction f is the first round(f × 85,853) indices of one fixed permutation of the training split; validation and test splits are unchanged."
+   ],
+   "did": [
+    "`archlc_full_r1`: `scripts/research/surrogate_arch_study.py` with architectures paper_mlp, deeponet, fno and train fractions 0.125, 0.25, 0.5 on `out/cold_loop/full/round_1` and `data/processed/cold_loop/full_r1` (arguments read from the report files and the log; the queue line is not kept after a job finishes). First attempt 2026-10-18 03:38, killed (rc 143) after 10,138 s; restarted 2026-10-19 09:01, finished 10:05 (3,878 s); the restart skipped the eight finished reports and trained `fno_f0.5`.",
+    "The fraction-1 points are the `arch_full_r1` reports of the same script, split and seed.",
+    "Report batch `2026-10-19_explore_e1_lc` (`scripts/research/plot_explore_e1_lc.py`)."
+   ],
+   "result": {
+    "text": [
+     "Test loss decreases monotonically with training-set size for all three architectures. End-to-end all-device RRMS decreases for paper MLP (0.2588 → 0.2348) and DeepONet (0.2581 → 0.2274) and does not decrease for FNO (0.2494 → 0.2549). At every size the end-to-end RRMS is 0.11–0.15 above the NGSpice swap (0.1125).",
+     "The number of devices whose selected card is a bank start, not an FD endpoint, falls with data for paper MLP (17 → 11) and DeepONet (17 → 9) and stays at 15–16 for FNO. A selected bank start is the same card for every surrogate."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "file": "06_lc_curves.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "table": "Surrogate learning curves",
+      "caption": "Learning curves: training, held-out accuracy and end-to-end search"
+     }
+    ]
+   },
+   "caveats": [
+    "The end-to-end search ran on the 18 measured devices; it is a diagnostic ablation and is not used for method selection.",
+    "One training run per cell (seed 20260818); run-to-run variation is not measured.",
+    "The bank used for starts is the same 10k-sample round-1 bank for every row; only surrogate training data size varies."
+   ],
+   "sources": [
+    "scripts/research/surrogate_arch_study.py",
+    "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
+    "out/research/surrogate_arch/full_round_1/paper_mlp_f0.25.json",
+    "out/research/surrogate_arch/full_round_1/paper_mlp_f0.5.json",
+    "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
+    "out/research/surrogate_arch/full_round_1/deeponet_f0.125.json",
+    "out/research/surrogate_arch/full_round_1/deeponet_f0.25.json",
+    "out/research/surrogate_arch/full_round_1/deeponet_f0.5.json",
+    "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
+    "out/research/surrogate_arch/full_round_1/fno_f0.125.json",
+    "out/research/surrogate_arch/full_round_1/fno_f0.25.json",
+    "out/research/surrogate_arch/full_round_1/fno_f0.5.json",
+    "out/research/surrogate_arch/full_round_1/fno_f1.json",
+    "out/research/swap_search/full_round_1/summary.json",
+    "out/research/logs/archlc_full_r1.log",
+    "out/research/report/2026-10-19_explore_e1_lc/README.md"
+   ],
+   "updated": "2026-10-19"
   },
   {
    "id": "icml-inverse",
@@ -2797,6 +3087,392 @@
     "docs/RESEARCH_LOOP.md"
    ],
    "updated": "2026-10-16"
+  },
+  {
+   "id": "e1-stage1",
+   "tab": "explore",
+   "statement": "E1 stage 1: a cross-device MLP correction applied post hoc to the fixed best 43-parameter card raises held-out REAL_DEV all-device RRMS from 0.1073 to 0.1276; the pre-registered rule fails (4 of 5 checks).",
+   "status": "refuted",
+   "headline": {
+    "value": "0.1276 vs 0.1073",
+    "convention": "all-device, M vs C0, REAL_DEV leave-one-device-out, post-hoc; T1 0.0865"
+   },
+   "numbers": [
+    {
+     "label": "All-device: C0 / T1 / T2 / LIN / M",
+     "value": "0.1073 / 0.0865 / 0.1072 / 0.1142 / 0.1276",
+     "convention": "12 devices, 0 failed",
+     "source": "out/research/explore/E1/real_dev_lodo/results.json"
+    },
+    {
+     "label": "Combined: C0 / T1 / M",
+     "value": "0.0981 / 0.0802 / 0.1237",
+     "convention": "mean of nMOS (5) and pMOS (7) family means",
+     "source": "out/research/explore/E1/real_dev_lodo/results.json"
+    },
+    {
+     "label": "M < C0, M < T1 (devices)",
+     "value": "6 of 12, 4 of 12",
+     "convention": "per device",
+     "source": "out/research/explore/E1/real_dev_lodo/results.json"
+    },
+    {
+     "label": "ORACLE (in-sample M, diagnostic)",
+     "value": "0.0375",
+     "convention": "all-device; trained and scored on the same device",
+     "source": "out/research/explore/E1/real_dev_lodo/results.json"
+    }
+   ],
+   "what": [
+    "Question: after the best per-device 43-parameter BSIM4 fit, is part of the remaining measured-minus-simulated error shared across devices, so that a correction learned on other devices lowers the held-out device's RRMS?",
+    {
+     "type": "code",
+     "text": "I_corr = I_bsim * exp(g),  g = tanh(h(phi))\nphi = [is_pmos, |Vgs|/VDD, |Vds|/VDD, log10 L, log10 W, log10(|I_bsim| L/W + 1e-13)]",
+     "source": "out/research/explore/E1/prereg.json"
+    },
+    "Arms: C0 no correction; M (primary) MLP 6-32-32-1 tanh, 5 seeds, 2000 Adam steps, L2 1e-4; T1 one log-gain per (family, curve tag), 22 scalars; T2 one log-gain per (family, curve kind), 4 scalars; LIN quadratic features → linear → tanh. M depends only on terminal state and geometry and can be written as Verilog-A; T1 and T2 are indexed by curve tag and cannot.",
+    "Pre-registered continue rule (all five): M all-device ≤ 0.090; M < T1 all-device; M < T1 on ≥ 8 of 12; M < C0 on ≥ 8 of 12; 0 failed devices for M. E1 is stopped if neither stage meets all five."
+   ],
+   "did": [
+    "Cards: direct NGSpice 43-parameter fit, round 3 + FD (`out/research/polished/direct43_r3_fd/real/summary.json`); one NGSpice simulation per device on the measured bias grid (`scripts/research/explore/e1_collect_real.py`).",
+    "Leave-one-device-out over the 12 REAL_DEV devices (`scripts/research/explore/e1_lodo.py`): each arm trained on 11 devices, applied once to the held-out device's simulated currents, scored with the strict paper RRMS (frozen inclusion)."
+   ],
+   "result": {
+    "text": [
+     "Checks: M ≤ 0.090 no; M < T1 mean no; M < T1 on ≥ 8/12 no (4); M < C0 on ≥ 8/12 no (6); 0 failed yes. Stage 1 does not pass; the E1 decision moved to stage 2 as pre-registered."
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "table": "E1 on REAL_DEV",
+      "caption": "Stage 1 and stage 2 on REAL_DEV"
+     }
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "file": "03_e1_stage1_vs_stage2.png"
+     }
+    ]
+   },
+   "caveats": [
+    "12 devices; one LODO pass with 5 seeds averaged inside M."
+   ],
+   "sources": [
+    "out/research/explore/E1/prereg.json",
+    "out/research/explore/E1/real_dev_lodo/results.json",
+    "out/research/explore/E1/outcome_stage1.json",
+    "scripts/research/explore/e1_lodo.py"
+   ],
+   "updated": "2026-10-19"
+  },
+  {
+   "id": "e1-stage2",
+   "tab": "explore",
+   "statement": "E1 stage 2: with each held-out card re-polished with its fold's correction in the residual, M reaches 0.0871 all-device vs 0.1072 for the no-correction re-polish (19% lower) and 0.0820 for T1; the pre-registered rule fails because M does not beat T1.",
+   "status": "refuted",
+   "headline": {
+    "value": "0.0871 vs 0.1072 (T1 0.0820)",
+    "convention": "all-device, REAL_DEV leave-one-device-out, card refit with the correction in the loop; combined 0.0842 vs 0.0981 (T1 0.0760)"
+   },
+   "numbers": [
+    {
+     "label": "All-device: C0 refit / M / T1",
+     "value": "0.1072 / 0.0871 / 0.0820",
+     "convention": "12 devices, 0 failed",
+     "source": "out/research/explore/E1/real_dev_refit/results.json"
+    },
+    {
+     "label": "Combined: C0 refit / M / T1",
+     "value": "0.0981 / 0.0842 / 0.0760",
+     "convention": "mean of nMOS (5) and pMOS (7) family means",
+     "source": "out/research/explore/E1/real_dev_refit/results.json"
+    },
+    {
+     "label": "Median: C0 refit / M / T1",
+     "value": "0.0820 / 0.0612 / 0.0650",
+     "convention": "12 devices",
+     "source": "out/research/explore/E1/real_dev_refit/results.json"
+    },
+    {
+     "label": "M < C0 refit, M < T1 (devices)",
+     "value": "8 of 12, 6 of 12",
+     "convention": "per device",
+     "source": "out/research/explore/E1/real_dev_refit/results.json"
+    },
+    {
+     "label": "M relative to C0 refit",
+     "value": "−18.8%",
+     "convention": "all-device",
+     "source": "out/research/explore/E1/real_dev_refit/results.json"
+    }
+   ],
+   "what": [
+    "Question: after the best per-device 43-parameter BSIM4 fit, is part of the remaining measured-minus-simulated error shared across devices, so that a correction learned on other devices lowers the held-out device's RRMS?",
+    {
+     "type": "code",
+     "text": "I_corr = I_bsim * exp(g),  g = tanh(h(phi))\nphi = [is_pmos, |Vgs|/VDD, |Vds|/VDD, log10 L, log10 W, log10(|I_bsim| L/W + 1e-13)]",
+     "source": "out/research/explore/E1/prereg.json"
+    },
+    "Arms: C0 no correction; M (primary) MLP 6-32-32-1 tanh, 5 seeds, 2000 Adam steps, L2 1e-4; T1 one log-gain per (family, curve tag), 22 scalars; T2 one log-gain per (family, curve kind), 4 scalars; LIN quadratic features → linear → tanh. M depends only on terminal state and geometry and can be written as Verilog-A; T1 and T2 are indexed by curve tag and cannot.",
+    "Pre-registered continue rule (all five): M all-device ≤ 0.090; M < T1 all-device; M < T1 on ≥ 8 of 12; M < C0 on ≥ 8 of 12; 0 failed devices for M. E1 is stopped if neither stage meets all five."
+   ],
+   "did": [
+    "Stage 2 (`scripts/research/explore/e1_refit.py`, queue job `e1_refit_real`, 2026-10-19 10:05–10:08, 156 s): for each fold, the held-out card is re-polished (`ngspice_fit.polish`, TRF max_nfev 400, irls 2, diff_step 0.01, round-3 box) against the measured curves with that fold's M correction inside the residual. Controls from the same start and budget: the polish without correction (C0 refit) and the polish with T1 in the loop.",
+    "Scored with the same strict paper RRMS (frozen inclusion) as stage 1."
+   ],
+   "result": {
+    "text": [
+     "Checks: M ≤ 0.090 yes (0.0871); M < T1 mean no; M < T1 on ≥ 8/12 no (6); M < C0 refit on ≥ 8/12 yes (8); 0 failed yes. Stage 2 does not pass.",
+     "The same correction that raised RRMS post hoc (stage 1, 0.1276) lowers it when the card is refit with it (0.0871). The C0 re-polish changes the card little (0.1073 → 0.1072).",
+     "Candidate for exploration iteration 2: a new pre-registration with the correction inside the refit as the primary setting. Not queued."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "file": "01_e1_stage2_per_device.png"
+     },
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "file": "03_e1_stage1_vs_stage2.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "table": "E1 on REAL_DEV",
+      "caption": "Stage 1 and stage 2 on REAL_DEV"
+     }
+    ]
+   },
+   "caveats": [
+    "T1 is not deployable as a device model (indexed by curve tag); it is the pre-registered comparator.",
+    "In the refit, M and T1 change the card; the card's parameters are fitted on the held-out device's measured curves, as is C0 refit.",
+    "12 devices; no REAL_TEST evaluation."
+   ],
+   "sources": [
+    "out/research/explore/E1/prereg.json",
+    "out/research/explore/E1/real_dev_refit/results.json",
+    "scripts/research/explore/e1_refit.py",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-19"
+  },
+  {
+   "id": "e1-sim-logo",
+   "tab": "explore",
+   "statement": "E1 simulated benchmark (GF180 and IHP tier c, sets 0–2, 48 targets per PDK, leave-one-geometry-out, post-hoc correction): M is above C0 on both PDKs, and criterion_S fails on both.",
+   "status": "refuted",
+   "headline": {
+    "value": "GF180 0.0496 vs 0.0474; IHP 0.1553 vs 0.1012",
+    "convention": "all-device, M vs C0, post-hoc correction (no in-loop refit); combined equals all-device (24 nMOS, 24 pMOS)"
+   },
+   "numbers": [
+    {
+     "label": "GF180 all-device: C0 / T1 / T2 / LIN / M",
+     "value": "0.0474 / 0.0420 / 0.0463 / 0.0443 / 0.0496",
+     "convention": "48 targets, 0 failed",
+     "source": "out/research/explore/E1/gf180_c_logo/results.json"
+    },
+    {
+     "label": "IHP all-device: C0 / T1 / T2 / LIN / M",
+     "value": "0.1012 / 0.0957 / 0.0999 / 0.0987 / 0.1553",
+     "convention": "48 targets, 0 failed",
+     "source": "out/research/explore/E1/ihp_c_logo/results.json"
+    },
+    {
+     "label": "M < C0 (targets)",
+     "value": "GF180 19 of 48; IHP 13 of 48",
+     "convention": "per target",
+     "source": [
+      "out/research/explore/E1/gf180_c_logo/results.json",
+      "out/research/explore/E1/ihp_c_logo/results.json"
+     ]
+    },
+    {
+     "label": "M / C0",
+     "value": "GF180 1.045; IHP 1.534",
+     "convention": "all-device; criterion_S requires ≤ 0.90",
+     "source": [
+      "out/research/explore/E1/gf180_c_logo/results.json",
+      "out/research/explore/E1/ihp_c_logo/results.json"
+     ]
+    }
+   ],
+   "what": [
+    "Simulated check of E1 with known misspecification: GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c truths (non-fitted parameters ±50%, series R, per-curve heating, Vd-dependent noise, gain error), each fitted per target with `ngspice_fit.polish` from the wide-set projection (max_nfev 300, irls 3).",
+    "criterion_S (per PDK): M all-device ≤ 0.90 × C0 and M < T1 on the leave-one-geometry-out run. Secondary; the E1 decision is made on REAL_DEV only."
+   ],
+   "did": [
+    "Collection: `scripts/research/explore/e1_collect_pdk2.py` for sets 0, 1, 2 (queue jobs `e1_collect_gf180_s12`, `e1_collect_ihp_s12`).",
+    "Leave-one-geometry-out (`scripts/research/explore/e1_lodo.py`): 16 folds per PDK; all three draws of the held-out geometry removed from training; pre-registered hyperparameters (M 5 seeds, 2000 steps). Runtime 2,087 s (GF180), 2,124 s (IHP).",
+    "Post-hoc only: the correction is applied to the fitted card's simulation; the card is not refit with the correction in the loop. This is the setting in which M also failed on the measured devices (stage 1)."
+   ],
+   "result": {
+    "text": [
+     "criterion_S: M ≤ 0.90 × C0 no, M < T1 no, on both PDKs. T1 has the lowest all-device mean on both PDKs (GF180 0.0420, IHP 0.0957)."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "file": "04_e1_sim_logo.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-19_explore_e1_lc",
+      "table": "E1 simulated benchmark",
+      "caption": "Simulated leave-one-geometry-out run, per PDK and arm"
+     }
+    ]
+   },
+   "caveats": [
+    "No in-loop refit was run on the simulated sets; the stage-2 setting is untested there."
+   ],
+   "sources": [
+    "out/research/explore/E1/prereg.json",
+    "out/research/explore/E1/gf180_c_logo/results.json",
+    "out/research/explore/E1/ihp_c_logo/results.json",
+    "scripts/research/explore/e1_lodo.py"
+   ],
+   "updated": "2026-10-19"
+  },
+  {
+   "id": "e5-light",
+   "tab": "explore",
+   "statement": "E5 light (stage 1, light settings): a shared MLP discrepancy model trained on 11 REAL_DEV devices raises held-out all-device RRMS from 0.1073 to 0.1809 and improves 2 of 12 devices; the kill condition is met.",
+   "status": "refuted",
+   "headline": {
+    "value": "0.1809 vs 0.1073",
+    "convention": "all-device, A2 shared delta vs A0 control, REAL_DEV leave-one-device-out, light settings (800 steps, 3 seeds)"
+   },
+   "numbers": [
+    {
+     "label": "All-device: A0 / A1 const / A2 MLP / A4 no geometry / A3 oracle",
+     "value": "0.1073 / 0.1221 / 0.1809 / 0.1404 / 0.0396",
+     "convention": "12 devices, 0 failed",
+     "source": "out/research/explore/E5/stage1_light.json"
+    },
+    {
+     "label": "Combined: A0 / A2",
+     "value": "0.0981 / 0.1762",
+     "convention": "mean of family means",
+     "source": "out/research/explore/E5/stage1_light.json"
+    },
+    {
+     "label": "Devices improved by A2",
+     "value": "2 of 12",
+     "convention": "kill if ≤ 6 of 12 or reduction < 5%",
+     "source": "out/research/explore/E5/stage1_light.json"
+    }
+   ],
+   "what": [
+    "Question: is the signed-log residual log|I_meas| − log|I_sim| after the best 43-parameter fit shared across devices as a function of family, log L, log W, |Vg|, |Vd| and log|I_sim|? Primary arm A2: MLP 2 × 64 tanh, ensemble of seeds, trained leave-one-device-out."
+   ],
+   "did": [
+    "`scripts/research/explore/e5_shared_discrepancy.py stage1` with light settings (800 steps, seeds 0–2; pre-registered: 3000 steps, 5 seeds). The stage-2 light check ran on one device only."
+   ],
+   "result": {
+    "text": [
+     "Kill condition met in the light run (reduction −69%, 2 of 12 devices improved). The pre-registered stage 1 and stage 2 are queued (`E5_stage1`, `E5_stage2`)."
+    ]
+   },
+   "caveats": [
+    "Light settings; not the pre-registered run."
+   ],
+   "sources": [
+    "out/research/explore/E5/prereg.json",
+    "out/research/explore/E5/stage1_light.json",
+    "out/research/explore/E5/stage2_light.json"
+   ],
+   "updated": "2026-10-19"
+  },
+  {
+   "id": "e2-light",
+   "tab": "explore",
+   "statement": "E2 light (seed 0): a one-pass network trained with structured misspecification augmentation has a REAL_DEV penalized mean raw RRMS 1.145 times that of the unaugmented network; kill condition K1 is met in the exploratory run, and the three-seed decision run is running.",
+   "status": "in_progress",
+   "headline": {
+    "value": "S / N0 = 1.145",
+    "convention": "REAL_DEV, raw (one forward pass + one NGSpice validation), penalized mean, seed 0 only"
+   },
+   "numbers": [
+    {
+     "label": "REAL_DEV penalized mean raw RRMS: N0 / M / S / nearest bank",
+     "value": "12.47 / 9.51 / 14.28 / 0.905",
+     "convention": "penalized convention (10 per failed included curve); failed device-seed pairs N0 3, M 2, S 2, nearest bank 0",
+     "source": "out/research/explore/E2/table.json (light run, commit 773abe3)"
+    },
+    {
+     "label": "S lower than N0 (devices)",
+     "value": "6 of 12",
+     "convention": "K2 kills below 6",
+     "source": "out/research/explore/E2/table.json (light run, commit 773abe3)"
+    }
+   ],
+   "what": [
+    "Question: does training a one-pass I–V → seven-parameter network on simulated currents distorted by output-space misspecification components (series R, per-curve heating, gain error, Vd-dependent noise, floor) lower the NGSpice-validated RRMS on measured devices by ≥ 30% vs no augmentation?"
+   ],
+   "did": [
+    "Light run: seed 0 only, raw on all sets, FD on REAL_DEV only (`scripts/research/explore/e2_direct.py`). Decision run `E2_full` (seeds 0–2) started 2026-10-19 11:26."
+   ],
+   "result": {
+    "text": [
+     "Light verdict: KILL (exploratory, 1 seed; C1 no, C2 no, C3 no, K1 yes, K2 no). The decision uses the three-seed run."
+    ]
+   },
+   "caveats": [
+    "Means are in the penalized convention; two pMOS devices have per-device values above 50 for N0 (pmos_L0p35_W0p55 67.3, pmos_L0p35_W5 58.6). Medians: N0 2.81, S 2.59."
+   ],
+   "sources": [
+    "out/research/explore/E2/prereg.json",
+    "scripts/research/explore/e2_direct.py"
+   ],
+   "updated": "2026-10-19"
+  },
+  {
+   "id": "e3-temp",
+   "tab": "explore",
+   "statement": "E3: temperature law learned across a device population vs the per-device parametric law, on simulated 77–300 K devices with a misspecified temperature law; full runs are queued.",
+   "status": "in_progress",
+   "headline": {
+    "value": "queued",
+    "convention": "smoke only: parametric law 0.6–0.7, population shapes 0.27–0.32 (2 devices)"
+   },
+   "what": [
+    "Pre-registered rule: continue if, for at least one control S, R_S = 1 − mean(lrn)/mean(control_S) ≥ 0.25 with bootstrap CI lower bound > 0, lrn ≥ 10% below pt_interp and failed cells ≤ 10%; kill if R_S < 0.10 for both S or lrn is worse than pt_interp for both."
+   ],
+   "did": [
+    "Smoke runs only (`out/research/explore/E3/runs/smoke`). Queue: `E3_full_M`, `E3_full_W`."
+   ],
+   "sources": [
+    "out/research/explore/E3/prereg.json",
+    "out/research/explore/E3/prereg_addendum.json",
+    "scripts/research/explore/e3_temp_misspec.py"
+   ],
+   "updated": "2026-10-19"
+  },
+  {
+   "id": "e4-heldout",
+   "tab": "explore",
+   "statement": "E4: prediction of unmeasured bias curves with predictive intervals (single card, near-optimal ensemble, Laplace, learned cross-device discrepancy); six runs are queued.",
+   "status": "in_progress",
+   "headline": {
+    "value": "queued",
+    "convention": "code checks and light 43-parameter runs only"
+   },
+   "what": [
+    "Pre-registered rule: continue if a candidate method has 90% coverage in [0.70, 0.95] with width ≤ 4 × the single card's held-out RRMS (C1), held-out RRMS ≤ 0.95 × single and lower on ≥ 8 of 12 devices (C2), and for the learned method RRMS ≤ the cross-device interpolation control (C3); kill if no candidate meets C1."
+   ],
+   "did": [
+    "Queue: `E4_p43_vd`, `E4_p43_sparse`, `E4_p43_vg`, `E4_p7_vd`, `E4_p7_vg`, `E4_p7_sparse` (`scripts/research/explore/e4_fit.py`, `e4_analyze.py`)."
+   ],
+   "sources": [
+    "out/research/explore/E4/prereg.json",
+    "out/research/explore/E4/prereg_amendment_1.json",
+    "out/research/explore/E4/prereg_amendment_2.json"
+   ],
+   "updated": "2026-10-19"
   }
  ]
 }

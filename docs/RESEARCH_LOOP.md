@@ -482,3 +482,35 @@ Pre-registered checks: M <= 0.090 yes; M < T1 mean no; M beats T1 on >= 8/12 no;
 >= 8/12 yes. Stage 2 does not pass (it requires M to beat T1). M reduces held-out RRMS by 19% relative to
 the physics-only re-polish when the card is refit with the correction in the loop. In stage 1
 (fixed card), the same correction increased RRMS.
+
+## Exploration E1 simulated benchmark (2026-10-19 10:16): leave-one-geometry-out, post-hoc
+
+GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c, sets 0-2, 48 targets per PDK, 16 geometry folds
+(all three draws of the held-out geometry removed from training), pre-registered hyperparameters.
+The correction is applied post hoc to the fitted card's simulation; no in-loop refit was run on the
+simulated sets. Post hoc is the setting in which M also failed on REAL_DEV (stage 1).
+All-device mean (equal to combined; 24 nMOS, 24 pMOS): GF180 C0 0.0474, T1 0.0420, T2 0.0463,
+LIN 0.0443, M 0.0496 (M < C0 on 19/48); IHP C0 0.1012, T1 0.0957, T2 0.0999, LIN 0.0987,
+M 0.1553 (M < C0 on 13/48). criterion_S (M <= 0.90 x C0 and M < T1) fails on both PDKs; it is
+secondary and not used for the E1 decision. Files: `out/research/explore/E1/gf180_c_logo/`,
+`out/research/explore/E1/ihp_c_logo/`. Report batch: `out/research/report/2026-10-19_explore_e1_lc/`.
+
+## Surrogate learning curves `archlc_full_r1` (finished 2026-10-19 10:05)
+
+`scripts/research/surrogate_arch_study.py`, paper MLP, DeepONet and FNO trained on 1/8, 1/4 and 1/2
+of the round-1 43-parameter training split (10,732 / 21,463 / 42,926 samples; fixed permutation,
+seed 20260818); the full-split points (85,853) are the `arch_full_r1` reports. Same loss, recipe
+and end-to-end search as the architecture study; the selected card is re-simulated in NGSpice on the
+18 measured devices (diagnostic ablation, not used for method selection). First attempt killed
+(rc 143) on 2026-10-18; the restart trained `fno_f0.5` and filled the remaining end-to-end runs.
+
+| surrogate | test loss, 1/8 -> 1 | end-to-end all-device, 1/8, 1/4, 1/2, 1 | combined, 1/8 -> 1 | bank-start selections, 1/8 -> 1 |
+|---|---|---|---|---|
+| paper MLP | 0.1579 -> 0.0331 | 0.2588, 0.2599, 0.2504, 0.2348 | 0.2483 -> 0.2248 | 17 -> 11 |
+| DeepONet | 0.1683 -> 0.0326 | 0.2581, 0.2497, 0.2360, 0.2274 | 0.2477 -> 0.2193 | 17 -> 9 |
+| FNO | 0.1394 -> 0.0259 | 0.2494, 0.2549, 0.2468, 0.2549 | 0.2397 -> 0.2448 | 15 -> 16 |
+
+Same search with NGSpice in place of the surrogate: 0.1125 all-device (0.1053 combined). Test loss
+falls 4.8-5.4x over the 8x data range; end-to-end RRMS falls by 0.024 (paper MLP) and 0.031
+(DeepONet) and rises by 0.005 (FNO), and stays 0.11-0.15 above the NGSpice swap at every size.
+0 failed devices in all 12 runs. Report batch: `out/research/report/2026-10-19_explore_e1_lc/`.

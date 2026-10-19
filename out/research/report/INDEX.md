@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-19 · explore_e1_lc
+
+Folder: [2026-10-19_explore_e1_lc/](2026-10-19_explore_e1_lc/) · [tables.md](2026-10-19_explore_e1_lc/tables.md) · [README.md](2026-10-19_explore_e1_lc/README.md)
+
+- E1 stage 2, REAL_DEV LODO, card refit with the correction in the loop, all-device (combined): C0 refit 0.1072 (0.0981); M 0.0871 (0.0842); T1 0.0820 (0.0760). Pre-registered rule: fail (M < T1 mean no; M < T1 on 6/12; M < C0 refit on 8/12). Stage 1 (post-hoc): M 0.1276, C0 0.1073, T1 0.0865.
+- E1 simulated, tier c sets 0-2, leave-one-geometry-out, post-hoc, all-device: GF180 C0 0.0474, T1 0.0420, T2 0.0463, LIN 0.0443, M 0.0496; IHP C0 0.1012, T1 0.0957, T2 0.0999, LIN 0.0987, M 0.1553. criterion_S fails on both PDKs (secondary).
+- Learning curves, end-to-end all-device RRMS at 1/8 → 1/1 of 85,853 samples: paper MLP 0.2588 → 0.2599 → 0.2504 → 0.2348; DeepONet 0.2581 → 0.2497 → 0.2360 → 0.2274; FNO 0.2494 → 0.2549 → 0.2468 → 0.2549; NGSpice in place of the surrogate 0.1125.
+
+Figures and tables: [01_e1_stage2_per_device.png](2026-10-19_explore_e1_lc/01_e1_stage2_per_device.png) · [02_table_e1_stages.png](2026-10-19_explore_e1_lc/02_table_e1_stages.png) · [03_e1_stage1_vs_stage2.png](2026-10-19_explore_e1_lc/03_e1_stage1_vs_stage2.png) · [04_e1_sim_logo.png](2026-10-19_explore_e1_lc/04_e1_sim_logo.png) · [05_table_e1_sim_logo.png](2026-10-19_explore_e1_lc/05_table_e1_sim_logo.png) · [06_lc_curves.png](2026-10-19_explore_e1_lc/06_lc_curves.png) · [07_table_lc.png](2026-10-19_explore_e1_lc/07_table_lc.png)
+
 ## 2026-10-19 · dev_iteration2_ablation
 
 Folder: [2026-10-19_dev_iteration2_ablation/](2026-10-19_dev_iteration2_ablation/) · [tables.md](2026-10-19_dev_iteration2_ablation/tables.md) · [README.md](2026-10-19_dev_iteration2_ablation/README.md)
