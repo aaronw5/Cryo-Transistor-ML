@@ -623,3 +623,21 @@ CI 0.168-0.533, lrn vs pt_interp 0.278). Proposals for new pre-registrations: E3
 per-device statistic (geometric-mean RRMS ratio with bootstrap CI) as the decision aggregate; a data-quality and
 denominator-ratio secondary score fixed from measured data only; Laplace MAP/median point predictor and a
 device-level scale for the E4 learned target.
+
+## Iteration 2, E3b (2026-10-19): E3 rerun with the u0 unit-switch fix (pre-registered, queued)
+
+The E3 verdict KILL stands. E3b is a new probe motivated by I2-0 part B. Pre-registration
+`out/research/explore/E3b/prereg.json` (commit 787e8aa, written before any E3b run): hypothesis, methods, metric
+and decision rule copied verbatim from the E3 pre-registration; the rule was not changed after the I2-0
+without-device diagnostic. Changes: `e3_temp.draw_truth` rejects truths with x_u0 >= switch - 0.02 at any dense
+temperature (tier M: 4 truths regenerated, 7 rejected draws; tier W: 2 truths, 2 rejected draws; all other truths
+identical to E3); the x_u0 fit bound is 0.02 below the switch (changes nmos_L1_W3 4.874 -> 3.635 and
+nmos_L0p25_W1p6 4.213 -> 3.638); `--study E3b` clips x_u0 of evaluated cards to that bound (law and interpolation
+cards stay inside the bound by construction; learned cards are not bounded) and records the counts; a truth,
+fitted card or evaluated card at or above the switch makes the run INVALID; a secondary, non-deciding paired
+geometric-mean ratio lrn / control with bootstrap 95% CI and win count is reported.
+Smoke (`runs/smoke/tier_M`, nmos_L1_W3 and pmos_L2_W5, n_train 2, n_test 1, 7-temperature grid, law_iter 3,
+1 learn seed, 2 workers, 102 s): 0 truths, 0/46 fitted, 0/210 predicted and 0/216 evaluated cards at or above
+the switch, 0 clips, 4 rejected draws (2 truths regenerated); pipeline check only, not a decision input.
+Queued after the existing jobs: `E3b_full_M` (decision) and `E3b_full_W` (secondary), same settings as
+E3_full_M/W; estimated 15-17 min each.
