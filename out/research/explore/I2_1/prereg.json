@@ -1,0 +1,76 @@
+{
+ "id": "I2_1",
+ "title": "Correction trained jointly with the training devices' cards (alternating refit and retrain), REAL_DEV leave-one-device-out",
+ "iteration": "exploration iteration 2, direction I2-1 (follow-up of E1)",
+ "written": "2026-10-19",
+ "status": "pre-registered before any M_joint, T1_joint or ORACLE_joint correction was trained or scored. Smoke runs at reduced budget (output directories named smoke_*) check the code only and are not used for the decision",
+ "parent": {
+  "prereg": "out/research/explore/E1/prereg.json",
+  "stage1": "out/research/explore/E1/real_dev_lodo/results.json (post-hoc, fixed cards): C0 0.1073, T1 0.0865, M 0.1276 all-device mean",
+  "stage2": "out/research/explore/E1/real_dev_refit/results.json (held-out card refit with the stage-1 fold correction in the loop): C0 refit 0.10719, M 0.08708, T1 0.08198 all-device mean; 0 failed"
+ },
+ "hypothesis": "Residuals of cards fit without a correction mix per-device parameter error with the shared model-form error. Training the correction jointly with the training devices' cards (alternating: refit each training card with the current correction in the loop, then retrain the correction on the refit residuals, K rounds) makes the learned term carry the shared component, so it lowers the strict paper RRMS of a held-out device whose card is then refit with the frozen correction, relative to the E1 stage-2 correction (M_post).",
+ "data": {
+  "devices": "REAL_DEV (12) from out/research/explore/real_split.json; REAL_TEST is not loaded by any I2_1 script",
+  "records": "out/research/explore/E1/real_dev.{npz,json} (E1 DeviceRec records: measured curves, frozen inclusion, trim, denominators, simulation of the starting card)",
+  "starting_cards": "out/research/polished/direct43_r3_fd/real/summary.json (direct NGSpice 43-parameter fit, round 3 + FD polish), the same cards E1 used",
+  "box": "round-3 43-parameter box, out/cold_loop/full_direct/round_3/spec.json (cold_loop.box_for), as in E1 stage 2"
+ },
+ "correction_model": {
+  "M": "identical to E1 M, frozen: I_corr = I_bsim * exp(g), g = 1.0 * tanh(h(phi)); MLP 6-32-32-1, tanh hidden activations, last layer initialized to zero, L2 1e-4 on weights, Adam lr 3e-3, 2000 full-batch steps, float64, ensemble of 5 seeds (0-4) averaging g; features phi = [is_pmos, |Vgs|/1.85 V, |Vds|/1.85 V, log10 L_um, log10 W_um, log10(|I_bsim| L / W + 1e-13)], continuous features standardized with the mean/std of the training points of the current fold and round; loss = mean over training devices of the paper per-device RRMS of the corrected current + L2 (cryoml.explore.e1_correction.fit_arm, HYPER['M'])",
+  "T1": "identical to E1 T1: one scalar log-gain per (family, curve tag), 1.0 * tanh, Adam lr 2e-2, 1000 steps, same loss; a group absent from training gets 0. Not deployable as a device model (uses the curve tag)",
+  "retraining": "at every round the correction is trained from scratch (same initialization and seeds), not fine-tuned"
+ },
+ "joint_training": {
+  "K": 3,
+  "round_0": "g_0 = the E1 stage-1 fold correction of the same arm (out/research/explore/E1/real_dev_lodo/fold_corrections.json), trained on the 11 training devices' residuals of the starting cards; training cards c_0 = starting cards",
+  "round_r_for_r_1_to_K": "each training card is refit with g_{r-1} in the loop: ngspice_fit.polish warm-started from c_{r-1}, max_nfev 150, irls 1, diff_step 0.01, same box, every NGSpice simulation passed through g_{r-1}; c_r = the best card seen; one fresh NGSpice simulation of c_r on the measured grid gives the round-r training records; g_r = correction trained from scratch on those records",
+  "held_out_refit": "after round K the held-out card is refit from its starting card with the frozen g_K in the loop: ngspice_fit.polish max_nfev 400, irls 2, diff_step 0.01 (the E1 stage-2 settings); the best card is re-simulated, corrected with g_K and scored",
+  "folds": "leave-one-device-out over the 12 REAL_DEV devices; the held-out device's data are not used in any round of its fold"
+ },
+ "arms": {
+  "C0_refit": "control: held-out card refit without correction, same start and settings as the held-out refit above. Rerun; expected to reproduce E1 stage-2 C0 (0.10719 all-device mean)",
+  "M_post": "E1 stage-2 arm M (equivalent to K = 0); stored per-device results reused from out/research/explore/E1/real_dev_refit/results.json, not rerun",
+  "M_joint": "PRIMARY: joint training with M, K = 3, then held-out refit with g_K",
+  "T1_joint": "non-deployable comparator: the same joint loop and held-out refit with T1",
+  "ORACLE_joint": "diagnostic only, not a held-out result: the joint loop run on the held-out device alone (g_0 = M trained in-sample on that device's starting-card residuals; K = 3 rounds refitting that device's card; final refit from the starting card with g_K)",
+  "round_diagnostics": "diagnostic only: M_joint held-out refit with g_1 and g_2; for every round r of M_joint and T1_joint, the post-hoc held-out score of g_r on the starting card's simulation (no refit) and the training-device mean RRMS with g_{r-1} on c_r and with g_r on c_r"
+ },
+ "evaluation": {
+  "metric": "strict paper RRMS with frozen published-baseline curve inclusion: e1_correction.score_device (metrics.device_rrms_new with the record's frozen include tags); a non-finite included curve makes the device NaN",
+  "aggregates": "all-device mean over the 12 devices (primary), combined = mean of the nMOS and pMOS family means, median, per-device values",
+  "final_currents": "every scored current is a fresh NGSpice simulation of the refit card multiplied by exp(g) of the frozen correction"
+ },
+ "criterion": {
+  "continue_if_all": [
+   "M_joint all-device mean <= 0.080",
+   "M_joint < M_post on >= 8 of 12 devices",
+   "M_joint all-device mean <= T1_joint all-device mean + 0.005",
+   "0 failed (NaN) devices for M_joint"
+  ],
+  "kill_otherwise": "I2_1 is stopped if any condition above fails",
+  "not_used_for_the_decision": ["ORACLE_joint", "round_diagnostics", "simulated_arm", "REAL_TEST"]
+ },
+ "simulated_arm": {
+  "role": "secondary; reported with the I2_1 outcome; does not change the REAL_DEV decision",
+  "targets": "GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c truth sets 0-2, 48 targets per PDK; records out/research/explore/E1/{gf180,ihp}_c_set{0,1,2}.{npz,json}; starting cards = the E1 fitted cards stored in the records (wide box: GF180 21 parameters, IHP 12)",
+  "features": "same phi with VDD = 3.3 V (GF180) or 1.2 V (IHP)",
+  "folds": "leave-one-geometry-out, 16 folds per PDK (all three draws of the held-out geometry removed from training in every round)",
+  "joint_training": "as on REAL_DEV: g_0 = E1 leave-one-geometry-out fold M correction (out/research/explore/E1/{pdk}_c_logo/fold_corrections.json); K = 3; training refits Pdk2Problem + ngspice_fit.polish warm-started, max_nfev 150, irls 1, diff_step 0.01; held-out refit from the E1 fitted card, max_nfev 400, irls 2, diff_step 0.01",
+  "arms": "C0_refit (no correction), M_post (held-out refit with g_0; new run, since E1 had no in-loop refit on the simulated sets), M_joint (K = 3). T1_joint is not run on the simulated sets (compute budget)",
+  "metric": "pdk2.metric paper RRMS (target-frozen inclusion) via e1_correction.score_device, strict NaN on a non-finite included curve; all-target mean (equal to combined: 24 nMOS, 24 pMOS)",
+  "check": "M_joint all-target mean <= 0.90 x C0_refit all-target mean, per PDK. Also reported: M_post / C0_refit ratio and per-target win counts",
+  "identifiability_diagnostic": {
+   "components": "for each held-out target, from the truth card (truth.json of the tier-c set) simulated with NGSpice on the target's bias grid: c_param = ln|I(fitted + misspecified non-fitted parameters, Rs = 0, 27 C)| - ln|I(fitted parameters only, Rs = 0, 27 C)|; c_rs = ln|I(truth card, Rs)| - ln|I(truth card, Rs = 0)| at 27 C; c_heat = ln|I(truth card, Rs, per-curve heating temperatures)| - ln|I(truth card, Rs, 27 C)|; c_gain = ln(per-curve gain); c_sum = their sum",
+   "points": "included curves, trimmed points (start onward); points with a non-finite logarithm or |I| < 1e-13 A in any term are excluded",
+   "statistics": "per PDK and arm (M_post, M_joint), pooled over held-out targets: Pearson r of g (the arm's correction evaluated on its final refit card's simulation) with c_param, c_rs, c_heat, c_gain, c_sum and with the observed residual ln|target / I_card|; OLS of g on [1, c_param, c_rs, c_heat, c_gain] (coefficients, R^2); mean per-target Pearson r with c_sum",
+   "role": "diagnostic; no threshold"
+  }
+ },
+ "compute": {
+  "real": "one queue job, process pool (4 workers, 1 torch thread each), rounds synchronized across folds",
+  "simulated": "one queue job per PDK, process pool (6 workers)",
+  "smoke": "2 folds, K = 1, reduced nfev and M steps/seeds; output smoke_* directories, labelled smoke, not used for any conclusion"
+ },
+ "frozen_choices_note": "All choices above were fixed before any I2_1 joint-arm result existed. No REAL_DEV result is used to change them; any later variant gets a new id or a dated amendment that leaves this file unchanged"
+}
