@@ -21,6 +21,13 @@ Stages (each result file is written once; a rerun resumes):
 
 Devices: only REAL_DEV geometries (out/research/explore/real_split.json).
 
+``--study E3b`` (pre-registration out/research/explore/E3b/prereg.json) writes
+under out/research/explore/E3b, clips x_u0 of every evaluated card to the
+upper fit bound (counts recorded), checks that no truth and no fitted,
+predicted or evaluated card has u0 >= 1 (a failed check makes the run
+INVALID), and adds the paired geometric-mean ratio statistic.  The default
+``--study E3`` behaves as before.
+
   PYTHONPATH=src .venv/bin/python scripts/research/explore/e3_temp_misspec.py \
       --name full --tier M --n-train 6 --n-test 3 --workers 8
 """
@@ -43,6 +50,7 @@ from cryoml.config import OUT_DIR  # noqa: E402
 from cryoml.explore import e3_temp as E  # noqa: E402
 
 E3_DIR = OUT_DIR / "research" / "explore" / "E3"
+STUDY_DIRS = {"E3": E3_DIR, "E3b": OUT_DIR / "research" / "explore" / "E3b"}
 SPLIT = OUT_DIR / "research" / "explore" / "real_split.json"
 TIER_CODE = {"W": 0, "M": 1}
 SETTINGS = {"O4": ("par3", "par14", "par3_pop"), "O2": ("par3_pop", "par3_g1", "par14_g1")}
@@ -51,7 +59,7 @@ LEARNED = ("lrn", "lrn_param", "lrn_noH", "lrn_mean")
 
 
 def run_dir(args) -> Path:
-    return E3_DIR / "runs" / args.name / f"tier_{args.tier}"
+    return STUDY_DIRS[getattr(args, "study", "E3")] / "runs" / args.name / f"tier_{args.tier}"
 
 
 def geometry(tag: str) -> list[float]:
@@ -194,6 +202,9 @@ def cmd_run(args):
     config = {"tags": tags, "tier": args.tier, "n_train": args.n_train,
               "n_test": args.n_test, "dense": dense, "seed": args.seed,
               "law_iter": args.law_iter, "learn_seeds": args.learn_seeds}
+    e3b = args.study == "E3b"
+    if e3b:
+        config["study"] = "E3b"
     dump(base / "config.json", config)
     t0 = time.time()
 
@@ -233,19 +244,31 @@ def cmd_run(args):
     print(f"learn done {time.time() - t0:.0f}s", flush=True)
 
     eval_jobs = []
+    u0_clips = {}
     for dev, p in tests.items():
         rec = json.loads(p.read_text())
         cards = {}
         for s, methods in preds.items():
             for m, by_dev in methods.items():
                 for t_s, x in by_dev[dev].items():
+                    if e3b:
+                        x, clipped = E.clip_u0(rec["tag"], x)
+                        x = x.tolist()
+                        u0_clips[f"{s}|{m}"] = u0_clips.get(f"{s}|{m}", 0) + int(clipped)
                     cards.setdefault(t_s, []).append((f"{s}|{m}", x))
         for t_s, row in rec["fits"]["floor"].items():
             cards[t_s].append(("floor|floor", row["x"]))
         eval_jobs.append((str(p), cards, str(base / "eval" / f"{dev}.json")))
     pool_map(eval_job, eval_jobs, args.workers)
     print(f"eval done {time.time() - t0:.0f}s", flush=True)
-    summary = summarize(base, tests, train)
+    summary = summarize(base, tests, train, paired=e3b)
+    if e3b:
+        check = u0_switch_check(train, tests, preds, eval_jobs, base)
+        check["n_evaluated_cards_u0_clipped"] = u0_clips
+        summary["u0_switch_check"] = check
+        if not check["valid"]:
+            summary["verdict_rule_output_if_valid"] = summary["verdict_rule_output"]
+            summary["verdict_rule_output"] = "INVALID"
     summary["wall_s"] = round(time.time() - t0, 1)
     dump(base / "summary.json", summary)
     print_summary(summary)
@@ -293,7 +316,60 @@ def bootstrap_reduction(a, b, n=4000, seed=0):
             "n_devices": int(len(a))}
 
 
-def summarize(base, tests, train) -> dict:
+def u0_switch_check(train, tests, preds, eval_jobs, base) -> dict:
+    """E3b assertion: counts of truths (dense grid) and of fitted, predicted
+    and evaluated cards whose u0 is at or above the BSIM4 unit switch."""
+    def count(items):
+        items = list(items)
+        return {"n_checked": len(items),
+                "n_at_or_above": int(sum(E.at_or_above_u0_switch(tag, x) for tag, x in items))}
+
+    test_recs = {dev: json.loads(p.read_text()) for dev, p in tests.items()}
+    truths = [r["truth"] for r in train] + [r["truth"] for r in test_recs.values()]
+    fitted = [(r["tag"], row["x"]) for r in train for row in r["fits"].values()]
+    for r in test_recs.values():
+        fitted += [(r["tag"], row["x"]) for group in r["fits"].values()
+                   for row in group.values()]
+    predicted = [(test_recs[dev]["tag"], x) for methods in preds.values()
+                 for by_dev in methods.values() for dev, by_t in by_dev.items()
+                 for x in by_t.values()]
+    evaluated = [(json.loads(Path(job[0]).read_text())["tag"], x) for job in eval_jobs
+                 for items in job[1].values() for _, x in items]
+    out = {
+        "truths": {"n_checked": len(truths),
+                   "n_at_or_above": int(sum(E.truth_u0_max(t) >= E.u0_switch_x(t["tag"])
+                                            for t in truths)),
+                   "n_rejected_draws": int(sum(t.get("u0_switch_rejections", 0)
+                                               for t in truths)),
+                   "n_regenerated": int(sum(t.get("u0_switch_rejections", 0) > 0
+                                            for t in truths))},
+        "fitted_cards": count(fitted),
+        "predicted_cards_before_clip": count(predicted),
+        "evaluated_cards": count(evaluated),
+    }
+    out["valid"] = (out["truths"]["n_at_or_above"] == 0
+                    and out["fitted_cards"]["n_at_or_above"] == 0
+                    and out["evaluated_cards"]["n_at_or_above"] == 0)
+    out["rule"] = ("valid requires 0 truths, 0 fitted cards and 0 evaluated cards at or "
+                   "above the switch; predicted cards are counted before the x_u0 clip")
+    dump(base / "u0_switch_check.json", out)
+    return out
+
+
+def bootstrap_log_ratio(a, b, n=4000, seed=0):
+    """Geometric mean of the per-device ratios a/b with a paired percentile
+    95% CI over devices, and the number of devices with a < b."""
+    a, b = np.asarray(a, dtype=np.float64), np.asarray(b, dtype=np.float64)
+    r = np.log(a / b)
+    rng = np.random.default_rng(seed)
+    idx = rng.integers(0, len(r), (n, len(r)))
+    values = np.exp(r[idx].mean(1))
+    return {"geometric_mean_ratio": float(np.exp(r.mean())),
+            "ci95": [float(np.percentile(values, 2.5)), float(np.percentile(values, 97.5))],
+            "wins": int(np.sum(a < b)), "n_devices": int(len(r))}
+
+
+def summarize(base, tests, train, paired=False) -> dict:
     evals = {dev: json.loads((base / "eval" / f"{dev}.json").read_text()) for dev in tests}
     keys = sorted(next(iter(evals.values())).keys())
     held = [f"{t:g}" for t in E.TEMPS_HELDOUT]
@@ -334,6 +410,8 @@ def summarize(base, tests, train) -> dict:
         decisions[s] = {"control": PRIMARY_CONTROL[s], "lrn_vs_control": vs_ctrl,
                         "lrn_vs_pt_interp": vs_interp, "lrn_vs_other": others,
                         "gap_closed_to_floor": gap, "failed_fraction": frac_fail,
+                        **({"secondary_paired_ratio_lrn_over_control":
+                            bootstrap_log_ratio(lrn[ok], ctrl[ok])} if paired else {}),
                         "meets_continue": bool(
                             vs_ctrl["reduction"] >= 0.25 and vs_ctrl["ci95"][0] > 0
                             and vs_interp["reduction"] >= 0.10
@@ -357,7 +435,11 @@ def print_summary(summary):
               f"{r['n_failed_cells']}/{r['n_cells']} |")
     for s, d in summary["decisions"].items():
         print(s, json.dumps({k: d[k] for k in ("lrn_vs_control", "lrn_vs_pt_interp",
-                                               "gap_closed_to_floor", "meets_continue")}))
+                                               "gap_closed_to_floor", "meets_continue",
+                                               "secondary_paired_ratio_lrn_over_control")
+                             if k in d}))
+    if "u0_switch_check" in summary:
+        print("u0 switch check:", json.dumps(summary["u0_switch_check"]))
     print("verdict (rule output):", summary["verdict_rule_output"])
 
 
@@ -373,6 +455,8 @@ def main() -> int:
     parser.add_argument("--learn-seeds", type=int, default=5)
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--seed", type=int, default=20261019)
+    parser.add_argument("--study", choices=tuple(STUDY_DIRS), default="E3",
+                        help="E3 (default) or E3b (u0-switch check, x_u0 clip, paired ratio)")
     args = parser.parse_args()
     cmd_run(args)
     return 0

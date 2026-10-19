@@ -77,13 +77,76 @@ def stock_and_box(tag: str):
     return stock, box.lo[:N_PAR].copy(), box.hi[:N_PAR].copy()
 
 
+U0_SWITCH_MARGIN = 0.02     # in x = log(u0 / u0_stock), about 2 % below u0 = 1
+
+
+def u0_switch_x(tag: str) -> float:
+    """x_u0 at which the card value u0 reaches 1.  BSIM4 reads u0 > 1 as
+    cm^2/Vs and divides it by 1e4, so the drain current drops by about 1e4
+    across this value (I2-0 diagnosis, nmos_L1_W3)."""
+    stock, _, _ = stock_and_box(tag)
+    return float(math.log(1.0 / abs(stock[PARAMS7.index("u0")])))
+
+
 def x_bounds(tag: str) -> tuple[np.ndarray, np.ndarray]:
-    """Fit bounds on x: the 1.5x box of log m, widened to contain 0, +-0.5."""
+    """Fit bounds on x: the 1.5x box of log m, widened to contain 0, +-0.5,
+    with the u0 upper bound kept below the BSIM4 u0 unit switch."""
     _, lo, hi = stock_and_box(tag)
-    return np.minimum(lo, 0.0) - 0.5, np.maximum(hi, 0.0) + 0.5
+    lo, hi = np.minimum(lo, 0.0) - 0.5, np.maximum(hi, 0.0) + 0.5
+    k = PARAMS7.index("u0")
+    hi[k] = min(hi[k], u0_switch_x(tag) - U0_SWITCH_MARGIN)
+    return lo, hi
 
 
-def draw_truth(tag: str, tier: str, rng: np.random.Generator) -> dict:
+def u0_upper_x(tag: str) -> float:
+    """Upper fit bound of x_u0 (``u0_switch_x - U0_SWITCH_MARGIN`` or lower)."""
+    return float(x_bounds(tag)[1][PARAMS7.index("u0")])
+
+
+def at_or_above_u0_switch(tag: str, x) -> bool:
+    """True when the card with parameter vector ``x`` has u0 >= 1."""
+    return bool(np.asarray(x, dtype=np.float64)[PARAMS7.index("u0")] >= u0_switch_x(tag))
+
+
+def clip_u0(tag: str, x) -> tuple[np.ndarray, bool]:
+    """``x`` with x_u0 clipped to the upper fit bound; second value is True
+    when the clip changed x.  Only x_u0 and only its upper side are changed."""
+    out = np.array(x, dtype=np.float64)
+    k = PARAMS7.index("u0")
+    upper = u0_upper_x(tag)
+    clipped = bool(out[k] > upper)
+    if clipped:
+        out[k] = upper
+    return out, clipped
+
+
+def truth_u0_max(truth: dict, temps=TEMPS_DENSE) -> float:
+    """Largest x_u0 of the truth over ``temps``."""
+    k = PARAMS7.index("u0")
+    return float(max(truth_x(truth, t)[k] for t in temps))
+
+
+def crosses_u0_switch(truth: dict, temps=TEMPS_DENSE) -> bool:
+    """True when the truth's x_u0 is at or above ``u0_switch_x - U0_SWITCH_MARGIN``
+    at any of ``temps``."""
+    return truth_u0_max(truth, temps) >= u0_switch_x(truth["tag"]) - U0_SWITCH_MARGIN
+
+
+def draw_truth(tag: str, tier: str, rng: np.random.Generator,
+               max_attempts: int = 50) -> dict:
+    """One truth device whose u0 stays below the BSIM4 unit switch at every
+    dense temperature (rejection sampling from the same generator stream;
+    the number of rejected draws is recorded)."""
+    for attempt in range(max_attempts):
+        out = _draw_truth_once(tag, tier, rng)
+        if not crosses_u0_switch(out):
+            out["u0_switch_rejections"] = attempt
+            return out
+    raise RuntimeError(f"{tag}: no truth draw below the u0 unit switch "
+                       f"in {max_attempts} attempts")
+
+
+def _draw_truth_once(tag: str, tier: str, rng: np.random.Generator) -> dict:
     """One truth device.  mu is uniform in the 0.75x anchor box (as the
     existing temperature truths); the remaining draws follow the tier."""
     _, lo, hi = stock_and_box(tag)
