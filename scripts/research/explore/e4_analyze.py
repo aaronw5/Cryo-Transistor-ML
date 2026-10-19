@@ -36,13 +36,19 @@ def main() -> int:
     p.add_argument("--run", required=True)
     p.add_argument("--split", default="vd")
     p.add_argument("--decide", action="store_true")
+    p.add_argument("--select", default="strict", choices=("strict", "feasible"))
     a = p.parse_args()
     run_dir = E4_DIR / a.run / a.split
     opts = json.loads((run_dir / "options.json").read_text())
     dev_set = set(real_split()["REAL_DEV"])
     tags = sorted(t.stem for t in run_dir.glob("*.npz"))
     assert all(t in dev_set for t in tags), "non-DEV device in run"
-    devs = [load_device(run_dir, t, opts["near_tol"]) for t in tags]
+    devs = [load_device(run_dir, t, opts["near_tol"], a.select) for t in tags]
+    if a.decide and a.select != "strict":
+        raise SystemExit("the pre-registered decision uses --select strict")
+    if a.decide and set(tags) != dev_set:
+        raise SystemExit(f"--decide needs all {len(dev_set)} REAL_DEV records; "
+                         f"missing {sorted(dev_set - set(tags))}")
     base = {d["tag"]: device_predictions(d) for d in devs}
     learned = learned_and_conformal(devs, base)
     per_device = {m: {} for m in METHODS}
@@ -53,7 +59,7 @@ def main() -> int:
             if src is None:
                 continue
             per_device[m][d["tag"]] = device_metrics(d, src)
-    summary = {"run": a.run, "split": a.split, "options": opts,
+    summary = {"run": a.run, "split": a.split, "select": a.select, "options": opts,
                "n_devices": len(devs), "devices": tags, "methods": {}}
     single = {t: r["heldout_rrms"] for t, r in per_device["single"].items()}
     for m in METHODS:
@@ -79,6 +85,9 @@ def main() -> int:
                 {t: r.get("interval_score_0.9", math.nan) for t, r in rows.items()})
         summary["methods"][m] = entry
     summary["learned_hyper"] = learned["learned_hyper"]
+    summary["excluded_from_training"] = learned["excluded_from_training"]
+    summary["devices_failed_single"] = sorted(
+        t for t, r in per_device["single"].items() if not np.isfinite(r["heldout_rrms"]))
     # Fit quality and identifiability.
     ident = {}
     for d in devs:
@@ -93,14 +102,23 @@ def main() -> int:
             "condition": i.get("condition"), "n_active": len(rec["active_names"]),
             "heldout_sens_in_sloppy_frac": i.get("heldout_sens_in_sloppy_frac"),
             "laplace_n_sd_gt_0p1": i.get("laplace_n_sd_gt_0p1"),
+            "single_index": d["single"],
             "member_heldout_rrms": [float(np.mean(m["heldout_curve_rrms"])) for m in rec["members"]],
             "member_train_obj": [m["train_obj"] for m in rec["members"]],
             "n_sim": rec["n_sim"], "runtime_s": rec["runtime_s"]}
     summary["identifiability"] = ident
     summary["train_obj_mean"] = float(np.mean([v["train_obj"] for v in ident.values()]))
+    pairs = [(single[t], v["heldout_sens_in_sloppy_frac"]) for t, v in ident.items()
+             if np.isfinite(single.get(t, np.nan))
+             and v["heldout_sens_in_sloppy_frac"] is not None]
+    if len(pairs) >= 4:
+        from scipy.stats import spearmanr
+        rho, pval = spearmanr([p[0] for p in pairs], [p[1] for p in pairs])
+        summary["spearman_heldout_rrms_vs_sloppy_frac"] = {
+            "rho": float(rho), "p": float(pval), "n": len(pairs)}
     if a.decide:
         summary["decision"] = decide(summary)
-    (run_dir / "summary.json").write_text(json.dumps(summary, indent=1, default=float) + "\n")
+    (run_dir / f"summary_{a.select}.json").write_text(json.dumps(summary, indent=1, default=float) + "\n")
     print_table(summary)
     return 0
 
@@ -124,19 +142,43 @@ def decide(summary: dict) -> dict:
         c1 = (crit["coverage_lo"] <= cov <= crit["coverage_hi"]
               and width <= crit["max_width_over_single_rrms"] * single_rrms)
         rr = e["heldout_rrms"]["all_device_mean"]
+        # Valid-only means can cover different device sets per method, so the
+        # mean comparisons must also hold on the devices where both methods
+        # are finite (paired); a method failure where single is finite is
+        # never a win (implementation clarification, amendment 2).
+        paired_single = paired_mean(meth, name, "single")
         c2 = (rr <= (1 - crit["min_rel_rrms_gain"]) * single_rrms
-              and e["wins_vs_single"] >= math.ceil(crit["min_win_fraction"] * n))
+              and paired_single[0] <= (1 - crit["min_rel_rrms_gain"]) * paired_single[1]
+              and e["wins_vs_single"] >= int(round(crit["min_win_fraction"] * n)))
         c3 = True
+        paired_ci = (math.nan, math.nan, 0)
         if name == "learned":
-            c3 = rr <= meth["crossinterp"]["heldout_rrms"]["all_device_mean"]
+            paired_ci = paired_mean(meth, name, "crossinterp")
+            c3 = (rr <= meth["crossinterp"]["heldout_rrms"]["all_device_mean"]
+                  and paired_ci[0] <= paired_ci[1])
         result[name] = {"coverage_0.9": cov, "width_0.9": width,
                         "heldout_rrms": rr, "wins": e["wins_vs_single"],
+                        "n_valid": e["heldout_rrms"]["n_valid"],
+                        "paired_vs_single": paired_single,
+                        "paired_vs_crossinterp": paired_ci,
                         "C1": bool(c1), "C2": bool(c2), "C3": bool(c3)}
     full = [k for k, v in result.items() if v["C1"] and v["C2"] and v["C3"]]
     calib = [k for k, v in result.items() if v["C1"]]
     verdict = "CONTINUE" if full else ("PARTIAL_CALIBRATION_ONLY" if calib else "KILL")
     return {"single_heldout_rrms": single_rrms, "per_method": result,
             "verdict": verdict, "methods_passing": full}
+
+
+def paired_mean(meth: dict, a: str, b: str) -> tuple[float, float, int]:
+    """(mean of a, mean of b, n) over devices where both held-out RRMS are
+    finite; (nan, nan, 0) when there are none."""
+    ra = {t: r["heldout_rrms"] for t, r in meth[a]["per_device"].items()}
+    rb = {t: r["heldout_rrms"] for t, r in meth[b]["per_device"].items()}
+    common = [t for t in ra if np.isfinite(ra[t]) and np.isfinite(rb.get(t, np.nan))]
+    if not common:
+        return math.nan, math.nan, 0
+    return (float(np.mean([ra[t] for t in common])),
+            float(np.mean([rb[t] for t in common])), len(common))
 
 
 def print_table(summary: dict) -> None:
@@ -152,11 +194,12 @@ def print_table(summary: dict) -> None:
         i9 = e.get("interval_score_0.9", {}).get("all_device_mean", math.nan)
         print(f"{m:24s} {h['all_device_mean']:8.4f} {h['nmos']:7.4f} {h['pmos']:7.4f} "
               f"{e.get('wins_vs_single', '-')!s:>5s} {c5:6.3f} {c9:6.3f} {w9:6.3f} {i9:7.3f}")
+    print("failed (single non-finite held-out):", summary["devices_failed_single"])
     for t, v in summary["identifiability"].items():
         print(f"  {t:20s} train={v['train_obj']:.4f} rank2={v['eff_rank_1e-2']} "
               f"rank3={v['eff_rank_1e-3']}/{v['n_active']} near={v['near_optimal_count']} "
               f"spread>0.1={v['near_optimal_n_spread_gt_0p1']} "
-              f"sloppy_frac={v['heldout_sens_in_sloppy_frac']:.3g} calls={v['n_sim']} t={v['runtime_s']}")
+              f"sloppy_frac={v['heldout_sens_in_sloppy_frac']} calls={v['n_sim']} t={v['runtime_s']}")
     if "decision" in summary:
         print(json.dumps(summary["decision"], indent=1))
 

@@ -1,0 +1,55 @@
+{
+ "id": "E4",
+ "title": "Prediction of unmeasured bias curves with predictive intervals: single card vs near-optimal ensemble vs Laplace vs learned cross-device discrepancy",
+ "written": "2026-10-19, before any E4 fit, smoke run or evaluation was executed",
+ "hypothesis": "When a device's card is fitted to a subset of its I-V curves, (H1) an ensemble of near-optimal cards or a Gauss-Newton Laplace approximation gives predictive intervals for the unmeasured curves whose 90% coverage is between 0.70 and 0.95, and (H2) at least one such method, or a discrepancy model learned on other DEV devices, predicts the unmeasured curves with lower paper RRMS than the single best-fit card.",
+ "data": {
+  "devices": "REAL_DEV only (12 devices, out/research/explore/real_split.json). REAL_TEST is not loaded by any E4 code (e4_fit.py refuses non-DEV tags).",
+  "curves": "frozen published-baseline inclusion set (card_eval.include_tags); measured Id cleaned and trimmed by metrics.curve_trim",
+  "splits": {
+   "vd (primary)": "train = every included Id-Vg curve + the included Id-Vd curve at the highest gate bias; held out = the other included Id-Vd curves (3 per nMOS; per pMOS: 4 for pmos_L0p35_W0p55, 3 for pmos_L0p35_W5, 2 for the other DEV pMOS)",
+   "vg (secondary)": "train = every included Id-Vd curve + Id-Vg at Vd = 0.01 and 1.85; held out = Id-Vg at Vd = 0.37, 0.74, 1.11, 1.48"
+  },
+  "parameter_boxes": {
+   "p43 (primary)": "out/cold_loop/full/round_1/spec.json (43 parameters, box centered on the multiplier-one card; no card fitted to measured curves enters the box or the starts)",
+   "p7 (secondary)": "out/cold_loop/seven/round_1/spec.json (7 parameters, same center rule)"
+  }
+ },
+ "fit_procedure": "src/cryoml/explore/e4_heldout.fit_device: CMA-ES (6000 evals, sigma0 0.3, from box center) + 2 further CMA-ES seeds (3000 evals each) on the mean train-curve RRMS; each result polished by bounded TRF with batched NGSpice forward-difference Jacobians (local step 0.01, max_nfev 40); 8 perturbation starts (best polished card + N(0, 0.3^2) on active local coordinates, TRF max_nfev 20). Every polished card is a member and is re-simulated exactly. SINGLE = member with the lowest train objective. Laplace at SINGLE: covariance (J_e^T J_e / sigma^2 + I / 0.5^2)^-1 in active local coordinates, J_e = Jacobian of per-point train errors (sim - meas)/den, sigma = RMS of those errors at SINGLE; 64 draws clipped to the box and simulated. Seed 20261019.",
+ "methods": {
+  "single": "point = SINGLE card curves; no interval",
+  "ens": "members with train objective <= 1.10 x SINGLE's; point = pointwise median; interval = equal-weight Gaussian mixture of members, member sd = member train sigma x mean |member prediction| over the curve",
+  "ens_env": "same members; interval = pointwise min-max (reported, not a candidate)",
+  "laplace": "point = mean of the Laplace draw curves; interval = mixture of draws with sd = SINGLE train sigma x mean |SINGLE prediction| over the curve",
+  "laplace_param": "draw quantiles without the noise term (reported, not a candidate)",
+  "conformal": "point = single; interval = single +/- q x sigma x scale, q = equal-device-weight quantile (with (n+1)/n correction) of |meas - single| / (sigma x scale) on the other DEV devices' held-out points (leave-one-device-out)",
+  "crossinterp (non-learned control)": "single + (meas - single) measured on train curves at the bias points where they cross the held-out curve, linearly interpolated along the sweep voltage with a zero anchor at 0 V; conformal interval as above (crossinterp_conformal)",
+  "learned": "single + scale x kernel-ridge prediction of (meas - single)/scale, trained on the other DEV devices' held-out points (leave-one-device-out; every 3rd point; features: family, log10 L, log10 W, curve bias, sweep voltage, crossinterp residual / scale, distance to nearest cross point, log10 train sigma; RBF length and ridge chosen by inner leave-one-device-out from {0.5,1,2} x {0.01,0.1,1}); interval = point +/- q x sigma x scale with q from inner leave-one-device-out residuals"
+ },
+ "metrics": {
+  "heldout_rrms": "per device: mean over held-out curves of the paper per-curve RRMS (RMSE / mean |meas| on trimmed points); all-device mean over the 12 DEV devices (nMOS, pMOS, combined also reported); a non-finite held-out prediction makes the device NaN",
+  "coverage_0.9": "per device: fraction of trimmed held-out measured points inside the central 90% interval; all-device mean (also 0.5, 0.8, 0.95)",
+  "width_0.9": "per device: mean (hi - lo) / den over the same points; all-device mean",
+  "interval_score_0.9": "Winkler interval score / den (reported)",
+  "identifiability": "singular values of the weighted train Jacobian at SINGLE (effective rank at 1e-2 and 1e-3 of the largest), fraction of the held-out sensitivity in the sloppy subspace (s/s_max < 1e-2), near-optimal member count and per-parameter local spread (count > 0.1), Laplace posterior sd count > 0.1 (all reported, no criterion)"
+ },
+ "control_baseline": "single (one best-fit card, the standard practice); crossinterp is the non-learned data control for the learned method",
+ "primary_comparison": "p43, split vd, 12 REAL_DEV devices",
+ "criterion": {
+  "candidate_methods": ["ens", "laplace", "learned"],
+  "coverage_lo": 0.70,
+  "coverage_hi": 0.95,
+  "max_width_over_single_rrms": 4.0,
+  "min_rel_rrms_gain": 0.05,
+  "min_win_fraction": 0.6667,
+  "C1_calibration": "all-device mean coverage_0.9 in [0.70, 0.95] AND all-device mean width_0.9 <= 4.0 x single's all-device held-out RRMS",
+  "C2_accuracy": "method's all-device held-out RRMS <= 0.95 x single's AND lower than single on >= 8 of 12 devices",
+  "C3_learned_vs_data_control": "for 'learned' only: all-device held-out RRMS <= crossinterp's",
+  "CONTINUE": "some candidate method satisfies C1, C2 and C3",
+  "PARTIAL_CALIBRATION_ONLY": "no method satisfies all, but some candidate satisfies C1 (continue only as a calibration component of another direction, not as a standalone contribution)",
+  "KILL": "no candidate satisfies C1"
+ },
+ "secondary_reported_without_decision": ["p43 split vg", "p7 split vd", "p7 split vg", "correlation of held-out error with heldout_sens_in_sloppy_frac across devices"],
+ "smoke": "a light run (4 DEV devices, reduced budgets) checks the code only; its numbers do not enter the decision",
+ "code": ["src/cryoml/explore/e4_heldout.py", "src/cryoml/explore/e4_eval.py", "scripts/research/explore/e4_fit.py", "scripts/research/explore/e4_analyze.py"]
+}

@@ -49,7 +49,13 @@ PRIMARY_LEVEL = 0.9
 # ---------------------------------------------------------------------------
 # Loading
 # ---------------------------------------------------------------------------
-def load_device(run_dir: Path, tag: str, near_tol: float) -> dict:
+def load_device(run_dir: Path, tag: str, near_tol: float,
+                select: str = "strict") -> dict:
+    """``select``: ``strict`` (pre-registered: SINGLE = lowest train
+    objective) or ``feasible`` (amendment, secondary: members whose
+    simulation of any included curve, train or held-out bias, is non-finite
+    are dropped before SINGLE and the ensemble are chosen; uses no held-out
+    measurement)."""
     rec = json.loads((run_dir / f"{tag}.json").read_text())
     arrays = np.load(run_dir / f"{tag}.npz")
     members, draws = arrays["members"], arrays["draws"]
@@ -68,10 +74,18 @@ def load_device(run_dir: Path, tag: str, near_tol: float) -> dict:
                    "raw": np.asarray(c.Id, dtype=float), "sweep": sweep,
                    "kind": c.kind, "bias": abs(float(c.fixed)),
                    "n": len(c.Id)}
-    s = rec["single_index"]
+    pool = list(range(len(rec["members"])))
+    if select == "feasible":
+        idx = [r["index"] for r in rows.values()]
+        ok = [k for k in pool if np.all(np.isfinite(members[k][idx]))]
+        pool = ok or pool
+    elif select != "strict":
+        raise ValueError(select)
+    s = min(pool, key=lambda k: rec["members"][k]["train_obj"])
+    if select == "strict":
+        assert s == rec["single_index"]
     best = rec["members"][s]["train_obj"]
-    near = [k for k, m in enumerate(rec["members"])
-            if m["train_obj"] <= (1 + near_tol) * best]
+    near = [k for k in pool if rec["members"][k]["train_obj"] <= (1 + near_tol) * best]
     return {"tag": tag, "rec": rec, "rows": rows, "members": members,
             "draws": draws, "single": s, "near": near,
             "sigma": rec["members"][s]["train_sigma"],
@@ -136,7 +150,9 @@ def cross_residual(dev: dict, test_tag: str, pred_curves: dict) -> np.ndarray:
         if abs(r["sweep"][k] - row["bias"]) > 5e-3:
             continue
         xs.append(r["bias"])
-        rs.append(float(r["raw"][k] - pred_curves[t][k]))
+        # Cleaned measured value (the metric target, metrics.clean_current),
+        # not the raw SMU sample.
+        rs.append(float(r["meas"][k] - pred_curves[t][k]))
     order = np.argsort(xs)
     xs, rs = np.asarray(xs)[order], np.asarray(rs)[order]
     return np.interp(row["sweep"], xs, rs), xs
@@ -279,8 +295,11 @@ def learned_and_conformal(devs: list[dict], base: dict[str, dict]) -> dict:
     crossinterp_conformal and learned, plus the chosen hyperparameters."""
     tables = [point_table(d) for d in devs]
     n = len(devs)
+    valid = [i for i, t in enumerate(tables)
+             if np.all(np.isfinite(t["X"])) and np.all(np.isfinite(t["y"]))]
+    out_excluded = [devs[i]["tag"] for i in range(n) if i not in valid]
     out = {"conformal": {}, "crossinterp_conformal": {}, "learned": {},
-           "learned_hyper": {}}
+           "learned_hyper": {}, "excluded_from_training": out_excluded}
     # Nonconformity scores for the non-learned point predictors.
     raw = {}
     for name, method in (("conformal", "single"),
@@ -293,12 +312,14 @@ def learned_and_conformal(devs: list[dict], base: dict[str, dict]) -> dict:
                 p = base[d["tag"]][method][t]["point"]
                 sc = float(scale_of(base[d["tag"]]["single"][t]["point"]))
                 scores.append(np.abs(row["meas"] - p)[st:] / (d["sigma"] * sc))
-            raw[name].append(np.concatenate(scores))
+            v = np.concatenate(scores)
+            raw[name].append(v if np.all(np.isfinite(v)) else None)
     for i, d in enumerate(devs):
         rest = [j for j in range(n) if j != i]
         for name, method in (("conformal", "single"),
                              ("crossinterp_conformal", "crossinterp")):
-            qs = {a: weighted_quantile([raw[name][j] for j in rest], a)
+            pool = [raw[name][j] for j in rest if raw[name][j] is not None]
+            qs = {a: weighted_quantile(pool, a) if pool else math.nan
                   for a in LEVELS}
             out[name][d["tag"]] = {}
             for t in d["rec"]["test_tags"]:
@@ -307,7 +328,9 @@ def learned_and_conformal(devs: list[dict], base: dict[str, dict]) -> dict:
                 out[name][d["tag"]][t] = {
                     "point": p, "q": {a: (p - qs[a] * half, p + qs[a] * half)
                                       for a in LEVELS}}
-        # Learned discrepancy: hyperparameters by inner LODO on ``rest``.
+        # Learned discrepancy: hyperparameters by inner LODO on ``rest``
+        # (devices with a non-finite held-out prediction are left out).
+        rest = [j for j in rest if j in valid]
         if len(rest) < 3:
             continue
         best = None

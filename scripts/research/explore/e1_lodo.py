@@ -137,6 +137,12 @@ def main() -> int:
             "M_zero_failed": bool(m["n_failed"] == 0)}
         result["criterion"] = {"n_devices": n, "checks": checks,
                                "stage1_pass": all(checks.values())}
+    if args.folds == "geometry" and {"M", "C0", "T1"} <= set(summary):
+        m, c0, t1 = (summary[a]["all_device_mean"] for a in ("M", "C0", "T1"))
+        checks_s = {"M_mean_le_0.9_C0_mean": bool(m <= 0.9 * c0),
+                    "M_mean_lt_T1_mean": bool(m < t1)}
+        result["criterion_S"] = {"checks": checks_s, "pass": all(checks_s.values()),
+                                 "note": "secondary; not used for the E1 decision"}
     out_dir = OUT / args.name
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "results.json").write_text(json.dumps(result, indent=1) + "\n")
@@ -145,7 +151,8 @@ def main() -> int:
         full = {arm: fit_arm(arm, devices, hyper=hyper.get(arm)).to_json() for arm in arms if arm != "C0"}
         (out_dir / "full_corrections.json").write_text(json.dumps(full) + "\n")
     print(json.dumps({"summary": summary, "wins": comp,
-                      "criterion": result.get("criterion")}, indent=1))
+                      "criterion": result.get("criterion"),
+                      "criterion_S": result.get("criterion_S")}, indent=1))
     print(f"runtime {result['runtime_s']} s")
     return 0
 

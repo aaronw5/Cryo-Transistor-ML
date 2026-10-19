@@ -120,9 +120,17 @@ class NetLaw:
                 torch.nn.Linear(X.shape[1], width), torch.nn.SiLU(),
                 torch.nn.Linear(width, width), torch.nn.SiLU(),
                 torch.nn.Linear(width, N_PAR))
+            # Zero output layer: the untrained model is pt_interp (correction
+            # 0), and early stopping can return that state (best_step = -1)
+            # instead of a random-initialisation correction.
+            torch.nn.init.zeros_(model[-1].weight)
+            torch.nn.init.zeros_(model[-1].bias)
             opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
             sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, steps)
-            best, best_state, best_step = float("inf"), None, 0
+            with torch.no_grad():
+                best = float(objective(model, va))
+            best_state = {k: t.detach().clone() for k, t in model.state_dict().items()}
+            best_step = -1
             for step in range(steps):
                 opt.zero_grad()
                 value = objective(model, tr)

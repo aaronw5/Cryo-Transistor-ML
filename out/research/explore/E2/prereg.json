@@ -1,0 +1,81 @@
+{
+  "id": "E2",
+  "title": "One-pass direct network trained with misspecification-style output augmentation",
+  "written_utc": "2026-10-19T13:10:00Z",
+  "git_commit_at_writing": "574617cb777e40e62f3b73a92b35182f4d8cd4fb",
+  "status": "pre-registered before any E2 training or evaluation",
+  "hypothesis": "A one-pass I-V -> seven-parameter network trained on simulated cards whose simulated currents are distorted by output-space versions of the tier-c misspecification components (external series resistance, per-curve self-heating, per-curve gain error, Vd-dependent multiplicative noise, additive floor) predicts cards for measured 77 K devices whose NGSpice-validated paper RRMS is at least 30% lower than the same network trained without augmentation, and closes at least 30% of the gap between the unaugmented network and the direct NGSpice seven-parameter fit.",
+  "parameter_space": {
+    "names": [
+      "vth0",
+      "u0",
+      "nfactor",
+      "vsat",
+      "delta",
+      "rdsw",
+      "eta0"
+    ],
+    "box": "out/cold_loop/seven/round_1/spec.json (cold round-1 box: vth0 x3, others x100, log-scaled); network output = ParameterBox local coordinates in [-1, 1], clipped at inference"
+  },
+  "training_data": "data/processed/cold_loop/seven_r1/<tag>.npz for all 18 devices (simulated currents only; ok rows; no measured data enters training, feature scaling or model selection). Currents are put in foundation.canonical_point_order (5 Id-Vd + 6 Id-Vg curves, 186 points each).",
+  "network": "Pooled across devices. Input: per-point standardized signed-log current (2046), per-device per-curve bank-median-scaled linear current (2046), device one-hot (18). MLP 1024-1024-512, GELU, linear output (7). AdamW lr 1e-3, weight decay 1e-4, cosine decay to 0, 30 epochs, batch 1024, 5% random validation split (simulated). Final epoch weights are used (no early stopping). Identical for every arm except the augmentation.",
+  "arms": {
+    "N0": "no augmentation",
+    "M": "measurement-only augmentation: per-curve gain 1 + sg*N(0,1), sg ~ U(0, 0.03); per-point multiplicative noise 1 + sn*(1 + |Vd|/1.8)*N(0,1), sn ~ U(0, 0.02); additive floor level*N(0,1), level = 10^U(-13,-10) A",
+    "S": "structured + measurement augmentation: (1) external source and drain resistors R per side, R = rho / (W_um * mult), rho = 10^U(1, 4.5) ohm um (independent of the card), applied to first order as I_obs = I / (1 + R*(gm + 2*gds)), with gm, gds from finite differences along the Id-Vg and Id-Vd sweeps and cross-family values interpolated from relative conductances; (2) per-curve heating: P_i = max |I*Vd| on curve i, dT_i = dTmax * P_i / max_j P_j, dTmax ~ U(0, 40) K, |Vth| lowered by kv*dT_i (kv ~ U(0.5, 1.0) mV/K) applied as factor exp(min(gm/I * kv*dT_i, 3)), mobility factor (77/(77+dT_i))^beta, beta ~ U(1, 2); (3) the M components",
+    "augmentation_probability": "each training sample is augmented with probability 0.8 in arms M and S, redrawn every epoch",
+    "nn_lookup": "non-trained control: nearest neighbour of the target in the device's own seven_r1 bank under Euclidean distance on the standardized signed-log features"
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "evaluation_sets": {
+    "REAL_DEV": "the 12 REAL_DEV measured devices of out/research/explore/real_split.json (REAL_TEST is not evaluated by this probe)",
+    "tier_a": "out/research/sim_targets/set_0.npz and set_1.npz, all 18 devices each (36 targets, noise-free, seven parameters drawn)",
+    "tier_c": "out/research/sim_targets_sky130c/set_0.npz and set_1.npz (strength 2), all 18 devices each (36 targets). Set 2 (TEST) is not used."
+  },
+  "metric": {
+    "per_target": "strict paper RRMS of the predicted card re-simulated in NGSpice (cryoml.card_eval.score_card, frozen published-baseline curve inclusion, cryoml.strict_score.device_status); a failed included curve is scored by the penalized convention (PENALTY = 10 per failed curve); failed-device counts are reported next to every mean",
+    "raw": "one forward pass, one NGSpice validation per target, no search",
+    "fd": "fixed short FD polish: cryoml.ngspice_fit.polish in the round-1 seven box, start = predicted local, max_nfev=100, diff_step=0.01, irls_rounds=1 (about 100 NGSpice calls per target); identical for every arm",
+    "aggregate": "R_raw(arm) = mean over the 12 REAL_DEV devices of the per-device penalized RRMS, averaged over seeds 0, 1, 2 (per-device seed mean first, then device mean). Also reported: valid-only mean, median, combined (family-mean) convention.",
+    "reference_D": "direct NGSpice seven-parameter fit + FD (out/research/polished/direct7_fd/real/summary.json), REAL_DEV mean penalized RRMS = 0.173493 (computed before this pre-registration from existing results). Context: direct NGSpice 43-parameter round 3 + FD on REAL_DEV = 0.107284."
+  },
+  "decision": {
+    "CONTINUE_if_all": {
+      "C1": "R_raw(S) <= 0.70 * R_raw(N0)",
+      "C2": "R_raw(S) - D <= 0.70 * (R_raw(N0) - D), D = 0.173493",
+      "C3": "S has lower seed-mean raw RRMS than N0 on at least 8 of the 12 REAL_DEV devices",
+      "C4_guard": "tier-a mean raw penalized RRMS(S) <= 1.5 * tier-a mean raw penalized RRMS(N0) + 0.01"
+    },
+    "KILL_if_any": {
+      "K1": "R_raw(S) > 0.85 * R_raw(N0)",
+      "K2": "S has lower seed-mean raw RRMS than N0 on fewer than 6 of the 12 REAL_DEV devices"
+    },
+    "otherwise": "INCONCLUSIVE: the next step is an NGSpice-simulated augmentation bank (sky130_misspec.simulate_truth components on seven_r1 cards, seeds disjoint from the tier-c targets), pre-registered separately before it is run.",
+    "attribution_secondary": "The gain is attributed to the physical structure (not only to measurement noise) only if R_raw(S) <= 0.90 * R_raw(M). Not a continue/kill condition.",
+    "light_run": "The light run (seed 0 only, raw on all sets, FD on REAL_DEV only) is reported as exploratory; the decision uses the full three-seed run."
+  },
+  "secondary_reported_not_decisive": [
+    "FD-polished REAL_DEV mean per arm and the FD gap to D",
+    "tier-a and tier-c raw and FD means; tier-c truth-seven-card RRMS (true seven values, remaining card stock) as the seven-parameter model-form reference",
+    "mean |local_pred - local_true| on tier-a and tier-c",
+    "nn_lookup control on all sets",
+    "released card RRMS on REAL_DEV"
+  ],
+  "known_risks": [
+    "Arm S uses the same component types as the tier-c generator, so tier-c results for S are partly in-distribution by construction; the decision uses REAL_DEV only.",
+    "The output-space series-R and heating transforms are first-order approximations, not NGSpice simulations.",
+    "The seven-parameter model-form floor on measured devices (about 0.167) bounds what any seven-parameter card can reach."
+  ],
+  "amendments": [
+    {
+      "utc": "2026-10-19T13:25:00Z",
+      "before_any_training_or_evaluation": true,
+      "change": "Arm S series-resistance scale changed from k * rdsw_released / (2 W mult), k ~ U(0,5), to rho / (W mult), rho = 10^U(1, 4.5) ohm um.",
+      "reason": "The released-card rdsw is about 0 on nmos_L8_W1p6 and pmos_L0p35_W1p6 and varies by 10^5 across devices, so the old rule gave no resistance on some devices. The new range covers the tier-c per-side R * W * mult values (about 0 to 2e4 ohm um) without tying R to any card. Decided from the tier-c truth.json R values and the released card only; no E2 result existed."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+ "id": "E3",
+ "written": "2026-10-19",
+ "relation_to_prereg": "Written by the adversarial review before the decision run E3_full_M. prereg.json is unchanged. Hypothesis, metric, controls and the CONTINUE/KILL rule are unchanged.",
+ "implementation_changes": [
+  "src/cryoml/explore/e3_learn.py NetLaw: the output layer is initialised to zero, so the untrained network gives correction 0 (= pt_interp). The validation loss of this state is recorded before training and early stopping may return it (best_step = -1). Before the change, a member whose validation loss was lowest at step 0 returned a random-initialisation correction; this happened in 5 of 10 smoke ensemble members.",
+  "scripts/research/explore/e3_temp_misspec.py: lrn_noH is skipped when the training grid has no non-anchor temperatures outside 110/190/260 K (smoke grid only; the 14-temperature decision grid always has them)."
+ ],
+ "review_notes_not_changing_the_rule": [
+  "In O4 the primary control par3 uses no population information, while lrn, lrn_mean and par3_pop do. A CONTINUE in O4 therefore shows that population information helps; it does not by itself show that the network helps. summary.json reports lrn vs lrn_mean and lrn vs par3_pop under decisions.<S>.lrn_vs_other. Any claim about the learned network must cite those comparisons.",
+  "The tier-M generator keeps every knee in 120-230 K for all devices. Train and test devices share this distribution, so population methods are expected to beat per-device power laws by construction. A law-shift test (train knees in one range, test in another) is required before this result supports a robustness claim."
+ ],
+ "reproducibility": "runs/smoke_rerun/tier_M reran the smoke configuration from scratch with the pre-fix code: all truths, per-temperature fits, law fits and the summary table are identical to runs/smoke/tier_M. Eight eval cells per device re-simulated with single simulate_pdk calls match the altermod batch values to 6 decimals."
+}

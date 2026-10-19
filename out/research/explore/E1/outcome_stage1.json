@@ -1,0 +1,69 @@
+{
+ "id": "E1",
+ "date": "2026-10-19",
+ "prereg": "out/research/explore/E1/prereg.json (unchanged)",
+ "stage1_real_dev_lodo": {
+  "all_device_mean": {
+   "C0": 0.10728,
+   "T1": 0.08648,
+   "T2": 0.10717,
+   "LIN": 0.1142,
+   "M": 0.12764,
+   "ORACLE": 0.03753
+  },
+  "combined": {
+   "C0": 0.09814,
+   "T1": 0.08017,
+   "T2": 0.09804,
+   "LIN": 0.10867,
+   "M": 0.12369,
+   "ORACLE": 0.03512
+  },
+  "wins": {
+   "M_beats_C0": 6,
+   "M_beats_T1": 4,
+   "M_beats_T2": 6,
+   "M_beats_LIN": 9,
+   "M_beats_ORACLE": 0
+  },
+  "criterion": {
+   "n_devices": 12,
+   "checks": {
+    "M_mean_le_0.090": false,
+    "M_mean_lt_T1_mean": false,
+    "M_beats_T1_on_ge_8_of_12": false,
+    "M_beats_C0_on_ge_8_of_12": false,
+    "M_zero_failed": true
+   },
+   "stage1_pass": false
+  },
+  "results": "out/research/explore/E1/real_dev_lodo/results.json"
+ },
+ "light_sim_set0_lodo_not_preregistered_config": {
+  "note": "M with 1 seed, 1000 steps (pre-registered: 5 seeds, 2000 steps); LIN not run",
+  "gf180_c": {
+   "C0": 0.04641,
+   "T1": 0.04113,
+   "T2": 0.04572,
+   "M": 0.07213
+  },
+  "ihp_c": {
+   "C0": 0.11967,
+   "T1": 0.11572,
+   "T2": 0.11897,
+   "M": 0.2141
+  },
+  "gf180_wins": {
+   "M_beats_C0": 4,
+   "M_beats_T1": 2,
+   "M_beats_T2": 4
+  },
+  "ihp_wins": {
+   "M_beats_C0": 3,
+   "M_beats_T1": 2,
+   "M_beats_T2": 3
+  }
+ },
+ "sweep_consistency_diagnostic": "out/research/explore/E1/sweep_consistency_real_dev.json (not pre-registered)",
+ "decision_status": "stage 1 fails 4 of 5 continue conditions; E1 decision pending stage 2 (queued e1_refit_real) per prereg"
+}

@@ -8,6 +8,9 @@ evaluation.  Splits (``split_tags``):
   highest gate bias; held out = the other included Id-Vd curves.
 * ``vg``: train = every included Id-Vd curve + Id-Vg at Vd = 0.01 and 1.85;
   held out = the other included Id-Vg curves.
+* ``sparse`` (amendment 1, secondary): train = Id-Vg at Vd = 0.01 and 1.85 +
+  the Id-Vd curve at the highest gate bias; held out = every other included
+  curve (each held-out curve is crossed by at most two train curves).
 
 Fit per device (``fit_device``), all NGSpice, inside a cold-start round box
 (multiplier-one center, so no card fitted to the held-out curves enters):
@@ -52,7 +55,7 @@ from ..spice_pdk import simulate_pdk
 PENALTY = 10.0
 E4_DIR = OUT_DIR / "research" / "explore" / "E4"
 SPLIT_JSON = OUT_DIR / "research" / "explore" / "real_split.json"
-SPLITS = ("vd", "vg")
+SPLITS = ("vd", "vg", "sparse")
 
 
 def real_split() -> dict:
@@ -77,6 +80,9 @@ def split_tags(include: set[str], split: str) -> tuple[list[str], list[str]]:
         anchors = [t for t in idvg if t in ("idvg@0.01", "idvg@1.85")]
         train = idvd + anchors
         test = [t for t in idvg if t not in anchors]
+    elif split == "sparse":
+        train = [t for t in idvg if t in ("idvg@0.01", "idvg@1.85")] + idvd[-1:]
+        test = [t for t in idvd[:-1]] + [t for t in idvg if t not in train]
     else:
         raise ValueError(f"unknown split {split!r}")
     return train, test
@@ -95,6 +101,7 @@ class SplitProblem:
     tag: str
     box: ParameterBox
     split: str
+    heldout_feasibility: bool = True
     n_sim: int = field(default=0, init=False)
 
     def __post_init__(self) -> None:
@@ -149,8 +156,22 @@ class SplitProblem:
             out.append(math.sqrt(float(np.mean((sim - target) ** 2))) / row["den"])
         return np.asarray(out)
 
-    def objective(self, sims) -> float:
+    def n_failed_heldout(self, sims) -> int:
+        """Held-out-bias curves whose simulation is non-finite (simulator
+        output only; no held-out measurement is used)."""
+        return int(sum(not np.all(np.isfinite(self._curve(sims, r)))
+                       for r in self.test_rows))
+
+    def train_rrms(self, sims) -> float:
         return float(np.mean(self.curve_rrms(sims, self.train_rows)))
+
+    def objective(self, sims) -> float:
+        """Mean train-curve RRMS (+ PENALTY per failed held-out-bias curve /
+        n_train when ``heldout_feasibility``; amendment 1)."""
+        value = self.train_rrms(sims)
+        if self.heldout_feasibility:
+            value += PENALTY * self.n_failed_heldout(sims) / len(self.train_rows)
+        return value
 
     def residual(self, sims) -> np.ndarray:
         """Squared norm = mean over train curves of squared curve RRMS."""
@@ -164,6 +185,12 @@ class SplitProblem:
                 pieces.append(np.full(n, PENALTY * scale / math.sqrt(n)))
             else:
                 pieces.append((sim - target) * scale / (row["den"] * math.sqrt(n)))
+        if self.heldout_feasibility:
+            # One entry per held-out-bias curve: sqrt(PENALTY) * scale when
+            # its simulation is non-finite, else 0 (fixed vector length).
+            pieces.append(np.array([
+                0.0 if np.all(np.isfinite(self._curve(sims, r)))
+                else math.sqrt(PENALTY) * scale for r in self.test_rows]))
         return np.concatenate(pieces)
 
     def point_errors(self, sims, rows) -> np.ndarray:
@@ -272,7 +299,8 @@ def gn_polish(problem: SplitProblem, x0: np.ndarray, max_nfev: int,
 # ---------------------------------------------------------------------------
 def fit_device(tag: str, spec: dict, split: str, opts: dict) -> dict:
     t0 = time.time()
-    problem = SplitProblem(tag, box_from_spec(spec, tag), split)
+    problem = SplitProblem(tag, box_from_spec(spec, tag), split,
+                           heldout_feasibility=opts.get("heldout_feasibility", True))
     rng = np.random.default_rng(opts["seed"] + hash_tag(tag, split))
     center = np.zeros(problem.box.n_parameters)
     starts = []
@@ -299,6 +327,8 @@ def fit_device(tag: str, spec: dict, split: str, opts: dict) -> dict:
     member_sims = [problem.sim_one(m["local"]) for m in members]
     for m, sims in zip(members, member_sims):
         m["train_obj"] = problem.objective(sims)
+        m["train_rrms"] = problem.train_rrms(sims)
+        m["n_failed_heldout"] = problem.n_failed_heldout(sims)
         m["train_curve_rrms"] = problem.curve_rrms(sims, problem.train_rows).tolist()
         m["heldout_curve_rrms"] = problem.curve_rrms(sims, problem.test_rows).tolist()
         e = problem.point_errors(sims, problem.train_rows)

@@ -1,0 +1,36 @@
+{
+ "id": "E3",
+ "title": "Temperature generalization under misspecification: learned shared temperature law vs parametric law",
+ "written": "2026-10-19",
+ "status": "pre-registered before any run at scale; the smoke run (runs/smoke) is a pipeline check and is not a decision input",
+ "hypothesis": "On simulated 77-300 K devices whose truth has a temperature law outside the fitted parametric family (logistic knee + bump, nonzero 300 K offset, extrinsic series resistance with linear temperature coefficient), a temperature law learned from a densely characterised device population and shared across devices (MLP on per-temperature 7-parameter fits, sensitivity-weighted loss) predicts the 7-parameter card at held-out temperatures 110/190/260 K with lower NGSpice RRMS than the parametric law x(T) = c + (mu - c) w(T)^g fitted per device (O4) or with population-pooled g (O2).",
+ "data_protocol": {
+  "real_devices": "No real I-V is used. Only REAL_DEV geometries (out/research/explore/real_split.json) are used as simulated device geometries; REAL_TEST geometries are rejected by the script.",
+  "world": "src/cryoml/explore/e3_temp.py: SkyWater 77 K corner bin, tnom = 27 C, seven paper parameters numeric per temperature, x = log(p/p_stock).",
+  "tier_M": "x(T) = c + (mu - c) s(T) + b 4w(1-w); s = normalised logistic in T with device knee U[120,230] K (+-25 K per parameter), width U[10,35] K; c ~ U(+-0.05) vth0, U(+-0.10) others; b ~ U(+-0.05) vth0, U(+-0.15) u0 and rdsw, 0 others; extrinsic drain and source resistors R(T) = R300 (1 + alpha (T - 300.15 K)), R300 = U[0.3,1.0] * rdsw_stock / (2 W), alpha ~ U[0.002, 0.0035]/K. mu uniform in the 0.75x cold-loop round-4 anchor box.",
+  "tier_W": "x(T) = mu w(T)^g, g log-uniform [1/3, 3] (secondary check only).",
+  "training_population": "n_train = 6 truth draws per REAL_DEV geometry (72 devices), each observed on the dense grid 77,90,100,110,130,150,170,190,210,225,245,260,280,300 K; per-temperature 7-parameter NGSpice fits (LM, batched FD Jacobians, bank-screened starts) give x_hat(T) and H(T) = J^T J.",
+  "test_population": "n_test = 3 truth draws per REAL_DEV geometry (36 devices), different random stream; observed at O4 = {77,150,225,300} K or O2 = {77,300} K; scored at held-out H = {110,190,260} K."
+ },
+ "methods": {
+  "par3": "per-device law x = c + (mu - c) w^g (21 numbers) fitted jointly on NGSpice to the observed temperatures (LM, chain-rule Jacobian, init from per-temperature fits). O4 primary control.",
+  "par14": "cryoml.temperature family (c = 0, free g) fitted the same way. O4 secondary control.",
+  "par3_pop": "law with g_k pooled over the training population (H-weighted grid search), per-device mu and c fitted on NGSpice. O2 primary control; O4 secondary.",
+  "par3_g1, par14_g1": "O2 secondary controls with g = 1.",
+  "pt_interp": "linear interpolation in T of the per-temperature anchor fits (no learning).",
+  "lrn": "PRIMARY learned method: x(T) = x_lin(T) + phi_O(T) sigma MLP(geometry, anchors, T); 2x64 SiLU, 5-seed ensemble, loss d^T Hn d + 0.1 mean((d/sigma)^2), Hn = 7H/tr(H); trained on all non-anchor dense temperatures of the training population.",
+  "lrn_param, lrn_noH, lrn_mean": "secondary: parameter-MSE loss; training without 110/190/260 K; population-mean correction per device type (no network).",
+  "floor": "per-temperature 7-parameter fit at each held-out temperature using held-out data (reference for gap closure only, not a method)."
+ },
+ "metric": "Per (device, held-out temperature): frozen-inclusion paper RRMS (published-baseline included curve set, curve_trim on the truth target) of the NGSpice re-simulated card against the simulated truth curves, mean over included curves; strict: any non-finite included curve makes the cell NaN. Per device: mean over 110/190/260 K. Aggregate: all-device mean over the 36 tier-M test devices (devices finite for all compared methods).",
+ "primary_comparison": "R_S = 1 - mean(lrn) / mean(control_S) for S in {O4 (control par3), O2 (control par3_pop)}, paired percentile bootstrap over test devices (4000 resamples).",
+ "decision_run": "queue job E3_full_M (tier M, all 12 REAL_DEV geometries, n_train 6, n_test 3). The decision is made once on this run.",
+ "criterion": {
+  "CONTINUE": "for at least one S: R_S >= 0.25 AND bootstrap 95% CI lower bound of R_S > 0 AND lrn reduces held-out RRMS by >= 10% vs pt_interp in the same S AND failed-cell fraction <= 10% for lrn, control_S and pt_interp.",
+  "KILL": "R_S < 0.10 for both S, OR lrn is worse than pt_interp (reduction < 0) for both S.",
+  "INCONCLUSIVE": "otherwise; one revision allowed only with a new pre-registration file.",
+  "secondary_reported_not_decisive": ["tier W run E3_full_W: lrn held-out RRMS vs par3/par3_pop (expect parametric to win; reported)", "lrn vs lrn_mean (does the network add over a population-mean shape)", "lrn_noH vs lrn (dependence on training at the held-out temperatures)", "gap closed to floor", "per-temperature breakdown"]
+ },
+ "known_limitations": ["The learned law is trained on devices from the same generator as the test devices; the result measures transfer within a population whose law is shared, not transfer to a different physical law.", "Parameter fits at non-anchor temperatures are themselves misspecified (series R absorbed by rdsw), so floor > 0 on tier M."],
+ "files": ["src/cryoml/explore/e3_temp.py", "src/cryoml/explore/e3_learn.py", "scripts/research/explore/e3_temp_misspec.py"]
+}

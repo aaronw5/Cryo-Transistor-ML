@@ -259,8 +259,11 @@ def learn(train, tests, dense, args) -> dict:
         no_h = tuple(t for t in dense if t not in E.TEMPS_HELDOUT)
         models = {"lrn": NetLaw(train, anchors, dense, "sens", seeds=args.learn_seeds),
                   "lrn_param": NetLaw(train, anchors, dense, "param", seeds=args.learn_seeds),
-                  "lrn_noH": NetLaw(train, anchors, no_h, "sens", seeds=args.learn_seeds),
                   "lrn_mean": MeanLaw(train, anchors, dense)}
+        if any(t not in anchors for t in no_h):     # empty on a coarse smoke grid
+            models["lrn_noH"] = NetLaw(train, anchors, no_h, "sens", seeds=args.learn_seeds)
+        else:
+            del preds[s]["lrn_noH"]
         info[s] = {k: {"sigma": m.sigma.tolist(),
                        "n_rows": getattr(m, "n_rows", None),
                        "final_loss": getattr(m, "history", None)} for k, m in models.items()}

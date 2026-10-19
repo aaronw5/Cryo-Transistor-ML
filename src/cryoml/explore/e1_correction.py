@@ -370,8 +370,10 @@ def to_verilog_a(corr: Correction, module: str = "e1_corr", vdd: float = 1.85) -
     """Verilog-A text of an ``M`` correction.
 
     Ports (d, g, s, di): the compact-model drain connects to ``di``; the
-    module holds a zero-volt branch di->d that senses I_bsim and adds
-    (exp(g) - 1) * I_bsim from d to s.  The ensemble average of ``g`` is
+    module holds a zero-volt branch d->di whose current is the drain current
+    entering the compact model, I_bsim (positive for an on nMOS, negative for
+    an on pMOS), and adds (exp(g) - 1) * I_bsim from d to s, so the current
+    entering terminal d is I_bsim * exp(g).  The ensemble average of ``g`` is
     unrolled member by member.  Parameters: L, W in um and pmos (0/1)."""
     if corr.arm != "M":
         raise ValueError("Verilog-A export is written for the MLP arm")
@@ -385,7 +387,7 @@ def to_verilog_a(corr: Correction, module: str = "e1_corr", vdd: float = 1.85) -
         f"module {module}(d, g, s, di);",
         "  inout d, g, s, di;",
         "  electrical d, g, s, di;",
-        "  branch (di, d) sense;",
+        "  branch (d, di) sense;   // I(sense) = drain current into the BSIM4 drain",
         "  parameter real L = 1.0;   // um",
         "  parameter real W = 1.0;   // um",
         "  parameter real pmos = 0;  // 0 nMOS, 1 pMOS",

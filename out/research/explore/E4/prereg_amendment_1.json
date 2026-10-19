@@ -1,0 +1,14 @@
+{
+ "id": "E4",
+ "amendment": 1,
+ "written": "2026-10-19, after the code smoke run (4 DEV devices, reduced budgets) and before any full-budget E4 run",
+ "observed_in_smoke": "nmos_L0p15_W1p6 and nmos_L1_W3, split vd: the held-out Id-Vd sweep at Vg = 1.11 V is non-finite for every member card. It is the first curve of the device's deck. Re-simulated with that curve placed last, it is finite, and whichever curve is placed first fails, so the failure is a first-DC-sweep convergence failure (no prior operating point), not a property of the bias. The train objective does not contain that curve, so the pre-registered fit does not penalize it.",
+ "primary_unchanged": "Metrics, methods, candidate methods and the decision rule in prereg.json are unchanged. The decision is computed with e4_analyze.py --select strict --decide on the run fitted with heldout_feasibility = True. The smoke run light43_nofeas (original fit) is kept as the record of the failure.",
+ "implementation_clarifications": [
+  "Devices with a non-finite held-out prediction are left out of the conformal calibration pool and of the learned-discrepancy training set of the other folds (they have no finite residual); they are listed in summary 'excluded_from_training'.",
+  "C2 'lower than single on >= 8 of 12 devices' is computed as wins >= round(0.6667 x n_devices) over devices where both values are finite."
+ ],
+ "secondary_variant_feasible": "--select feasible (reported, no decision): members whose simulation of any included curve (train or held-out bias) is non-finite are dropped before SINGLE and the near-optimal ensemble are chosen. This uses NGSpice at the held-out biases but no held-out measurement. Laplace draws remain those around the strict SINGLE.",
+ "fit_change": "All full-budget E4 runs use heldout_feasibility = True (e4_fit.py default): the fit objective adds PENALTY (10) x (number of held-out-bias curves whose simulation is non-finite) / n_train_curves, and the TRF residual gets one entry per held-out-bias curve (sqrt(PENALTY) x scale if non-finite, else 0). This uses NGSpice output at the held-out biases and no held-out measurement. --no-heldout-feasibility reproduces the original pre-registered fit. Metrics, methods, candidate list and the decision rule are unchanged.",
+ "secondary_split_sparse": "Added before any sparse-split fit: split 'sparse' = train Id-Vg at Vd = 0.01 and 1.85 + the included Id-Vd at the highest gate bias; held out = every other included curve. Reason: in the smoke run the non-learned crossinterp control had the lowest held-out RRMS on splits vd and vg, because every held-out curve there crosses 4-6 measured train curves at the same bias points. Sparse is reported with the same metrics and the same C1/C2/C3 thresholds as a secondary result; it does not replace the primary decision (p43, vd)."
+}

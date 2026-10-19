@@ -90,7 +90,7 @@ def train(args) -> int:
             loss.backward()
             opt.step()
             sched.step()
-            total += float(loss) * len(b)
+            total += float(loss.detach()) * len(b)
             count += len(b)
         val = evaluate_val(model, feats, aug, cur, loc, ids, va, dev)
         history.append({"epoch": epoch + 1, "train_mse": total / count, **val})
@@ -260,7 +260,12 @@ def raw(args) -> int:
         preds = nn_lookup(groups)
     else:
         preds = predict(args.arm, args.seed, groups, torch_device(args.device))
-    E.save_json(EVAL / f"pred_{name}.json", preds)
+    # Merge with stored predictions of other groups (fd() reads every group
+    # from this file; a partial raw run must not drop the earlier groups).
+    pred_path = EVAL / f"pred_{name}.json"
+    stored = json.loads(pred_path.read_text()) if pred_path.exists() else {}
+    stored.update(preds)
+    E.save_json(pred_path, stored)
     jobs = [(g, t, preds[g][t], None) for g in groups for t in preds[g]]
     t0 = time.time()
     res = run_jobs(raw_job, jobs, args.workers)
@@ -417,9 +422,46 @@ def table(args) -> int:
     return 0
 
 
+def full(args) -> int:
+    """Pre-registered run: every arm x seed trained, raw on all groups, FD
+    on the listed groups; existing models / raw files / FD targets are kept."""
+    seeds = [int(s) for s in args.seeds.split(",")]
+    for seed in seeds:
+        for arm in E.ARMS:
+            name = f"{arm}_s{seed}"
+            if not (MODELS / f"{name}.pt").exists():
+                train(argparse.Namespace(arm=arm, seed=seed, epochs=30, batch=1024,
+                                         max_per_device=None, device=args.device))
+            raw_path = EVAL / f"raw_{name}.json"
+            have = json.loads(raw_path.read_text()) if raw_path.exists() else {}
+            missing = [g for g in E.GROUPS if g not in have]
+            if missing:
+                raw(argparse.Namespace(arm=arm, seed=seed, groups=",".join(missing),
+                                       workers=args.workers, device=args.device))
+    if not (EVAL / "raw_nn_s0.json").exists():
+        raw(argparse.Namespace(arm="nn", seed=0, groups=",".join(E.GROUPS),
+                               workers=args.workers, device=args.device))
+    if not (EVAL / "refs.json").exists():
+        refs(argparse.Namespace(groups=",".join(E.GROUPS), workers=args.workers))
+    # The decision uses raw values only: write the table before the FD stage.
+    table(argparse.Namespace(seeds=args.seeds))
+    for seed in seeds:
+        for arm in E.ARMS:
+            fd(argparse.Namespace(arm=arm, seed=seed, groups=args.fd_groups,
+                                  workers=args.workers, resume=True))
+    fd(argparse.Namespace(arm="nn", seed=0, groups=args.fd_groups,
+                          workers=args.workers, resume=True))
+    return table(argparse.Namespace(seeds=args.seeds))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
+    p = sub.add_parser("full")
+    p.add_argument("--seeds", default="0,1,2")
+    p.add_argument("--fd-groups", default=",".join(E.GROUPS))
+    p.add_argument("--workers", type=int, default=8)
+    p.add_argument("--device", default="mps")
     p = sub.add_parser("train")
     p.add_argument("--arm", choices=E.ARMS, required=True)
     p.add_argument("--seed", type=int, default=0)
@@ -442,7 +484,7 @@ def main() -> int:
     p.add_argument("--seeds", default="0,1,2")
     args = ap.parse_args()
     return {"train": train, "raw": raw, "fd": fd, "refs": refs,
-            "table": table}[args.cmd](args)
+            "table": table, "full": full}[args.cmd](args)
 
 
 if __name__ == "__main__":

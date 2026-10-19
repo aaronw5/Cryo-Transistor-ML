@@ -1,0 +1,24 @@
+{
+ "spec": "out/cold_loop/full/round_1/spec.json",
+ "split": "vd",
+ "devices": [
+  "nmos_L0p15_W1p6",
+  "nmos_L1_W3",
+  "pmos_L2_W5",
+  "pmos_L8_W5"
+ ],
+ "cma_evals": 1000,
+ "n_cma_extra": 0,
+ "cma_evals_extra": 3000,
+ "sigma0": 0.3,
+ "gn_nfev": 10,
+ "n_perturb": 3,
+ "perturb_sigma": 0.3,
+ "perturb_nfev": 6,
+ "n_draws": 32,
+ "prior_sd": 0.5,
+ "jac_step": 0.01,
+ "near_tol": 0.1,
+ "seed": 20261019,
+ "heldout_feasibility": true
+}

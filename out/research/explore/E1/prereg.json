@@ -1,0 +1,56 @@
+{
+ "id": "E1",
+ "title": "Learned cross-device correction to the BSIM4 compact model for 77 K model-form error",
+ "written": "2026-10-19",
+ "status": "pre-registered before any E1 correction model was trained or scored",
+ "hypothesis": "After the best per-device 43-parameter BSIM4 fit, the remaining measured-minus-simulated residual has a component that is shared across devices as a function of bias, geometry and simulated current. A small correction I_corr = I_bsim * exp(g(phi)) trained on other devices lowers the strict paper RRMS of a held-out device below both no correction and a per-curve-tag gain table.",
+ "data": {
+  "devices": "REAL_DEV (12) from out/research/explore/real_split.json; REAL_TEST is not loaded by any E1 script in this phase",
+  "cards": "out/research/polished/direct43_r3_fd/real/summary.json (direct NGSpice 43-parameter fit, round 3 + FD polish); one fresh NGSpice simulation per device on the measured bias grid",
+  "no_correction_reference_from_stored_record": {"REAL_DEV_all_device_mean": 0.10728, "REAL_DEV_combined": 0.09814, "REAL_DEV_median": 0.08226}
+ },
+ "correction_model": {
+  "form": "I_corr = I_bsim * exp(g), g = 1.0 * tanh(h(phi)); multiplicative, preserves sign and zero crossings of I_bsim",
+  "features_phi": ["is_pmos", "|Vgs| / 1.85 V", "|Vds| / 1.85 V", "log10 L_um", "log10 W_um", "log10(|I_bsim| * L / W + 1e-13)"],
+  "feature_scaling": "continuous features standardized with mean/std of the training points of the fold only",
+  "not_used": "curve kind and fixed-bias tag (a device-model correction must be a function of the terminal state only, so it can be written as Verilog-A)",
+  "training_loss": "mean over training devices of the mean over frozen-included curves of trimmed RMSE(I_corr, I_meas) / trimmed mean|I_meas| (the paper per-device RRMS, trim and denominator from metrics.curve_trim) + L2 penalty on weight matrices"
+ },
+ "arms": {
+  "C0": "no correction (control)",
+  "T1": "trivial control (primary comparator): one scalar log-gain per (family, curve tag), 22 scalars, fitted with the same loss on the training devices; a group absent from training gets 0",
+  "M": "PRIMARY: MLP 6-32-32-1, tanh hidden activations, last layer initialized to zero, L2 1e-4 on weights, Adam lr 3e-3, 2000 full-batch steps, float64, ensemble of 5 seeds (0-4) averaging g",
+  "T2": "secondary: one scalar log-gain per (family, curve kind), 4 scalars",
+  "LIN": "secondary: quadratic features of phi (1 + 6 + 21 terms) -> linear -> tanh, L2 1e-3, same optimizer",
+  "ORACLE": "diagnostic only, not a held-out result: M trained and scored on the same single device (in-sample capacity bound)"
+ },
+ "evaluation": {
+  "protocol": "leave-one-device-out over the 12 REAL_DEV devices; every arm except ORACLE is trained on the other 11 and applied once to the held-out device",
+  "metric": "strict paper RRMS with frozen published-baseline curve inclusion: metrics.device_rrms_new with include_tags = card_eval.include_tags(tag); a non-finite included curve makes the device NaN",
+  "aggregates": "all-device mean over the 12 devices (primary), combined = mean of nMOS and pMOS family means, median; per-device values",
+  "stage_1": "post-hoc: correction applied to the fixed best card's simulation",
+  "stage_2": "queued: correction in the loop; the held-out device's card is re-polished (ngspice_fit.polish, max_nfev 400, irls 2, round-3 box) against the measured curves with BSIM4 + that fold's M correction; control: the same polish without correction from the same start. Scored with the same strict metric"
+ },
+ "criterion": {
+  "continue_if_all": [
+   "M LODO all-device mean <= 0.090",
+   "M LODO all-device mean < T1 LODO all-device mean",
+   "M < T1 on >= 8 of 12 devices",
+   "M < C0 on >= 8 of 12 devices",
+   "0 failed (NaN) devices for M"
+  ],
+  "kill_otherwise": "E1 is stopped if neither stage 1 nor stage 2 meets every condition above (stage 2 is judged with the same five conditions, C0 replaced by its no-correction re-polish control)",
+  "not_used_for_the_decision": ["ORACLE", "T2", "LIN", "REAL_TEST"]
+ },
+ "simulated_benchmark": {
+  "targets": "GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c truth sets (out/research/pdk2/truth/c, out/research/pdk2/ihp_truth/c): non-fitted parameters +-50%, series R, per-curve heating, Vd-dependent noise, gain error",
+  "fit": "per target: ngspice_fit.polish from the truth's wide-set projection (<tag>__local_wide), max_nfev 300, irls 3, wide box (GF180 21 parameters, IHP 12)",
+  "features": "same phi with VDD = 3.3 V (GF180) or 1.2 V (IHP) in place of 1.85 V",
+  "light": "set 0 only, leave-one-device-out over 16 devices per PDK",
+  "queued": "sets 0-2, leave-one-geometry-out (all 3 draws of the held-out geometry removed from training), 48 targets per PDK",
+  "metric": "pdk2.metric paper RRMS (target-frozen inclusion), strict NaN on a non-finite included curve",
+  "criterion_S": "M mean <= 0.90 x C0 mean and M mean < T1 mean on the leave-one-geometry-out run, per PDK. Reported with the E1 outcome; the E1 continue/kill decision is made on REAL_DEV only. If REAL_DEV passes and S fails on both PDKs, the outcome is labelled 'continue (real only)'"
+ },
+ "deployability": "M is written out as Verilog-A (zero-volt sense branch in series with the BSIM4 drain, I(d,s) <+ (exp(g)-1) * I(sense), g an explicit tanh network of V(g,s), V(d,s), L, W and the sensed current). Text generated by scripts/research/explore/e1_export_va.py; not compiled in this phase",
+ "frozen_choices_note": "All hyperparameters above were fixed before training. No REAL_DEV result is used to change them; any later variant gets a new id or a dated amendment that leaves this file unchanged"
+}

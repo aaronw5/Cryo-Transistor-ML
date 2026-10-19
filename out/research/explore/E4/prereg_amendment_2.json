@@ -1,0 +1,13 @@
+{
+ "id": "E4",
+ "amendment": 2,
+ "written": "2026-10-19, during the adversarial review, after the light smoke runs and before any full-budget E4 run",
+ "changes_to_decision_rule": "None to thresholds, metrics, methods or the candidate list. Two implementation clarifications, each of which can only make CONTINUE harder to reach.",
+ "clarifications": [
+  "C2 and C3 mean comparisons: family_means gives valid-only means, which can cover different device sets for different methods (light43_nofeas/vd: laplace valid on 4 devices, single on 2). C2 now requires both the pre-registered valid-only comparison and the same comparison on the devices where both the candidate and single are finite (paired). C3 likewise requires both learned <= crossinterp valid-only and paired. Wins are counted on paired devices only, so a candidate failure where single is finite is never a win (unchanged).",
+  "--decide refuses to run unless records for all 12 REAL_DEV devices are present.",
+  "crossinterp residual at a crossing point uses the cleaned measured value (metrics.clean_current, the metric target) instead of the raw SMU sample. Re-running the analysis on all four light runs gave identical held-out RRMS and coverage for every method.",
+  "e4_fit.py refuses to resume into a run directory whose options.json differs from the requested options."
+ ],
+ "queue_addition": "E4_p7_vg added, because prereg.json lists p7 split vg as a secondary result and the original queue lines omitted it."
+}

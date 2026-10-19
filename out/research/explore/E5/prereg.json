@@ -1,0 +1,37 @@
+{
+ "id": "E5",
+ "title": "Is the 77 K BSIM4 model-form error shared across devices? (leave-one-device-out shared discrepancy)",
+ "written": "2026-10-19, before any residual model was trained or any corrected score was computed",
+ "framing": "Population-level calibration with a shared learned discrepancy (Kennedy-O'Hagan / APIC-style, multiplicative in current) on top of a per-device physical card. The probe tests the precondition: a discrepancy learned on other devices reduces the paper RRMS of a held-out device.",
+ "hypothesis": "After the best per-device 43-parameter BSIM4 fit, the remaining signed-log residual log|I_meas| - log|I_sim| has structure that is shared across devices as a function of (family, log L, log W, |Vg|, |Vd|, log|I_sim|). A residual model trained on the other REAL_DEV devices reduces the held-out device's frozen-inclusion paper RRMS.",
+ "data": {
+  "devices": "REAL_DEV only (12 devices, out/research/explore/real_split.json). REAL_TEST devices are not loaded.",
+  "base_cards_primary": "out/research/polished/direct43_r3_fd/real/summary.json devices[tag].params (direct NGSpice 43 parameters, round 3, + FD polish)",
+  "base_cards_secondary": "out/research/polished/direct7_fd/real/summary.json devices[tag].params (seven parameters + FD polish)",
+  "points": "every trimmed point (metrics.curve_trim start) of every frozen-inclusion curve of each device; measured Id after clean_current"
+ },
+ "correction": "I_corr = I_sim * exp(delta(x)), delta = tanh(raw) (|delta| <= 1); sign and zero of I_sim are preserved",
+ "training_loss": "weighted MSE of delta against r = log(max(|I_meas|, eps)) - log(max(|I_sim|, eps)), eps = 1e-3 * curve denominator, weight = (|I_meas| / den)^2 / (n_points_curve * n_curves_device); this is the first-order expansion of the per-curve squared RRMS, so each device and curve has equal total weight",
+ "arms": {
+  "A0_control": "no correction (base card as is)",
+  "A1_const": "per-family constant delta (weighted mean of r over the training devices of the same family), LODO",
+  "A2_primary": "MLP shared delta, LODO over the 12 REAL_DEV devices (train on the other 11). Inputs: family (+-1), log10 L, log10 W, |Vg|, |Vd|, standardized log10|I_sim|. 2 hidden layers x 64 tanh, Adam lr 3e-3, 3000 full-batch steps, weight decay 1e-4, ensemble mean of 5 seeds. Feature standardization from the training devices only.",
+  "A4_no_geometry": "A2 without log L, log W inputs (diagnostic)",
+  "A3_oracle": "A2 architecture trained in-sample on the held-out device itself (diagnostic upper bound, not a method)"
+ },
+ "metric": "frozen-inclusion paper RRMS (metrics.score_device_new with card_eval.include_tags) of the corrected curves against the measured curves of the held-out device; aggregate = mean over the 12 REAL_DEV devices (also combined = mean of nMOS and pMOS family means). A device whose included curve is non-finite counts as failed and is reported.",
+ "primary_comparison": "A2_primary vs A0_control on the 43-parameter base, 12 REAL_DEV devices, LODO",
+ "criterion_stage1": {
+  "CONTINUE": "all-DEV mean RRMS reduction (A0 - A2) / A0 >= 0.15 AND A2 < A0 on >= 8 of 12 devices",
+  "KILL": "reduction < 0.05 OR A2 < A0 on <= 6 of 12 devices",
+  "AMBIGUOUS": "otherwise: decide on stage 2 with the same thresholds"
+ },
+ "stage2": {
+  "description": "Joint refit: for each LODO fold, bounded TRF polish (ngspice_fit.polish, max_nfev 400, diff_step 0.01, irls 2) of the 43-parameter card from the base card in the round-3 box (out/cold_loop/full_direct/round_3/spec.json) with the fold's A2 delta frozen inside the residual. Control: the same polish without delta from the same start and budget.",
+  "metric": "same frozen-inclusion RRMS of the corrected curves on the held-out device",
+  "CONTINUE": "(control - stage2) / control >= 0.15 AND stage2 < control on >= 8 of 12 devices",
+  "KILL": "otherwise, if stage 1 was AMBIGUOUS"
+ },
+ "reported_regardless": ["A1, A3, A4 and the seven-parameter base for all arms", "per-device table", "per-family means"],
+ "not_allowed": "changing arms, features, hyperparameters or thresholds after seeing results; any use of REAL_TEST"
+}

@@ -1,0 +1,83 @@
+nmos_L100_W100 C0=0.0732 T1=0.0685 T2=0.0731 LIN=0.0966 M=0.2399 (496s)
+nmos_L0p15_W1p6 C0=0.0193 T1=0.0252 T2=0.0192 LIN=0.0409 M=0.0325 (498s)
+nmos_L0p25_W1p6 C0=0.0188 T1=0.0233 T2=0.0192 LIN=0.0403 M=0.0322 (508s)
+nmos_L1_W3 C0=0.0561 T1=0.0510 T2=0.0559 LIN=0.0609 M=0.0663 (509s)
+pmos_L0p35_W0p55 C0=0.4090 T1=0.3480 T2=0.4084 LIN=0.3717 M=0.3472 (497s)
+nmos_L20_W0p64 C0=0.0491 T1=0.0433 T2=0.0490 LIN=0.1389 M=0.1289 (499s)
+pmos_L0p5_W0p42 C0=0.1617 T1=0.1038 T2=0.1613 LIN=0.1593 M=0.3179 (494s)
+pmos_L0p35_W5 C0=0.1122 T1=0.0716 T2=0.1126 LIN=0.0951 M=0.0711 (506s)
+pmos_L2_W5 C0=0.0796 T1=0.0627 T2=0.0791 LIN=0.0627 M=0.0544 (357s)
+pmos_L4_W7 C0=0.0849 T1=0.0754 T2=0.0856 LIN=0.0778 M=0.0599 (359s)
+pmos_L8_W1p6 C0=0.1322 T1=0.1098 T2=0.1315 LIN=0.1344 M=0.1223 (359s)
+pmos_L8_W5 C0=0.0914 T1=0.0551 T2=0.0910 LIN=0.0918 M=0.0591 (356s)
+{
+ "summary": {
+  "C0": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.10728361467817953,
+   "valid_only_mean": 0.10728361467817953,
+   "median": 0.08225956154010419,
+   "combined": 0.09814323979071031
+  },
+  "T1": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.08648154548633673,
+   "valid_only_mean": 0.08648154548633673,
+   "median": 0.0655906280195216,
+   "combined": 0.08016646152517112
+  },
+  "T2": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.10716974162109089,
+   "valid_only_mean": 0.10716974162109089,
+   "median": 0.08234123251929346,
+   "combined": 0.09804338735986852
+  },
+  "LIN": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.11420096408432223,
+   "valid_only_mean": 0.11420096408432223,
+   "median": 0.0934814645983615,
+   "combined": 0.1086737809909279
+  },
+  "M": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.12764178057695263,
+   "valid_only_mean": 0.12764178057695263,
+   "median": 0.06869692920597746,
+   "combined": 0.12368668458238441
+  },
+  "ORACLE": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.03753296003045684,
+   "valid_only_mean": 0.03753296003045684,
+   "median": 0.026052565473351812,
+   "combined": 0.03511685703194405
+  }
+ },
+ "wins": {
+  "M_beats_C0": 6,
+  "M_beats_T1": 4,
+  "M_beats_T2": 6,
+  "M_beats_LIN": 9,
+  "M_beats_ORACLE": 0
+ },
+ "criterion": {
+  "n_devices": 12,
+  "checks": {
+   "M_mean_le_0.090": false,
+   "M_mean_lt_T1_mean": false,
+   "M_beats_T1_on_ge_8_of_12": false,
+   "M_beats_C0_on_ge_8_of_12": false,
+   "M_zero_failed": true
+  },
+  "stage1_pass": false
+ }
+}
+runtime 1624.8 s

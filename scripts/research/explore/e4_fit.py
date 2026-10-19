@@ -34,7 +34,7 @@ def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--spec", required=True)
     p.add_argument("--run", required=True)
-    p.add_argument("--split", default="vd", choices=("vd", "vg"))
+    p.add_argument("--split", default="vd", choices=("vd", "vg", "sparse"))
     p.add_argument("--devices", default=None, help="comma list (REAL_DEV only)")
     p.add_argument("--workers", type=int, default=6)
     p.add_argument("--cma-evals", type=int, default=6000)
@@ -50,6 +50,8 @@ def main() -> int:
     p.add_argument("--jac-step", type=float, default=0.01)
     p.add_argument("--near-tol", type=float, default=0.10)
     p.add_argument("--seed", type=int, default=20261019)
+    p.add_argument("--no-heldout-feasibility", action="store_true",
+                   help="original prereg fit (no penalty for failed held-out-bias sims)")
     a = p.parse_args()
     split_file = real_split()
     dev = list(split_file["REAL_DEV"])
@@ -62,10 +64,26 @@ def main() -> int:
         "cma_evals", "n_cma_extra", "cma_evals_extra", "sigma0", "gn_nfev",
         "n_perturb", "perturb_sigma", "perturb_nfev", "n_draws", "prior_sd",
         "jac_step", "near_tol", "seed")}
+    opts["heldout_feasibility"] = not a.no_heldout_feasibility
     out_dir = E4_DIR / a.run / a.split
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / "options.json").write_text(json.dumps(
-        {"spec": a.spec, "split": a.split, "devices": tags, **opts}, indent=1) + "\n")
+    opt_file = out_dir / "options.json"
+    recorded = tags
+    if opt_file.exists() and any(out_dir.glob("*.npz")):
+        # Resume: refuse to mix records fitted with different settings
+        # (records written before amendment 1 have no heldout_feasibility key
+        # and used the original fit).
+        old = json.loads(opt_file.read_text())
+        diff = {}
+        for k, v in {"spec": a.spec, **opts}.items():
+            was = old.get(k, False if k == "heldout_feasibility" else None)
+            if was != v:
+                diff[k] = (was, v)
+        if diff:
+            raise SystemExit(f"options differ from existing records in {out_dir}: {diff}")
+        recorded = sorted(set(tags) | set(old.get("devices", [])), key=dev.index)
+    opt_file.write_text(json.dumps(
+        {"spec": a.spec, "split": a.split, "devices": recorded, **opts}, indent=1) + "\n")
     todo = [t for t in tags if not (out_dir / f"{t}.npz").exists()]
     todo.sort(key=lambda t: not t.startswith("pmos"))
     t0 = time.time()

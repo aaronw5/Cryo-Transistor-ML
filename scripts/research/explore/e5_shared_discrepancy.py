@@ -7,7 +7,7 @@ Pre-registration: out/research/explore/E5/prereg.json (do not edit).
   PYTHONPATH=src .venv/bin/python scripts/research/explore/e5_shared_discrepancy.py stage2 --workers 4
 
 stage1: simulate each REAL_DEV base card once (12 + 12 NGSpice calls), train the
-residual arms per fold (CPU), score held-out devices, write
+residual arms per fold (MPS if available, float32), score held-out devices, write
 out/research/explore/E5/stage1.json and the fold models.
 stage2: per fold, TRF polish of the 43-parameter card with the fold's frozen
 delta inside the residual, against the same polish without delta.
@@ -42,15 +42,32 @@ def decide(a0: dict, arm: dict, tags: list[str]) -> dict:
     m0 = float(np.mean([a0[t] for t in tags]))
     m1 = float(np.mean([arm[t] for t in tags]))
     red = (m0 - m1) / m0
-    wins = int(sum(arm[t] < a0[t] for t in tags))
-    if red >= 0.15 and wins >= 8:
+    # NaN (failed device, strict scoring) never counts as an improvement.
+    wins = int(sum(bool(arm[t] < a0[t]) for t in tags))
+    n_failed = {"control": int(sum(not np.isfinite(a0[t]) for t in tags)),
+                "arm": int(sum(not np.isfinite(arm[t]) for t in tags))}
+    if not np.isfinite(red):
+        # The prereg does not cover a failed device; report it, do not decide.
+        verdict = "UNDECIDED_FAILED_DEVICE"
+    elif red >= 0.15 and wins >= 8:
         verdict = "CONTINUE"
     elif red < 0.05 or wins <= 6:
         verdict = "KILL"
     else:
         verdict = "AMBIGUOUS"
     return {"control_mean": m0, "arm_mean": m1, "relative_reduction": red,
-            "devices_improved": wins, "n": len(tags), "verdict": verdict}
+            "devices_improved": wins, "n": len(tags), "n_failed": n_failed,
+            "verdict": verdict}
+
+
+DEVIATIONS = [
+    "optimizer is torch AdamW (decoupled weight decay 1e-4); the prereg text says Adam with "
+    "weight decay 1e-4",
+    "after the prereg weights (|I_meas|/den)^2/(n_points_curve*n_curves_device) the weights "
+    "are renormalized to sum 1 per device (equal total weight per device, as the prereg "
+    "states as the intent)",
+    "training runs on MPS in float32 when available",
+]
 
 
 def stage1(args) -> int:
@@ -61,6 +78,7 @@ def stage1(args) -> int:
     steps = args.steps
     seeds = tuple(range(args.seeds))
     report = {"prereg": str(OUT / "prereg.json"), "tags": tags,
+              "deviations_from_prereg_text": DEVIATIONS,
               "light": bool(args.tags or args.bases or steps != 3000 or args.seeds != 5),
               "options": {"steps": steps, "seeds": list(seeds)}, "bases": {}}
     t0 = time.time()
@@ -144,6 +162,19 @@ def _polish_job(job):
 
 
 def stage2(args) -> int:
+    stage1_verdict = None
+    if (OUT / "stage1.json").exists():
+        stage1_verdict = json.loads((OUT / "stage1.json").read_text())["primary_verdict_stage1"]
+    if args.require_not_kill:
+        if stage1_verdict is None:
+            raise SystemExit("stage1.json missing: run stage1 first")
+        verdict = stage1_verdict
+        if verdict["verdict"] == "KILL":
+            (OUT / "stage2_skipped.json").write_text(json.dumps(
+                {"reason": "pre-registered stage-1 verdict KILL; stage 2 not run",
+                 "stage1": verdict}, indent=1) + "\n")
+            print("stage 1 verdict KILL: stage 2 skipped per prereg")
+            return 0
     tags = sd.dev_tags()
     if args.tags:
         tags = [t for t in tags if t in args.tags.split(",")]
@@ -162,7 +193,12 @@ def stage2(args) -> int:
         res = dict(pool.imap_unordered(_polish_job, jobs))
     control = {t: res[(t, False)]["rrms"] for t in tags}
     joint = {t: res[(t, True)]["rrms"] for t in tags}
+    killed = isinstance(stage1_verdict, dict) and stage1_verdict.get("verdict") == "KILL"
     out = {"prereg": str(OUT / "prereg.json"), "tags": tags, "options": options,
+           "stage1_verdict": stage1_verdict,
+           "role": ("diagnostic only: the pre-registered stage-1 verdict is KILL, so this "
+                    "stage-2 result does not change the E5 decision" if killed else
+                    "pre-registered stage 2"),
            "light": bool(args.tags or args.max_nfev != 400 or args.models),
            "models": str(models_path),
            "control_polish": {t: res[(t, False)] for t in tags},
@@ -172,7 +208,8 @@ def stage2(args) -> int:
                args.tags or args.max_nfev != 400 or args.models) else
            "not the pre-registered run (light settings); indicative only",
            "wall_s": round(time.time() - t0, 1)}
-    name = "stage2_light.json" if out["light"] else "stage2.json"
+    name = ("stage2_light.json" if out["light"] else
+            "stage2_diagnostic.json" if killed else "stage2.json")
     (OUT / name).write_text(json.dumps(out, indent=1) + "\n")
     print(json.dumps({"aggregate": out["aggregate"], "verdict": out["verdict_stage2"],
                       "wall_s": out["wall_s"]}, indent=1))
@@ -187,6 +224,8 @@ def main() -> int:
     p.add_argument("--seeds", type=int, default=5)
     p.add_argument("--max-nfev", type=int, default=400)
     p.add_argument("--workers", type=int, default=2)
+    p.add_argument("--require-not-kill", action="store_true",
+                   help="stage2: run only if stage1.json verdict is not KILL")
     p.add_argument("--bases", default="", help="comma list of b43,b7 (light runs only)")
     p.add_argument("--models", default="", help="stage2 fold-model json (light runs only)")
     args = p.parse_args()
