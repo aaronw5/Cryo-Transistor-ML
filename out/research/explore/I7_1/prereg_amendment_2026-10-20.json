@@ -1,0 +1,126 @@
+{
+ "amends": "out/research/explore/I7_1/prereg.json",
+ "written": "2026-10-20",
+ "status": "written after the step-2 retrospective calibration (outcomes already seen) and before any step-3 truth set, starting fit or outcome exists",
+ "frozen_rule": {
+  "form": "predicted y_D = a + b * S1_lodo_D; predicted sign of ln GMR(M_bias, C0_refit) = sign(a + b * S1_lodo_D); predicted gain iff a + b * S1_lodo_D < 0",
+  "a": 0.007619219249052826,
+  "b": -0.4851839492908733,
+  "zero_crossing_S1_lodo": 0.015703774331753538,
+  "fit": "OLS over the 11 stored datasets (dataset level), retro/results.json",
+  "n": 11,
+  "r2": 0.7847489919030067,
+  "slope_sign_note": "b < 0: higher S1_lodo predicts a lower log ratio (more gain)"
+ },
+ "step2_summary": {
+  "dataset_spearman": {
+   "S1_lodo": -0.8727272727272727,
+   "S1_pooled": -0.14545454545454545,
+   "S2": -0.6363636363636364,
+   "S3": NaN
+  },
+  "fold_spearman_pooled": {
+   "S1_lodo": -0.3333022844892677,
+   "S1_pooled": -0.14961732299689087,
+   "S2": -0.2867826482123628,
+   "S3": NaN
+  },
+  "rule_in_sample_sign_accuracy": {
+   "n": 11,
+   "correct": 10,
+   "fraction": 0.9090909090909091
+  },
+  "rule_leave_one_dataset_out_sign_correct": 10,
+  "per_dataset": {
+   "sky130_77K": {
+    "S1_lodo": 0.32156035550322204,
+    "S1_pooled": 0.6474233832297001,
+    "S2": 0.6794907283389806,
+    "y": -0.2631316035119305,
+    "gmr": 0.7686407348345207,
+    "n_folds": 12
+   },
+   "ihp_meas_233K": {
+    "S1_lodo": -0.31443914180003785,
+    "S1_pooled": 0.2973567411053001,
+    "S2": 0.2283195667793468,
+    "y": 0.10115044955068582,
+    "gmr": 1.106443093108062,
+    "n_folds": 18
+   },
+   "ihp_meas_300K": {
+    "S1_lodo": -0.22331207012241736,
+    "S1_pooled": 0.3711090250948506,
+    "S2": 0.3208863329812764,
+    "y": 0.19426781505559146,
+    "gmr": 1.2144214797641033,
+    "n_folds": 18
+   },
+   "ihp_meas_343K": {
+    "S1_lodo": -0.3307075342219471,
+    "S1_pooled": 0.3356384459559554,
+    "S2": 0.34001013917680223,
+    "y": 0.16643207617943295,
+    "gmr": 1.181083309454976,
+    "n_folds": 18
+   },
+   "ihp_meas_398K": {
+    "S1_lodo": -0.37891158353132853,
+    "S1_pooled": 0.5338116394605777,
+    "S2": 0.314151782860387,
+    "y": 0.24049302169962955,
+    "gmr": 1.2718760582650601,
+    "n_folds": 18
+   },
+   "tudelft_4K": {
+    "S1_lodo": 0.5040862674260564,
+    "S1_pooled": 0.5309865741694194,
+    "S2": 0.7814230626522205,
+    "y": -0.0634014004250592,
+    "gmr": 0.9385666570119345,
+    "n_folds": 7
+   },
+   "tudelft_295K": {
+    "S1_lodo": 0.3231388181871947,
+    "S1_pooled": 0.3737688485625664,
+    "S2": 0.47603522269575554,
+    "y": -0.22654776021434408,
+    "gmr": 0.797281263079641,
+    "n_folds": 7
+   },
+   "gf180_c": {
+    "S1_lodo": 0.24757514874207168,
+    "S1_pooled": 0.306774379174263,
+    "S2": 0.43488146161983066,
+    "y": -0.12750272393870046,
+    "gmr": 0.8802910179721838,
+    "n_folds": 16
+   },
+   "ihp_c": {
+    "S1_lodo": 0.22442220757156459,
+    "S1_pooled": 0.3021175426075775,
+    "S2": 0.3733481285665478,
+    "y": -0.12186234632308716,
+    "gmr": 0.885270220816682,
+    "n_folds": 16
+   },
+   "gf180_b": {
+    "S1_lodo": 0.012234814598215148,
+    "S1_pooled": 0.04227471561040986,
+    "S2": 0.07608220378411773,
+    "y": -0.0038639459900812814,
+    "gmr": 0.9961435094436702,
+    "n_folds": 16
+   },
+   "ihp_b": {
+    "S1_lodo": 0.031818037223350346,
+    "S1_pooled": 0.06441915250864577,
+    "S2": 0.14006726928675076,
+    "y": -0.014769642786388988,
+    "gmr": 0.9853388933837812,
+    "n_folds": 16
+   }
+  }
+ },
+ "step3_unchanged": "the step-3 design, P1 (Spearman <= -0.50), P2 (>= 15 of 20 signs) and the verdict rule of prereg.json are unchanged"
+}
