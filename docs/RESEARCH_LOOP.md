@@ -813,7 +813,7 @@ warnings with OpenVAF-Reloaded v24 and OpenVAF 23.5.0; in the ngspice-41 OSDI bu
 full-model SPICE-native currents (max relative difference 0.0 on pmos_L2_W5, nmos_L20_W0p64, pmos_L0p35_W0p55).
 The stored `m_bias_sky130_dev_full.va` is unchanged.
 
-## I4-1 baselines for I3-2, I4-2 interpretation (2026-10-20 06:40): pre-registered, smoke run, queued
+## I4-1 baselines for I3-2, I4-2 interpretation (2026-10-20 06:15): pre-registered, smoke run, queued
 
 Pre-registration `out/research/explore/I4_1/prereg.json` (commit e57afce, committed alone before any B1-B5
 held-out result); amendment `prereg_amendment_2026-10-20.json` corrects one parenthetical (REAL_DEV base-box TRF
