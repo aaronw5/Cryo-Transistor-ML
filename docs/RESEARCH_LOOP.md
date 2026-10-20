@@ -973,3 +973,37 @@ Smoke (one device per DEV group, start max_nfev 100, 2 folds, 1 seed, 200 steps;
 conclusion): runs end to end through decide and figs.
 Queue: I6_1_start (done), I6_1_screen, I6_1_lodo_4, I6_1_lodo_295, I6_1_decide, I6_1_figs. Estimated remaining
 wall time about 60-75 min (screen 2 min, each LODO 25-35 min).
+
+## I6-1 outcome (2026-10-20 12:47): TU Delft 40 nm, 4.13 K vs 295.0 K, refuted
+
+Pre-registered rule (out/research/explore/I6_1/prereg.json and amendment), 45 DEV devices in 7 geometry groups,
+leave-one-geometry-out, CMOSedu 50-nm BSIM4 example card refit per device, ngspice-41. Outputs committed in 74f4fc4
+(B1 screen: the same 16 extras at both temperatures; LODO 4 K 1201 s, 295 K 1185 s; 0 simulator timeouts; 0 failed
+devices in every arm).
+4.13 K: R1 not met: GMR(M_bias, C0_refit) 0.939 [0.877, 1.004], cluster [0.811, 1.081], 27/45 lower. R2 and R3 met.
+All-device: C0_refit 0.0575, M_bias 0.0533, T1_inloop 0.0534, B1 0.0612, B2 0.0582, B3_d3 0.0539, B5 (in-sample)
+0.0279. GMR(M_bias, X): B1 0.885 [0.819, 0.955] (beaten), B2 0.954 [0.871, 1.054], B3_d3 0.983 [0.956, 1.015] (not
+beaten). M_bias is above C0_refit in both pMOS groups and below it in the 5 nMOS groups.
+295.0 K: GMR(M_bias, C0_refit) 0.797 [0.688, 0.935], cluster [0.576, 1.087], 35/45; C0_refit 0.0255, M_bias 0.0196,
+T1_inloop 0.0233, B1 0.0268, B2 0.0264, B3_d3 0.0215, B5 0.0051; B1, B2, B3_d3 beaten.
+Contrast K (4 K ratio over 295 K ratio) 1.177 [1.016, 1.348], cluster [0.897, 1.502]. Premise P holds (0.0575 vs
+1.5 x 0.0255). Rule output: refuted (`out/research/explore/I6_1/decision.json`). DEV only; TEST not loaded.
+
+## I6-1 report batch and site (2026-10-20 14:45)
+
+Report batch `out/research/report/2026-10-20_i6_1/` (`scripts/research/plot_explore_i6_1.py`, stored files only;
+recomputes every aggregate for all devices and per group, every paired ratio with the device and the cluster
+bootstrap, K, P and the outcome label, and checks them against `lodo_{4,295}K/results.json`, `decision.json`,
+`start/summary.json` and `stock/stock_rrms.json`). Contents: dataset table (10 groups, split, included curves),
+card and box table (43 parameters, stock value and box per polarity, starting-fit bound hits), box trial, stock /
+start / C0_refit per group, decision per temperature, outcome logic, results per arm with device and cluster CIs,
+per-group table, contrast and gap table, forest plot, per-device RRMS, per-device ratio 4.13 K vs 295.0 K,
+cross-dataset table, five I-V figures (stored stock-card and refit figures at both temperatures; solid C0_refit,
+dashed M_bias refit card x exp(g)).
+Fraction of the C0_refit -> B5 gap closed by M_bias (means / log GMR): TU Delft 4.13 K +0.142 / +0.062, 295.0 K
++0.290 / +0.149; sky130 77 K +0.403 / +0.298; IHP 300 K -0.090 / -0.185.
+B1 returned the starting card unchanged for 16/45 (4.13 K) and 13/45 (295.0 K) devices and is above C0_refit on
+34/45 and 33/45 devices.
+Site: new claim `i6-1` (refuted; headline gives the 4.13 K and 295.0 K GMRs); caveats linking i6-1 added to claims
+`i3-2`, `i4-1`, `i5-1`; Exploration status block updated with the I6-1 item and the cross-dataset table
+(`build_site.py` now renders a block, such as a batch_table, as a status item). Site rebuilt, not published.

@@ -2,7 +2,7 @@
  "_schema": {
   "site": "title, eyebrow, run_header, conventions[], devices[] (order for per_device tables)",
   "tabs[]": "id (deep link #id), kind (paper | log | questions), label, title, subtitle, state (active | merged | archived), merged_into (tab id when merged), may_merge_into (tab id, shown as a notice), state_date, state_note, status {question, answer[], next[], updated}, sections[] {id, title, position (before_claims | after_claims), blocks[]}. Questions tab: open[] {question, context, source}, decided[] {question, decision, context, recorded, source}.",
-  "status items": "string, or {text, source[], claim (claim id for a details link), queue_match (regex over queue labels; appends running/queued/done counts)}",
+  "status items": "string, or {text, source[], claim (claim id for a details link), queue_match (regex over queue labels; appends running/queued/done counts)}, or a block (object with type, e.g. batch_table) rendered inside the list",
   "claims[]": "id, tab, statement (one sentence), status (verified | in_progress | refuted | planned), headline {value, convention}, numbers[] {label, value, convention, source}, what[] (blocks), did[] (strings or blocks), result {text[], figures[] {batch, file, caption?}, tables[] (batch_table refs {batch, table, rows?, columns?} or inline tables), blocks[]}, caveats[], sources[], updated. A claim renders in its tab; when a tab is merged its claims render in merged_into.",
   "blocks": "string | {type: text|code|list|figure|table|batch_table|per_device|queue|timeline|nodes|facts, ...}. batch_table: {batch, table (heading prefix in tables.md), rows (first-cells prefixes joined by ' | '), columns (subset)}. per_device: {columns [{label, file, path with {device}}], caption, notes, mean_row}. queue: {match (regex)}.",
   "inline markup": "`code`, **bold**, [label](href); #tab or #claim-<id> links switch tabs"
@@ -308,9 +308,39 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 5 (2026-10-20): I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
+      ]
+     },
+     {
+      "text": "I6-1 TU Delft 40 nm, 45 DEV devices in 7 geometry groups, leave-one-geometry-out, CMOSedu 50-nm BSIM4 example card (temperature coefficients 0) refit per device. 4.13 K: C0_refit 0.0575, M_bias 0.0533, T1_inloop 0.0534, B1 0.0612, B2 0.0582, B3_d3 0.0539, B5 (in-sample) 0.0279; GMR(M_bias, C0_refit) 0.939 [0.877, 1.004], cluster [0.811, 1.081], 27/45 (R1 not met); rule output refuted. 295.0 K: C0_refit 0.0255, M_bias 0.0196; GMR 0.797 [0.688, 0.935], cluster [0.576, 1.087], 35/45; B1, B2, B3_d3 beaten. Contrast K 1.177 [1.016, 1.348]; premise P holds.",
+      "source": [
+       "out/research/explore/I6_1/decision.json",
+       "out/research/explore/I6_1/lodo_4K/results.json",
+       "out/research/explore/I6_1/lodo_295K/results.json"
+      ],
+      "claim": "i6-1"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-20_i6_1",
+      "table": "Cross-dataset summary",
+      "caption": "Cross-dataset summary of the I3-2 bias-only correction (M_bias, recipe unchanged): sky130 77 K, IHP SG13G2 233-398 K, TU Delft 4.13 K and 295.0 K",
+      "columns": [
+       "dataset",
+       "devices",
+       "card calibrated for the measured condition",
+       "C0_refit mean",
+       "M_bias mean",
+       "GMR(M_bias, C0_refit) [device 95% CI] wins",
+       "GMR(M_bias, C0_refit) cluster 95% CI",
+       "lowest-mean baseline of B1, B2, B3_d3",
+       "GMR(M_bias, best baseline) [device 95% CI]",
+       "B5 mean (in-sample)",
+       "fraction of C0->B5 gap closed (means)",
+       "fraction of C0->B5 gap closed (log GMR)",
+       "pre-registered rule output"
       ]
      },
      {
@@ -4618,7 +4648,8 @@
     "Verilog-A: compiled with OpenVAF 23.5.0 and simulated in an OSDI-enabled ngspice-41 build that is bit-identical to the canonical build on the published card (F1c); SPICE-native all-device 0.080555 vs stored 0.080550. F1.2 fails on the pre-registered relative current criterion at small currents (max 2.45e-3). The stored export line `V(sense) <+ 0.0` passes no current after compilation; the corrected exporter emits `V(sense) <+ RS * I(sense)`, RS = 0. abs() folds reverse-mode bias onto forward mode.",
     "Follow-up F2(d): on simulated tier b M_bias does not reach the R4 ratio 0.90 on GF180 or IHP; tier b C0_refit means (0.0133, 0.0141) are close to the seven-parameter refit floors (0.0136, 0.0146).",
     "I4-1 (claim i4-1): M_bias beats the five pre-registered baselines on REAL_DEV (development set); on simulated tier c, B2 and B1 have lower means than M_bias.",
-    "I5-1 (claim [i5-1](#claim-i5-1)): with the recipe unchanged on 18 IHP SG13G2 measured DEV DUTs at 300 K, M_bias is not below C0_refit (GMR 1.214 [1.008, 1.537], 9/18); not replicated, also at 233, 343 and 398 K."
+    "I5-1 (claim [i5-1](#claim-i5-1)): with the recipe unchanged on 18 IHP SG13G2 measured DEV DUTs at 300 K, M_bias is not below C0_refit (GMR 1.214 [1.008, 1.537], 9/18); not replicated, also at 233, 343 and 398 K.",
+    "I6-1 (claim [i6-1](#claim-i6-1)): on 45 TU Delft 40-nm DEV devices with a generic BSIM4 card, M_bias does not meet R1 at 4.13 K (GMR(M_bias, C0_refit) 0.939 [0.877, 1.004]); at 295.0 K GMR 0.797 [0.688, 0.935]. Rule output refuted."
    ],
    "sources": [
     "out/research/explore/I3_2/prereg.json",
@@ -4777,7 +4808,8 @@
     "B1 and B2 are local refits from the starting card with a budget matched per IRLS round, not global searches over the wider parameter set.",
     "The B2 heating term is pointwise and multiplicative; the simulated truths use a per-curve temperature rise.",
     "12 devices; pmos_L0p35_W0p55 has the largest RRMS in every arm.",
-    "I5-1 (claim [i5-1](#claim-i5-1)): on 18 IHP SG13G2 measured DEV DUTs at 300 K, B1 and B2 have lower held-out RRMS than M_bias (GMR(M_bias, B1) 1.567 [1.261, 1.981], GMR(M_bias, B2) 1.284 [1.059, 1.627]); baseline rule output there: matched by B1, B2."
+    "I5-1 (claim [i5-1](#claim-i5-1)): on 18 IHP SG13G2 measured DEV DUTs at 300 K, B1 and B2 have lower held-out RRMS than M_bias (GMR(M_bias, B1) 1.567 [1.261, 1.981], GMR(M_bias, B2) 1.284 [1.059, 1.627]); baseline rule output there: matched by B1, B2.",
+    "I6-1 (claim [i6-1](#claim-i6-1)): at 4.13 K on TU Delft 40 nm, M_bias beats B1 but not B2 (0.954 [0.871, 1.054]) or B3_d3 (0.983 [0.956, 1.015]); at 295.0 K it beats B1, B2 and B3_d3."
    ],
    "sources": [
     "out/research/explore/I4_1/prereg.json",
@@ -4885,6 +4917,202 @@
     "out/research/explore/I3_2/gf180_c_logo/corrections.json",
     "out/research/explore/I3_2/ihp_c_logo/corrections.json",
     "scripts/research/plot_explore_i4.py"
+   ],
+   "updated": "2026-10-20"
+  },
+  {
+   "id": "i6-1",
+   "tab": "explore",
+   "statement": "I6-1: on 45 TU Delft 40-nm DEV devices (7 geometry groups) with a generic BSIM4 example card refit per device, the I3-2 correction M_bias does not meet R1 at 4.13 K (GMR(M_bias, C0_refit) 0.939 [0.877, 1.004], 27/45), so the pre-registered rule output is 'refuted'; at 295.0 K M_bias lowers the held-out RRMS (GMR 0.797 [0.688, 0.935], 35/45) and beats B1, B2 and B3_d3. DEV values are development evidence.",
+   "status": "refuted",
+   "headline": {
+    "value": "refuted: 4.13 K GMR(M_bias, C0_refit) 0.939 [0.877, 1.004] (R1 not met); 295.0 K GMR 0.797 [0.688, 0.935]",
+    "convention": "45 TU Delft 40-nm DEV devices, leave-one-geometry-out over 7 (polarity, W, L) groups, strict paper RRMS (inclusion frozen from the measured current) after the held-out 43-set BSIM4 card refit, ngspice-41; R1 needs the device-bootstrap 95% CI upper bound of GMR(M_bias, C0_refit) < 1 at 4.13 K"
+   },
+   "numbers": [
+    {
+     "label": "4.13 K all-device: C0_refit / M_bias / T1_inloop / B1 / B2 / B3_d3 / B5",
+     "value": "0.0575 / 0.0533 / 0.0534 / 0.0612 / 0.0582 / 0.0539 / 0.0279",
+     "convention": "45 DEV devices (29 nMOS, 16 pMOS), 0 failed in every arm; B5 is in-sample",
+     "source": "out/research/explore/I6_1/lodo_4K/results.json"
+    },
+    {
+     "label": "295.0 K all-device: C0_refit / M_bias / T1_inloop / B1 / B2 / B3_d3 / B5",
+     "value": "0.0255 / 0.0196 / 0.0233 / 0.0268 / 0.0264 / 0.0215 / 0.0051",
+     "convention": "45 DEV devices, 0 failed in every arm",
+     "source": "out/research/explore/I6_1/lodo_295K/results.json"
+    },
+    {
+     "label": "4.13 K rule: R1 / R2 / R3",
+     "value": "GMR(M_bias, C0_refit) 0.939 [0.877, 1.004], cluster [0.811, 1.081], 27/45 (not met); M_bias 0.0533 <= T1_inloop + 0.005 = 0.0584 (met); 0 failed (met)",
+     "convention": "device bootstrap 10000 resamples, default_rng(0), decides; cluster bootstrap over 7 groups reported",
+     "source": "out/research/explore/I6_1/decision.json"
+    },
+    {
+     "label": "4.13 K GMR(M_bias, X) [device CI] [cluster CI], wins",
+     "value": "B1 0.885 [0.819, 0.955] [0.737, 1.049] 28/45 (beaten); B2 0.954 [0.871, 1.054] [0.773, 1.178] 28/45 (not beaten); B3_d3 0.983 [0.956, 1.015] [0.953, 1.012] 29/45 (not beaten)",
+     "convention": "X beaten if the device CI upper < 1",
+     "source": "out/research/explore/I6_1/decision.json"
+    },
+    {
+     "label": "295.0 K GMR(M_bias, C0_refit) and baselines",
+     "value": "C0_refit 0.797 [0.688, 0.935] [0.576, 1.087] 35/45; B1 0.769 [0.660, 0.904] 35/45; B2 0.788 [0.674, 0.928] 35/45; B3_d3 0.896 [0.839, 0.955] 34/45 (all beaten)",
+     "convention": "device CI, then cluster CI for C0_refit; the prediction was R1 not met at 295 K",
+     "source": "out/research/explore/I6_1/decision.json"
+    },
+    {
+     "label": "Contrast K = GMR of (M_bias / C0_refit at 4.13 K) / (same at 295.0 K)",
+     "value": "1.177 [1.016, 1.348], cluster [0.897, 1.502]; 13/45 devices with the 4.13 K ratio below the 295.0 K ratio",
+     "convention": "K > 1: the correction lowers the error more at 295.0 K",
+     "source": "out/research/explore/I6_1/decision.json"
+    },
+    {
+     "label": "Premise P: C0_refit 4.13 K >= 1.5 x C0_refit 295.0 K",
+     "value": "0.0575 vs 0.0383 (ratio 2.25): holds",
+     "convention": "pre-registered factor 1.5",
+     "source": "out/research/explore/I6_1/decision.json"
+    },
+    {
+     "label": "Fraction of the C0_refit -> B5 gap closed by M_bias (means / log GMR)",
+     "value": "4.13 K +0.142 / +0.062; 295.0 K +0.290 / +0.149 (sky130 77 K +0.403 / +0.298; IHP 300 K -0.090 / -0.185)",
+     "convention": "(C0 - M) / (C0 - B5); ln GMR(M, C0) / ln GMR(B5, C0)",
+     "source": "out/research/report/2026-10-20_i6_1/tables.md"
+    },
+    {
+     "label": "Stock card -> starting card, DEV all-device",
+     "value": "4.13 K 5.105 -> 0.0628; 295.0 K 7.264 -> 0.0271",
+     "convention": "stock = CMOSedu 50-nm BSIM4 card without fit; starting card = 43-set fit from it",
+     "source": "out/research/explore/I6_1/start/summary.json"
+    }
+   ],
+   "what": [
+    "Question: does the I3-2 bias-only correction lower held-out error where the compact model has a model-form error that a local card refit cannot absorb (BSIM4 at 4.2 K), and not where the card fits (the same devices at 295 K)?",
+    {
+     "type": "list",
+     "items": [
+      "Data: 4TU.ResearchData doi:10.4121/c41c26f7-586f-48ca-8abe-9127b2d97c60.v1 (TU Delft, CC0), campaign 1, 69 low-Vt 40-nm devices at 4.13-4.14 K and 295.0 K stage temperature; 23 curves of 111 points per device and temperature (12 Id-Vg, 11 Id-Vd); 3161 of 3174 curves included. Split by W/L pair: DEV 45 devices in 7 groups, TEST 24 devices (not loaded).",
+      "Card: BSIM4 4.5.0 N1/P1 from ngspice-41 examples/mos/ro_17_4.cir (CMOSedu 50 nm), temperature coefficients set to 0, deck temperature = stage temperature; no card of the measured process is public. Starting card per device and temperature: 43-parameter sky130 set fitted from the stock card (36 nMOS / 37 pMOS active), box log |v|/10..10|v|.",
+      "Arms per temperature, leave-one-geometry-out (training on the other 6 groups, both polarities, VDD 1.1 V): C0_refit, M_bias (I3-2 recipe unchanged), T1_inloop, B1 (base + 16 screened BSIM4 extras), B2 (extrinsic resistance + heating factor), B3_d3, B5 (in-sample).",
+      "Rule: at 4.13 K R1 (device CI upper of GMR(M_bias, C0_refit) < 1), R2 (M_bias <= T1_inloop + 0.005), R3 (0 failed) and B1, B2, B3_d3 beaten; at 295 K R1 not met; premise P; contrast K. Outcome list: refuted (4 K R1 fails), inconclusive, matched by baselines, supported, supported with premise not met, temperature-graded, not temperature-specific."
+     ]
+    }
+   ],
+   "did": [
+    "Pre-registration `out/research/explore/I6_1/prereg.json` (commit a967f04, before any correction fit and before the starting-card fits); amendment `prereg_amendment_2026-10-20.json` (after the smoke runs, before any full run): DVT0W removed from the B1 universe, 10 s simulator timeout.",
+    "Code, dataset manifest, split, card copy, stock-card RRMS, box trial, smoke runs: commit 3e8957c (`src/cryoml/explore/i6_1_tudelft.py`, `scripts/research/explore/i6_1_tudelft.py`). Starting cards: commit edef8f3. B1 screen, LODO at both temperatures, decision, figures: commit 74f4fc4.",
+    "Queue jobs I6_1_start (1083 s), I6_1_screen (50 s), I6_1_lodo_4 (1201 s), I6_1_lodo_295 (1185 s), I6_1_decide, I6_1_figs, 2026-10-20; 0 simulator timeouts.",
+    "Report `scripts/research/plot_explore_i6_1.py` (batch 2026-10-20_i6_1) recomputes every aggregate (all devices and per group), paired ratio (device and cluster bootstrap), K, P and the outcome label from the stored per-device values and checks them against the stored values."
+   ],
+   "result": {
+    "text": [
+     "At 4.13 K M_bias is below C0_refit on the mean (0.0533 vs 0.0575) and on 27 of 45 devices, but the device-bootstrap CI upper bound is 1.004, so R1 is not met and the rule output is 'refuted'. M_bias is above C0_refit in both pMOS groups and below it in the 5 nMOS groups. B1 is beaten; B2 and B3_d3 are not.",
+     "At 295.0 K M_bias is below C0_refit on 35 of 45 devices (GMR 0.797 [0.688, 0.935]) and beats B1, B2 and B3_d3. The pre-registered prediction was no gain at 295 K.",
+     "The contrast K is 1.177 [1.016, 1.348]: the M_bias / C0_refit ratio is larger at 4.13 K than at 295.0 K. The 4.13 K C0_refit level is 2.25 times the 295.0 K level (premise P holds).",
+     "Cluster-bootstrap CIs over the 7 geometry groups are wider: R1 at 4.13 K [0.811, 1.081], at 295.0 K [0.576, 1.087]; K [0.897, 1.502].",
+     "Across datasets (table in the Exploration status): M_bias closes 0.403 of the C0_refit -> B5 gap on sky130 77 K, -0.090 on IHP 300 K, 0.142 on TU Delft 4.13 K and 0.290 on TU Delft 295.0 K (means).",
+     "I-V figures 14-18 show measured points with the stock card (a, c) and with the C0_refit card (solid) and the M_bias refit card x exp(g) (dashed) (b, d) at both temperatures, from stored figures."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "05_table_i6_1_decision.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "06_table_i6_1_outcome.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "10_i6_1_gmr_forest.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "07_table_i6_1_results.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "13_table_i6_1_cross_dataset.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "12_i6_1_ratio_4K_vs_295K.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "09_table_i6_1_contrast_gap.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "08_table_i6_1_groups.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "11_i6_1_per_device.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "04_table_i6_1_stock_start.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "01_table_i6_1_dataset.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "02_table_i6_1_card_box.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "03_table_i6_1_box_trial.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "14_i6_1_iv_nmos_W0p12_L0p04_d152.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "15_i6_1_iv_nmos_W1_L0p04_d192.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "16_i6_1_iv_nmos_W1_L1_d128.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "17_i6_1_iv_pmos_W1_L0p04_d392.png"
+     },
+     {
+      "batch": "2026-10-20_i6_1",
+      "file": "18_i6_1_iv_pmos_W1_L1_d328.png"
+     }
+    ]
+   },
+   "caveats": [
+    "DEV results are development evidence; the rule, budgets, box and arms were fixed after the stock-card RRMS and a 3-device box trial were seen and before any starting card on all DEV devices or any correction fit. TEST (24 devices) is not loaded.",
+    "The card is a generic 50-nm example card, not a card of the measured 40-nm process, with the temperature coefficients set to 0; it is not calibrated for either temperature. The stock-card RRMS is 0.66-23.1 per device and temperature; the starting cards come from a 43-parameter fit with a box of |v|/10..10|v|.",
+    "The 2-8 devices of one geometry are copies on one die and are not independent; the cluster-bootstrap CIs (7 groups) include 1 for R1 at both temperatures and for K. The rule uses the device bootstrap.",
+    "B1 returned the starting card unchanged for 16/45 devices at 4.13 K and 13/45 at 295.0 K and is above C0_refit on 34/45 and 33/45 devices.",
+    "The sweeps start near or above threshold (Vg from 0.45 / 0.30 V nMOS, -0.60 / -0.40 V pMOS); there is no deep-subthreshold data.",
+    "Training pools hold 31-43 devices of both polarities (sky130 I3-2: 11 devices; IHP I5-1: 7 or 9 within class).",
+    "The M_bias I-V curves are ngspice-41 currents of the refit card multiplied by exp(g) in Python, not SPICE-native simulations of the correction."
+   ],
+   "sources": [
+    "out/research/explore/I6_1/prereg.json",
+    "out/research/explore/I6_1/prereg_amendment_2026-10-20.json",
+    "out/research/explore/I6_1/split.json",
+    "out/research/explore/I6_1/data/manifest.json",
+    "out/research/explore/I6_1/card/ngspice41_ro_17_4_cmosedu50nm_bsim4.mod",
+    "out/research/explore/I6_1/box_trial.json",
+    "out/research/explore/I6_1/stock/stock_rrms.json",
+    "out/research/explore/I6_1/start/summary.json",
+    "out/research/explore/I6_1/start/b1_screen.json",
+    "out/research/explore/I6_1/lodo_4K/results.json",
+    "out/research/explore/I6_1/lodo_295K/results.json",
+    "out/research/explore/I6_1/decision.json",
+    "src/cryoml/explore/i6_1_tudelft.py",
+    "scripts/research/explore/i6_1_tudelft.py",
+    "scripts/research/plot_explore_i6_1.py",
+    "commits a967f04 (pre-registration), 3e8957c (code), edef8f3 (starting cards), 74f4fc4 (full-run outputs)"
    ],
    "updated": "2026-10-20"
   },
@@ -5036,7 +5264,8 @@
     "The IHP runs use NGSpice-46 + psp103.osdi (OpenVAF-Reloaded); the sky130 runs use ngspice-41. The IHP RRMS freezes inclusion from the measured current, the sky130 RRMS from the published-card baseline.",
     "The IHP refit has 12 PSP parameters from a starting card fitted to the same DUT; the sky130 refit has 43 BSIM4 parameters. The C0_refit levels differ by a factor of 5.6.",
     "Training pools are within class: 9 LV or 7 HV training DUTs per fold (sky130: 11).",
-    "The M_bias I-V curves are NGSpice-46 currents of the refit card multiplied by exp(g) in Python, not SPICE-native simulations of the correction. The stored refit I-V figures do not contain the stock-card curve; it is taken from separate stored figures for 3 of the 4 DUTs."
+    "The M_bias I-V curves are NGSpice-46 currents of the refit card multiplied by exp(g) in Python, not SPICE-native simulations of the correction. The stored refit I-V figures do not contain the stock-card curve; it is taken from separate stored figures for 3 of the 4 DUTs.",
+    "I6-1 (claim [i6-1](#claim-i6-1)): on TU Delft 40 nm with a generic BSIM4 card, GMR(M_bias, C0_refit) is 0.939 [0.877, 1.004] at 4.13 K (R1 not met) and 0.797 [0.688, 0.935] at 295.0 K; the cross-dataset table is in the Exploration status."
    ],
    "sources": [
     "out/research/explore/I5_1/prereg.json",

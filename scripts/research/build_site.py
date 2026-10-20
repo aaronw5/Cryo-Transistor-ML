@@ -30,6 +30,9 @@ Content model (see ``_schema`` in content.json):
   ``claim-<id>``.
 * blocks (sections and claim results): text, list, figure, table,
   batch_table, per_device, timeline, nodes, queue, facts.
+* tab status ``answer`` / ``next`` items: a string, ``{text, source,
+  claim, queue_match}``, or a block (an object with ``type``, e.g. a
+  batch_table), rendered inside the list.
 """
 
 from __future__ import annotations
@@ -611,6 +614,9 @@ class Site:
                 if isinstance(i, str):
                     out.append(f"<li>{inline(i)}</li>")
                     continue
+                if "type" in i:  # a block (e.g. batch_table) inside the status list
+                    out.append(f'<li class="st-block">{self.block(i)}</li>')
+                    continue
                 q = ""
                 if i.get("queue_match"):
                     rows = queue_states(self.queue, i["queue_match"])
@@ -891,6 +897,8 @@ main { padding-top: 22px; }
 .st-row:last-of-type { border-bottom: 0; }
 .st-k { font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding-top: 3px; }
 .st-v { min-width: 0; max-width: 78ch; }
+.st-v:has(.st-block) { max-width: none; }
+li.st-block { list-style: none; }
 .st-upd { font-size: 12px; color: var(--muted); padding-top: 4px; }
 ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
 ul.plain li::marker { color: var(--rule-strong); }

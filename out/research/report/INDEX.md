@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-20 · i6_1
+
+Folder: [2026-10-20_i6_1/](2026-10-20_i6_1/) · [tables.md](2026-10-20_i6_1/tables.md) · [README.md](2026-10-20_i6_1/README.md)
+
+- I6-1 rule output (TU Delft 40 nm, 45 DEV devices, BSIM4 example card): refuted. 4.13 K: GMR(M_bias, C0_refit) 0.939 [0.877, 1.004], cluster [0.811, 1.081], 27/45 (R1 not met); all-device C0_refit 0.0575, M_bias 0.0533, T1_inloop 0.0534, B1 0.0612, B2 0.0582, B3_d3 0.0539, B5 0.0279.
+- 295.0 K: GMR(M_bias, C0_refit) 0.797 [0.688, 0.935], cluster [0.576, 1.087], 35/45; C0_refit 0.0255, M_bias 0.0196; B1, B2, B3_d3 beaten. Contrast K 1.177 [1.016, 1.348]; premise P holds.
+- Fraction of the C0_refit -> B5 gap closed by M_bias (means / log GMR): 4.13 K +0.142 / +0.062, 295.0 K +0.290 / +0.149; sky130 77 K +0.403 / +0.298; IHP 300 K -0.090 / -0.185.
+
+Figures and tables: [01_table_i6_1_dataset.png](2026-10-20_i6_1/01_table_i6_1_dataset.png) · [02_table_i6_1_card_box.png](2026-10-20_i6_1/02_table_i6_1_card_box.png) · [03_table_i6_1_box_trial.png](2026-10-20_i6_1/03_table_i6_1_box_trial.png) · [04_table_i6_1_stock_start.png](2026-10-20_i6_1/04_table_i6_1_stock_start.png) · [05_table_i6_1_decision.png](2026-10-20_i6_1/05_table_i6_1_decision.png) · [06_table_i6_1_outcome.png](2026-10-20_i6_1/06_table_i6_1_outcome.png) · [07_table_i6_1_results.png](2026-10-20_i6_1/07_table_i6_1_results.png) · [08_table_i6_1_groups.png](2026-10-20_i6_1/08_table_i6_1_groups.png) · [09_table_i6_1_contrast_gap.png](2026-10-20_i6_1/09_table_i6_1_contrast_gap.png) · [10_i6_1_gmr_forest.png](2026-10-20_i6_1/10_i6_1_gmr_forest.png) · [11_i6_1_per_device.png](2026-10-20_i6_1/11_i6_1_per_device.png) · [12_i6_1_ratio_4K_vs_295K.png](2026-10-20_i6_1/12_i6_1_ratio_4K_vs_295K.png) · [13_table_i6_1_cross_dataset.png](2026-10-20_i6_1/13_table_i6_1_cross_dataset.png) · [14_i6_1_iv_nmos_W0p12_L0p04_d152.png](2026-10-20_i6_1/14_i6_1_iv_nmos_W0p12_L0p04_d152.png) · [15_i6_1_iv_nmos_W1_L0p04_d192.png](2026-10-20_i6_1/15_i6_1_iv_nmos_W1_L0p04_d192.png) · [16_i6_1_iv_nmos_W1_L1_d128.png](2026-10-20_i6_1/16_i6_1_iv_nmos_W1_L1_d128.png) · [17_i6_1_iv_pmos_W1_L0p04_d392.png](2026-10-20_i6_1/17_i6_1_iv_pmos_W1_L0p04_d392.png) · [18_i6_1_iv_pmos_W1_L1_d328.png](2026-10-20_i6_1/18_i6_1_iv_pmos_W1_L1_d328.png)
+
 ## 2026-10-20 · i5_1
 
 Folder: [2026-10-20_i5_1/](2026-10-20_i5_1/) · [tables.md](2026-10-20_i5_1/tables.md) · [README.md](2026-10-20_i5_1/README.md)
