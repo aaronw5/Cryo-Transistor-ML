@@ -1,0 +1,91 @@
+{
+ "id": "I5_1",
+ "title": "Replication of the I3-2 bias-only correction on a second real dataset: IHP SG13G2 measured MOSFETs (PSP103) at 233, 300, 343 and 398 K",
+ "iteration": "exploration iteration 5, direction I5-1",
+ "written": "2026-10-20",
+ "status": "pre-registered before any card fit on the IHP measured data. Done before this file: parsing of the measurement files into the dataset (out/research/explore/I5_1/data/manifest.json), the DEV/TEST split (out/research/explore/I5_1/split.json, seeded draw, no data used beyond the file names), and the stock-card simulation of every DUT (out/research/explore/I5_1/stock/stock_rrms.json; no fit). Smoke runs (output directories smoke_*) check the code only and are not used for the decision",
+ "question": "Does the I3-2 result (held-out strict paper RRMS of the card refit with the bias-only correction M_bias in the loop is lower than that of the refit without it, and not worse than the per-curve gain table T1 + 0.005; I4-1: lower than the baselines) hold on a second, independent set of measured devices from a different process and compact model?",
+ "parents": {
+  "I3_2_prereg": "out/research/explore/I3_2/prereg.json",
+  "I3_2_decision": "out/research/explore/I3_2/decision.json: continue; sky130 77 K REAL_DEV M_bias 0.08055 vs C0_refit 0.10719 all-device; GMR 0.769 [0.666, 0.886], 11/12 wins",
+  "I4_1_prereg": "out/research/explore/I4_1/prereg.json",
+  "I4_1_decision": "out/research/explore/I4_1/decision.json: M_bias beat B1, B2, B3_d2, B3_d3, B4 on REAL_DEV",
+  "I3_1_catalog": "out/research/explore/I3_1/real_data_catalog.json, candidate rank 2 (IHP SG13G2 Open PDK MOS measurements)"
+ },
+ "data": {
+  "source": "github.com/IHP-GmbH/IHP-Open-PDK, ihp-sg13g2/libs.doc/meas/MOS, commit 5e6d592e4002946a4616f798c357f0f3c06cf3b6 (the same commit as the PSP103 model files used), Apache-2.0; Keysight IC-CAP MDM text; local copy data/external/ihp_sg13g2_open_pdk_meas (not committed); read as text by cryoml.explore.i5_1_ihp_real.parse_mdm under python -I",
+  "devices": "28 DUTs, one per geometry and type: 8 LV nMOS, 8 LV pMOS (sg13_lv, 1.2 V; the same 8 W/L for both types: W 0.15/0.3/10 um x L 0.13/0.18/10 um), 6 HV nMOS, 6 HV pMOS (sg13_hv, 3.3 V; W 0.3-10 um, L 0.35-10 um; nMOS and pMOS geometries differ)",
+  "temperatures": "233, 300, 343, 398 K (header TEMP -40, 27, 70, 125 C) for every DUT",
+  "dataset_files": "out/research/explore/I5_1/data/ihp_meas.npz (not committed) and manifest.json (committed: setups, fitted-curve table with trim start, denominator and inclusion, quantization, compliance, off-current floor)",
+  "measurement_facts_from_files": {
+   "terminals": "source grounded; id = current into the drain terminal (nMOS > 0, pMOS < 0)",
+   "setups": "dc_idvg (Vg sweep, 3 Vd values x 5 or 7 Vb values), dc_idvd and dc_idvd_vbmin (Vd sweep, 5 Vg values, Vb = 0 / Vbmin), dc_idvd_vth and dc_idvd_vth_vbmin (Vd sweep, 3 near-threshold Vg values, Vb = 0 / Vbmin); LV sweeps to 1.35 V, HV to 3.6 V",
+   "quantization": "currents printed with up to 6 significant digits; smallest nonzero |id| 2e-14 A; exact zeros (1808 values) only in off-state Id-Vg points before the trim start",
+   "compliance": "drain SMU 0.1 A, gate SMU 1 mA; largest |id| is 0.061 of the drain compliance",
+   "off_floor": "median |id| at the three most-off gate biases of the lowest-|Vd| Vb = 0 Id-Vg curve: 2e-14 to 6.3e-12 A (median 1.3e-13 A), below the 1e-10 A trim floor"
+  },
+  "fitted_curves": "per DUT and temperature, the 11 curves with Vb = 0: Id-Vg at the 3 Vd values (idvg@d0..d2 by |Vd|), Id-Vd at the 5 dc_idvd Vg values (idvd@g0..g4 by |Vg|) and at the 3 dc_idvd_vth Vg values (idvd@t0..t2). The dc_idvd / dc_idvd_vth gate biases are set per DUT and temperature by the measurement setup; keys are by position. Body-bias curves are not used (the I3-2 correction has no Vbs input and the sky130 data had Vbs = 0)",
+  "inclusion_rule": "frozen from the measured current only, as the pdk2 target-frozen rule (cryoml.pdk2.metric): clean_current (rrmsCalc cleanCurrent: zero the points before the last exact zero), trim the leading points up to the first |I| > 1e-10 A, denominator = mean |I| of the trimmed measured curve; a curve is included iff the denominator > 3e-7 A (Id-Vd) or > 2e-7 A (Id-Vg). Result: 946 of 1232 fitted curves included, 3 to 10 per DUT and temperature. No candidate simulation changes the inclusion",
+  "split": {
+   "file": "out/research/explore/I5_1/split.json",
+   "rule": "LV: the 8 LV geometries are shared by nMOS and pMOS; 3 geometries (both polarities) go to TEST. HV: nMOS and pMOS geometries differ; 2 of 6 per polarity go to TEST. numpy.random.default_rng(20261020), draws in the order LV geometries, HV nMOS, HV pMOS (sorted tags); cryoml.explore.i5_1_ihp_real.make_split",
+   "DEV": ["hv_nmos_W0p3_L0p5", "hv_nmos_W0p3_L10", "hv_nmos_W0p6_L1p2", "hv_nmos_W10_L0p5", "hv_pmos_W0p3_L10", "hv_pmos_W0p6_L0p5", "hv_pmos_W10_L0p35", "hv_pmos_W2_L1p2", "lv_nmos_W0p15_L0p18", "lv_nmos_W0p15_L10", "lv_nmos_W0p3_L0p13", "lv_nmos_W0p3_L10", "lv_nmos_W10_L10", "lv_pmos_W0p15_L0p18", "lv_pmos_W0p15_L10", "lv_pmos_W0p3_L0p13", "lv_pmos_W0p3_L10", "lv_pmos_W10_L10"],
+   "TEST": ["hv_nmos_W10_L10", "hv_nmos_W2_L3", "hv_pmos_W0p3_L0p35", "hv_pmos_W10_L10", "lv_nmos_W0p15_L0p13", "lv_nmos_W10_L0p13", "lv_nmos_W10_L0p18", "lv_pmos_W0p15_L0p13", "lv_pmos_W10_L0p13", "lv_pmos_W10_L0p18"],
+   "counts": "DEV 18 (LV 5 nMOS + 5 pMOS, HV 4 + 4); TEST 10 (LV 3 + 3, HV 2 + 2)",
+   "TEST_policy": "TEST DUTs are not loaded by the fit, screen, LODO, cross-temperature or decide modes. Their stock-card RRMS was computed in the pre-fit simulator check (task B) and is reported; no TEST plot was made. At a method freeze: starting cards for the TEST DUTs with the budget below, M_bias trained on all DEV DUTs of the same class and temperature, held-out refit of each TEST DUT with the settings below, the same statistics with TEST in place of DEV"
+  }
+ },
+ "simulator": {
+  "path": "ngspice-46 (Homebrew) + psp103.osdi (OpenVAF-Reloaded, as cryoml.pdk2.ihp); the PDK .model block sg13g2_{lv,hv}_{n,p}mos_psp from sg13g2_mos{lv,hv}_parm.lib as a top-level card with the cornerMOS{lv,hv}.lib mos_tt knobs; instance w, l, nf = 1, mult = 1, ad/as/pd/ps from the measurement header, dta = 0; bulk source VB; deck temperature = header TEMP; sweeps on the measured grid; current = -i(VD) (into the drain terminal). cryoml.explore.i5_1_ihp_real.simulate",
+  "check_done": "card path vs the PDK subcircuit sg13_{lv,hv}_{n,p}mos through cornerMOS{lv,hv}.lib mos_tt: max relative difference 4.4e-8 over all 28 DUTs x 4 temperatures x 11 curves; I-V plots of 6 DEV DUTs at 233/300/398 K (out/research/explore/I5_1/stock/figs) show measured and simulated currents with matching sign, threshold region and saturation region",
+  "stock_card_rrms_DEV": {"300K": {"all_device_mean": 0.1899, "median": 0.0585, "LV_mean": 0.0867, "HV_mean": 0.3189}, "233K": 0.3475, "343K": 0.1530, "398K": 0.1345, "note": "all-device means over the 18 DEV DUTs; HV nMOS W10/L0.5 has 1.60 at 300 K (near-threshold Id-Vd curves)"}
+ },
+ "cards": {
+  "parameter_set": "the 12-parameter pdk2 IHP wide set (cryoml.pdk2.boxes.IHP_WIDE): VFBO, UO, CTL, THESATO, AXO, RSW1, CFL, MUEW, THEMUO, DPHIBO, DPHIBL, THESATL (PSP global parameters; one value per family)",
+  "box": "around the evaluated stock value v of each DUT's family card: VFBO, DPHIBO, DPHIBL linear v +/- 0.2 V; every other parameter with v != 0 log-uniform |v|/2 .. 2|v| with the sign of v; v = 0 (only HV pMOS CTL) linear [0, 0.05]. cryoml.explore.i5_1_ihp_real.base_box. The same box is used by the starting fit and by every held-out refit",
+  "starting_cards": "per DEV DUT and temperature: ngspice_fit.polish from the stock card, max_nfev 3000, irls_rounds 3, diff_step 0.01, objective = mean included-curve RRMS (the frozen measured inclusion); the best card seen is kept. One starting card per DUT and temperature",
+  "training_records": "one NGSpice simulation of each training DUT's starting card on its measured grid at the temperature (as the E1 stored records)"
+ },
+ "correction_model": {
+  "M_bias": "I3-2 recipe unchanged: I = I_card * exp(g), g = 1.0 * tanh(h(x)), h = MLP 3-16-16-1 (tanh hidden, last layer zero-initialized), x = (is_pmos 0/1, |Vgs|/VDD, |Vds|/VDD) with |Vgs|/VDD and |Vds|/VDD standardized with the fold training-point mean/std; loss = mean over training DUTs of the paper per-device RRMS of the corrected current (e1_correction._loss_fn) + 1e-4 * sum of squared weight-matrix entries; Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4, g = mean of the 5 members (cryoml.explore.i3_2_bias.fit_bias)",
+  "VDD": "the class nominal supply: 1.2 V for LV DUTs, 3.3 V for HV DUTs (IHP nominal supplies of sg13_lv and sg13_hv). The measured sweeps reach 1.35 V (LV) and 3.6 V (HV), so |V|/VDD reaches 1.125 and 1.09",
+  "training_pool": "within class: a correction for a held-out LV DUT is trained on the other LV DEV DUTs at the same temperature (9), for an HV DUT on the other HV DEV DUTs (7). Both polarities train one network through is_pmos, as in I3-2"
+ },
+ "arms": {
+  "C0_refit": "control: held-out card refit without correction from its starting card: ngspice_fit.polish, max_nfev 400, irls_rounds 2, diff_step 0.01 (the I3-2 settings)",
+  "M_bias": "PRIMARY: trained post hoc on the fold's training records, frozen, held-out card refit with it in the loop (same settings), best card re-simulated, corrected with the same g, scored",
+  "T1_inloop": "non-deployable comparator: one log-gain per (polarity, curve key), E1 T1 recipe (e1_correction.fit_arm('T1'): g = tanh(c), Adam lr 2e-2, 1000 steps) on the fold's training records; held-out refit with it in the loop",
+  "B1": "wider card parameter set, no correction: base box plus extra PSP parameters, all fitted jointly in the held-out refit from the starting card (extras at their stock values). Universe: cryoml.explore.i4_1_baselines.PSP_B1_CANDIDATES minus the base set (92 names; all defined in the LV and HV cards). Box rule (I4-1): nonzero stock value v -> log-uniform |v|/2 .. 2|v| with the sign of v; zero -> inactive. Screen (per class): a candidate is kept if, on at least one 300 K starting card of the class's DEV DUTs, the edge response at either box edge is >= 1e-4 (max over included curves of trimmed RMS(I_edge - I_start) / paper denominator; i4_1_baselines.edge_response); the kept list is used at every temperature. max_nfev from i4_1_baselines.matched_nfev (same per-IRLS-round TRF budget as the base box)",
+  "B2": "physical augmentation, no learned term: equal extrinsic series resistors per side RDEXT/RSEXT outside the card, box linear [0, 4 * RSW1_start / W_um] ohm (start 0), plus the first-order heating factor exp(kappa * |Vds I| / P_max) with P_max = max over included trimmed points of |Vds I_measured|, kappa linear [-0.5, 0.5] (start 0); fitted jointly with the base box (I4-1 B2: i4_1_baselines.AugProblem, b2_box); matched max_nfev",
+  "B3_d3": "shared polynomial correction of total degree 3 in the standardized (|Vgs|/VDD, |Vds|/VDD), separate coefficients per polarity (20 total), g = tanh(P); I4-1 recipe (i4_1_baselines.fit_poly: E1 loss + 1e-4 * sum of squared non-constant coefficients, Adam lr 3e-3, 2000 steps, zero init); trained on the fold's training records; held-out refit with it in the loop",
+  "B5": "in-sample reference (not a held-out method): I4-1 B5 protocol (g0 = M_bias-form ensemble trained on the held-out DUT's own starting-card record; refit with g0 in the loop; g1 trained on the refit card's record; score = refit card corrected with g1)",
+  "X300_cross_temperature": "for T in {233, 343, 398} K: the fold's 300 K M_bias ensemble (trained on the fold's training DUTs' 300 K records, unchanged), held-out card at T refit with it in the loop from the T starting card (same settings), corrected with the same g, scored at T. Reported against C0_refit at T and M_bias at T; not in the rule"
+ },
+ "evaluation": {
+  "folds": "per temperature, leave-one-DUT-out over the 18 DEV DUTs, training within class (LV 9 training DUTs, HV 7)",
+  "metric": "strict paper RRMS with the frozen measured inclusion (e1_correction.score_device, pdk2 branch = i5_1_ihp_real.score): per included curve RMSE over the trimmed points / trimmed mean |I_measured|, DUT value = mean over included curves; a non-finite included curve makes the DUT NaN (failed). Every scored current is a fresh NGSpice simulation of the refit card, multiplied by exp(g) of the frozen correction (M_bias, T1, B3_d3, B5, X300) or by the B2 heating factor with the B2 resistors in the netlist",
+  "aggregates": "all-device mean (18 DUTs), combined = mean of the nMOS and pMOS family means, median, per-DUT values, failed count; also per class (LV 10, HV 8)",
+  "decision_statistic": "paired geometric-mean ratio GMR(A, B) = exp(mean_i ln(rrms_A_i / rrms_B_i)) over DUTs with both values finite and > 0; bootstrap 95% CI = 2.5 / 97.5 percentiles over 10000 resamples of DUTs (numpy default_rng(0)); wins = DUTs with rrms_A < rrms_B (cryoml.explore.i3_2_bias.paired_ratio)"
+ },
+ "criterion": {
+  "primary_temperature": "300 K, the 18 DEV DUTs",
+  "replication_rule": {
+   "R1": "the upper bound of the bootstrap 95% CI of GMR(M_bias, C0_refit) over the 18 DEV DUTs at 300 K is < 1",
+   "R2": "M_bias all-device mean at 300 K <= T1_inloop all-device mean at 300 K + 0.005",
+   "R3": "0 failed (NaN) DUTs for M_bias at 300 K",
+   "outcome": "'replicated' if R1, R2 and R3 all hold; otherwise 'not replicated', listing the failed conditions"
+  },
+  "baseline_rule": {
+   "rule": "for each X in {B1, B2, B3_d3}: X is beaten if the upper bound of the bootstrap 95% CI of GMR(M_bias, X) over the 18 DEV DUTs at 300 K is < 1 (I4-1 rule part a; there is no simulated part b here)",
+   "outcome": "'supported against baselines' if 'replicated' and every X is beaten; otherwise 'matched by baseline X', listing every X that is not beaten"
+  },
+  "secondary_reported_not_deciding": ["the same R1-R3 and baseline statistics at 233, 343 and 398 K", "per-class (LV, HV) statistics at every temperature", "X300 cross-temperature arm: GMR(X300, C0_refit) and GMR(X300, M_bias) at 233/343/398 K", "B5 in-sample reference", "GMR(X, C0_refit) for every arm", "stock-card and starting-card RRMS", "TEST (only after a method freeze)"],
+  "implementation": "scripts/research/explore/i5_1_ihp_real.py --mode decide writes out/research/explore/I5_1/decision.json"
+ },
+ "data_reuse_note": "The IHP measured data were not used by any earlier direction except the I3-1 catalog inspection (file headers and setup) and, in this direction, the stock-card simulation of task B (no fit). The decision rule, budgets, box and arms were fixed after the stock-card RRMS was seen and before any card was fit. The DEV results are development evidence; TEST is untouched until a method freeze",
+ "compute": {
+  "jobs": "one queue job each, in order: start (starting cards, 18 DEV DUTs x 4 temperatures), screen (B1 screen), lodo 300 K, lodo 233 K, lodo 343 K, lodo 398 K, cross (X300), decide; process pool of 6 workers, 1 torch thread each",
+  "smoke": "starting fits at 300 K with max_nfev 100, 2 folds (one LV, one HV), M_bias / B5 with 1 seed and 200 steps, T1 and B3_d3 at 200 steps, full refit settings; output smoke_* directories, labelled smoke, not used for any conclusion"
+ },
+ "frozen_choices_note": "All choices above were fixed before any card was fit to the IHP measured data. No DEV result is used to change them; any later variant gets a new id or a dated amendment that leaves this file unchanged"
+}
