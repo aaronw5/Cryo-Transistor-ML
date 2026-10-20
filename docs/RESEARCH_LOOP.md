@@ -907,3 +907,7 @@ Smoke (300 K, start max_nfev 100, 2 folds, 1 seed, 200 steps; not used for any c
 Estimated wall time: start 18 min, screen 1 min, lodo 4 x 10 min, cross 3 min, decide/figs 1 min (about 65 min).
 Queue: `I5_1_start`, `I5_1_screen`, `I5_1_lodo_300`, `I5_1_lodo_233`, `I5_1_lodo_343`, `I5_1_lodo_398`,
 `I5_1_cross`, `I5_1_decide`, `I5_1_figs`.
+
+## I5-1 outcome (2026-10-20 08:32): IHP SG13G2 real data, not replicated
+
+Pre-registered rule (out/research/explore/I5_1/prereg.json), 300 K, 18 DEV DUTs, LODO. R1 fails: GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18 lower. R2 and R3 hold. All-device means: C0_refit 0.0191, M_bias 0.0203, T1_inloop 0.0215, B1 0.0160, B2 0.0176, B3_d3 0.0214, B5 (in-sample) 0.0054. Baseline verdict: matched by B1, B2. Secondary temperatures (233, 343, 398 K) also not replicated. The starting PSP103 fits here are about 5x lower than sky130 77 K C0_refit (0.107). Report batch and site update pending.
