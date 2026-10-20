@@ -841,3 +841,34 @@ B3_d3 0.15981, B4 0.14632, B5 0.05399, M_bias (stored) 0.15920. B1 and B2 start 
 (first objective equal to C0's).
 Estimated wall time: real 10 min, GF180 30 min, IHP 42 min, decide and analyze 1 min (about 85 min).
 Queue: `I4_1_real`, `I4_1_gf180`, `I4_1_ihp`, `I4_1_decide`, `I4_2_analyze`.
+
+## I4-1 results, I4-2 analysis, report batch (2026-10-20 07:16)
+
+Queue jobs `I4_1_real` (06:14-06:22, 485 s), `I4_1_gf180` (06:22-06:42, 1172 s), `I4_1_ihp` (06:42-07:16,
+2065 s), `I4_1_decide` (07:16), `I4_2_analyze` (07:16, 1 s). C0_refit_rerun reproduces the stored C0_refit rows
+(max |difference| 0.0) on all three datasets; 0 failed devices or targets in every arm.
+REAL_DEV all-device (combined): C0_refit 0.1072 (0.0981), B1 0.1069 (0.0978), B2 0.1063 (0.0973),
+B3_d2 0.1034 (0.0948), B3_d3 0.0956 (0.0879), B4 0.1317 (0.1199), M_bias 0.0806 (0.0749), T1_inloop 0.0820
+(0.0760), B5 (in-sample) 0.0410 (0.0386).
+GMR(M_bias, X) on REAL_DEV [95% CI], wins: B1 0.770 [0.667, 0.887] 11/12; B2 0.773 [0.670, 0.891] 11/12;
+B3_d2 0.789 [0.684, 0.907] 11/12; B3_d3 0.844 [0.751, 0.949] 11/12; B4 0.658 [0.581, 0.753] 12/12.
+GF180 / IHP GMR(M_bias, X): B1 0.897 / 1.644; B2 1.333 / 1.806; B3_d2 0.994 / 0.986; B3_d3 0.997 / 0.985;
+B4 0.954 / 0.848. All-target means GF180 / IHP: C0_refit 0.0457 / 0.1011, B1 0.0454 / 0.0403, B2 0.0272 /
+0.0381, M_bias 0.0399 / 0.0871, B5 0.0239 / 0.0274. The pre-registration states that the tier c truths contain an
+extrinsic resistance of the B2 form and that B1 contains 9/12 (GF180) and 9/9 (IHP) truth-perturbed parameters.
+Rule: every baseline is beaten through the REAL_DEV condition (CI upper bound < 1); the simulated condition
+(GMR < 0.95 on both PDKs) is not met for any baseline. Rule output: supported against baselines
+(`out/research/explore/I4_1/decision.json`), development evidence (REAL_DEV reused). REAL_TEST not loaded.
+Fraction of the C0_refit -> B5 gap closed by M_bias (means / log GMR): REAL_DEV 0.403 / 0.298, GF180
+0.266 / 0.238, IHP 0.191 / 0.121.
+I4-2 (diagnostic): g fold spread (mean std over the grid) 0.003-0.011; REAL_DEV pMOS linear region mean g -0.211;
+curve-mean g vs T1 per-tag gain Pearson r 0.965 (REAL_DEV), 0.871 (GF180), 0.842 (IHP); by curve kind Id-Vd /
+Id-Vg 0.565 / 0.970, 0.966 / 0.660, 0.983 / 0.435.
+Report batch `out/research/report/2026-10-20_i4/` (`scripts/research/plot_explore_i4.py`; recomputes every
+aggregate, paired ratio and the rule output from the stored per-device values): I4-1 decision, forest plot,
+per-dataset tables, truth/B1/B2 table, B5 gap table, REAL_DEV per device; I4-2 g surfaces, analysis table,
+per-tag T1 table, T1 scatter; I3-2 F1b/F1c checks, F1c per device, F1c I-V figures. The F1 (ngspice-46) I-V
+figures `out/research/explore/I3_2/followup/f1_iv_*.png` are committed and labelled as F1 in the batch README.
+Site: new claims `i4-1` (in progress, "supported against baselines (development set)") and `i4-2` (verified,
+diagnostic); claim `i3-2` follow-up section updated with F1b/F1c and the exporter fix, the ngspice-46 caveat
+replaced; Exploration status block updated. Site rebuilt, not published.

@@ -2,6 +2,18 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-20 · i4
+
+Folder: [2026-10-20_i4/](2026-10-20_i4/) · [tables.md](2026-10-20_i4/tables.md) · [README.md](2026-10-20_i4/README.md)
+
+- I4-1 rule output: supported against baselines (development set). REAL_DEV all-device (combined): C0_refit 0.1072 (0.0981), B1 0.1069, B2 0.1063, B3_d2 0.1034, B3_d3 0.0956, B4 0.1317, M_bias 0.0806 (0.0749), B5 0.0410. GMR(M_bias, X) CI upper < 1 for every X: B1 0.770 [0.667, 0.887], B2 0.773 [0.670, 0.891], B3_d2 0.789 [0.684, 0.907], B3_d3 0.844 [0.751, 0.949], B4 0.658 [0.581, 0.753].
+- Simulated condition (b) not met for any baseline: GMR(M_bias, X) GF180 / IHP B1 0.897 / 1.644, B2 1.333 / 1.806, B3_d2 0.994 / 0.986, B3_d3 0.997 / 0.985, B4 0.954 / 0.848. All-target means GF180 / IHP: B2 0.0272 / 0.0381, B1 0.0454 / 0.0403, M_bias 0.0399 / 0.0871 (tier c truth contains the B2 resistance form and B1 covers 9/12 and 9/9 truth-perturbed parameters, stated in the pre-registration).
+- B5 in-sample bound and fraction of the C0_refit -> B5 gap closed by M_bias (means / log GMR): REAL_DEV B5 0.0410, 0.403 / 0.298; GF180 tier c B5 0.0239, 0.266 / 0.238; IHP tier c B5 0.0274, 0.191 / 0.121.
+- I4-2: fold spread of g (mean std) REAL_DEV nMOS 0.0076, pMOS 0.0109; curve-mean g vs T1 Pearson r REAL_DEV 0.965, GF180 0.871, IHP 0.842.
+- F1c (ngspice-41 OSDI build, OpenVAF 23.5.0): F1.0 pass, F1.1 pass, F1.2 fail (max relative current difference 2.45e-03 at small currents), F1.3 pass; SPICE-native all-device (combined) 0.080555 (0.074863) vs stored 0.080550 (0.074858). F1b: no .osdi loaded (OSDI 0.4 vs 0.3).
+
+Figures and tables: [01_table_i4_1_decision.png](2026-10-20_i4/01_table_i4_1_decision.png) · [02_i4_1_gmr_forest.png](2026-10-20_i4/02_i4_1_gmr_forest.png) · [03_table_i4_1_real.png](2026-10-20_i4/03_table_i4_1_real.png) · [04_table_i4_1_sim.png](2026-10-20_i4/04_table_i4_1_sim.png) · [05_table_i4_1_truth_b1_b2.png](2026-10-20_i4/05_table_i4_1_truth_b1_b2.png) · [06_table_i4_1_b5_gap.png](2026-10-20_i4/06_table_i4_1_b5_gap.png) · [07_i4_1_real_per_device.png](2026-10-20_i4/07_i4_1_real_per_device.png) · [08_i4_2_g_surface_real_dev.png](2026-10-20_i4/08_i4_2_g_surface_real_dev.png) · [09_i4_2_g_surface_gf180_c_logo.png](2026-10-20_i4/09_i4_2_g_surface_gf180_c_logo.png) · [10_i4_2_g_surface_ihp_c_logo.png](2026-10-20_i4/10_i4_2_g_surface_ihp_c_logo.png) · [11_table_i4_2_analysis.png](2026-10-20_i4/11_table_i4_2_analysis.png) · [12_table_i4_2_t1_per_tag.png](2026-10-20_i4/12_table_i4_2_t1_per_tag.png) · [13_i4_2_t1_vs_g.png](2026-10-20_i4/13_i4_2_t1_vs_g.png) · [14_table_i3_2f_f1b_f1c_checks.png](2026-10-20_i4/14_table_i3_2f_f1b_f1c_checks.png) · [15_table_i3_2f_f1c_per_device.png](2026-10-20_i4/15_table_i3_2f_f1c_per_device.png) · [16_i3_2f_f1c_iv_pmos_L0p35_W0p55.png](2026-10-20_i4/16_i3_2f_f1c_iv_pmos_L0p35_W0p55.png) · [17_i3_2f_f1c_iv_pmos_L2_W5.png](2026-10-20_i4/17_i3_2f_f1c_iv_pmos_L2_W5.png) · [18_i3_2f_f1c_iv_nmos_L20_W0p64.png](2026-10-20_i4/18_i3_2f_f1c_iv_nmos_L20_W0p64.png)
+
 ## 2026-10-20 · i3_1_i3_2f
 
 Folder: [2026-10-20_i3_1_i3_2f/](2026-10-20_i3_1_i3_2f/) · [tables.md](2026-10-20_i3_1_i3_2f/tables.md) · [README.md](2026-10-20_i3_1_i3_2f/README.md)

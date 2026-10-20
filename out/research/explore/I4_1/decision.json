@@ -1,0 +1,89 @@
+{
+ "per_baseline": {
+  "B1": {
+   "real_ci_high": 0.8874196941537226,
+   "gf180_ratio": 0.896799539397911,
+   "ihp_ratio": 1.6440754798177732,
+   "real_condition": true,
+   "sim_condition": false,
+   "beaten": true
+  },
+  "B2": {
+   "real_ci_high": 0.8912802015945734,
+   "gf180_ratio": 1.3326145125107574,
+   "ihp_ratio": 1.8064534297693653,
+   "real_condition": true,
+   "sim_condition": false,
+   "beaten": true
+  },
+  "B3_d2": {
+   "real_ci_high": 0.9072536326617203,
+   "gf180_ratio": 0.9944855361872691,
+   "ihp_ratio": 0.9862146661195945,
+   "real_condition": true,
+   "sim_condition": false,
+   "beaten": true
+  },
+  "B3_d3": {
+   "real_ci_high": 0.9485359718840515,
+   "gf180_ratio": 0.997069395283353,
+   "ihp_ratio": 0.9853663395953673,
+   "real_condition": true,
+   "sim_condition": false,
+   "beaten": true
+  },
+  "B4": {
+   "real_ci_high": 0.7533289799319411,
+   "gf180_ratio": 0.9541904752617062,
+   "ihp_ratio": 0.8481885730978352,
+   "real_condition": true,
+   "sim_condition": false,
+   "beaten": true
+  }
+ },
+ "matched_by": [],
+ "verdict": "supported against baselines",
+ "prereg": "out/research/explore/I4_1/prereg.json",
+ "B5_reference_not_in_rule": {
+  "real_dev": {
+   "n": 12,
+   "n_used": 12,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 0,
+   "ties": 0,
+   "ratio": 1.8597563630863478,
+   "resample_unit": "device",
+   "ci_low": 1.5563033722852717,
+   "ci_high": 2.262152392918347,
+   "n_boot": 10000
+  },
+  "gf180_c_logo": {
+   "n": 48,
+   "n_used": 48,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 0,
+   "ties": 0,
+   "ratio": 1.5043170938948933,
+   "resample_unit": "cluster (16)",
+   "ci_low": 1.2892148983860283,
+   "ci_high": 1.8360516867077612,
+   "n_boot": 10000
+  },
+  "ihp_c_logo": {
+   "n": 48,
+   "n_used": 48,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 0,
+   "ties": 0,
+   "ratio": 2.4159702250433823,
+   "resample_unit": "cluster (16)",
+   "ci_low": 1.9243595933476716,
+   "ci_high": 3.1306219918996434,
+   "n_boot": 10000
+  }
+ },
+ "note": "REAL_DEV results are development evidence (prereg data_reuse_note)"
+}
