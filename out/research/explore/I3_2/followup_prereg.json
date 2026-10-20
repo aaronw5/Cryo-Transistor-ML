@@ -1,0 +1,72 @@
+{
+ "id": "I3_2_followup",
+ "title": "I3-2 follow-up analyses: F1 SPICE-native validation of the exported Verilog-A correction; F2 robustness of M_bias on the development set and on additional simulated sets",
+ "written": "2026-10-20",
+ "status": "pre-registered before any F1 or F2 result on a held-out device or target existed. Smoke runs (output directories named smoke_*) check the code only and are not used for any conclusion",
+ "relation_to_I3_2_decision": "These analyses do not change the I3-2 decision (out/research/explore/I3_2/decision.json, CONTINUE, rule in out/research/explore/I3_2/prereg.json). They are reported as follow-up evidence. A failed check is recorded as a limitation of the I3-2 method and is addressed before the method freeze; it does not reopen or reverse the I3-2 rule output",
+ "parents": {
+  "I3_2_prereg": "out/research/explore/I3_2/prereg.json",
+  "I3_2_decision": "out/research/explore/I3_2/decision.json",
+  "I3_2_real_dev": "out/research/explore/I3_2/real_dev/{results.json,corrections.json,heldout_cards.json,m_bias_sky130_dev_full.va}: M_bias all-device 0.08055, combined 0.07486, R(M_bias, C0_refit) 0.769 [0.666, 0.886], 11 of 12 below C0_refit, 0 failed",
+  "I3_2_simulated": "out/research/explore/I3_2/{gf180,ihp}_c_logo/results.json: R(M_bias, C0_refit) GF180 0.880, IHP 0.885"
+ },
+ "data": {
+  "real": "REAL_DEV (12 devices, out/research/explore/real_split.json). REAL_TEST is not loaded by any follow-up script",
+  "simulated": "GF180 (BSIM4) and IHP SG13G2 (PSP103) tier b truth sets 0-2 (out/research/pdk2/truth/b, out/research/pdk2/ihp_truth/b; 16 targets per set, 48 per PDK). Tier c has only sets 0-2 (already used by I3-2), so F2(d) uses tier b"
+ },
+ "setup_facts_found_before_this_file": {
+  "ngspice41_osdi": "The canonical sky130 simulator /Users/anrunw/cryo-ng41/arm64/bin/ngspice (ngspice-41, arm64 build) was configured without OSDI (config.log: OSDI_WANTED_FALSE=''); 'pre_osdi' prints 'osdi: no such command available in ngspice'. F1 therefore uses Homebrew ngspice-46 (/opt/homebrew/bin/ngspice, the binary used for IHP PSP103 OSDI) for the SPICE-native runs only, after the reproduction check F1.1",
+  "compiler": "OpenVAF-Reloaded v24.0.2mob macOS arm64 (data/raw/pdk2/ihp_sg13g2/tools/openvaf-r-v24.0.2mob-macos-aarch64, provenance in SOURCE.txt). The stored real_dev/m_bias_sky130_dev_full.va compiles (1.3 s; one warning: 'pmos' is a reserved Verilog-AMS keyword used as a parameter name)",
+  "sense_branch": "With the exported sense line 'V(sense) <+ 0.0;' the compiled module conducts no current through the sense branch in ngspice-46 (test circuit: 1 kOhm resistor in place of the compact model, Vds 0-1.8 V: -i(VD) = 0 at every point). OpenVAF treats a constant-zero voltage contribution as a node collapse between the two terminals d and di, and the collapse is not applied in the ngspice netlist, so d and di are disconnected. With 'V(sense) <+ RS * I(sense);' and a model parameter RS = 0.0 the branch is a zero-volt source with a branch-current unknown and the test gives the expected current (gain 2: -i(VD) = 2 V / 1 kOhm at every point; V(di) = V(d)). These tests used only a resistor and a constant gain, no correction network and no held-out device",
+  "construction_used": "F1 compiles the exported text with exactly one change: the line 'V(sense) <+ 0.0;' is replaced by 'V(sense) <+ RS * I(sense);' and the declaration 'parameter real RS = 0.0;' is added. All network assignment lines and the output line 'I(d, s) <+ (exp(gsum / N) - 1.0) * ib;' are unchanged. Netlist: the sky130 sweeps.spice instance with its drain on node ndi ('Xm1 ndi ng 0 0 ...'), the correction 'NCORR nd ng 0 ndi i32corr' with '.model i32corr i3_2_bias_corr pmos=<0|1> VDD=1.85 RS=0', the sweep sources VG (ng) and VD (nd) and the drain current read as -i(VD), otherwise the deck of cryoml.spice_pdk (_batch_deck) unchanged. The current entering node nd is then I_bsim + (exp(g) - 1) * I_bsim = I_bsim * exp(g) with g evaluated at V(ng, 0) and V(nd, 0). Because VG and VD force the terminal voltages and the sense branch is a zero-volt source, the BSIM4 instance sees the same terminal voltages as without the correction",
+  "bias_grids": "Every REAL_DEV record has a constant fixed bias per curve (max |V - median| = 0) and a sweep equal to the uniform DC sweep grid within 2.2e-16 V, so g in Python (measured bias arrays) and g in SPICE (sweep voltages) are evaluated at the same voltages"
+ },
+ "F1": {
+  "question": "Does the exported Verilog-A correction, compiled with OpenVAF and run inside NGSpice around the BSIM4 instance, reproduce the Python-computed corrected currents I_bsim * exp(g) and the stored held-out strict paper RRMS of the M_bias arm on the 12 REAL_DEV devices?",
+  "models": "the 12 per-fold M_bias corrections stored in out/research/explore/I3_2/real_dev/corrections.json (entries 'M_bias|<tag>', trained on the other 11 devices) exported with cryoml.explore.i3_2_bias.to_verilog_a_bias (VDD 1.85) and changed as in setup_facts.construction_used; the stored full model real_dev/m_bias_sky130_dev_full.va (trained on all 12; in-sample, implementation check only, no RRMS reported for it as a result)",
+  "cards": "per device: published 77 K card (no parameter override), starting card (out/research/polished/direct43_r3_fd/real/summary.json), C0_refit card (heldout_cards.json 'C0_refit_rerun', identical RRMS to the stored C0_refit rows), M_bias refit card (heldout_cards.json 'M_bias')",
+  "runs": {
+   "uncorrected": "each of the four cards with ngspice-41 (arm64) and ngspice-46, deck of cryoml.spice_pdk",
+   "python_corrected": "M_bias refit card simulation (ngspice-41 and ngspice-46) times exp(g) of the fold model (Correction.apply)",
+   "spice_native": "M_bias refit card inside the corrected netlist (fold model .osdi) with ngspice-46; the full model .osdi on the same card for the implementation check"
+  },
+  "metric": "strict paper RRMS with frozen inclusion (cryoml.explore.e1_correction.score_device with the stored E1 record's include flags and trim starts); all-device mean and combined (mean of the nMOS and pMOS family means)",
+  "current_difference": "max relative difference max |a - b| / |b| over the scored points (included curves, from the trim start, |b| > 0), and separately over all points with |b| >= 1e-12 A",
+  "convergence": "a device run counts as a convergence failure if any returned current is non-finite or the ngspice output contains any of: 'singular matrix', 'timestep too small', 'no convergence', 'gmin stepping failed', 'source stepping failed', 'iteration limit reached', 'simulation(s) aborted', 'error'",
+  "checks_and_failure_definitions": {
+   "F1.0_export_text": "fail if, for any of the 13 exported models, the g computed from the emitted assignment lines (eval_verilog_a_g) differs from BiasCorrection.g by more than 1e-9 at 200 random bias points per polarity, or if OpenVAF does not compile it",
+   "F1.1_simulator_reproduction": "ngspice-46 vs ngspice-41, uncorrected, four cards, 12 devices: fail if any max relative current difference over scored points > 1e-3 (ngspice default reltol) or any per-device |RRMS_46 - RRMS_41| > 1e-4. Also required: ngspice-41 reproduces the stored values (C0_refit card RRMS = stored C0_refit, M_bias refit card corrected in Python = stored M_bias, published card = out/research/reference_scores.json 'released') within 1e-9; otherwise the run stops as a code error",
+   "F1.2_va_implementation": "SPICE-native (ngspice-46 + .osdi) vs Python-corrected on the same simulator (ngspice-46 I_bsim * exp(g)), fold models on the M_bias refit cards and the full model on the same cards: fail if any max relative current difference over scored points > 1e-3, any per-device |delta RRMS| > 1e-4 (fold models), or any convergence failure",
+   "F1.3_end_to_end": "SPICE-native per-device strict RRMS vs the stored I3-2 M_bias value (ngspice-41, Python correction): fail if any per-device |delta| > 2e-4 or the all-device mean |delta| > 1e-4"
+  },
+  "outputs": "out/research/explore/I3_2/followup/f1/: summary.json (all numbers above, per device), va/ (exported and OSDI-changed .va text per fold and full), curves.npz (per device and curve: bias arrays, measured, published-card, starting-card, C0_refit-card and M_bias-card NGSpice currents with both simulators, Python-corrected and SPICE-native corrected currents; not committed), osdi/ (compiled binaries; not committed)",
+  "plots": "I-V figures for pmos_L0p35_W0p55, pmos_L2_W5, nmos_L20_W0p64 (the devices of the I3-2 report): measured points, NGSpice published 77 K card, NGSpice C0_refit card (ngspice-41), SPICE-native corrected M_bias refit card (ngspice-46 + compiled fold Verilog-A). Written to out/research/explore/I3_2/followup/"
+ },
+ "F2": {
+  "question": "Is the I3-2 M_bias held-out result on REAL_DEV stable under the ensemble seeds, the network capacity and the training cards, and does M_bias lower the held-out RRMS on additional simulated sets?",
+  "fixed_protocol": "everything as in the I3-2 prereg M_bias arm (inputs is_pmos, |Vgs|/VDD, |Vds|/VDD; loss; Adam lr 3e-3; 2000 full-batch steps; L2 1e-4; float64; ensemble mean of g; leave-one-device-out on REAL_DEV; held-out refit from the starting card with the frozen correction in the loop, polish max_nfev 400, irls 2, diff_step 0.01; strict paper RRMS) except the one item each variant changes",
+  "variants": {
+   "a_seeds_5_9": "ensemble seeds 5,6,7,8,9",
+   "a_seeds_10_14": "ensemble seeds 10-14",
+   "a_seeds_15_19": "ensemble seeds 15-19",
+   "b_width8": "MLP 3-8-8-1",
+   "b_width32": "MLP 3-32-32-1",
+   "b_depth1": "MLP 3-16-1 (one hidden layer of 16 tanh units)",
+   "c_train_round1_cards": "g trained on records of the training devices simulated (ngspice-41) with the round-1 43-parameter direct NGSpice fit + FD cards (out/research/polished/direct43_fd/real/summary.json, spec out/cold_loop/full/round_1/spec.json) instead of the round-3 starting cards; the held-out refit still starts from the round-3 starting card in the round-3 box, as in I3-2. The record of each round-1 card is checked against the stored rrms of that summary within 1e-9",
+   "d_gf180_tier_b": "GF180 tier b sets 0-2 (48 targets): new E1-type starting-card records (scripts/research/explore/e1_collect_pdk2.py collect: polish from the truth's __local_wide projection, wide box, max_nfev 300, irls 3, one fresh simulation), leave-one-geometry-out (16 folds of 3 targets), M_bias seeds 0-4, C0_refit run new (no stored tier b rows)",
+   "d_ihp_tier_b": "IHP tier b sets 0-2, as d_gf180_tier_b"
+  },
+  "control": "C0_refit: REAL_DEV stored rows (out/research/explore/I2_1/real_dev/results.json per_device.C0_refit, as in I3-2); tier b: new held-out refit without correction with the same settings",
+  "reported_per_variant": "all-device mean, combined (nMOS/pMOS family means; REAL_DEV), median, failed count, paired geometric-mean ratio R(variant, C0_refit) with bootstrap 95% CI (10000 resamples, default_rng(0); device resampling on REAL_DEV, geometry-cluster resampling on tier b), wins (devices below C0_refit), and R(variant, I3-2 M_bias) on REAL_DEV",
+  "failure_definitions": {
+   "REAL_DEV_variant (a, b, c)": "a variant fails if the upper bound of the 95% CI of R(variant, C0_refit) is >= 1 or any device is failed (NaN). Reported, not a failure condition: whether the all-device mean is <= 0.08698 (the I3-2 R2 threshold)",
+   "a_group": "the seed check fails if any of the three seed sets fails. Also reported: range of the all-device mean over the four seed sets (0-4 from I3-2 and the three new sets)",
+   "b_group": "the capacity check fails if any of the three capacity variants fails",
+   "c": "the training-card check fails if c_train_round1_cards fails",
+   "d_group": "the tier b check fails if, on both GF180 and IHP tier b, the point estimate of R(M_bias, C0_refit) is > 0.90 or M_bias has a failed target (the I3-2 R4 rule applied to tier b). Also reported per PDK: CI upper bound < 1"
+  },
+  "status_of_F2": "development-set and simulated evidence, reported; it does not decide anything. REAL_DEV has been used by E1, I2-1 and I3-2, so the F2 REAL_DEV numbers are development evidence"
+ },
+ "compute": "queue jobs (out/research/queue.txt), one at a time: I3_2_F1 (about 5 min), I3_2_F2_real (variants a, b, c; one process pool of 4 workers; about 25-35 min), I3_2_F2_gf180_b and I3_2_F2_ihp_b (collect + leave-one-geometry-out, pool of 6; about 25 and 35 min), I3_2_F2_summary (seconds)",
+ "frozen_choices_note": "All choices above were fixed before any F1 or F2 result on a REAL_DEV device or tier b target existed. Changes after this point get a dated amendment that leaves this file unchanged"
+}
