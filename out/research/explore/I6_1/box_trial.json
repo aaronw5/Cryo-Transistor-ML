@@ -1,0 +1,179 @@
+{
+ "what": "box-width trial before the pre-registration: ngspice_fit.polish from the stock card, max_nfev 1500, irls 3, diff_step 0.01, on 3 DEV devices at both temperatures, box factor 2 (log |v|/2..2|v|; U0, VSAT, RDSW |v|/4..4|v|; VTH0, VFB +/-0.3 V, VOFF +/-0.2 V) vs factor 10 (log |v|/10..10|v|; VTH0, VFB +/-0.5 V, VOFF +/-0.3 V). history = RRMS at start and after each IRLS round. The factor-10 box was adopted for the starting cards and all refits. No correction was fitted.",
+ "script": "scratch script (not kept); same code path as cryoml.explore.i6_1_tudelft.base_box / MeasProblem with the factors overridden",
+ "rows": [
+  {
+   "tag": "t40_nmos_W1_L1_d128",
+   "T_K": 4,
+   "box_factor": 2,
+   "history": [
+    1.2144675370429479,
+    0.08818037193637408,
+    0.07948037589732972,
+    0.07877075367905617
+   ],
+   "n_sim": 1412,
+   "at_bound": [
+    "toxe",
+    "rdsw",
+    "eta0"
+   ]
+  },
+  {
+   "tag": "t40_nmos_W1_L1_d128",
+   "T_K": 4,
+   "box_factor": 10,
+   "history": [
+    1.2144675370429479,
+    0.07679209164965103,
+    0.0733982896969673,
+    0.07288047489024288
+   ],
+   "n_sim": 1116,
+   "at_bound": [
+    "wr"
+   ]
+  },
+  {
+   "tag": "t40_nmos_W1_L1_d128",
+   "T_K": 295,
+   "box_factor": 2,
+   "history": [
+    0.9874205064601711,
+    0.07707478412534394,
+    0.07253416202492345,
+    0.06971810194504827
+   ],
+   "n_sim": 1486,
+   "at_bound": [
+    "ndep",
+    "nsd",
+    "drout"
+   ]
+  },
+  {
+   "tag": "t40_nmos_W1_L1_d128",
+   "T_K": 295,
+   "box_factor": 10,
+   "history": [
+    0.9874205064601711,
+    0.05065895772019662,
+    0.036821305814411114,
+    0.02886660181720435
+   ],
+   "n_sim": 1375,
+   "at_bound": []
+  },
+  {
+   "tag": "t40_nmos_W1_L0p04_d192",
+   "T_K": 4,
+   "box_factor": 2,
+   "history": [
+    5.852769157279587,
+    0.0711803699474104,
+    0.06484469790349331,
+    0.051066226520435076
+   ],
+   "n_sim": 1375,
+   "at_bound": [
+    "cdscd"
+   ]
+  },
+  {
+   "tag": "t40_nmos_W1_L0p04_d192",
+   "T_K": 4,
+   "box_factor": 10,
+   "history": [
+    5.852769157279587,
+    0.07254321565910597,
+    0.0566407215879831,
+    0.04295543883452691
+   ],
+   "n_sim": 1116,
+   "at_bound": [
+    "cdscd"
+   ]
+  },
+  {
+   "tag": "t40_nmos_W1_L0p04_d192",
+   "T_K": 295,
+   "box_factor": 2,
+   "history": [
+    10.55361190591465,
+    0.03723886081482932,
+    0.026531967327688376,
+    0.02644877297833021
+   ],
+   "n_sim": 1153,
+   "at_bound": []
+  },
+  {
+   "tag": "t40_nmos_W1_L0p04_d192",
+   "T_K": 295,
+   "box_factor": 10,
+   "history": [
+    10.55361190591465,
+    0.03723886081482932,
+    0.026531967327688376,
+    0.02644877297833021
+   ],
+   "n_sim": 1153,
+   "at_bound": []
+  },
+  {
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 4,
+   "box_factor": 2,
+   "history": [
+    5.588955274796723,
+    0.0412897181453936,
+    0.03891400472810274,
+    0.03583966314207461
+   ],
+   "n_sim": 1180,
+   "at_bound": [
+    "b0",
+    "delta"
+   ]
+  },
+  {
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 4,
+   "box_factor": 10,
+   "history": [
+    5.588955274796723,
+    0.042411272363473806,
+    0.03954267251786004,
+    0.03913200958397454
+   ],
+   "n_sim": 838,
+   "at_bound": []
+  },
+  {
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 295,
+   "box_factor": 2,
+   "history": [
+    9.041084037791594,
+    0.029448240061951902,
+    0.02386976009854823,
+    0.02197722837371822
+   ],
+   "n_sim": 1408,
+   "at_bound": []
+  },
+  {
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 295,
+   "box_factor": 10,
+   "history": [
+    9.041084037791594,
+    0.05970031683580523,
+    0.01717981263507717,
+    0.016974832903645053
+   ],
+   "n_sim": 686,
+   "at_bound": []
+  }
+ ]
+}

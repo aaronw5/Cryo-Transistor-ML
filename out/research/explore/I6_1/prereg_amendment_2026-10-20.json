@@ -1,0 +1,19 @@
+{
+ "id": "I6_1_prereg_amendment_2026-10-20",
+ "amends": "out/research/explore/I6_1/prereg.json (unchanged)",
+ "written": "2026-10-20, after the smoke runs and before any full (non-smoke) run; no full starting card, screen or LODO result exists",
+ "changes": [
+  {
+   "item": "arms.B1 universe",
+   "was": "55 names (the sky130 BSIM4 sensitivity universe minus the base set and the zeroed temperature coefficients, restricted to names the card defines)",
+   "now": "54 names: DVT0W is removed",
+   "reason": "the card has DVT1W = 0 (inactive in the base box). The BSIM4 narrow-width short-channel term then divides by cosh(0) - 1 = 0, so any DVT0W > 0 has no DC solution: in the 4 K smoke, DVT0W = 0.01 gave non-convergent ngspice runs of 1.8-2 s with currents up to 590 A, and the B1 refit of t40_pmos_W1_L0p04_d392 had 110 of 116 simulations stopped by the timeout. A probe of all 55 candidates at both box edges and at a 1% step on 3 smoke starting cards found no other candidate without a DC solution",
+   "implementation": "cryoml.explore.i6_1_tudelft.B1_EXCLUDE"
+  },
+  {
+   "item": "simulator timeout",
+   "now": "each ngspice process is stopped after 10 s (cryoml.explore.i6_1_tudelft.TIMEOUT_S; I5-1 used 120 s); a stopped run gives NaN currents (the optimizer's penalty; a NaN in a scored card makes the device failed). Normal runs take 0.03 s. Rows record n_sim_timeout",
+   "reason": "at 4.2 K some cards have no DC solution and ngspice then spends minutes in gmin / source stepping and transient operating-point attempts per sweep point"
+  }
+ ]
+}

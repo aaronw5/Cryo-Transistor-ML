@@ -1,0 +1,136 @@
+{
+ "seed": 20261020,
+ "shared_pairs": [
+  [
+   1.0,
+   0.04
+  ],
+  [
+   1.0,
+   1.0
+  ],
+  [
+   4.0,
+   4.0
+  ]
+ ],
+ "nmos_only_pairs": [
+  [
+   0.12,
+   0.04
+  ],
+  [
+   0.12,
+   0.05
+  ],
+  [
+   0.36,
+   0.04
+  ],
+  [
+   1.0,
+   0.36
+  ]
+ ],
+ "TEST_pairs": [
+  [
+   4.0,
+   4.0
+  ],
+  [
+   1.0,
+   0.36
+  ]
+ ],
+ "DEV": [
+  "t40_nmos_W0p12_L0p04_d152",
+  "t40_nmos_W0p12_L0p04_d153",
+  "t40_nmos_W0p12_L0p04_d154",
+  "t40_nmos_W0p12_L0p04_d155",
+  "t40_nmos_W0p12_L0p04_d156",
+  "t40_nmos_W0p12_L0p04_d157",
+  "t40_nmos_W0p12_L0p04_d158",
+  "t40_nmos_W0p12_L0p04_d159",
+  "t40_nmos_W0p12_L0p05_d160",
+  "t40_nmos_W0p12_L0p05_d161",
+  "t40_nmos_W0p12_L0p05_d162",
+  "t40_nmos_W0p36_L0p04_d190",
+  "t40_nmos_W0p36_L0p04_d191",
+  "t40_nmos_W1_L0p04_d192",
+  "t40_nmos_W1_L0p04_d193",
+  "t40_nmos_W1_L0p04_d194",
+  "t40_nmos_W1_L0p04_d195",
+  "t40_nmos_W1_L0p04_d196",
+  "t40_nmos_W1_L0p04_d197",
+  "t40_nmos_W1_L0p04_d198",
+  "t40_nmos_W1_L0p04_d199",
+  "t40_nmos_W1_L1_d128",
+  "t40_nmos_W1_L1_d129",
+  "t40_nmos_W1_L1_d130",
+  "t40_nmos_W1_L1_d131",
+  "t40_nmos_W1_L1_d132",
+  "t40_nmos_W1_L1_d133",
+  "t40_nmos_W1_L1_d134",
+  "t40_nmos_W1_L1_d135",
+  "t40_pmos_W1_L0p04_d392",
+  "t40_pmos_W1_L0p04_d393",
+  "t40_pmos_W1_L0p04_d394",
+  "t40_pmos_W1_L0p04_d395",
+  "t40_pmos_W1_L0p04_d396",
+  "t40_pmos_W1_L0p04_d397",
+  "t40_pmos_W1_L0p04_d398",
+  "t40_pmos_W1_L0p04_d399",
+  "t40_pmos_W1_L1_d328",
+  "t40_pmos_W1_L1_d329",
+  "t40_pmos_W1_L1_d330",
+  "t40_pmos_W1_L1_d331",
+  "t40_pmos_W1_L1_d332",
+  "t40_pmos_W1_L1_d333",
+  "t40_pmos_W1_L1_d334",
+  "t40_pmos_W1_L1_d335"
+ ],
+ "TEST": [
+  "t40_nmos_W1_L0p36_d144",
+  "t40_nmos_W1_L0p36_d145",
+  "t40_nmos_W1_L0p36_d146",
+  "t40_nmos_W1_L0p36_d147",
+  "t40_nmos_W1_L0p36_d148",
+  "t40_nmos_W1_L0p36_d149",
+  "t40_nmos_W1_L0p36_d150",
+  "t40_nmos_W1_L0p36_d151",
+  "t40_nmos_W4_L4_d136",
+  "t40_nmos_W4_L4_d137",
+  "t40_nmos_W4_L4_d138",
+  "t40_nmos_W4_L4_d139",
+  "t40_nmos_W4_L4_d140",
+  "t40_nmos_W4_L4_d141",
+  "t40_nmos_W4_L4_d142",
+  "t40_nmos_W4_L4_d143",
+  "t40_pmos_W4_L4_d336",
+  "t40_pmos_W4_L4_d337",
+  "t40_pmos_W4_L4_d338",
+  "t40_pmos_W4_L4_d339",
+  "t40_pmos_W4_L4_d340",
+  "t40_pmos_W4_L4_d341",
+  "t40_pmos_W4_L4_d342",
+  "t40_pmos_W4_L4_d343"
+ ],
+ "n_dev": 45,
+ "n_test": 24,
+ "rule": "W/L pairs measured in both polarities ('shared') and nMOS-only pairs;\nTEST = every device of 1 shared pair (both polarities) and 1 nMOS-only\npair.  ``numpy.random.default_rng(seed)``: one draw from the sorted shared\npairs, then one from the sorted nMOS-only pairs.",
+ "DEV_groups": [
+  "t40_nmos_W0p12_L0p04",
+  "t40_nmos_W0p12_L0p05",
+  "t40_nmos_W0p36_L0p04",
+  "t40_nmos_W1_L0p04",
+  "t40_nmos_W1_L1",
+  "t40_pmos_W1_L0p04",
+  "t40_pmos_W1_L1"
+ ],
+ "TEST_groups": [
+  "t40_nmos_W1_L0p36",
+  "t40_nmos_W4_L4",
+  "t40_pmos_W4_L4"
+ ],
+ "written": "2026-10-20, before any fit; TEST devices are not loaded by the fitting modes"
+}
