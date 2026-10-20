@@ -1,0 +1,102 @@
+{
+ "id": "I3_1",
+ "title": "Hybrid temperature law: per-device parametric law (par3 form) plus a learned population-shared residual, decided on tiers M, W and a new tier H",
+ "written": "2026-10-20",
+ "status": "pre-registered before any run of the new arms (hyb, hyb_mean, scaling arms) and before any simulation of tier H; the smoke run (runs/smoke, tier M only) is a pipeline check and is not a decision input",
+ "relation_to_E3b": {
+  "source_prereg": {"file": "out/research/explore/E3b/prereg.json", "commit": "787e8aa", "sha256": "649bf59e72aa68a572bb1ee56a8b3b1c415706f5232ab66b768f2a48015cba88"},
+  "source_results": {
+   "tier_M": {"file": "out/research/explore/E3b/runs/full/tier_M/summary.json", "sha256": "61e36071ab86a180dac1a6fe145fc6e7590ce3e1d5ee5e46d3fbe7afe1e6ffb2", "rule_output": "CONTINUE", "O4_lrn_vs_par3_reduction": 0.338, "ci95": [0.160, 0.495], "O4_lrn_vs_pt_interp_reduction": 0.247, "O4_lrn_vs_lrn_mean_reduction": 0.033, "lrn_vs_lrn_mean_ci95": [-0.154, 0.161]},
+   "tier_W": {"file": "out/research/explore/E3b/runs/full/tier_W/summary.json", "sha256": "81b85344369316acb9220a16039823051048a6479c86c17cf3ce7c10a5177adf", "O4_lrn_vs_par3_reduction": -0.667, "O4_par3_heldout_mean": 0.0666, "O4_lrn_heldout_mean": 0.1139}
+  },
+  "weaknesses_addressed": {
+   "a": "lrn did not differ from lrn_mean (population-mean shape, no network) on tier M. I3_1 requires the hybrid to beat lrn_mean on tier M (bootstrap CI) and reports hyb_mean (par3 plus population-mean residual, no network) as the matching no-network ablation.",
+   "b": "lrn lost to par3 on tier W (truth inside the par3 family). The hybrid starts from the per-device par3 law, its network output is initialised to zero, penalised toward zero, and early stopping can return the zero-correction state, so it can reproduce par3. Tier W is a deciding tier with a non-inferiority margin.",
+   "c": "simulated only: not addressed by the runs. The real-data search (out/research/explore/I3_1/real_data_catalog.json) records whether measured multi-temperature I-V exists for a later test.",
+   "d": "both truth generators were written before the hybrid design and the hybrid design was chosen after seeing E3b tiers M and W. Tier H is defined in this file, is not simulated or scored before the decision runs, and its result is part of the decision."
+  },
+  "E3b_unchanged": "The E3b verdict (CONTINUE on tier M under the E3 rule) is not revised by I3_1."
+ },
+ "hypothesis": "On simulated 77-300 K devices, a hybrid temperature law x(T) = par3_d(T) + sigma_h * NN(geometry, anchor fits, par3 parameters, T), where par3_d is the per-device law x = c + (mu - c) w^g fitted on NGSpice to the O4 observed temperatures and NN is a population-shared network trained on densely characterised devices of the same generator, (1) predicts the 7-parameter card at the held-out temperatures 110/190/260 K with lower NGSpice RRMS than par3 and than lrn_mean when the truth law is outside the par3 family (tier M, and the new tier H), and (2) is not worse than par3 by more than the stated margin when the truth law is inside the par3 family (tier W).",
+ "world_and_protocol": {
+  "unchanged_from_E3b": "World (src/cryoml/explore/e3_temp.py: SkyWater 77 K corner bin, tnom 27 C, seven paper parameters numeric per temperature, x = log(p/p_stock)), REAL_DEV geometries only (REAL_TEST rejected), dense training grid 77,90,100,110,130,150,170,190,210,225,245,260,280,300 K, per-temperature 7-parameter NGSpice fits (fit_sequence), test truths at 77/110/150/190/225/260/300 K, O4 anchors {77,150,225,300} K, O2 anchors {77,300} K, held-out {110,190,260} K, floor fits at the held-out temperatures, u0 unit-switch guard (truth rejection sampling, u0 fit bound 0.02 below the switch, x_u0 clip of every evaluated card with counts, validity assertion) exactly as E3b.",
+  "tier_M": "unchanged from E3b (logistic knee + bump + extrinsic series resistance R(T)).",
+  "tier_W": "unchanged from E3b (x = mu w^g, g log-uniform [1/3, 3]).",
+  "tier_H": {
+   "status": "new truth generator written for I3_1; not used for any design decision; no method is evaluated on tier H before the decision run I3_1_full_H. Before that run tier H is used only in unit tests (generator boundary values, shape, u0-switch rejection counts) without NGSpice scoring of any method.",
+   "law": "x_k(T) = c_k + (mu_k - c_k - f_k) P_k(T) + f_k S(T), k over the seven parameters, T in [77, 300.15] K.",
+   "mu": "uniform in the 0.75x cold-loop round-4 anchor box (same as tiers M and W), so x_k(77 K) = mu_k.",
+   "c": "300 K offset, c_k ~ U(-0.05, 0.05) for vth0 and U(-0.10, 0.10) for the other six parameters, so x_k(300.15 K) = c_k.",
+   "P": "piecewise linear in T through the three points (77 K, 1), (Tkink_k, v_k), (300.15 K, 0) (numpy.interp). Device kink temperature K_d ~ U[100, 240] K; per-parameter Tkink_k = clip(K_d + U(-20, 20) K, 90 K, 260 K); kink value v_k ~ U[0.10, 0.90] per parameter. The law has a slope discontinuity at Tkink_k; it is in the par3 family only in the measure-zero case v_k = w(Tkink_k).",
+   "freeze_out_step": "S(T) = (sig((Tf - T)/5 K) - sig((Tf - 300.15 K)/5 K)) / (sig((Tf - 77 K)/5 K) - sig((Tf - 300.15 K)/5 K)), sig the logistic function, so S(77 K) = 1 and S(300.15 K) = 0, with a step of width 5 K at the device freeze-out temperature Tf ~ U[90, 140] K. Step amplitudes: f_vth0 ~ U[0.02, 0.06], f_u0 ~ U[-0.20, -0.05], f_k = 0 for nfactor, vsat, delta, rdsw, eta0 (PARAMS7 order vth0, u0, nfactor, vsat, delta, rdsw, eta0).",
+   "extrinsic_resistance": "none (truth_rs = 0 on tier H).",
+   "random_stream": "numpy default_rng([seed, 2, split, geometry index, draw]) (tier code H = 2; M = 1 and W = 0 unchanged). Draw order inside one attempt: mu (7), c (7), K_d (1), Tkink jitter (7), v (7), Tf (1), f_vth0 (1), f_u0 (1). u0 unit-switch rejection sampling as in E3b (at most 50 attempts; rejected count stored)."
+  },
+  "populations": "Per tier: n_test = 3 test draws per REAL_DEV geometry (36 test devices). Training: tiers W and H n_train = 6 per geometry (72 devices); tier M n_train = 12 per geometry (144 devices) for the scaling arm, of which draws 0-5 (72 devices, identical to the E3b tier-M training population) are the primary training population. Every primary arm and every existing E3b arm (including par3_pop pooled exponents) uses only the primary training population."
+ },
+ "methods": {
+  "hyb": {
+   "role": "PRIMARY new arm (O4 only)",
+   "prediction": "x_hyb(T) = law_x(mu_d, c_d, lg_d, T) + sigma_h * mean over ensemble members of NN_e(features). (mu_d, c_d, lg_d) is the test device's par3 fit on the O4 anchors (the same fit as the par3 arm, law/O4__par3__<dev>.json). No phi gating: the correction is also applied at the anchor temperatures.",
+   "training_law_fits": "Each training device gets its own par3 fit on its O4 anchor temperatures: truth curves re-simulated at 77/150/225/300 K from the stored truth (deterministic), E.fit_law(variant par3, init from the training device's dense per-temperature fits at the anchors, law_iter 15). Stored as train_law/<tag>__<draw>.json.",
+   "features": "geometry features (3), anchor fits x at 77/150/225/300 K (28, standardised with training-row mean and std, std floor 1e-3), par3 parameters (mu, c, lg: 21, standardised the same way), temperature_feature(T) (1); 53 inputs.",
+   "training_rows": "every dense temperature (all 14, anchors included) of every training device with finite H and finite fit RRMS; target the per-temperature fit x_hat(T), base law_x(T) of that device's training par3 fit.",
+   "sigma_h": "per parameter max(1.4826 * MAD of (x_hat - base) over training rows, 0.02).",
+   "loss": "mean(d^T Hn d) + 0.1 mean((d / sigma_h)^2) + 0.1 mean(NN^2), d = base + sigma_h NN - x_hat, Hn = 7 H / tr(H). The last term penalises the network output (in sigma_h units) toward 0.",
+   "network_and_optimiser": "Linear(53, 64) SiLU Linear(64, 64) SiLU Linear(64, 7); output layer weights and bias initialised to 0 (untrained network = par3); AdamW lr 3e-3, weight decay 1e-4, cosine schedule, 3000 full-batch steps; ensemble of 5 members, torch seeds 20261019 + e.",
+   "early_stopping": "member e holds out 20% of training devices (numpy default_rng(20261019 + e), device-level, at least 1 device); validation criterion = mean(d^T Hn d) + 0.1 mean((d / sigma_h)^2) on the held-out devices' rows (without the output penalty), evaluated before training (step -1, the par3 state) and every 25 steps and at the last step; the member returns its lowest-validation state, which may be the zero-correction state."
+  },
+  "hyb_mean": "secondary no-network ablation of hyb (O4): x(T) = par3_d(T) + mean over training devices of the same device type (nmos/pmos) of (x_hat(T) - base(T)), linearly interpolated in T over the dense grid.",
+  "existing_arms": "par3, par14, par3_pop, pt_interp, lrn, lrn_param, lrn_noH, lrn_mean in O4 and the E3b O2 arms (par3_pop, par3_g1, par14_g1, pt_interp, lrn, lrn_param, lrn_noH, lrn_mean), floor; all as in E3b, unchanged code. No hybrid arm in O2 (par3 is not identifiable from two temperatures).",
+  "scaling_arm": {
+   "tier": "M only; reported, not deciding",
+   "arms": "lrn and hyb trained on the first n training draws per geometry, n in {3, 6, 12} (36, 72, 144 training devices); n = 6 is the primary lrn and hyb; the other arms are stored as O4|lrn_n3, O4|lrn_n12, O4|hyb_n3, O4|hyb_n12 (training par3 fits for draws 6-11 are run for hyb_n12). Same test devices, same hyperparameters.",
+   "reported": "held-out all-device mean, GMR versus par3 (eps 0.01) with CI and wins, for each n."
+  },
+  "floor": "per-temperature fit at each held-out temperature using held-out data (reference only, not a method)."
+ },
+ "metric": "Unchanged from E3/E3b: per (device, held-out temperature) frozen-inclusion paper RRMS of the NGSpice re-simulated card (after the x_u0 clip) against the simulated truth curves, mean over included curves, strict (any non-finite included curve makes the cell NaN). Per device: mean over 110/190/260 K (NaN if any of the three cells is NaN).",
+ "decision_statistic": {
+  "GMR": "GMR(a, b) = exp(mean over devices of log((a_d + eps) / (b_d + eps))), a_d and b_d the per-device held-out RRMS of arms a and b in setting O4, eps = 0.01 (RRMS differences below about 1% count as equal; par3 reaches RRMS 0 on some tier-W devices, where an unshifted ratio is undefined). Devices: those finite for both a and b.",
+  "CI": "paired percentile bootstrap over test devices, 4000 resamples, numpy default_rng(0), 95% interval of the GMR.",
+  "wins": "number of devices with a_d < b_d (unshifted values), reported with every GMR.",
+  "sensitivity_reported_not_deciding": "GMR with eps = 0.001.",
+  "secondary_E3_style": "R_S = 1 - mean(hyb) / mean(par3) per tier with the E3 paired bootstrap CI (reported, not deciding); also lrn versus par3 and hyb versus lrn, hyb_mean, par3_pop, par14 as GMR and R."
+ },
+ "criterion": {
+  "evaluated_on": "the three decision runs I3_1_full_M, I3_1_full_W, I3_1_full_H (setting O4; primary training population); computed once by the decide step (decision.json).",
+  "INVALID": "any tier fails the E3b u0-switch validity check (truths, fitted cards or evaluated cards at or above the switch). An INVALID result is not CONTINUE, KILL or INCONCLUSIVE.",
+  "CONTINUE": "all of: (M1) tier M GMR(hyb, par3) <= 0.80 and its CI upper bound < 1; (M2) tier M GMR(hyb, lrn_mean) CI upper bound < 1; (M3) tier M GMR(hyb, pt_interp) < 1; (W1) tier W GMR(hyb, par3) CI upper bound <= 1.25; (H1) tier H GMR(hyb, par3) CI upper bound < 1; (H2) tier H GMR(hyb, lrn_mean) < 1 and GMR(hyb, pt_interp) < 1; (F) failed-cell fraction <= 10% for hyb, par3, lrn_mean and pt_interp in O4 on each tier.",
+  "KILL": "not CONTINUE and any of: tier M GMR(hyb, par3) >= 0.95; tier W GMR(hyb, par3) >= 1.50; tier H GMR(hyb, par3) >= 1.00.",
+  "INCONCLUSIVE": "otherwise; one revision allowed only with a new pre-registration file.",
+  "reported_with_the_decision": ["each condition's value and pass/fail", "GMR and wins of hyb against par3, par14, par3_pop, pt_interp, lrn, lrn_mean, hyb_mean per tier", "lrn against par3 and lrn_mean per tier (E3b comparison)", "R_S (E3 style) per tier", "eps = 0.001 sensitivity", "scaling arm (tier M)", "number of x_u0-clipped evaluated cards per arm", "early-stopping best steps of the hyb members (how many returned the zero-correction state)", "reproduction check: per-device values of the existing O4 arms on tiers M and W against the E3b full runs (same truths, fits and training population; expected equal up to numerical noise)"]
+ },
+ "settings": {
+  "seed": 20261019,
+  "law_iter": 15,
+  "learn_seeds": 5,
+  "workers": 8,
+  "n_test": 3,
+  "dense": [77, 90, 100, 110, 130, 150, 170, 190, 210, 225, 245, 260, 280, 300],
+  "geometries": "all 12 REAL_DEV geometries (out/research/explore/real_split.json)",
+  "queue_jobs": {
+   "I3_1_full_M": ".venv/bin/python scripts/research/explore/e3_temp_misspec.py --study I3_1 --name full --tier M --n-train 12 --primary-n-train 6 --scaling 3,6,12 --n-test 3 --law-iter 15 --learn-seeds 5 --workers 8",
+   "I3_1_full_W": ".venv/bin/python scripts/research/explore/e3_temp_misspec.py --study I3_1 --name full --tier W --n-train 6 --n-test 3 --law-iter 15 --learn-seeds 5 --workers 8",
+   "I3_1_full_H": ".venv/bin/python scripts/research/explore/e3_temp_misspec.py --study I3_1 --name full --tier H --n-train 6 --n-test 3 --law-iter 15 --learn-seeds 5 --workers 8",
+   "I3_1_decide": ".venv/bin/python scripts/research/explore/e3_temp_misspec.py --study I3_1 --name full --decide"
+  },
+  "output": "out/research/explore/I3_1/runs/full/tier_M, tier_W, tier_H (summary.json each) and out/research/explore/I3_1/runs/full/decision.json. E3 and E3b outputs are not overwritten."
+ },
+ "known_limitations": [
+  "Training and test devices of each tier come from the same generator; the result measures transfer within a population whose law is shared, not transfer across laws (no train-on-M, test-on-H condition is decided).",
+  "Tier H was written by the same team as tiers M and W, after seeing E3b; it is new to the hybrid design but not independent of the authors' assumptions about temperature laws.",
+  "All truths are simulated with the same BSIM4 card family; no measured I-V enters the decision.",
+  "The scaling arm varies the training population size on tier M only."
+ ],
+ "files": [
+  "src/cryoml/explore/e3_temp.py (tier H generator only; tiers M and W unchanged)",
+  "src/cryoml/explore/i3_hybrid.py (HybridLaw, HybridMeanLaw, GMR statistic, decision rule)",
+  "scripts/research/explore/e3_temp_misspec.py (option --study I3_1; --decide; defaults for E3 and E3b unchanged)",
+  "tests/test_i3_1_hybrid.py, tests/test_i3_1_tier_h.py"
+ ]
+}
