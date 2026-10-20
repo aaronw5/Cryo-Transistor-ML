@@ -1,0 +1,108 @@
+{
+ "id": "I7_2",
+ "title": "Hierarchical bias-only correction g_d = g_shared + delta_d with a learned prior, few-shot adaptation on K curves of the held-out device, scored on its other curves",
+ "iteration": "exploration iteration 7, direction I7-2 (user-chosen)",
+ "written": "2026-10-20",
+ "status": "pre-registered before any I7-2 code was run on data: no delta fit, no K-shot card fit, no smoke run existed when this file was written. Smoke runs (output directories smoke_*) check the code only and are not used for the decision",
+ "parents": {
+  "I3_2_real_dev": "sky130 77 K REAL_DEV leave-one-device-out, GMR(M_bias, C0_refit) 0.769 (out/research/explore/I3_2/real_dev/results.json)",
+  "I4_1_B5": "B5 (per-device M_bias-form MLP fitted on the held-out device's own curves, in-sample) / M_bias: sky130 REAL_DEV GMR(M_bias, B5) 1.86 (out/research/explore/I4_1/decision.json)",
+  "I5_1_ihp_300K": "IHP SG13G2 measured 300 K DEV leave-one-DUT-out within class, GMR(M_bias, C0_refit) 1.214 (out/research/explore/I5_1)",
+  "I6_1_tudelft": "TU Delft 40-nm DEV leave-one-geometry-out, GMR(M_bias, C0_refit) 295 K 0.797, 4.13 K 0.939 (out/research/explore/I6_1)",
+  "observation": "in all four datasets the in-sample per-device correction B5 is about 2x lower in held-out-device RRMS than any shared arm; this direction asks whether a low-dimensional per-device adjustment fitted on a few of the device's own curves transfers to the device's other curves"
+ },
+ "hypothesis": "When a held-out device is characterized by K of its curves (K = 2 or 4), fitting its card together with a low-dimensional per-device adjustment delta_d of a shared bias-only correction, delta_d estimated by MAP under a prior learned from the training devices (empirical Bayes), gives lower strict paper RRMS on the device's remaining included curves than (a) the card fitted on the K curves without correction, (b) the card fitted with the shared correction alone, and (d) a per-device correction fitted from scratch on the K curves.",
+ "data": {
+  "sky130_77K": {
+   "devices": "REAL_DEV (12 devices, out/research/explore/real_split.json). REAL_TEST is not loaded",
+   "curves": "11 metric curves per device (6 Id-Vg at Vd = 0.01, 0.37, 0.74, 1.11, 1.48, 1.85 V; 5 Id-Vd at Vg = 0.37 ... 1.85 V), frozen published-baseline inclusion (record flag), 9-11 included per device",
+   "folds": "leave-one-device-out (12 folds)",
+   "training_records": "out/research/explore/E1/real_dev.{npz,json} (one NGSpice simulation of each training device's starting card out/research/polished/direct43_r3_fd/real/summary.json on its measured grid)",
+   "g_shared": "the stored I3-2 fold M_bias corrections out/research/explore/I3_2/real_dev/corrections.json 'M_bias|<held-out tag>' (preregistered full run; 5 seeds, 2000 steps), used unchanged",
+   "kshot_box": "the 43-parameter round-1 box out/cold_loop/full/round_1/spec.json (centered on the released 77 K card, multiplier 1; the E4 p43 box). The round-3 box used by I3-2 is not used, because its center is a card fitted to all curves of the device"
+  },
+  "ihp_300K": {
+   "devices": "I5-1 DEV DUTs (18; out/research/explore/I5_1/split.json). TEST DUTs are not loaded",
+   "curves": "11 Vb = 0 curves per DUT (Id-Vg idvg@d0..d2, Id-Vd idvd@g0..g4 and idvd@t0..t2), pdk2 measured-current inclusion, 4-10 included per DUT",
+   "folds": "leave-one-DUT-out within class (lv / hv), as I5-1",
+   "training_records": "out/research/explore/I5_1/start/records_300K.{npz,json}",
+   "g_shared": "stored I5-1 fold corrections out/research/explore/I5_1/lodo_300K/corrections.json 'M_bias|<held-out tag>', used unchanged",
+   "kshot_box": "i5_1_ihp_real.base_box (centered on the stock PDK card values)"
+  },
+  "tudelft_4K": {
+   "devices": "I6-1 DEV devices (45; out/research/explore/I6_1/split.json) at 4.13 K stage temperature. TEST devices are not loaded",
+   "curves": "23 curves per device (12 Id-Vg idvg@d0..d11, 11 Id-Vd idvd@g0..g10), pdk2 measured-current inclusion, 22-23 included",
+   "folds": "leave-one-geometry-out over the 7 DEV (polarity, W, L) groups, as I6-1",
+   "training_records": "out/research/explore/I6_1/start/records_4K.{npz,json}",
+   "g_shared": "stored I6-1 fold corrections out/research/explore/I6_1/lodo_4K/corrections.json 'M_bias|<held-out group>', used unchanged",
+   "kshot_box": "i6_1_tudelft.base_box (centered on the stock CMOSedu 50-nm card values)"
+  },
+  "tudelft_295K": "as tudelft_4K with 295 K records (records_295K) and corrections (lodo_295K/corrections.json)"
+ },
+ "curve_split_rule": {
+  "ordering": "for the held-out device, G = its included Id-Vg curves sorted by ascending |Vd| (the fixed bias, median of |vd| over the curve), D = its included Id-Vd curves sorted by ascending |Vg|; nG = len(G), nD = len(D); indices are 0-based",
+  "draws": {
+   "K2a": "G[nG-1], D[nD-1] (highest fixed bias of each kind)",
+   "K2b": "G[0], D[floor((nD-1)/2)]",
+   "K4a": "G[0], G[nG-1], D[floor((nD-1)/2)], D[nD-1]",
+   "K4b": "G[floor((nG-1)/3)], G[ceil(2(nG-1)/3)], D[floor((nD-1)/3)], D[ceil(2(nD-1)/3)]"
+  },
+  "validity": "a draw is defined for a device if its picks within each kind are distinct and at least 2 included curves remain outside the adaptation set; otherwise the draw is skipped for that device (counted and reported). A device enters a dataset's statistics if at least one draw is defined",
+  "adaptation_set": "the picked curves (K = 2 or 4)",
+  "heldout_set": "every other included curve of the device (frozen inclusion)"
+ },
+ "kshot_protocol": {
+  "start_card": "two candidate starting points, both independent of the held-out device's measurements: (i) the box center card (sky130 released card, IHP / TU Delft stock card); (ii) the elementwise median, in box local coordinates, of the fold's training devices' starting cards of the same polarity (IHP: same class and polarity; if there is none, all training devices of the fold), each card mapped to local coordinates of its own device's box, the median applied to the held-out device's box. The candidate with the lower mean uncorrected RRMS on the K adaptation curves is used (2 simulations of the K curves)",
+  "base_fit": "ngspice_fit.polish on the K adaptation curves only, no correction, max_nfev 1200, irls 2, diff_step 0.01, from the chosen start. The base card is shared by every arm of the split",
+  "arm_refit": "each arm refits from the base card on the K adaptation curves with its correction in the loop: ngspice_fit.polish max_nfev 400, irls 2, diff_step 0.01 (the I3-2 held-out refit settings). The final card is simulated on all curves of the device once, multiplied by exp(g) of the arm's final correction, and scored on the held-out curves"
+ },
+ "correction_model": {
+  "g_shared": "I3-2 M_bias: g = tanh(MLP 3-16-16-1(is_pmos, |Vgs|/VDD, |Vds|/VDD)), 5-seed ensemble mean, trained on the fold's training devices (stored; not retrained)",
+  "delta_form_PRIMARY": "g_d(x) = g_shared(x) + phi(x) . delta_d, phi = (1, a, b, a^2, a b, b^2) with a = 2|Vgs|/VDD - 1, b = 2|Vds|/VDD - 1 (quadratic in terminal bias, 6 coefficients per device). I_corr = I_card * exp(g_d)",
+  "training_device_deltas": "for each training device j of a fold: delta_j = argmin over delta (|delta_k| <= 3) of the E1 loss (mean over its included curves of paper per-curve RRMS of I_sim exp(g_shared + phi . delta)) on its starting record (card fixed), L-BFGS-B, 1e-6 * |delta|^2 added for conditioning",
+  "prior": "Gaussian N(m, S): m = mean of the training deltas, S = 0.5 Sigma_hat + 0.5 diag(Sigma_hat) + 1e-6 I, Sigma_hat = sample covariance (n - 1) of the training deltas. Whitened coordinates z = Lc^-1 (delta - m), Lc = Cholesky(S); delta = m + Lc z, z in [-5, 5]^6",
+  "map_objective": "J(card, z) = mean over the K adaptation curves of paper per-curve RRMS of I_card exp(g_shared + phi . (m + Lc z)) + mu |z|^2",
+  "mu_selection_empirical_bayes": "per fold and K: mu from the grid {0, 1e-5, 3e-5, 1e-4, 3e-4, 1e-3, 3e-3, 1e-2, 3e-2, 0.1, 0.3, 1, inf} (inf: z = 0, delta = m) minimizing, over the fold's training devices and both draws of that K, the mean of log held-out-curve RRMS when z is fitted on the device's K adaptation curves with its card fixed at its starting card (no simulation); the prior used for training device j is refitted without device j (leave-one-out). Ties: the larger mu",
+  "joint_fit": "card and z fitted together by a copy of ngspice_fit.polish whose parameter vector is the card's local coordinates followed by z / 5; z columns of the finite-difference Jacobian reuse the cached card simulation (no NGSpice call). The least-squares residual is the polish residual followed by sqrt(2 s mu) z, s = mean curve RRMS (first IRLS round) or harmonic mean of curve RRMS (later rounds) at the round's start point, so the squared residual has the gradient of J up to the factor 2 s; the returned point is the lowest J seen. max_nfev is matched to the card-only refit (i4_1_baselines.matched_nfev) so the number of TRF iterations, and of NGSpice simulations, equals that of arm (b)"
+ },
+ "arms": {
+  "a_C0": "card refit on the K curves, no correction",
+  "b_shared": "card refit on the K curves with g_shared in the loop",
+  "c_hier": "PRIMARY: card and delta_d fitted jointly on the K curves, MAP with the learned prior and the selected mu; scored with g_shared + phi . delta_d",
+  "c_ml": "secondary: as c_hier with mu = 0 (flat prior on the z box): tests the prior",
+  "d_scratch": "card refit + per-device M_bias-form MLP from scratch on the K curves, no sharing (the I4-1 B5 recipe restricted to the adaptation curves): g0 = fit_bias('M_bias') on the base card's record of the K curves; card refit with g0 in the loop; g1 = fit_bias on the refit card's record of the K curves; scored with g1",
+  "e_crossinterp": "E4 non-learned control: arm (a)'s card + (measured - simulated) residual on the adaptation curves at the bias points where they cross the held-out curve (crossing point within 5 mV), linearly interpolated along the held-out sweep with a zero anchor at sweep voltage 0 (e4_eval.cross_residual rule). No extra simulation. Applies where an adaptation curve of the other kind crosses the held-out curve; a held-out curve without crossing gets zero correction (equal to arm a); the fraction of held-out curves with a crossing is reported"
+ },
+ "evaluation": {
+  "metric": "strict paper RRMS with frozen inclusion on the held-out curves only: e1_correction.score_device with the inclusion flags restricted to the held-out set (sky130: metrics.device_rrms_new; IHP / TU Delft: pdk2 recipe). A non-finite held-out curve makes the split NaN (failed). Every scored current is a fresh NGSpice simulation of the arm's final card times exp(g) (arm e: plus the cross-curve residual)",
+  "per_device_value": "geometric mean over the device's defined draws (both K) of held-out RRMS; NaN if any of those draws failed for that arm. Per-K values (geometric mean over that K's draws) are reported",
+  "decision_statistic": "per dataset, paired geometric-mean ratio GMR(X, Y) = exp(mean_i ln(v_X,i / v_Y,i)) over devices with both values finite (i3_2_bias.paired_ratio), 95% percentile bootstrap CI over 10000 device resamples (default_rng(0)), wins = devices with v_X < v_Y. TU Delft: (polarity, W, L) cluster-bootstrap CI reported, not deciding",
+  "aggregates": "all-device mean, combined (mean of nMOS and pMOS family means), median of held-out RRMS per arm and K; adaptation-curve RRMS per arm"
+ },
+ "criterion": {
+  "C1": "GMR(c_hier, b_shared): CI upper < 1 on at least 3 of the 4 datasets",
+  "C2": "GMR(c_hier, a_C0): CI upper < 1 on all 4 datasets",
+  "C3": "GMR(c_hier, d_scratch): point estimate < 1 on all 4 datasets and CI upper < 1 on at least 3",
+  "C4": "c_hier failed devices <= 10% and >= 8 paired devices on every dataset",
+  "outcomes_in_order": {
+   "invalid": "C4 fails on 2 or more datasets",
+   "supported_continue": "C1, C2, C3 and C4 hold",
+   "delta_no_gain_stop": "GMR(c_hier, b_shared) point estimate >= 0.98 on 2 or more datasets",
+   "sharing_no_gain": "C1 and C2 hold and C3 fails (the per-device fit from scratch matches the hierarchical fit)",
+   "inconclusive": "any other combination"
+  },
+  "not_in_rule_reported": ["GMR(c_hier, e_crossinterp)", "GMR(c_hier, c_ml)", "GMR(b_shared, a_C0)", "GMR(d_scratch, a_C0)", "GMR(e_crossinterp, a_C0)", "per-K (K = 2, K = 4) tables of all ratios", "selected mu per fold and K", "prior statistics (m, diag S)", "start candidate chosen", "adaptation-curve RRMS", "simulator timeouts"]
+ },
+ "known_limitations_stated_before_results": [
+  "the prior and mu are estimated on training devices whose cards were fitted to all their curves (card fixed), while the held-out device's card is fitted on K curves; mu can be miscalibrated for the joint fit",
+  "g_shared was trained on all curves of the training devices; on a held-out device it is applied at biases outside the K adaptation curves",
+  "the held-out device's card starts from a card independent of its measurements, so held-out RRMS values are not comparable to the earlier all-curve probes (C0_refit there started from a card fitted to all curves)"
+ ],
+ "data_reuse_note": "REAL_DEV, IHP DEV and TU Delft DEV were used by earlier directions (design and decisions). I7-2 results are development evidence. No REAL_TEST / TEST data is loaded by any I7-2 code",
+ "compute": {
+  "jobs": "one queue job per dataset (sky130, ihp300, tud4, tud295) and one decide job; process pool of 8 workers, 1 torch thread each; one pool task per (device, draw) running the base fit and every arm",
+  "budget": "full set target under about 5 h wall time. If the smoke-based estimate exceeds 5 h, draw K4b is dropped on the two TU Delft datasets, recorded in a dated amendment before any full run",
+  "smoke": "one held-out device per dataset (first device of the first fold), draw K2a only, base max_nfev 100, arm max_nfev 60, d_scratch 1 seed 200 steps, mu grid unchanged; output smoke_* directories, labelled smoke, not used for any conclusion"
+ },
+ "frozen_choices_note": "All choices above were fixed before any I7-2 result existed. Changes get a dated amendment file that leaves this file unchanged"
+}
