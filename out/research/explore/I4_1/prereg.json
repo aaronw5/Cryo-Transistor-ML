@@ -1,0 +1,2221 @@
+{
+ "id": "I4_1",
+ "title": "Baselines for the I3-2 bias-only correction: wider parameter set, physical augmentation, low-dof shared corrections, GP discrepancy, in-sample per-device correction",
+ "iteration": "exploration iteration 4, direction I4-1 (baseline comparison of I3-2); I4-2 interpretation analysis (reported, not deciding)",
+ "written": "2026-10-20",
+ "status": "pre-registered before any B1-B5 held-out refit was run or scored. Done before this file: the B1 edge screen (out/research/explore/I4_1/b1_screen.json), which simulates the starting cards with one candidate parameter at a box edge and uses no fitted result of any arm; unit tests on toy data. Smoke runs (output directories smoke_*) check the code only and are not used for the decision",
+ "question": "Does a simpler or physics-based change to the held-out refit give the same held-out strict paper RRMS as the I3-2 correction M_bias (g = tanh(MLP 3-16-16-1(is_pmos, |Vgs|/VDD, |Vds|/VDD)), I = I_card * exp(g), held-out card refit with g in the loop)?",
+ "parents": {
+  "I3_2_prereg": "out/research/explore/I3_2/prereg.json",
+  "I3_2_decision": "out/research/explore/I3_2/decision.json: continue; REAL_DEV M_bias 0.08055 all-device (combined 0.07486) vs C0_refit 0.10719 (combined 0.09805); GMR(M_bias, C0_refit) 0.769 [0.666, 0.886], 11/12 wins; GF180 ratio 0.880, IHP 0.885",
+  "I3_2_followup": "out/research/explore/I3_2/followup_prereg*.json: F2 robustness over seeds/widths/training cards; F1c SPICE-native ngspice-41 + OSDI M_bias 0.080555 all-device",
+  "stored_rows_used": {
+   "M_bias": "out/research/explore/I3_2/{real_dev,gf180_c_logo,ihp_c_logo}/results.json per_device.M_bias",
+   "C0_refit (B0)": "same files, per_device.C0_refit (I2-1 rows, identical settings)",
+   "T1_inloop": "same files, per_device.T1_inloop (REAL_DEV: E1 stage-2 T1 rows; GF180/IHP: I3-2 run)"
+  }
+ },
+ "data": {
+  "real": "REAL_DEV (12) from out/research/explore/real_split.json; records out/research/explore/E1/real_dev.{npz,json}; starting cards out/research/polished/direct43_r3_fd/real/summary.json; base box = round-3 43-parameter box (out/cold_loop/full_direct/round_3/spec.json, cold_loop.box_for). REAL_TEST is not loaded by any I4_1 script",
+  "simulated": "GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c truth sets 0-2, 48 targets per PDK; records out/research/explore/E1/{gf180,ihp}_c_set{0,1,2}.{npz,json}; starting cards = E1 fitted cards stored in the records; base box = pdk2 'wide' box (GF180 21 parameters, IHP 12)",
+  "training_records_for_shared_corrections": "B3 and B4 are trained post-hoc on the E1 stored training records of the fold (one NGSpice simulation of each training device's starting card), as M_bias"
+ },
+ "common_protocol": {
+  "folds": "REAL_DEV leave-one-device-out (12 folds); GF180/IHP leave-one-geometry-out (16 folds of 3 targets; the held-out geometry's 3 truth draws are removed from training)",
+  "heldout_refit": "ngspice_fit.polish from the starting card, irls_rounds 2, diff_step 0.01, max_nfev 400 for arms on the base box (B3, B4, B5, C0 rerun). B1 and B2 have more active parameters; their max_nfev is set so that the per-IRLS-round TRF budget max(2, max_nfev // 2 // (n_active + 2)) equals the base-box value for the same device (i4_1_baselines.matched_nfev; base-box value: REAL_DEV 4, GF180 8, IHP 14 TRF evaluations per round). The best card seen is re-simulated with NGSpice and scored",
+  "scoring": "strict paper RRMS with frozen inclusion (e1_correction.score_device: sky130 metrics.device_rrms_new with the published-baseline include tags; pdk2 target-frozen inclusion); NaN if an included curve is non-finite. Every scored current is a fresh NGSpice simulation of the refit card (with the B2 resistors in the netlist), multiplied by exp(g) of the frozen correction (B3, B4, B5) or by the B2 heating factor",
+  "reproduction_check": "C0_refit_rerun: the C0 refit through the I4_1 refit path, compared with the stored C0_refit rows (max |diff| reported); not in the rule"
+ },
+ "arms": {
+  "B0_C0_refit": "stored; held-out card refit on the base box, no correction",
+  "M_bias": "stored I3-2 rows (PRIMARY method under test)",
+  "T1_inloop": "stored; per-(family, curve tag) gain table in the loop (non-deployable comparator); reported, not in the rule",
+  "B1": {
+   "name": "wider card parameter set, no correction",
+   "definition": "base box plus extra card parameters, all fitted jointly in the held-out refit (start: starting card, extras at their card values, so the start current equals C0's)",
+   "candidate_universe": {
+    "sky130": "the 115 BSIM4 candidates of out/pdk_parameter_sensitivity/summary.json minus the 43-set (72 names; values from out/pdk_parameter_sensitivity/readbacks.json, the device's bin)",
+    "gf180": "the same 115 BSIM4 names minus the GF180 wide set, where the device's stock bin defines a numeric value (79 names)",
+    "ihp": "PSP103 DC parameters listed in i4_1_baselines.PSP_B1_CANDIDATES minus the IHP wide set (92 names): effective geometry, threshold/doping, subthreshold/DIBL, mobility, series resistance, velocity saturation, CLM, impact ionization, gate current, GIDL. Excluded a priori: mode switches, temperature coefficients (ST*), stress/LOD, capacitance/overlap, noise, edge transistor (SWEDGE = 0), JUNCAP, expression-valued DLQ/IGINVLW/LOV"
+   },
+   "box_rule": "per device: if the parameter has an entry in i4_1_baselines.BSIM4_ZERO_RANGE and |card value| <= 1e-3 * max(|lo|, |hi|) of that entry, the box is that linear range extended to include the card value; otherwise a nonzero card value v gets the log-uniform box |v|/2 .. 2|v| with the sign of v; a zero value without an entry is inactive (lo = hi = 0)",
+   "bsim4_zero_range": {
+    "ud": [
+     0.0,
+     1e+17
+    ],
+    "up": [
+     0.0,
+     0.5
+    ],
+    "a1": [
+     0.0,
+     0.5
+    ],
+    "pvag": [
+     0.0,
+     1.0
+    ],
+    "fprout": [
+     0.0,
+     200.0
+    ],
+    "pdits": [
+     0.0,
+     1.0
+    ],
+    "pditsd": [
+     0.0,
+     1.0
+    ],
+    "pditsl": [
+     0.0,
+     1000000.0
+    ],
+    "alpha1": [
+     0.0,
+     100.0
+    ],
+    "voffl": [
+     -1e-08,
+     1e-08
+    ],
+    "minv": [
+     -2.0,
+     2.0
+    ],
+    "dvtp0": [
+     0.0,
+     1e-07
+    ],
+    "dvtp1": [
+     0.0,
+     1.0
+    ],
+    "rdswmin": [
+     0.0,
+     "rdsw"
+    ],
+    "agidl": [
+     0.0,
+     1e-06
+    ],
+    "dvt0w": [
+     0.0,
+     1.0
+    ],
+    "pdiblc1": [
+     0.0,
+     1.0
+    ],
+    "cdsc": [
+     0.0,
+     0.0025
+    ],
+    "phin": [
+     -0.2,
+     0.2
+    ],
+    "b0": [
+     0.0,
+     1e-07
+    ],
+    "b1": [
+     0.0,
+     1e-07
+    ]
+   },
+   "bsim4_zero_range_note": "rdswmin upper bound = the device's starting-card RDSW",
+   "screen": "a candidate is kept if, on at least one starting card of the dataset (sky130: 12 REAL_DEV devices; GF180/IHP: the set-0 target of each of the 16 geometries), the edge response at either box edge is >= 1e-4; edge response = max over included curves of trimmed RMS(I_edge - I_start) / paper denominator (the threshold of the 43-set screen). Result: out/research/explore/I4_1/b1_screen.json (run 2026-10-20, 48 s)",
+   "selected_parameters": {
+    "sky130_real_dev": [
+     "a1",
+     "alpha1",
+     "cdsc",
+     "dvt0w",
+     "dvtp0",
+     "etab",
+     "fprout",
+     "minv",
+     "pdiblc1",
+     "pdits",
+     "phin",
+     "pscbe1",
+     "pscbe2",
+     "pvag",
+     "rbpb",
+     "rdswmin",
+     "ud",
+     "up",
+     "voffl"
+    ],
+    "gf180": [
+     "a0",
+     "a1",
+     "a2",
+     "agidl",
+     "ags",
+     "alpha0",
+     "alpha1",
+     "at",
+     "b0",
+     "beta0",
+     "cdsc",
+     "drout",
+     "dvt0w",
+     "dvtp0",
+     "fprout",
+     "kt1",
+     "lpe0",
+     "minv",
+     "ndep",
+     "nsd",
+     "pdits",
+     "phin",
+     "pscbe1",
+     "pscbe2",
+     "rsh",
+     "toxe",
+     "toxm",
+     "tvoff",
+     "ua1",
+     "ub",
+     "ub1",
+     "ute",
+     "voffl",
+     "wr",
+     "xj"
+    ],
+    "ihp": [
+     "a2o",
+     "alp1l1",
+     "alp1l2",
+     "alp1lexp",
+     "alp1w",
+     "alp2l1",
+     "alp2lexp",
+     "alp2w",
+     "alpl",
+     "alplexp",
+     "alpw",
+     "axl",
+     "betw1",
+     "betw2",
+     "cfbo",
+     "cflexp",
+     "cfw",
+     "chibo",
+     "csl",
+     "cslexp",
+     "cslw",
+     "cso",
+     "csw",
+     "ctlexp",
+     "ctlw",
+     "cto",
+     "ctw",
+     "dnsubo",
+     "dphiblexp",
+     "dphiblw",
+     "dphibw",
+     "fbet1",
+     "fbet1w",
+     "fbet2",
+     "fetao",
+     "fol1",
+     "fol2",
+     "gc2o",
+     "gc3o",
+     "lap",
+     "lp1",
+     "lp1w",
+     "lp2",
+     "lvarl",
+     "lvaro",
+     "mueo",
+     "npckw",
+     "npl",
+     "npo",
+     "nsubo",
+     "nsubw",
+     "rsbo",
+     "rsgo",
+     "rsw2",
+     "thecso",
+     "thesatgo",
+     "thesatlexp",
+     "thesatlw",
+     "thesatw",
+     "toxo",
+     "vfbl",
+     "vfblw",
+     "vfbw",
+     "vpo",
+     "wbet",
+     "wot",
+     "wseg",
+     "xcorl",
+     "xcorlw",
+     "xcoro",
+     "xcorw"
+    ]
+   },
+   "n_selected": {
+    "sky130_real_dev": 19,
+    "gf180": 35,
+    "ihp": 71
+   },
+   "box_summary": {
+    "sky130_real_dev": {
+     "a1": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       0.5,
+       0.5
+      ],
+      "max_edge_response": 2.567727149698061
+     },
+     "alpha1": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       -4.05837e-18,
+       0.0
+      ],
+      "upper_bounds_range": [
+       100.0,
+       100.0
+      ],
+      "max_edge_response": 8.574400033132795
+     },
+     "cdsc": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       0.0025,
+       0.0025
+      ],
+      "max_edge_response": 0.08620614364988655
+     },
+     "dvt0w": {
+      "box": [
+       "linear (zero-range rule)",
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.25
+      ],
+      "upper_bounds_range": [
+       1.0,
+       1.0
+      ],
+      "max_edge_response": 0.0035052676502481117
+     },
+     "dvtp0": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1e-07,
+       1e-07
+      ],
+      "max_edge_response": 0.4857482034028039
+     },
+     "etab": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       -0.35088,
+       0.0083713
+      ],
+      "upper_bounds_range": [
+       -0.08772,
+       0.0334852
+      ],
+      "max_edge_response": 0.0008199939706482229
+     },
+     "fprout": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       200.0,
+       200.0
+      ],
+      "max_edge_response": 0.636775402207009
+     },
+     "minv": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       -2.0,
+       -2.0
+      ],
+      "upper_bounds_range": [
+       2.0,
+       2.0
+      ],
+      "max_edge_response": 275.23357446737003
+     },
+     "pdiblc1": {
+      "box": [
+       "linear (zero-range rule)",
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       -1.937986,
+       0.3468625
+      ],
+      "upper_bounds_range": [
+       -0.4844965,
+       1.38745
+      ],
+      "max_edge_response": 120.92502577013802
+     },
+     "pdits": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1.0,
+       1.0
+      ],
+      "max_edge_response": 1.0241531630683698
+     },
+     "phin": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       -0.2,
+       -0.2
+      ],
+      "upper_bounds_range": [
+       0.2,
+       0.2
+      ],
+      "max_edge_response": 3.3520566776963165
+     },
+     "pscbe1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       225000000.0,
+       400000000.0
+      ],
+      "upper_bounds_range": [
+       900000000.0,
+       1600000000.0
+      ],
+      "max_edge_response": 0.004864777665472492
+     },
+     "pscbe2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       4.33985e-09,
+       5e-09
+      ],
+      "upper_bounds_range": [
+       1.73594e-08,
+       2e-08
+      ],
+      "max_edge_response": 0.000160188352918659
+     },
+     "pvag": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1.0,
+       1.0
+      ],
+      "max_edge_response": 0.11563703007124475
+     },
+     "rbpb": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       25.0,
+       25.0
+      ],
+      "upper_bounds_range": [
+       100.0,
+       100.0
+      ],
+      "max_edge_response": 0.00016956521999015182
+     },
+     "rdswmin": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1.7001491402227484,
+       63671.01277909228
+      ],
+      "max_edge_response": 1.0355403360455926
+     },
+     "ud": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1e+17,
+       1e+17
+      ],
+      "max_edge_response": 1.6763924711358433
+     },
+     "up": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       0.5,
+       0.5
+      ],
+      "max_edge_response": 1.060208130434368
+     },
+     "voffl": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 12,
+      "lower_bounds_range": [
+       -1e-08,
+       -1e-08
+      ],
+      "upper_bounds_range": [
+       1e-08,
+       1e-08
+      ],
+      "max_edge_response": 0.9197115250187377
+     }
+    },
+    "gf180": {
+     "a0": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.05181318,
+       0.612209
+      ],
+      "upper_bounds_range": [
+       0.20725272,
+       2.448836
+      ],
+      "max_edge_response": 0.31872028782181727
+     },
+     "a1": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       0.5,
+       0.5
+      ],
+      "max_edge_response": 0.0008279845709700893
+     },
+     "a2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.495,
+       0.5
+      ],
+      "upper_bounds_range": [
+       1.98,
+       2.0
+      ],
+      "max_edge_response": 0.3198864630378599
+     },
+     "agidl": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1e-06,
+       1e-06
+      ],
+      "max_edge_response": 0.0019427352553203286
+     },
+     "ags": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.08280542,
+       0.308407855
+      ],
+      "upper_bounds_range": [
+       0.33122168,
+       1.23363142
+      ],
+      "max_edge_response": 0.5362105163340558
+     },
+     "alpha0": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       1.29765615e-06,
+       0.0010868415
+      ],
+      "upper_bounds_range": [
+       5.1906246e-06,
+       0.004347366
+      ],
+      "max_edge_response": 0.014221769823532402
+     },
+     "alpha1": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       100.0,
+       100.0
+      ],
+      "max_edge_response": 0.16708717425250305
+     },
+     "at": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       6000.0,
+       11500.0
+      ],
+      "upper_bounds_range": [
+       24000.0,
+       46000.0
+      ],
+      "max_edge_response": 0.0012044808523204106
+     },
+     "b0": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1e-07,
+       1e-07
+      ],
+      "max_edge_response": 0.1394201684413853
+     },
+     "beta0": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       9.952792,
+       22.177331
+      ],
+      "upper_bounds_range": [
+       39.811168,
+       88.709324
+      ],
+      "max_edge_response": 0.3889654036370238
+     },
+     "cdsc": {
+      "box": [
+       "linear (zero-range rule)",
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.00012
+      ],
+      "upper_bounds_range": [
+       0.00048,
+       0.0025
+      ],
+      "max_edge_response": 0.0015237373658383313
+     },
+     "drout": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.28,
+       0.28
+      ],
+      "upper_bounds_range": [
+       1.12,
+       1.12
+      ],
+      "max_edge_response": 1.2730496662693256
+     },
+     "dvt0w": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1.0,
+       1.0
+      ],
+      "max_edge_response": 1.4942086661210114
+     },
+     "dvtp0": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1e-07,
+       1e-07
+      ],
+      "max_edge_response": 0.29609436268503564
+     },
+     "fprout": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       200.0,
+       200.0
+      ],
+      "max_edge_response": 0.10525339896640169
+     },
+     "kt1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.91869116,
+       -0.54712286
+      ],
+      "upper_bounds_range": [
+       -0.22967279,
+       -0.136780715
+      ],
+      "max_edge_response": 0.046814804910179406
+     },
+     "lpe0": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       1.62465e-08,
+       5.5e-08
+      ],
+      "upper_bounds_range": [
+       6.4986e-08,
+       2.2e-07
+      ],
+      "max_edge_response": 1.6544402262652933
+     },
+     "minv": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.5,
+       -0.2
+      ],
+      "upper_bounds_range": [
+       -0.125,
+       -0.05
+      ],
+      "max_edge_response": 0.2046075004657297
+     },
+     "ndep": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       1.5e+17,
+       2.8e+17
+      ],
+      "upper_bounds_range": [
+       6e+17,
+       1.12e+18
+      ],
+      "max_edge_response": 0.7021728242863512
+     },
+     "nsd": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       5e+19,
+       5e+19
+      ],
+      "upper_bounds_range": [
+       2e+20,
+       2e+20
+      ],
+      "max_edge_response": 0.04450882491461932
+     },
+     "pdits": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0,
+       0.0
+      ],
+      "upper_bounds_range": [
+       1.0,
+       1.0
+      ],
+      "max_edge_response": 1.5049856832924111
+     },
+     "phin": {
+      "box": [
+       "linear (zero-range rule)",
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.2,
+       0.035
+      ],
+      "upper_bounds_range": [
+       0.14,
+       0.2
+      ],
+      "max_edge_response": 0.5821090559161151
+     },
+     "pscbe1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       332345000.0,
+       337240000.0
+      ],
+      "upper_bounds_range": [
+       1329380000.0,
+       1348960000.0
+      ],
+      "max_edge_response": 0.4027445515777304
+     },
+     "pscbe2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       5e-06,
+       8.19e-06
+      ],
+      "upper_bounds_range": [
+       2e-05,
+       3.276e-05
+      ],
+      "max_edge_response": 0.0018176266365882998
+     },
+     "rsh": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       3.5,
+       3.5
+      ],
+      "upper_bounds_range": [
+       14.0,
+       14.0
+      ],
+      "max_edge_response": 0.0017623114690564436
+     },
+     "toxe": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       3.95e-09,
+       4e-09
+      ],
+      "upper_bounds_range": [
+       1.58e-08,
+       1.6e-08
+      ],
+      "max_edge_response": 339.71331556878243
+     },
+     "toxm": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       3.95e-09,
+       4e-09
+      ],
+      "upper_bounds_range": [
+       1.58e-08,
+       1.6e-08
+      ],
+      "max_edge_response": 465.28467906431837
+     },
+     "tvoff": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0005,
+       0.0016
+      ],
+      "upper_bounds_range": [
+       0.002,
+       0.0064
+      ],
+      "max_edge_response": 0.012777726038488132
+     },
+     "ua1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       7.042268e-10,
+       1.0062e-09
+      ],
+      "upper_bounds_range": [
+       2.8169072e-09,
+       4.0248e-09
+      ],
+      "max_edge_response": 0.0057363643964001496
+     },
+     "ub": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       4.2245e-19,
+       1.89810705e-18
+      ],
+      "upper_bounds_range": [
+       1.6898e-18,
+       7.5924282e-18
+      ],
+      "max_edge_response": 0.45517719819332864
+     },
+     "ub1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -1.07576284e-17,
+       -4.2966782e-18
+      ],
+      "upper_bounds_range": [
+       -2.6894071e-18,
+       -1.07416955e-18
+      ],
+      "max_edge_response": 0.005164085427025714
+     },
+     "ute": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -3.3742858,
+       -2.0
+      ],
+      "upper_bounds_range": [
+       -0.84357145,
+       -0.5
+      ],
+      "max_edge_response": 0.01637202169690946
+     },
+     "voffl": {
+      "box": [
+       "linear (zero-range rule)"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -1e-08,
+       -1e-08
+      ],
+      "upper_bounds_range": [
+       1e-08,
+       1e-08
+      ],
+      "max_edge_response": 0.5080189436947115
+     },
+     "wr": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 8,
+      "lower_bounds_range": [
+       0.5,
+       0.5
+      ],
+      "upper_bounds_range": [
+       2.0,
+       2.0
+      ],
+      "max_edge_response": 0.594763749160513
+     },
+     "xj": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       5e-08,
+       5e-08
+      ],
+      "upper_bounds_range": [
+       2e-07,
+       2e-07
+      ],
+      "max_edge_response": 0.04495096253372636
+     }
+    },
+    "ihp": {
+     "a2o": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       6.665,
+       8.875
+      ],
+      "upper_bounds_range": [
+       26.66,
+       35.5
+      ],
+      "max_edge_response": 0.006225639979102921
+     },
+     "alp1l1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.00201105,
+       0.010569
+      ],
+      "upper_bounds_range": [
+       0.0080442,
+       0.042276
+      ],
+      "max_edge_response": 0.22022474710368015
+     },
+     "alp1l2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       8.055e-09,
+       0.02022
+      ],
+      "upper_bounds_range": [
+       3.222e-08,
+       0.08088
+      ],
+      "max_edge_response": 0.037673818195423786
+     },
+     "alp1lexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.125,
+       0.3204
+      ],
+      "upper_bounds_range": [
+       0.5,
+       1.2816
+      ],
+      "max_edge_response": 0.4021788265559174
+     },
+     "alp1w": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.155244,
+       -0.115962
+      ],
+      "upper_bounds_range": [
+       -0.038811,
+       -0.0289905
+      ],
+      "max_edge_response": 0.0462005717158124
+     },
+     "alp2l1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.002643,
+       1.34085
+      ],
+      "upper_bounds_range": [
+       0.010572,
+       5.3634
+      ],
+      "max_edge_response": 1.3566591500271383
+     },
+     "alp2lexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.125,
+       0.125
+      ],
+      "upper_bounds_range": [
+       0.5,
+       0.5
+      ],
+      "max_edge_response": 0.8734278742476471
+     },
+     "alp2w": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.26024,
+       0.0317905
+      ],
+      "upper_bounds_range": [
+       -0.06506,
+       0.127162
+      ],
+      "max_edge_response": 0.08702834270217022
+     },
+     "alpl": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0023673,
+       0.00441725
+      ],
+      "upper_bounds_range": [
+       0.0094692,
+       0.017669
+      ],
+      "max_edge_response": 0.37801288393283033
+     },
+     "alplexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.340715,
+       0.4234
+      ],
+      "upper_bounds_range": [
+       1.36286,
+       1.6936
+      ],
+      "max_edge_response": 1.3281345582834803
+     },
+     "alpw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.42084,
+       0.54125
+      ],
+      "upper_bounds_range": [
+       -0.10521,
+       2.165
+      ],
+      "max_edge_response": 0.31903130191064255
+     },
+     "axl": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.290475,
+       0.5093
+      ],
+      "upper_bounds_range": [
+       1.1619,
+       2.0372
+      ],
+      "max_edge_response": 0.0828451840213046
+     },
+     "betw1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.6536,
+       -0.04185
+      ],
+      "upper_bounds_range": [
+       -0.1634,
+       -0.0104625
+      ],
+      "max_edge_response": 1.5067585180703467
+     },
+     "betw2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.00438405,
+       0.0300905
+      ],
+      "upper_bounds_range": [
+       0.0175362,
+       0.120362
+      ],
+      "max_edge_response": 2.5844179959205404
+     },
+     "cfbo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.289385,
+       0.3476
+      ],
+      "upper_bounds_range": [
+       1.15754,
+       1.3904
+      ],
+      "max_edge_response": 0.005057803030767587
+     },
+     "cflexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       1.51775,
+       1.9844
+      ],
+      "upper_bounds_range": [
+       6.071,
+       7.9376
+      ],
+      "max_edge_response": 910.063494038699
+     },
+     "cfw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.35912,
+       -0.024398
+      ],
+      "upper_bounds_range": [
+       -0.08978,
+       -0.0060995
+      ],
+      "max_edge_response": 0.008815254006403477
+     },
+     "chibo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       1.55,
+       1.55
+      ],
+      "upper_bounds_range": [
+       6.2,
+       6.2
+      ],
+      "max_edge_response": 74.87635989968932
+     },
+     "csl": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.061705,
+       0.17341
+      ],
+      "upper_bounds_range": [
+       0.24682,
+       0.69364
+      ],
+      "max_edge_response": 0.5172631007642352
+     },
+     "cslexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.5699,
+       0.79065
+      ],
+      "upper_bounds_range": [
+       2.2796,
+       3.1626
+      ],
+      "max_edge_response": 1.6206169025965376
+     },
+     "cslw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.00088368,
+       0.007381
+      ],
+      "upper_bounds_range": [
+       -0.00022092,
+       0.029524
+      ],
+      "max_edge_response": 0.08060494988910667
+     },
+     "cso": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.1582,
+       0.47107
+      ],
+      "upper_bounds_range": [
+       0.6328,
+       1.88428
+      ],
+      "max_edge_response": 0.21025594409603982
+     },
+     "csw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.2209,
+       0.099025
+      ],
+      "upper_bounds_range": [
+       -0.055225,
+       0.3961
+      ],
+      "max_edge_response": 0.663351368447082
+     },
+     "ctlexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.428595,
+       0.7158
+      ],
+      "upper_bounds_range": [
+       1.71438,
+       2.8632
+      ],
+      "max_edge_response": 1.2930636421485198
+     },
+     "ctlw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.029804,
+       0.0043835
+      ],
+      "upper_bounds_range": [
+       -0.007451,
+       0.017534
+      ],
+      "max_edge_response": 0.10174102897692919
+     },
+     "cto": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       5.907e-06,
+       0.027278
+      ],
+      "upper_bounds_range": [
+       2.3628e-05,
+       0.109112
+      ],
+      "max_edge_response": 0.08165441833435844
+     },
+     "ctw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.193756,
+       0.18061
+      ],
+      "upper_bounds_range": [
+       -0.048439,
+       0.72244
+      ],
+      "max_edge_response": 0.23598323496466972
+     },
+     "dnsubo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       2.22045e-16,
+       0.0198535
+      ],
+      "upper_bounds_range": [
+       8.8818e-16,
+       0.079414
+      ],
+      "max_edge_response": 0.07514864848921009
+     },
+     "dphiblexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0344895,
+       1.49785
+      ],
+      "upper_bounds_range": [
+       0.137958,
+       5.9914
+      ],
+      "max_edge_response": 2.035221202190387
+     },
+     "dphiblw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.00720996172,
+       -0.0061658
+      ],
+      "upper_bounds_range": [
+       -0.00180249043,
+       -0.00154145
+      ],
+      "max_edge_response": 11.781309911850231
+     },
+     "dphibw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0005482205,
+       0.00818916
+      ],
+      "upper_bounds_range": [
+       0.002192882,
+       0.03275664
+      ],
+      "max_edge_response": 0.488493765828274
+     },
+     "fbet1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.4304,
+       6.084
+      ],
+      "upper_bounds_range": [
+       -0.1076,
+       24.336
+      ],
+      "max_edge_response": 1.6177434993271549
+     },
+     "fbet1w": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.131082,
+       0.194655
+      ],
+      "upper_bounds_range": [
+       -0.0327705,
+       0.77862
+      ],
+      "max_edge_response": 0.4690055095818539
+     },
+     "fbet2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -12.342,
+       -4.604
+      ],
+      "upper_bounds_range": [
+       -3.0855,
+       -1.151
+      ],
+      "max_edge_response": 13.435316042459744
+     },
+     "fetao": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.5,
+       0.5
+      ],
+      "upper_bounds_range": [
+       2.0,
+       2.0
+      ],
+      "max_edge_response": 0.3207418623753916
+     },
+     "fol1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.0182132,
+       -0.0162346
+      ],
+      "upper_bounds_range": [
+       -0.0045533,
+       -0.00405865
+      ],
+      "max_edge_response": 0.2710695741484139
+     },
+     "fol2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.00105695,
+       0.00406735
+      ],
+      "upper_bounds_range": [
+       0.0042278,
+       0.0162694
+      ],
+      "max_edge_response": 2.3600785251375607
+     },
+     "gc2o": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.27381,
+       0.42065
+      ],
+      "upper_bounds_range": [
+       1.09524,
+       1.6826
+      ],
+      "max_edge_response": 0.6169651147593688
+     },
+     "gc3o": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.9396,
+       -0.59086
+      ],
+      "upper_bounds_range": [
+       -0.2349,
+       -0.147715
+      ],
+      "max_edge_response": 0.0003020857810115708
+     },
+     "lap": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       1.2627e-08,
+       1.47115e-08
+      ],
+      "upper_bounds_range": [
+       5.0508e-08,
+       5.8846e-08
+      ],
+      "max_edge_response": 4.8439784800568795
+     },
+     "lp1": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       2.5837e-09,
+       9.883e-05
+      ],
+      "upper_bounds_range": [
+       1.03348e-08,
+       0.00039532
+      ],
+      "max_edge_response": 0.672742125316428
+     },
+     "lp1w": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 8,
+      "lower_bounds_range": [
+       -0.3088,
+       -0.3088
+      ],
+      "upper_bounds_range": [
+       -0.0772,
+       -0.0772
+      ],
+      "max_edge_response": 2.1081015531874625
+     },
+     "lp2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       6.282e-09,
+       9.7205e-09
+      ],
+      "upper_bounds_range": [
+       2.5128e-08,
+       3.8882e-08
+      ],
+      "max_edge_response": 13.435316042459744
+     },
+     "lvarl": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 8,
+      "lower_bounds_range": [
+       -0.06876,
+       -0.06876
+      ],
+      "upper_bounds_range": [
+       -0.01719,
+       -0.01719
+      ],
+      "max_edge_response": 0.6759138337120212
+     },
+     "lvaro": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 8,
+      "lower_bounds_range": [
+       4.8475e-08,
+       4.8475e-08
+      ],
+      "upper_bounds_range": [
+       1.939e-07,
+       1.939e-07
+      ],
+      "max_edge_response": 1.2635575593051702
+     },
+     "mueo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.38937,
+       1.1663
+      ],
+      "upper_bounds_range": [
+       1.55748,
+       4.6652
+      ],
+      "max_edge_response": 0.8933448365488201
+     },
+     "npckw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -2.968,
+       -2.0
+      ],
+      "upper_bounds_range": [
+       -0.742,
+       -0.5
+      ],
+      "max_edge_response": 0.45770920953800637
+     },
+     "npl": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 8,
+      "lower_bounds_range": [
+       -0.191846,
+       -0.191846
+      ],
+      "upper_bounds_range": [
+       -0.0479615,
+       -0.0479615
+      ],
+      "max_edge_response": 0.26276969920902143
+     },
+     "npo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       6.3495e+25,
+       2.32285e+26
+      ],
+      "upper_bounds_range": [
+       2.5398e+26,
+       9.2914e+26
+      ],
+      "max_edge_response": 0.12722273452983043
+     },
+     "nsubo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       5.2415e+22,
+       2.30055e+23
+      ],
+      "upper_bounds_range": [
+       2.0966e+23,
+       9.2022e+23
+      ],
+      "max_edge_response": 11.718906341651806
+     },
+     "nsubw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.027278,
+       3.7854
+      ],
+      "upper_bounds_range": [
+       -0.0068195,
+       15.1416
+      ],
+      "max_edge_response": 1.8802388191617545
+     },
+     "rsbo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.19945,
+       0.03
+      ],
+      "upper_bounds_range": [
+       -0.0498625,
+       0.12
+      ],
+      "max_edge_response": 0.001227070170006323
+     },
+     "rsgo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.037259,
+       0.2475
+      ],
+      "upper_bounds_range": [
+       0.149036,
+       0.99
+      ],
+      "max_edge_response": 0.09815380185329178
+     },
+     "rsw2": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 8,
+      "lower_bounds_range": [
+       -0.176888,
+       -0.176888
+      ],
+      "upper_bounds_range": [
+       -0.044222,
+       -0.044222
+      ],
+      "max_edge_response": 0.17327069724742575
+     },
+     "thecso": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.5911,
+       0.7283
+      ],
+      "upper_bounds_range": [
+       2.3644,
+       2.9132
+      ],
+      "max_edge_response": 0.783200057554749
+     },
+     "thesatgo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 8,
+      "lower_bounds_range": [
+       0.0573,
+       0.0573
+      ],
+      "upper_bounds_range": [
+       0.2292,
+       0.2292
+      ],
+      "max_edge_response": 0.020433630403682648
+     },
+     "thesatlexp": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.5158,
+       1.2217
+      ],
+      "upper_bounds_range": [
+       2.0632,
+       4.8868
+      ],
+      "max_edge_response": 1.4149558131710294
+     },
+     "thesatlw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.206,
+       -0.005391760000000001
+      ],
+      "upper_bounds_range": [
+       -0.0515,
+       -0.0013479400000000002
+      ],
+      "max_edge_response": 0.14445560949111716
+     },
+     "thesatw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.296892,
+       0.09618750000000001
+      ],
+      "upper_bounds_range": [
+       -0.074223,
+       0.38475000000000004
+      ],
+      "max_edge_response": 0.259184097649794
+     },
+     "toxo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       9.852e-10,
+       1.1202e-09
+      ],
+      "upper_bounds_range": [
+       3.9408e-09,
+       4.4808e-09
+      ],
+      "max_edge_response": 10326.299244009844
+     },
+     "vfbl": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0044943,
+       0.0069825
+      ],
+      "upper_bounds_range": [
+       0.0179772,
+       0.02793
+      ],
+      "max_edge_response": 2.787638881797906
+     },
+     "vfblw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.0020375,
+       0.0022407
+      ],
+      "upper_bounds_range": [
+       0.00815,
+       0.0089628
+      ],
+      "max_edge_response": 3.0596811669301167
+     },
+     "vfbw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.054244,
+       0.00359025
+      ],
+      "upper_bounds_range": [
+       -0.013561,
+       0.014361
+      ],
+      "max_edge_response": 2.271293346351937
+     },
+     "vpo": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       3.69015e-06,
+       0.16112
+      ],
+      "upper_bounds_range": [
+       1.47606e-05,
+       0.64448
+      ],
+      "max_edge_response": 0.5494710944776913
+     },
+     "wbet": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       2.712e-10,
+       2.95855e-08
+      ],
+      "upper_bounds_range": [
+       1.0848e-09,
+       1.18342e-07
+      ],
+      "max_edge_response": 0.3139517440486377
+     },
+     "wot": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -2e-08,
+       7.5e-09
+      ],
+      "upper_bounds_range": [
+       -5e-09,
+       3e-08
+      ],
+      "max_edge_response": 0.2083336262022496
+     },
+     "wseg": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       5.29e-09,
+       2.6713e-06
+      ],
+      "upper_bounds_range": [
+       2.116e-08,
+       1.06852e-05
+      ],
+      "max_edge_response": 1.647745625769314
+     },
+     "xcorl": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.22584,
+       0.05849
+      ],
+      "upper_bounds_range": [
+       -0.05646,
+       0.23396
+      ],
+      "max_edge_response": 0.004667700791154071
+     },
+     "xcorlw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.029918,
+       0.014787
+      ],
+      "upper_bounds_range": [
+       -0.0074795,
+       0.059148
+      ],
+      "max_edge_response": 0.0027360343745454507
+     },
+     "xcoro": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       0.026967,
+       0.0462955
+      ],
+      "upper_bounds_range": [
+       0.107868,
+       0.185182
+      ],
+      "max_edge_response": 0.011209602017989574
+     },
+     "xcorw": {
+      "box": [
+       "log-uniform |v|/2..2|v|, sign kept"
+      ],
+      "n_devices_active": 16,
+      "lower_bounds_range": [
+       -0.21826,
+       -0.191814
+      ],
+      "upper_bounds_range": [
+       -0.054565,
+       -0.0479535
+      ],
+      "max_edge_response": 0.004755125816382788
+     }
+    }
+   },
+   "overlap_with_simulated_truth": "the tier c truths perturb non-fitted parameters (pdk2.boxes.MISSPEC_PARAMS / IHP_MISSPEC_PARAMS, by exp(U(-0.25, 0.25))). GF180 B1 contains 9 of the 12 (a0, ags, lpe0, minv, drout, pscbe1, pscbe2, alpha0, beta0; not keta, etab, eu); IHP B1 contains all 9 (mueo, cto, fbet1, lp1, alpl, alplexp, axl, ctlexp, nsubo). On GF180/IHP, B1 can therefore represent the truth's parameter component; this is a property of the simulated tiers and is stated before the run"
+  },
+  "B2": {
+   "name": "physical augmentation, no learned term",
+   "elements": {
+    "rext_ohm": "extrinsic series resistance per side: equal resistors RDEXT (drain terminal to card drain) and RSEXT (card source to ground) in the NGSpice netlist, outside the card; body at the external ground. Box linear [0, 4 * R_side / W], start 0, where R_side = 0.5 * RDSW_start (sky130: divided by W_um * mult; GF180) or RSW1_start (IHP) in ohm*um. sky130 netlist via spice_pdk.simulate_pdk(rs_ext_ohm=...) (added for I4-1; deck unchanged at 0); GF180/IHP via the backends' existing rs_ext_ohm",
+    "heat_kappa": "first-order self-heating factor applied to the NGSpice current: I = I_spice * exp(kappa * |Vds * I_spice| / P_max), P_max = max over the device's included trimmed points of |Vds * I_measured| (fixed per device); box linear [-0.5, 0.5], start 0"
+   },
+   "fitted_jointly_with": "the base-box card parameters (n_active + 2 parameters)",
+   "note": "the GF180/IHP tier c truths contain an extrinsic resistance per side (k * R_side_stock / W, k ~ U(1, 2)) and a per-curve temperature rise (curve i at 27 C + dT_max * P_i / max P, dT_max ~ U(20, 40) K). The B2 resistance has the truth's form; the B2 heating term is pointwise and multiplicative, not the truth's per-curve temperature. Stated before the run"
+  },
+  "B3": {
+   "name": "low-dof shared correction (deployable, bias-only)",
+   "arms": {
+    "B3_d2": "total degree 2 (6 coefficients per polarity, 12 total)",
+    "B3_d3": "total degree 3 (10 per polarity, 20 total)"
+   },
+   "form": "g = OUT_SCALE * tanh(P_pol(u, v)), OUT_SCALE = 1; u, v = |Vgs|/VDD, |Vds|/VDD standardized with the fold training-point mean/std; P_pol = sum over i + j <= d of c_pol,ij u^i v^j with separate coefficients for nMOS and pMOS. Same output map as M_bias; only h differs",
+   "training": "E1 loss (mean over training devices of the paper per-device RRMS of I_sim * exp(g)) + 1e-4 * sum of squared non-constant coefficients; Adam lr 3e-3, 2000 full-batch steps, zero initialization, float64 (deterministic, one fit)",
+   "use": "frozen; held-out card refit with g in the loop (base box), as M_bias"
+  },
+  "B4": {
+   "name": "Kennedy-O'Hagan-type discrepancy (shared)",
+   "target": "y = ln|I_target| - ln|I_sim| (starting-card simulation of the training records) at the included trimmed points with both magnitudes >= 1e-13",
+   "inputs": "x = (is_pmos 0/1, |Vgs|/VDD, |Vds|/VDD), unscaled",
+   "kernel": "k(x, x') = sf2 * exp(-0.5 * sum_{j=1..3} ((x_j - x'_j) / ell_j)^2) + sn2 * delta(x, x'); ARD squared exponential with a separate length scale for is_pmos (cross-polarity correlation exp(-0.5 / ell_1^2)); constant mean m",
+   "hyperparameters": "type-II maximum likelihood of (m, sf2, ell_1..3, sn2) on the fold's training points: exact Gaussian log marginal likelihood, L-BFGS-B (torch gradients, float64, maxiter 200) from m = mean y, sf2 = var y, ell = (1, 0.3, 0.3), sn2 = 0.1 var y; bounds ell in [0.02, 50], sf2 in [1e-4, 1e2] var y, sn2 in [1e-6, 10] var y",
+   "points": "2000 points per fold: floor(2000 / n_training_devices) per device, uniform random without replacement (numpy default_rng(0), devices in record order); all points of a device if it has fewer",
+   "g": "posterior mean m + k(x, X) (K + sn2 I)^-1 (y - m); no clipping, no tanh",
+   "use": "frozen; held-out card refit with g in the loop (base box)"
+  },
+  "B5": {
+   "name": "per-device correction, in-sample upper reference (not a held-out method)",
+   "protocol": "g0 = M_bias-form ensemble (3-16-16-1 tanh, 5 seeds, I3-2 recipe) trained on the held-out device's own starting-card record; held-out card refit with g0 in the loop (base box); g1 = same recipe trained on the refit card's record; score = refit card corrected with g1. Also reported: refit card with g0, starting card with g0",
+   "role": "reference only; not in the rule"
+  }
+ },
+ "evaluation": {
+  "aggregates": "all-device mean (12 devices or 48 targets), combined = mean of the nMOS and pMOS family means, median, per-device values, failed count",
+  "decision_statistic": "GMR(M_bias, X) = exp(mean_i ln(rrms_M_bias_i / rrms_X_i)) over devices where both values are finite and > 0 (failed devices counted and reported); bootstrap 95% CI = 2.5 / 97.5 percentiles over 10000 resamples (numpy default_rng(0)) of devices (REAL_DEV) or of geometries (GF180/IHP, 16 clusters of 3 targets); wins = devices with rrms_M_bias < rrms_X. Computed with i3_2_bias.paired_ratio. Also reported: GMR(X, C0_refit) for every arm and GMR(M_bias, T1_inloop), GMR(M_bias, C0_refit)"
+ },
+ "criterion": {
+  "rule": "For each baseline X in {B1, B2, B3_d2, B3_d3, B4}: X is beaten if (a) the upper bound of the bootstrap 95% CI of GMR(M_bias, X) over the 12 REAL_DEV devices is < 1, or (b) the point estimate of GMR(M_bias, X) over the 48 leave-one-geometry-out targets is < 0.95 on GF180 and < 0.95 on IHP. I3-2 is 'supported against baselines' if every X is beaten; otherwise the result is 'matched by baseline X', listing every X that is not beaten.",
+  "not_in_rule": [
+   "B5 (in-sample reference)",
+   "T1_inloop",
+   "C0_refit_rerun (reproduction check)",
+   "I4-2",
+   "REAL_TEST"
+  ],
+  "implementation": "i4_1_baselines.decide_rule; scripts/research/explore/i4_1_baselines.py --mode decide writes out/research/explore/I4_1/decision.json"
+ },
+ "I4_2_interpretation_analysis": {
+  "role": "reported, not deciding; uses stored I3-2 fold models (out/research/explore/I3_2/{real_dev,gf180_c_logo,ihp_c_logo}/corrections.json, keys M_bias|<fold>) and stored records; no simulation",
+  "g_surface": "g of each fold model on a 41 x 41 grid of (|Vgs|/VDD, |Vds|/VDD) in [0, 1]^2 for nMOS and pMOS; mean, standard deviation, min and max over the fold models (12 REAL_DEV, 16 per PDK); heat-map PNG per dataset",
+  "physical_signatures": "on each device's included trimmed measured points, with the device's own held-out fold model: Vth = maximum-transconductance linear extrapolation on the measured Id-Vg curve with the smallest |Vds| (|Vg*| - |I*|/gm* - |Vds|/2); regions subthreshold |Vgs| < Vth, saturation |Vgs| >= Vth and |Vds| >= |Vgs| - Vth, linear otherwise, high_vds |Vds|/VDD >= 0.6; per polarity (pooled points): mean g per region, point-biserial correlation of g with each region indicator, Pearson correlation of g with the starting-card log residual ln|I_meas / I_start|",
+  "t1_comparison": "per held-out device and included curve: the fold's E1 T1 gain for (family, curve tag) (out/research/explore/E1/{real_dev_lodo,<pdk>_c_logo}/fold_corrections.json) vs the mean of the fold's M_bias g over that curve's included trimmed points; Pearson correlation and mean |difference|, overall and per curve kind"
+ },
+ "data_reuse_note": "REAL_DEV has been used by E1, I2-1, I3-2 and its follow-ups. I4-1 REAL_DEV results are development evidence, not a held-out test. REAL_TEST is loaded only at the method freeze",
+ "compute": {
+  "real": "one queue job, process pool (4 workers, 1 torch thread each)",
+  "simulated": "one queue job per PDK (6 workers)",
+  "order": "real first, then GF180, IHP, decide, analyze; one heavy job at a time (queue runner)",
+  "smoke": "1 fold, B5 1 seed, B3/B5 200 steps, full refit settings; output smoke_* directories, labelled smoke, not used for any conclusion"
+ },
+ "frozen_choices_note": "All choices above were fixed before any B1-B5 held-out result existed. No result is used to change them; a later variant gets a new id or a dated amendment that leaves this file unchanged"
+}
