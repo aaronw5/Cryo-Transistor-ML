@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-20 · i3_2_bias
+
+Folder: [2026-10-20_i3_2_bias/](2026-10-20_i3_2_bias/) · [tables.md](2026-10-20_i3_2_bias/tables.md) · [README.md](2026-10-20_i3_2_bias/README.md)
+
+- I3-2 (REAL_DEV leave-one-device-out, held-out card refit with the frozen correction), all-device (combined): C0_refit 0.1072 (0.0981), M_bias 0.0806 (0.0749), M_bias_geom 0.0914 (0.0879), T1_inloop 0.0820 (0.0760); 0 failed. R(M_bias, C0_refit) 0.769 [0.666, 0.886], 11/12; R(M_bias, T1_inloop) 0.968 [0.920, 1.011].
+- GF180 tier c: C0_refit 0.0457, M_bias 0.0399, T1_inloop 0.0391; R(M_bias, C0_refit) 0.880, 42/48. IHP tier c: C0_refit 0.1011, M_bias 0.0871, T1_inloop 0.0921, M_bias_geom 0.0966; R(M_bias, C0_refit) 0.885 [0.789, 1.005], 32/48, 0 failed.
+- Rule output (R1-R4): CONTINUE. Development evidence on REAL_DEV; REAL_TEST not loaded.
+
+Figures and tables: [01_i3_2_process.png](2026-10-20_i3_2_bias/01_i3_2_process.png) · [02_table_i3_2_decision.png](2026-10-20_i3_2_bias/02_table_i3_2_decision.png) · [03_table_i3_2_real_results.png](2026-10-20_i3_2_bias/03_table_i3_2_real_results.png) · [04_table_i3_2_sim_results.png](2026-10-20_i3_2_bias/04_table_i3_2_sim_results.png) · [05_i3_2_real_per_device.png](2026-10-20_i3_2_bias/05_i3_2_real_per_device.png) · [06_i3_2_g_surface.png](2026-10-20_i3_2_bias/06_i3_2_g_surface.png) · [07_i3_2_iv_pmos_L0p35_W0p55.png](2026-10-20_i3_2_bias/07_i3_2_iv_pmos_L0p35_W0p55.png) · [08_i3_2_iv_pmos_L2_W5.png](2026-10-20_i3_2_bias/08_i3_2_iv_pmos_L2_W5.png) · [09_i3_2_iv_nmos_L20_W0p64.png](2026-10-20_i3_2_bias/09_i3_2_iv_nmos_L20_W0p64.png) · [10_table_i3_2_caveats.png](2026-10-20_i3_2_bias/10_table_i3_2_caveats.png)
+
 ## 2026-10-20 · explore_i2_e3b
 
 Folder: [2026-10-20_explore_i2_e3b/](2026-10-20_explore_i2_e3b/) · [tables.md](2026-10-20_explore_i2_e3b/tables.md) · [README.md](2026-10-20_explore_i2_e3b/README.md)

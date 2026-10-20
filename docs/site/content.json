@@ -314,6 +314,14 @@
       ]
      },
      {
+      "text": "I3-2 bias-only correction, REAL_DEV all-device (combined): C0_refit 0.1072 (0.0981), M_bias 0.0806 (0.0749), T1_inloop 0.0820 (0.0760); R(M_bias, C0_refit) 0.769 [0.666, 0.886], 11/12. R4: GF180 R = 0.880, 0 failed; IHP R = 0.885, 0 failed. Rule output CONTINUE (development evidence).",
+      "source": [
+       "out/research/explore/I3_2/real_dev/results.json",
+       "out/research/explore/I3_2/decision.json"
+      ],
+      "claim": "i3-2"
+     },
+     {
       "text": "I2-0 (diagnostic only): two low-denominator pMOS devices and one E3 test device crossing the BSIM4 u0 switch determined several iteration-1 means. Without them E2 becomes INCONCLUSIVE and E3 CONTINUE; E1, E4, E5 unchanged; stored verdicts stand. The u0 fix was applied after user approval (commits 40545e0, 787e8aa).",
       "source": [
        "out/research/explore/I2_0/diagnosis.md",
@@ -4304,6 +4312,183 @@
     "scripts/research/explore/e3_temp_misspec.py",
     "src/cryoml/explore/e3_temp.py",
     "scripts/research/plot_explore_i2_e3b.py"
+   ],
+   "updated": "2026-10-20"
+  },
+  {
+   "id": "i3-2",
+   "tab": "explore",
+   "statement": "I3-2: a correction g(is_pmos, |Vgs|/VDD, |Vds|/VDD) with no geometry input, trained on 11 REAL_DEV devices and used in the loop of the held-out device's 43-parameter card refit, gives held-out all-device RRMS 0.0806 vs 0.1072 for the refit without a correction (lower on 11 of 12 devices) and 0.0820 for the per-tag gain table; the pre-registered rule output is CONTINUE. REAL_DEV values are development evidence.",
+   "status": "in_progress",
+   "headline": {
+    "value": "continue (development set): M_bias 0.0806 vs C0_refit 0.1072, R = 0.769 [0.666, 0.886]",
+    "convention": "REAL_DEV leave-one-device-out, 12 devices, all-device mean strict paper RRMS after the held-out card refit with the frozen correction; R = paired geometric-mean ratio M_bias / C0_refit with device-bootstrap 95% CI; 0 failed devices"
+   },
+   "numbers": [
+    {
+     "label": "REAL_DEV all-device: C0_refit / M_bias / M_bias_geom / T1_inloop",
+     "value": "0.1072 / 0.0806 / 0.0914 / 0.0820",
+     "convention": "12 devices, 0 failed in every arm; C0_refit and T1_inloop are stored rows reproduced by reruns with max |difference| 0",
+     "source": "out/research/explore/I3_2/real_dev/results.json"
+    },
+    {
+     "label": "REAL_DEV combined: C0_refit / M_bias / M_bias_geom / T1_inloop",
+     "value": "0.0981 / 0.0749 / 0.0879 / 0.0760",
+     "convention": "mean of the nMOS (5) and pMOS (7) family means",
+     "source": "out/research/explore/I3_2/real_dev/results.json"
+    },
+    {
+     "label": "REAL_DEV median: C0_refit / M_bias / M_bias_geom / T1_inloop",
+     "value": "0.0820 / 0.0605 / 0.0596 / 0.0650",
+     "convention": "median over 12 devices",
+     "source": "out/research/explore/I3_2/real_dev/results.json"
+    },
+    {
+     "label": "R(M_bias, C0_refit) [95% CI], devices lower",
+     "value": "0.769 [0.666, 0.886], 11/12",
+     "convention": "exp(mean ln ratio); 10000 device resamples, default_rng(0)",
+     "source": "out/research/explore/I3_2/real_dev/results.json"
+    },
+    {
+     "label": "R(M_bias, T1_inloop) / R(M_bias_geom, C0_refit) / R(M_bias_geom, M_bias)",
+     "value": "0.968 [0.920, 1.011] (7/12) / 0.894 [0.702, 1.171] (7/12) / 1.163 [0.992, 1.413] (4/12)",
+     "convention": "paired, device bootstrap",
+     "source": "out/research/explore/I3_2/real_dev/results.json"
+    },
+    {
+     "label": "Reference rows (refit): E1 M_post / I2-1 M_joint / I2-1 T1_joint",
+     "value": "0.0871 / 0.0903 / 0.0803",
+     "convention": "all-device, stored rows; not used in the rule",
+     "source": "out/research/explore/I3_2/real_dev/results.json"
+    },
+    {
+     "label": "Post-hoc on the starting card (no refit): C0_start / M_bias / M_bias_geom",
+     "value": "0.1073 / 0.0857 / 0.1115",
+     "convention": "all-device; diagnostic",
+     "source": "out/research/explore/I3_2/real_dev/results.json"
+    },
+    {
+     "label": "GF180 tier c (R4)",
+     "value": "GF180: C0_refit 0.0457, M_bias 0.0399, M_bias_geom 0.0407, T1_inloop 0.0391; R(M_bias, C0_refit) 0.880 [0.837, 0.921], 42/48 lower, 0 failed; R(M_bias, T1_inloop) 1.023 [0.982, 1.066]",
+     "convention": "48 simulated targets, leave-one-geometry-out, geometry-cluster bootstrap",
+     "source": "out/research/explore/I3_2/gf180_c_logo/results.json"
+    },
+    {
+     "label": "IHP tier c (R4)",
+     "value": "IHP: C0_refit 0.1011, M_bias 0.0871, M_bias_geom 0.0966, T1_inloop 0.0921; R(M_bias, C0_refit) 0.885 [0.789, 1.005], 32/48 lower, 0 failed; R(M_bias, T1_inloop) 0.950 [0.874, 1.036]",
+     "convention": "48 simulated targets, leave-one-geometry-out, geometry-cluster bootstrap",
+     "source": "out/research/explore/I3_2/ihp_c_logo/results.json"
+    },
+    {
+     "label": "Verilog-A export of the full 12-device M_bias",
+     "value": "207 lines; max |g difference| vs Python 1.6e-11",
+     "convention": "200 random bias points; text only, not compiled",
+     "source": "out/research/explore/I3_2/real_dev/m_bias_sky130_dev_full.va"
+    }
+   ],
+   "what": [
+    "Question: E1 stage 2 and I2-1 showed that a per-(family, curve tag) gain table T1 lowers the held-out RRMS after the card refit, while the E1 network M (inputs is_pmos, |Vgs|/VDD, |Vds|/VDD, log10 L, log10 W, log10 |I_sim| L/W) does not reach T1. A curve tag is a fixed terminal bias, so T1 is a function of polarity and bias only. I3-2 tests whether a smooth network of polarity and bias only, with no geometry input and no simulated-current input, matches T1 and beats the refit without a correction.",
+    {
+     "type": "list",
+     "items": [
+      "Corrected current: I_corr(V) = I_sim(card; V) · exp(g(x)), x = (is_pmos, |Vgs|/VDD, |Vds|/VDD), VDD = 1.85 V. The multiplication keeps the sign and zero crossings of I_sim.",
+      "g(x) = (1/5) Σ_{s=0..4} tanh(h_s(z)), z = standardized x (fold training mean and std; is_pmos kept 0/1); h_s = MLP 3-16-16-1 with tanh hidden units and a zero-initialized last layer (353 weights per member).",
+      "Training loss = (1/N_train) Σ_devices RRMS_dev(I_sim · exp(g), I_meas) + 1e-4 Σ ||W||², RRMS_dev = mean over the frozen-included curves of RMSE / mean |I_meas| on the trimmed points (paper metric). Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4.",
+      "Held-out refit: minimize the residuals of I_bsim(card) · exp(g) against the held-out device's measured curves over the 43 card parameters (ngspice_fit.polish, trust-region least squares, max_nfev 400, 2 IRLS rounds, diff_step 0.01), starting from the device's direct43_r3_fd card; g frozen. Score: fresh NGSpice simulation of the best card times exp(g), strict paper RRMS with frozen inclusion.",
+      "Arms: C0_refit (control, same refit with g = 0); M_bias (primary); M_bias_geom (secondary, adds log10 L and log10 W: 5-16-16-1); T1_inloop (per-tag gains, not deployable, comparator).",
+      "Rule (pre-registered): CONTINUE only if R1 upper CI bound of R(M_bias, C0_refit) < 1 on REAL_DEV; R2 M_bias all-device <= T1_inloop + 0.005; R3 0 failed devices; R4 R(M_bias, C0_refit) <= 0.90 and 0 failed on GF180 or IHP tier c. STOP otherwise."
+     ]
+    }
+   ],
+   "did": [
+    "Pre-registration `out/research/explore/I3_2/prereg.json` (commit f7f6378), written before any M_bias or M_bias_geom result.",
+    "Code commit 4c7c66b: `src/cryoml/explore/i3_2_bias.py` (BiasCorrection, fit_bias, paired_ratio, Verilog-A writer), `scripts/research/explore/i3_2_bias.py` (modes real, pdk2, decide, export), `tests/test_i3_2_bias.py` (10 cases; fit_bias with the six E1 columns and width 32 reproduces E1 fit_arm('M') to 1e-12). Smoke runs (1-2 folds, 1 seed, 200 steps) checked the code only.",
+    "Inputs: the 12 REAL_DEV devices (real_split.json); the starting cards out/research/polished/direct43_r3_fd/real/summary.json (direct NGSpice fit round 3 + FD polish, 43 parameters, round-3 box); the E1 records out/research/explore/E1/real_dev.{npz,json} (measured curves and one NGSpice simulation of each starting card on the measured bias grid).",
+    "Queue job `I3_2_real` (2026-10-20 00:44-00:52, 477 s): 12 folds; 125 training tasks (12 folds x 2 arms x 5 seeds, plus 5 seeds of the full 12-device model) in 316 s; 48 held-out refits (M_bias, M_bias_geom, C0 rerun, T1 rerun) in 160 s with 130-403 NGSpice runs each. The full model was written to Verilog-A text.",
+    "Queue job `I3_2_gf180` (00:52-01:22, 1819 s): 16 leave-one-geometry-out folds, 48 targets; T1_inloop is a new run on GF180. Queue job `I3_2_ihp` (1944 s): same on IHP SG13G2 (PSP103).",
+    "Queue job `I3_2_decide` evaluates R1-R4 from the three result files and writes `out/research/explore/I3_2/decision.json`.",
+    "Report `scripts/research/plot_explore_i3_2.py` (batch 2026-10-20_i3_2_bias) reads stored files only, recomputes every aggregate and paired ratio from the per-device values and checks them against the stored values; the published-card row is scored from the upstream committed sweeps and checked against out/research/reference_scores.json."
+   ],
+   "result": {
+    "text": [
+     "REAL_DEV checks: R1 R = 0.769 [0.666, 0.886], upper bound < 1: met. R2 0.08055 <= 0.08198 + 0.005: met. R3 0/12 failed: met. R4 GF180 R = 0.880, 0 failed; IHP R = 0.885, 0 failed: met. Rule output CONTINUE.",
+     "M_bias is lower than C0_refit on 11/12 devices (higher on nmos_L0p15_W1p6: 0.0235 vs 0.0193). M_bias vs T1_inloop: R = 0.968 [0.920, 1.011], 7/12 lower; the CI includes 1.",
+     "Adding log L and log W (M_bias_geom) raises the held-out RRMS: 0.0914 vs 0.0806, R(M_bias_geom, M_bias) = 1.163 [0.992, 1.413], lower on 4/12.",
+     "Learned g (full 12-device model, in-sample): nMOS g within [-0.09, 0.04]; pMOS g within [-0.32, 0.16], with the largest negative values at |Vds| below 0.1 V and positive values near |Vds| = 0.37 V, |Vgs| above 1.4 V.",
+     "The I-V figures plot the starting card and the starting card times exp(g) of the fold model. The refit-card curves are not stored; plotting them needs NGSpice runs of the cards in heldout_cards.json, which the report does not do."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "01_i3_2_process.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "02_table_i3_2_decision.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "03_table_i3_2_real_results.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "04_table_i3_2_sim_results.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "05_i3_2_real_per_device.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "06_i3_2_g_surface.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "07_i3_2_iv_pmos_L0p35_W0p55.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "08_i3_2_iv_pmos_L2_W5.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "09_i3_2_iv_nmos_L20_W0p64.png"
+     },
+     {
+      "batch": "2026-10-20_i3_2_bias",
+      "file": "10_table_i3_2_caveats.png"
+     }
+    ]
+   },
+   "caveats": [
+    "REAL_DEV was used for the design and decision of E1 and I2-1, and the I3-2 hypothesis was formed from the REAL_DEV T1 and M results. The REAL_DEV values are development evidence, not a held-out test.",
+    "The 3-input set was chosen after the E1 and I2-1 REAL_DEV results were seen; it was fixed in the pre-registration before any M_bias result.",
+    "R2 is a non-inferiority test against T1 (+0.005); M_bias does not separate from T1 (CI of the ratio includes 1).",
+    "The Verilog-A text is not compiled or simulated; it is checked by evaluating the emitted assignments in Python. abs() folds reverse-mode bias onto forward mode.",
+    "REAL_TEST (6 devices) is not loaded by any I3_2 script.",
+    "12 devices; pmos_L0p35_W0p55 (M_bias 0.3496) contributes 36% of the M_bias all-device sum.",
+    "Simulated arm (R4, secondary): IHP R(M_bias, C0_refit) 0.885 [0.789, 1.005] has a CI that includes 1; on GF180 T1_inloop is lower than M_bias (R(M_bias, T1_inloop) 1.023 [0.982, 1.066]).",
+    "The held-out card refit uses the held-out device's measured curves (card extraction); only g is held out. C0_refit uses the same refit with g = 0."
+   ],
+   "sources": [
+    "out/research/explore/I3_2/prereg.json",
+    "out/research/explore/I3_2/NOTES.md",
+    "out/research/explore/I3_2/real_dev/results.json",
+    "out/research/explore/I3_2/real_dev/corrections.json",
+    "out/research/explore/I3_2/real_dev/heldout_cards.json",
+    "out/research/explore/I3_2/real_dev/m_bias_sky130_dev_full.va",
+    "out/research/explore/I3_2/gf180_c_logo/results.json",
+    "out/research/explore/I3_2/ihp_c_logo/results.json",
+    "out/research/explore/I3_2/decision.json",
+    "out/research/explore/real_split.json",
+    "out/research/explore/E1/real_dev.json",
+    "out/research/polished/direct43_r3_fd/real/summary.json",
+    "src/cryoml/explore/i3_2_bias.py",
+    "src/cryoml/explore/e1_correction.py",
+    "scripts/research/explore/i3_2_bias.py",
+    "scripts/research/explore/i2_1_joint.py (heldout_task, _refit)",
+    "scripts/research/plot_explore_i3_2.py",
+    "commits f7f6378 (pre-registration), 4c7c66b (code)"
    ],
    "updated": "2026-10-20"
   }

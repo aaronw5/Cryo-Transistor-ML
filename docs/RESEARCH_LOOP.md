@@ -701,3 +701,25 @@ Report batch: `out/research/report/2026-10-20_explore_i2_e3b/20_table_temp_bench
 
 I2-0 diagnosis complete (u0 fix applied); I2-1 KILL; E3b CONTINUE on simulated tier M (tier W INCONCLUSIVE).
 Iteration 3 is being designed.
+
+## Iteration 3, I3-2 (2026-10-20 01:55): bias-only correction with the held-out card refit in the loop
+
+Pre-registration `out/research/explore/I3_2/prereg.json` (commit f7f6378); code commit 4c7c66b
+(`src/cryoml/explore/i3_2_bias.py`, `scripts/research/explore/i3_2_bias.py`). Queue jobs `I3_2_real` (00:44-00:52,
+477 s), `I3_2_gf180` (00:52-01:22, 1820 s), `I3_2_ihp` (01:22-01:55, 1944 s), `I3_2_decide` (01:55).
+Correction I_corr = I_sim · exp(g), g = mean over 5 seeds of tanh(MLP 3-16-16-1 of is_pmos, |Vgs|/VDD, |Vds|/VDD),
+trained post-hoc on the E1 starting-card records of the training devices (loss = mean paper RRMS + 1e-4 L2, Adam
+3e-3, 2000 steps); held-out 43-parameter card refit from direct43_r3_fd with g frozen in the loop (max_nfev 400,
+irls 2), strict frozen-inclusion RRMS.
+REAL_DEV leave-one-device-out, all-device (combined), 0 failed in every arm: C0_refit 0.1072 (0.0981), M_bias
+0.0806 (0.0749), M_bias_geom 0.0914 (0.0879), T1_inloop 0.0820 (0.0760). R(M_bias, C0_refit) 0.769 [0.666, 0.886],
+11/12; R(M_bias, T1_inloop) 0.968 [0.920, 1.011], 7/12; R(M_bias_geom, M_bias) 1.163 [0.992, 1.413], 4/12.
+C0_refit and T1_inloop reruns reproduce the stored rows (max |difference| 0).
+Simulated tier c, 48 targets each: GF180 C0_refit 0.0457, M_bias 0.0399, T1_inloop 0.0391, R 0.880 [0.837, 0.921],
+42/48; IHP C0_refit 0.1011, M_bias 0.0871, T1_inloop 0.0921, R 0.885 [0.789, 1.005], 32/48; 0 failed.
+Checks: R1 met, R2 met (0.08055 <= 0.08698), R3 met, R4 met (GF180 and IHP R <= 0.90). Rule output CONTINUE
+(`out/research/explore/I3_2/decision.json`). REAL_DEV values are development evidence (REAL_DEV reused by E1, I2-1
+and the I3-2 design; the input set was chosen after I2-1). M_bias does not separate from T1_inloop. The full
+12-device M_bias is written as Verilog-A text (207 lines, not compiled). REAL_TEST not loaded.
+Report batch: `out/research/report/2026-10-20_i3_2_bias/` (process diagram, decision, results, per device, g
+surface, I-V of pmos_L0p35_W0p55, pmos_L2_W5, nmos_L20_W0p64, caveats); site claim `i3-2`.

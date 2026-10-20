@@ -1,0 +1,40 @@
+{
+ "prereg": "out/research/explore/I3_2/prereg.json",
+ "checks": {
+  "R1_real_ci_high_lt_1": true,
+  "R2_real_mean_le_T1_inloop_plus_0.005": true,
+  "R3_real_zero_failed": true,
+  "R4_sim_ratio_le_0.90_on_gf180_or_ihp": true
+ },
+ "R4_detail": {
+  "gf180": {
+   "ratio": 0.8802910179721838,
+   "n_failed": 0,
+   "pass": true
+  },
+  "ihp": {
+   "ratio": 0.885270220816682,
+   "n_failed": 0,
+   "pass": true
+  }
+ },
+ "R1_detail": {
+  "n": 12,
+  "n_used": 12,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 11,
+  "ties": 0,
+  "ratio": 0.7686407348345207,
+  "resample_unit": "device",
+  "ci_low": 0.6657084307067073,
+  "ci_high": 0.8864997002966597,
+  "n_boot": 10000
+ },
+ "R2_detail": {
+  "M_bias_mean": 0.08055011508432668,
+  "T1_inloop_mean": 0.0819828319052915
+ },
+ "decision": "continue",
+ "note": "REAL_DEV results are development evidence (prereg data_reuse_note)"
+}
