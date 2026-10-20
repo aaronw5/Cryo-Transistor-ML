@@ -723,3 +723,18 @@ and the I3-2 design; the input set was chosen after I2-1). M_bias does not separ
 12-device M_bias is written as Verilog-A text (207 lines, not compiled). REAL_TEST not loaded.
 Report batch: `out/research/report/2026-10-20_i3_2_bias/` (process diagram, decision, results, per device, g
 surface, I-V of pmos_L0p35_W0p55, pmos_L2_W5, nmos_L20_W0p64, caveats); site claim `i3-2`.
+
+## I3-2 follow-up F1/F2 (2026-10-20): pre-registered, code and smoke done, queued
+
+Pre-registration `out/research/explore/I3_2/followup_prereg.json` (commit 4ae726a), amendment
+`followup_prereg_amendment_2026-10-20.json` (commit 4f4e7ef), code commit 5fb08d6. The follow-ups do not change
+the I3-2 decision. F1: compile the exported M_bias Verilog-A (12 fold models + full model) with OpenVAF-Reloaded
+and run it around the BSIM4 instance in NGSpice. ngspice-41 arm64 has no OSDI (configured without it), so F1 uses
+ngspice-46 and first compares ngspice-46 with ngspice-41 on the uncorrected cards. The exported sense line
+`V(sense) <+ 0.0;` compiles but conducts no current in ngspice-46; F1 uses `V(sense) <+ RS * I(sense);` with
+RS = 0. Smoke (2 devices): ngspice-46 = ngspice-41 exactly (difference 0.0); SPICE-native vs Python-corrected
+max relative difference 9.7e-4 at default reltol 1e-3 and 1.0e-8 at reltol 1e-9; SPICE-native minus stored
+M_bias RRMS <= 9.7e-6. F2: REAL_DEV seed sets {5-9, 10-14, 15-19}, widths 8 and 32, 3-16-1, g trained on
+round-1 43-parameter cards; GF180/IHP tier b sets 0-2 (tier c has only sets 0-2). Queue jobs I3_2_F1,
+I3_2_F2_real, I3_2_F2_gf180_b, I3_2_F2_ihp_b, I3_2_F2_summary (about 65-80 min after the I3_1 jobs).
+REAL_TEST not loaded.
