@@ -1,0 +1,166 @@
+{
+ "id": "I6_1",
+ "title": "Temperature contrast for the I3-2 bias-only correction: TU Delft 40-nm CMOS measured at 4.2 K and 295 K with a public BSIM4 card",
+ "iteration": "exploration iteration 6, direction I6-1",
+ "written": "2026-10-20",
+ "status": "pre-registered before any correction fit and before the starting-card fits. Done before this file: parsing of the campaign-1 files into the dataset (out/research/explore/I6_1/data/manifest.json), the DEV/TEST split (split.json; seeded draw over W/L pairs, no data used beyond the device headers), the stock-card simulation of the DEV devices (stock/stock_rrms.json; no fit), and a box-width trial of the starting fit on 3 DEV devices (box_trial.json; card fits only, no correction). Smoke runs (smoke_* directories) are run after this file, check the code only and are not used for the decision",
+ "hypothesis": "The bias-only learned correction lowers held-out error when the compact model has a model-form error that a local refit of the card parameters cannot absorb (here: BSIM4 used at 4.2 K, outside its validity range), and does not lower it when the compact model fits the device (here: the same devices and card at 295 K)",
+ "prediction": "on the same DEV devices: at 4.2 K the I3-2 conditions R1-R3 hold and every I4-1 baseline (B1, B2, B3_d3) is beaten; at 295 K R1 does not hold",
+ "parents": {
+  "I3_2_decision": "out/research/explore/I3_2/decision.json: sky130 77 K REAL_DEV M_bias 0.08055 vs C0_refit 0.10719 all-device; GMR 0.769 [0.666, 0.886], 11/12 wins",
+  "I4_1_decision": "out/research/explore/I4_1/decision.json: M_bias beat B1, B2, B3_d2, B3_d3, B4 on sky130 REAL_DEV",
+  "I5_1_decision": "out/research/explore/I5_1/decision.json: IHP SG13G2 300 K not replicated: GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18 wins; matched by B1, B2",
+  "I3_1_catalog": "out/research/explore/I3_1/real_data_catalog.json, candidate rank 1 (Delft 40-nm dataset)"
+ },
+ "data": {
+  "source": "4TU.ResearchData doi:10.4121/c41c26f7-586f-48ca-8abe-9127b2d97c60.v1 (G. Kiene, S. Ilik, L. Mastrodomenico, M. Babaie, F. Sebastiano, TU Delft), CC0; main.zip results/dc folder (1,717 .npy files, I3-1 download, local copy data/external/delft_kiene_40nm_lfn, not committed). Each file is one pickled dict; read by cryoml.explore.i6_1_tudelft.read_npy_dict with an unpickler restricted to numpy _reconstruct / ndarray / dtype / scalar, under python -I; nothing from the download is executed",
+  "devices": "campaign 1 ('standard triode and diode sweep, main bias exploration'), the 69 low-Vt core devices (NF = 1) with a campaign-1 file at both file temperatures 4 and 300: 10 (polarity, W, L) groups of 2-8 nominally identical copies on one die per polarity (nMOS sample 3, pMOS sample 5): nMOS W/L (um) 0.12/0.04 (8), 0.12/0.05 (3), 0.36/0.04 (2), 1/0.04 (8, high-current array), 1/0.36 (8), 1/1 (8), 4/4 (8); pMOS 1/0.04 (8, high-current array), 1/1 (8), 4/4 (8). Other campaigns (2: 1,400 files with 3 curves over Vg 1.05-1.1 V; 3-10, 99: debug or repeat runs on few devices) are not used",
+  "temperatures": "labels 4 and 295: stage readings {'4': [4.1328237991614305, 4.143838420501377], '295': [294.9965715677712, 295.0078382376629]} K (mean of temperature_meas_start and _end per file; the deck temperature)",
+  "curves": "per device and temperature 23 curves of 111 points: 12 Id-Vg (keys idvg@d0..d11, ascending |Vd|: 0.05 V and 11 values up to 1.1 V) and 11 Id-Vd (idvd@g0..g10, ascending |Vg|, Vd 0..1.1 V). Vg sweep start: nMOS 0.45 V (4 K), 0.30 V (295 K); pMOS -0.60 V (4 K), -0.40 V (295 K); the sweeps start near or above threshold (no deep subthreshold). The bias grid is identical across devices of one polarity and temperature (manifest bias_grid)",
+  "measurement_facts_from_files": {
+   "terminals": "voltages Vgs, Vds (pMOS negative); drain current nMOS > 0, pMOS < 0; no bulk bias and no gate / bulk / source current stored; bulk taken as tied to the source",
+   "quantization": "float64 arrays; smallest nonzero |Id| 4.87e-14 A; smallest step between distinct |Id| values 1.28e-13 A; no exact zeros; 308 points (near Vd = 0) with sign opposite to the bias",
+   "compliance": "no compliance setting stored; largest |Id| 0.000873 A; no curve repeats its maximum value (no clipping seen)"
+  },
+  "inclusion_rule": "frozen from the measured current only (cryoml.pdk2.metric, as I5-1): clean_current, trim the leading points up to the first |I| > 1e-10 A, denominator = mean |I| of the trimmed measured curve; included iff denominator > 3e-7 A (Id-Vd) or > 2e-7 A (Id-Vg). Result: 3161 of 3174 curves included, 22-23 per device and temperature",
+  "dataset_files": "out/research/explore/I6_1/data/tudelft40.npz (not committed), data/manifest.json (committed)",
+  "split": {
+   "file": "out/research/explore/I6_1/split.json",
+   "rule": "by W/L pair: the 3 W/L pairs measured in both polarities (1/0.04, 1/1, 4/4) and the 4 nMOS-only pairs; TEST = every device of 1 shared pair (both polarities) and 1 nMOS-only pair; numpy.random.default_rng(20261020), one draw from the sorted shared pairs, then one from the sorted nMOS-only pairs (cryoml.explore.i6_1_tudelft.make_split)",
+   "TEST_pairs": [
+    [
+     4.0,
+     4.0
+    ],
+    [
+     1.0,
+     0.36
+    ]
+   ],
+   "DEV_groups": [
+    "t40_nmos_W0p12_L0p04",
+    "t40_nmos_W0p12_L0p05",
+    "t40_nmos_W0p36_L0p04",
+    "t40_nmos_W1_L0p04",
+    "t40_nmos_W1_L1",
+    "t40_pmos_W1_L0p04",
+    "t40_pmos_W1_L1"
+   ],
+   "TEST_groups": [
+    "t40_nmos_W1_L0p36",
+    "t40_nmos_W4_L4",
+    "t40_pmos_W4_L4"
+   ],
+   "counts": "DEV 45 devices in 7 groups (nMOS 0.12/0.04 x8, 0.12/0.05 x3, 0.36/0.04 x2, 1/0.04 x8, 1/1 x8; pMOS 1/0.04 x8, 1/1 x8); TEST 24 devices (nMOS 1/0.36 x8, 4/4 x8; pMOS 4/4 x8)",
+   "TEST_policy": "TEST devices are not loaded by the stock, start, screen, LODO, decide or figs modes and no TEST curve has been simulated. At a method freeze: starting cards for TEST with the budget below, M_bias trained on all DEV devices at the temperature, held-out refit of each TEST device with the settings below, the same statistics"
+  }
+ },
+ "compact_model": {
+  "card": "BSIM4 (level 54, version 4.5.0) N1 (nMOS) and P1 (pMOS) from ngspice-41 examples/mos/ro_17_4.cir, labelled there 'Short channel models from CMOS Circuit Design, Layout, and Simulation, 50nm BSIM4 models VDD=1V, see CMOSedu.com' (R. J. Baker). Copied verbatim to out/research/explore/I6_1/card/ngspice41_ro_17_4_cmosedu50nm_bsim4.mod (committed)",
+  "license": "ngspice COPYING: the Modified BSD license applies to all ngspice source code, test and example files (Copyright 1985-2018, Regents of the University of California and others)",
+  "why_this_card": "no foundry card of the measured 40-nm process is public. PTM 45 nm (ASU) cards were not used: ptm.asu.edu does not resolve, the current host (mec.umn.edu/ptm) serves no card file without a script-rendered page, and no license statement was found for the mirrored 45nm.pm (VTR repository readme states only that it was generated with the PTM tool). The BSIM4 QA card in ngspice tests/bsim4 has xl = -30 nm and lint = 5.25 nm, which gives a non-positive effective length at L = 40 nm. The CMOSedu card has lint = 12 nm and no xl (Leff = 16 nm at L = 40 nm) and toxe = 1.4 nm",
+  "temperature_handling": "deck .options temp = stage temperature (4.13-4.14 K or 295.0 K); TNOM = 27 C as in the card; the temperature-coefficient parameters kt1, kt1l, kt2, ute, ua1, ub1, uc1, at, prt are set to 0, so the card values apply at the deck temperature and temperature enters only through BSIM4's built-in kT/q, band-gap and intrinsic-carrier terms (ni and phi are computed at TNOM). A separate card is fitted at each temperature. BSIM4 is not designed for 4.2 K; this is the model-form error the direction tests",
+  "simulator": "ngspice-41 native arm64 build /Users/anrunw/cryo-ng41/arm64/bin/ngspice (the canonical simulator), one process per device and card, all 23 sweeps by alter / dc / wrdata on the measured grid; instance M1 d g s b with w, l, nf = 1, no AD/AS/PD/PS, bulk and source at 0; current = -i(VD). cryoml.explore.i6_1_tudelft.simulate",
+  "setup_check": "stock-card I-V plots of 5 DEV devices at both temperatures (out/research/explore/I6_1/stock/figs): measured and simulated currents have the same sign and sweep layout; the stock card gives the wrong threshold and mobility (expected for a card of another process); starting fits on 3 devices (box_trial.json) reach 0.017-0.079 RRMS",
+  "stock_card_rrms_DEV": {
+   "4K": {
+    "all_device_mean": 5.1053,
+    "median": 5.3436
+   },
+   "295K": {
+    "all_device_mean": 7.2643,
+    "median": 8.6387
+   },
+   "note": "45 DEV devices; the generic card is far from the measured process at both temperatures (stock_rrms.json per group)"
+  }
+ },
+ "cards": {
+  "parameter_set": "the 43-parameter sky130 set (out/cold_loop/full_direct/round_3/spec.json selected_parameters): toxe, toxm, xj, ndep, nsd, dwg, rsh, vth0, k1, k2, k3, dvt0, dvt1, dvt1w, w0, k3b, vfb, lpe0, lpeb, vsat, ua, ub, rdsw, prwg, wr, u0, a0, a2, ags, b0, b1, voff, nfactor, cit, cdscd, eta0, dsub, pclm, pdiblc2, drout, delta, alpha0, beta0",
+  "box": "around the stock card value v: VTH0 and VFB linear v +/- 0.5 V, VOFF linear v +/- 0.3 V; any other parameter with |v| > 1e-19 log-uniform |v|/10 .. 10|v| (sign kept); |v| <= 1e-19 (the card writes 1e-20 for zero): linear B0, B1 [0, 1e-7] m, CIT, CDSCD [0, 2.5e-3] F/m^2, else inactive (k3, k3b, dvt1w, dwg, ags; nMOS also prwg); UB (1.1e-17 nMOS, 8e-18 pMOS) has a box but is inactive under the cryoml.parameter_space.ParameterBox activity rule (hi - lo > 1e-14 * max(|lo|, |hi|, 1)), as UB was in the sky130 43-set fits: 36 active parameters (nMOS), 37 (pMOS). cryoml.explore.i6_1_tudelft.base_box. Chosen after box_trial.json (factor 2 vs 10). The same box is used by the starting fit and every held-out refit",
+  "starting_cards": "per DEV device and temperature: ngspice_fit.polish from the stock card, max_nfev 3000, irls_rounds 3, diff_step 0.01, objective = mean included-curve RRMS (frozen measured inclusion); the best card seen is kept",
+  "training_records": "one NGSpice simulation of each training device's starting card on its measured grid at the temperature"
+ },
+ "correction_model": {
+  "M_bias": "I3-2 recipe unchanged: I = I_card * exp(g), g = 1.0 * tanh(h(x)), h = MLP 3-16-16-1 (tanh hidden, last layer zero-initialized), x = (is_pmos 0/1, |Vgs|/VDD, |Vds|/VDD), inputs standardized with the fold training-point mean/std; loss = mean over training devices of the paper per-device RRMS of the corrected current + 1e-4 * sum of squared weight-matrix entries; Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4, g = mean of the 5 members (cryoml.explore.i3_2_bias.fit_bias)",
+  "VDD": "1.1 V for both polarities: the nominal core supply of the 40-nm process and the largest |V| of every sweep, so |V|/VDD <= 1",
+  "training_pool": "both polarities, one network (is_pmos input), as in I3-2: for a held-out group, all DEV devices of the other 6 groups at the same temperature (31-43 devices)"
+ },
+ "arms": {
+  "C0_refit": "control: held-out card refit without correction from its starting card: ngspice_fit.polish, max_nfev 400, irls_rounds 2, diff_step 0.01 (I3-2 settings)",
+  "M_bias": "PRIMARY: trained post hoc on the fold's training records, frozen, held-out card refit with it in the loop (same settings), best card re-simulated, corrected with the same g, scored",
+  "T1_inloop": "non-deployable comparator: one log-gain per (polarity, curve key) (E1 T1 recipe, e1_correction.fit_arm('T1')) on the fold's training records; held-out refit with it in the loop. Curve keys index the same bias within a polarity and temperature",
+  "B1": "wider BSIM4 parameter set, no correction: base box plus extras fitted jointly from the starting card (extras at their card values). Universe: the 115-name sky130 BSIM4 sensitivity universe (out/pdk_parameter_sensitivity/summary.json) minus the base set and the zeroed temperature coefficients, restricted to names the card defines (55 names). Box (I4-1 rule): nonzero v -> log |v|/2 .. 2|v|; zero v -> i4_1_baselines.BSIM4_ZERO_RANGE if listed, else inactive. Screen per temperature: kept if the edge response >= 1e-4 on at least one DEV starting card at that temperature (i4_1_baselines.edge_response). max_nfev from i4_1_baselines.matched_nfev",
+  "B2": "physical augmentation, no learned term: equal extrinsic series resistors per side outside the card, box linear [0, 4 * (RDSW_start / 2) / W_um] ohm (start 0), plus the first-order heating factor exp(kappa * |Vds I| / P_max), kappa linear [-0.5, 0.5] (start 0); fitted jointly with the base box (I4-1 B2: AugProblem, b2_box); matched max_nfev",
+  "B3_d3": "shared polynomial correction of total degree 3 in the standardized (|Vgs|/VDD, |Vds|/VDD), separate coefficients per polarity (20 total), g = tanh(P); I4-1 recipe (i4_1_baselines.fit_poly); trained on the fold's training records; held-out refit with it in the loop",
+  "B5": "in-sample reference (not a held-out method): I4-1 B5 protocol (g0 = M_bias-form ensemble trained on the held-out device's own starting-card record; refit with g0 in the loop; g1 trained on the refit card's record; score = refit card corrected with g1)"
+ },
+ "evaluation": {
+  "folds": "per temperature, leave-one-geometry-out over the 7 DEV (polarity, W, L) groups: every device of the held-out group is refit and scored; the corrections are trained on the DEV devices of the other 6 groups. With one device per geometry (I3-2, I5-1) this is leave-one-device-out; here the 2-8 nominally identical copies of the held-out geometry stay out of the training set",
+  "metric": "strict paper RRMS with the frozen measured inclusion (e1_correction.score_device pdk2 branch): per included curve RMSE over the trimmed points / trimmed mean |I_measured|, device value = mean over included curves; a non-finite included curve makes the device NaN (failed). Every scored current is a fresh NGSpice simulation of the refit card, multiplied by exp(g) of the frozen correction (M_bias, T1, B3_d3, B5) or by the B2 heating factor with the B2 resistors in the netlist",
+  "aggregates": "all-device mean over the 45 DEV devices, combined = mean of the nMOS and pMOS family means, median, per-device values, failed count; also per group",
+  "decision_statistic": "paired geometric-mean ratio GMR(A, B) = exp(mean_i ln(rrms_A_i / rrms_B_i)) over devices with both values finite and > 0; bootstrap 95% CI = 2.5 / 97.5 percentiles over 10000 resamples of devices (numpy default_rng(0)); wins = devices with rrms_A < rrms_B (cryoml.explore.i3_2_bias.paired_ratio). Also reported, not deciding: the CI from resampling the 7 (polarity, W, L) groups (cluster bootstrap), because copies of one geometry are not independent",
+  "temperature_contrast": "K = GMR over DEV devices of (M_bias / C0_refit at 4 K) / (M_bias / C0_refit at 295 K), i.e. exp(mean_i [ln(M4_i / C4_i) - ln(M295_i / C295_i)]), device bootstrap as above"
+ },
+ "criterion": {
+  "conditions_per_temperature": {
+   "R1": "the upper bound of the device-bootstrap 95% CI of GMR(M_bias, C0_refit) over the 45 DEV devices is < 1",
+   "R2": "M_bias all-device mean <= T1_inloop all-device mean + 0.005",
+   "R3": "0 failed (NaN) devices for M_bias",
+   "baselines_beaten": "for each X in {B1, B2, B3_d3}: the upper bound of the device-bootstrap 95% CI of GMR(M_bias, X) is < 1"
+  },
+  "premise_P": "C0_refit all-device mean at 4 K >= 1.5 x C0_refit all-device mean at 295 K (the refit leaves a larger error at 4.2 K)",
+  "contrast_K": "upper bound of the device-bootstrap 95% CI of the temperature contrast K is < 1",
+  "outcomes": [
+   {
+    "label": "refuted",
+    "condition": "R1 fails at 4 K",
+    "interpretation": "the correction does not lower held-out error even where BSIM4 is used outside its validity range; together with I5-1 the I3-2 gain is not explained by model-form error of this kind"
+   },
+   {
+    "label": "inconclusive",
+    "condition": "R1 holds at 4 K, R2 or R3 fails at 4 K",
+    "interpretation": "the gain over C0_refit exists but the continuous correction is worse than the per-curve table T1 + 0.005 or has failed devices; no statement on the hypothesis"
+   },
+   {
+    "label": "matched by baselines",
+    "condition": "R1-R3 hold at 4 K, at least one of B1, B2, B3_d3 not beaten at 4 K",
+    "interpretation": "the 4.2 K error the correction removes is also removed by more card parameters, series resistance / heating, or a polynomial correction; the hypothesis that the learned correction is needed for cryogenic model-form error is not supported"
+   },
+   {
+    "label": "supported",
+    "condition": "R1-R3 hold and all baselines beaten at 4 K; R1 fails at 295 K; P holds",
+    "interpretation": "the prediction holds on one dataset: the correction helps at 4.2 K, not at 295 K, and the 4.2 K refit error is larger"
+   },
+   {
+    "label": "supported, premise not met",
+    "condition": "as 'supported' but P fails",
+    "interpretation": "the temperature contrast in the correction's effect is observed, but the refit error level does not differ by the premise factor, so the contrast is not attributed to a larger model-form error"
+   },
+   {
+    "label": "temperature-graded",
+    "condition": "R1-R3 hold and all baselines beaten at 4 K; R1 holds at 295 K; K holds",
+    "interpretation": "the correction helps at both temperatures and more at 4.2 K; the prediction 'no gain at 295 K' fails, a graded version holds"
+   },
+   {
+    "label": "not temperature-specific",
+    "condition": "R1-R3 hold and all baselines beaten at 4 K; R1 holds at 295 K; K fails",
+    "interpretation": "the correction helps at both temperatures by similar factors; the temperature form of the hypothesis is refuted on this dataset (the gain is not tied to the 4.2 K model-form error)"
+   }
+  ],
+  "implementation": "scripts/research/explore/i6_1_tudelft.py --mode decide (functions conditions, outcome) writes out/research/explore/I6_1/decision.json"
+ },
+ "secondary_reported_not_deciding": [
+  "baseline conditions and GMR(X, C0_refit) for every arm at both temperatures",
+  "cluster-bootstrap CIs for every comparison",
+  "per-group means",
+  "B5 in-sample reference",
+  "stock-card and starting-card RRMS",
+  "TEST (only after a method freeze)"
+ ],
+ "data_reuse_note": "The Delft data were not used by any earlier direction except the I3-1 catalog inspection (file headers, sweep layout, temperature fields). Before this file: stock-card simulation of the DEV devices and a 3-device box-width trial of the starting fit (no correction). The decision rule, budgets, box, arms and premise factor were fixed before any starting card was fit on all DEV devices and before any correction was trained. DEV results are development evidence; TEST is untouched until a method freeze",
+ "compute": {
+  "jobs": "one queue job each, in order: start (45 DEV devices x 2 temperatures), screen (B1 screen, both temperatures), lodo 4 K, lodo 295 K, decide, figs; process pool of 6 workers, 1 torch thread each",
+  "smoke": "one device per DEV group (7), starting fits at 4 K with max_nfev 100, screen at 4 K, LODO at 4 K with 2 folds (one nMOS and one pMOS group), M_bias / B5 with 1 seed and 200 steps, T1 and B3_d3 at 200 steps, full refit settings; output smoke_* directories, labelled smoke, not used for any conclusion"
+ },
+ "frozen_choices_note": "All choices above were fixed before any correction was fitted to these data. No DEV result is used to change them; any later variant gets a new id or a dated amendment that leaves this file unchanged"
+}
