@@ -1145,3 +1145,37 @@ rule, zero crossing, prospective OLS, errors circled), new-dataset table, lambda
 Spearman bars, post-hoc within-lambda table and residual scatter, step-2 table.
 Site: new claim `i7-1` (status in progress; headline "supported (simulated, prospective); S3 pending") in the
 Exploration tab; status block gains the I7-1 item and the I7-1 decision table. Site rebuilt, not published.
+
+## I7-1 S3 outcome (2026-10-20 18:40): secondary statistic S3 on the 20 new and the 11 stored datasets
+
+S3 (pre-registered secondary; rank test only, expected positive correlation with y, no frozen rule; does not enter
+P1, P2 or the verdict): per fold, mean over the fold's training records of ln(RRMS with correction / RRMS of the
+starting card), the correction = M_bias reduced to 1 seed and 500 steps, trained on the fold's training records
+minus the record's inner group, applied without a card refit. Queue jobs I7_1_s3_retro (2410 s, 1760 inner fits;
+`out/research/explore/I7_1/retro/s3.json`), I7_1_s3_new (3442 s, 4800 inner fits; `new/s3.json`), I7_1_retro_s3,
+I7_1_decide_s3, I7_1_figs_s3 (finished 18:31). `decision.json` and `retro/results.json` were rewritten; all
+non-S3 values are unchanged (checked against the previous commit). P1, P2 and the verdict ('supported') are
+unchanged.
+New datasets (20): Spearman(S3_D, y_D) +0.985; OLS y = -0.0298 + 1.214 S3 (R^2 0.992); sign(S3_D) = sign(y_D) in
+19/20 (exception GF180 r0 lambda 0: S3 +0.0062, y -0.0449). For comparison S1_lodo: Spearman -0.970, OLS R^2 0.864,
+frozen-rule sign 16/20.
+Stored datasets (11; outcomes already seen, S3 computed after the rule was frozen): Spearman +0.927; OLS y =
+-0.0957 + 0.797 S3 (R^2 0.862); sign agreement 9/11 (exceptions IHP tier c: S3 +0.037, y -0.122; GF180 tier b:
+S3 +0.0015, y -0.0039). S1_lodo on the same 11: Spearman -0.873, rule R^2 0.785, in-sample sign 10/11.
+Fold level: new datasets pooled Spearman(S3_f, y_f) +0.736 over 320 folds (fold OLS slope +1.173, R^2 0.727);
+within-dataset Spearman negative in 20/20 (-0.97 to -0.30, mean -0.81). Stored datasets pooled +0.277 over 162
+folds; within negative in 9/11 (mean -0.35; positive for IHP measured 343 K and 398 K). S3 does not keep the
+positive sign within a dataset: it reverses at fold level, as S1_lodo does (S1_lodo within-dataset positive in
+20/20 new datasets).
+TU Delft 4.13 K: residual from the frozen S1_lodo rule +0.174 (largest of the 11; RMS 0.075); residual from the
+stored-data S3 OLS line +0.058 (RMS 0.060) and from the new-data S3 OLS line +0.006. Removing TU Delft 4.13 K
+changes the stored-data OLS slope from -0.485 to -0.609 for S1_lodo and from 0.797 to 0.821 for S3.
+Cost: S3 used 2409 s + 3442 s of queue time (about 98 min) for 31 datasets; S1_lodo, S1_pooled and S2 on the 162
+stored folds take 2.1 s with no training.
+Report batch `out/research/report/2026-10-20_i7_1/` rerun (`scripts/research/plot_explore_i7_1.py`; the
+consistency checks now also recompute S3 per dataset from the per-fold files and check the S3 correlations, OLS
+fits and within-dataset values for the new and the stored datasets): table 01 gains S3 rows (new, stored, fold
+level, compute), tables 03 and 08 gain S3 columns (08 also S3 sign and within-dataset S3 Spearman), new figure
+`09_i7_1_scatter_S1_lodo_vs_S3.png` (S1_lodo and S3 scatter panels side by side). Site: claim `i7-1` headline
+"supported (simulated, prospective); S3 secondary done", S3 numbers, compute comparison, figure 09; status block
+text updated. Site rebuilt, not published.

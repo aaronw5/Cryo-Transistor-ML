@@ -308,13 +308,13 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 7 (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective), S3 pending. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 7 (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
      },
      {
-      "text": "I7-1 (prospective, 20 new simulated datasets, GF180 / IHP x 2 replicates x lambda 0-1): Spearman(S1_lodo, y) -0.970 (P1 <= -0.50 holds), frozen-rule sign correct 16/20 (P2 >= 15 holds); verdict supported. Prospective OLS slope -1.419 vs frozen -0.485 (rule MAE 0.357): sign predicted, not magnitude. The synthetic error has the form S1_lodo measures; the evidence outside that model is the 11 retrospective datasets. S3 pending.",
+      "text": "I7-1 (prospective, 20 new simulated datasets, GF180 / IHP x 2 replicates x lambda 0-1): Spearman(S1_lodo, y) -0.970 (P1 <= -0.50 holds), frozen-rule sign correct 16/20 (P2 >= 15 holds); verdict supported. Prospective OLS slope -1.419 vs frozen -0.485 (rule MAE 0.357): sign predicted, not magnitude. The synthetic error has the form S1_lodo measures; the evidence outside that model is the 11 retrospective datasets. S3 (secondary): Spearman +0.985 (20 new), +0.927 (11 stored), sign 19/20; within-dataset fold Spearman negative in 20/20; 2409 s + 3442 s queue time.",
       "source": [
        "out/research/explore/I7_1/decision.json"
       ],
@@ -4937,10 +4937,10 @@
   {
    "id": "i7-1",
    "tab": "explore",
-   "statement": "I7-1: a training-set statistic S1_lodo (share of the training devices' weighted starting-card residual explained by a shared bias function estimated without the scored device) ranks 20 new simulated datasets by the held-out log gain of the I3-2 correction (Spearman -0.970, pre-registered threshold -0.50), and the rule frozen on 11 stored datasets gives the sign of the gain on 16 of 20 (15 required); verdict 'supported' on simulated data, S3 pending.",
+   "statement": "I7-1: a training-set statistic S1_lodo (share of the training devices' weighted starting-card residual explained by a shared bias function estimated without the scored device) ranks 20 new simulated datasets by the held-out log gain of the I3-2 correction (Spearman -0.970, pre-registered threshold -0.50), and the rule frozen on 11 stored datasets gives the sign of the gain on 16 of 20 (15 required); verdict 'supported' on simulated data. The secondary statistic S3 (inner leave-one-group-out post-hoc gain, 1 seed, 500 steps) gives Spearman +0.985 on the 20 new datasets and +0.927 on the 11 stored datasets, at about 98 min of extra queue time.",
    "status": "in_progress",
    "headline": {
-    "value": "supported (simulated, prospective); S3 pending: P1 Spearman(S1_lodo, y) -0.970, P2 sign 16/20",
+    "value": "supported (simulated, prospective); S3 secondary done: P1 Spearman(S1_lodo, y) -0.970, P2 sign 16/20; S3 Spearman +0.985, sign 19/20",
     "convention": "20 new simulated datasets (GF180 / IHP x 2 replicates x lambda 0-1), 16 targets and 16 leave-one-geometry-out folds each; y = ln GMR(M_bias, C0_refit) of the held-out strict paper RRMS after the card refit; P1 needs Spearman <= -0.50, P2 needs >= 15/20 correct signs of the frozen step-2 rule"
    },
    "numbers": [
@@ -4970,7 +4970,7 @@
     },
     {
      "label": "Secondary statistics, dataset Spearman with y_D",
-     "value": "S1_pooled -0.974, S2 -0.979; per PDK S1_lodo GF180 -0.988, IHP -0.976; S3 pending",
+     "value": "S1_pooled -0.974, S2 -0.979, S3 +0.985 (expected positive); per PDK S1_lodo GF180 -0.988, IHP -0.976",
      "convention": "not deciding",
      "source": "out/research/explore/I7_1/decision.json"
     },
@@ -4991,6 +4991,36 @@
      "value": "within-lambda Spearman -0.80, -1.00, -0.80, -0.80, +0.40 (lambda 0 to 1; mean -0.60); residual Pearson after lambda -0.590 (permutation p 0.0037, df 14), after lambda x PDK -0.751 (p 0.0020)",
      "convention": "4 datasets per lambda level; residual = value minus its cell mean; y permuted within cells",
      "source": "out/research/report/2026-10-20_i7_1/tables.md"
+    },
+    {
+     "label": "S3 (secondary), 20 new datasets",
+     "value": "Spearman(S3_D, y_D) +0.985; OLS y = -0.0298 + 1.214 S3 (R^2 0.992); sign(S3_D) = sign(y_D) in 19/20 (exception GF180 r0 lambda 0: S3 +0.0062, y -0.0449)",
+     "convention": "S3 per fold = mean over the training records of ln(RRMS with correction / RRMS of the starting card), the correction = M_bias (1 seed, 500 steps) trained without the record's inner group, no card refit; rank test only, no frozen rule; sign agreement not pre-registered",
+     "source": "out/research/explore/I7_1/decision.json"
+    },
+    {
+     "label": "S3 (secondary), 11 stored datasets",
+     "value": "Spearman +0.927; OLS y = -0.0957 + 0.797 S3 (R^2 0.862); sign agreement 9/11 (exceptions IHP tier c, GF180 tier b)",
+     "convention": "computed after the rule was frozen; outcomes already seen",
+     "source": "out/research/explore/I7_1/retro/results.json"
+    },
+    {
+     "label": "S3 fold level",
+     "value": "new: pooled Spearman +0.736 over 320 folds (fold OLS R^2 0.727); within-dataset Spearman negative in 20/20 (-0.97 to -0.30, mean -0.81). Stored: pooled +0.277 over 162 folds; within negative in 9/11 (mean -0.35)",
+     "convention": "within a dataset the sign reverses relative to the dataset level, as for S1_lodo",
+     "source": "out/research/explore/I7_1/decision.json"
+    },
+    {
+     "label": "TU Delft 4.13 K residual",
+     "value": "y minus frozen S1_lodo rule +0.174 (largest of 11; RMS 0.075); y minus stored-data S3 OLS +0.058 (RMS 0.060); y minus new-data S3 OLS +0.006",
+     "convention": "TU Delft 4.13 K is the largest S1_lodo outlier and lies on the S3 trend",
+     "source": "out/research/report/2026-10-20_i7_1/README.md"
+    },
+    {
+     "label": "Compute: S3 vs S1_lodo",
+     "value": "S3 queue jobs 2409 s (11 stored datasets, 1760 inner fits) and 3442 s (20 new datasets, 4800 inner fits); S1_lodo, S1_pooled, S2 on 162 stored folds 2.1 s, no training",
+     "convention": "queue wall time (out/research/done.txt); one heavy queue job at a time",
+     "source": "out/research/explore/I7_1/retro/s3.json, out/research/explore/I7_1/new/s3.json"
     },
     {
      "label": "Step 2 (retrospective, outcomes already seen)",
@@ -5015,7 +5045,7 @@
     "Pre-registration `out/research/explore/I7_1/prereg.json` (commit d406939, before any S value was computed); step 2 and frozen rule `prereg_amendment_2026-10-20.json` (commit 968d973, before any step-3 data); smoke runs commit 8e199ac.",
     "Queue jobs I7_1_run_gf180_r0 (1847 s), I7_1_run_ihp_r0 (1855 s), I7_1_run_gf180_r1 (1743 s), I7_1_run_ihp_r1 (1936 s), I7_1_decide, I7_1_figs, 2026-10-20; 0 targets left out, 0 datasets excluded.",
     "Report `scripts/research/plot_explore_i7_1.py` (batch 2026-10-20_i7_1) recomputes every dataset aggregate, P1, P2, the verdict, the secondary statistics and the frozen rule from the per-fold values and checks them against the stored values; it adds the post-hoc within-lambda analysis.",
-    "S3 queue jobs (I7_1_s3_new, I7_1_retro_s3, I7_1_decide_s3, I7_1_figs_s3) pending at the time of this entry."
+    "S3 queue jobs I7_1_s3_retro (2410 s), I7_1_s3_new (3442 s), I7_1_retro_s3, I7_1_decide_s3, I7_1_figs_s3 (finished 2026-10-20 18:31); report batch rerun with S3 rows, S3 columns and figure 09 (S1_lodo and S3 side by side); the script's consistency checks cover S3."
    ],
    "result": {
     "text": [
@@ -5023,7 +5053,8 @@
      "The 4 errors are datasets with S1_lodo between -0.103 and +0.006 (below the zero crossing 0.0157) and a small observed gain (y -0.131 to -0.037).",
      "The prospective OLS slope is -1.419 against the frozen slope -0.485 (rule MAE 0.357): on the simulated data the gain grows with S1_lodo about 3 times faster than on the stored datasets. The rule predicts the sign, not the magnitude.",
      "Within a dataset the fold-level relation has the opposite sign (positive in 20/20 new datasets, 0.28 to 0.96): a fold whose training set has a higher S1_lodo has a smaller gain on its held-out device.",
-     "Post hoc, not pre-registered: lambda alone gives Spearman -0.956 with y. Within lambda levels S1_lodo orders y with Spearman -0.80, -1.00, -0.80, -0.80 for lambda 0 to 0.75 and +0.40 at lambda 1; after removing lambda the residual Pearson r is -0.590 (permutation p 0.0037), after lambda x PDK -0.751 (p 0.0020)."
+     "Post hoc, not pre-registered: lambda alone gives Spearman -0.956 with y. Within lambda levels S1_lodo orders y with Spearman -0.80, -1.00, -0.80, -0.80 for lambda 0 to 0.75 and +0.40 at lambda 1; after removing lambda the residual Pearson r is -0.590 (permutation p 0.0037), after lambda x PDK -0.751 (p 0.0020).",
+     "S3 (secondary) ranks the datasets with Spearman +0.985 (20 new) and +0.927 (11 stored), and its sign matches the sign of y on 19/20 and 9/11. TU Delft 4.13 K, the largest residual of the frozen S1_lodo rule (+0.174), lies near the S3 lines (+0.058 stored-data OLS, +0.006 new-data OLS). Within a dataset S3 also reverses sign (negative in 20/20 new datasets). S3 costs 2409 s + 3442 s of queue time; S1_lodo needs no training."
     ],
     "figures": [
      {
@@ -5057,6 +5088,10 @@
      {
       "batch": "2026-10-20_i7_1",
       "file": "08_table_i7_1_retro_datasets.png"
+     },
+     {
+      "batch": "2026-10-20_i7_1",
+      "file": "09_i7_1_scatter_S1_lodo_vs_S3.png"
      }
     ]
    },
@@ -5064,13 +5099,15 @@
     "The synthetic error of step 3 is of exactly the shared-plus-device form that S1_lodo measures, on the same normalized-bias inputs as M_bias (pre-registration step3_prospective.error_functions). The prospective test checks the statistic under its own model.",
     "The evidence outside that model is the 11 retrospective datasets (7 measured, 4 simulated tiers), whose outcomes were known when S1_lodo was defined and the rule was fitted; the IHP measured temperatures share devices, as do the TU Delft temperatures.",
     "The within-lambda and residual analyses are post hoc; each lambda level holds 4 datasets.",
-    "S3 values (secondary) are pending; they do not enter P1, P2 or the frozen rule."
+    "S3 (secondary) does not enter P1, P2 or the frozen rule; it has no frozen rule, and its sign agreement is reported, not pre-registered. S3 on the stored datasets was computed with their outcomes already known."
    ],
    "sources": [
     "out/research/explore/I7_1/prereg.json",
     "out/research/explore/I7_1/prereg_amendment_2026-10-20.json",
     "out/research/explore/I7_1/retro/results.json",
     "out/research/explore/I7_1/decision.json",
+    "out/research/explore/I7_1/retro/s3.json",
+    "out/research/explore/I7_1/new/s3.json",
     "out/research/explore/I7_1/new/",
     "src/cryoml/explore/i7_1_transfer.py",
     "scripts/research/explore/i7_1_transfer.py",

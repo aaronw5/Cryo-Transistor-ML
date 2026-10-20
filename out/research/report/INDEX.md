@@ -8,9 +8,10 @@ Folder: [2026-10-20_i7_1/](2026-10-20_i7_1/) · [tables.md](2026-10-20_i7_1/tabl
 
 - I7-1 verdict (prospective, 20 new simulated datasets): supported. P1 Spearman(S1_lodo, y) -0.970 (<= -0.50), P2 sign 16/20 (>= 15); permutation p 1e-04; S1_pooled -0.974, S2 -0.979.
 - Prospective OLS slope -1.419 vs frozen -0.485, rule MAE 0.357: sign predicted, not magnitude. 4 errors: predicted no gain, small gain (y -0.131 to -0.037).
-- Post hoc: within-lambda Spearman mean -0.60; residual r after lambda -0.590 (perm. p 0.0037), after lambda x PDK -0.751. S3 pending.
+- Post hoc: within-lambda Spearman mean -0.60; residual r after lambda -0.590 (perm. p 0.0037), after lambda x PDK -0.751.
+- S3 (secondary): new Spearman +0.985; OLS y = -0.0298 +1.214 S3, R^2 0.992; sign(S3_D) = sign(y_D) in 19/20; stored Spearman +0.927; OLS y = -0.0957 +0.797 S3, R^2 0.862; sign(S3_D) = sign(y_D) in 9/11; fold level within-dataset negative in 20/20 (same reversal as S1_lodo). Cost 2409 s + 3442 s queue time; S1_lodo needs no training.
 
-Figures and tables: [01_table_i7_1_decision.png](2026-10-20_i7_1/01_table_i7_1_decision.png) · [02_i7_1_scatter_S1_lodo.png](2026-10-20_i7_1/02_i7_1_scatter_S1_lodo.png) · [03_table_i7_1_new_datasets.png](2026-10-20_i7_1/03_table_i7_1_new_datasets.png) · [04_i7_1_lambda_manipulation.png](2026-10-20_i7_1/04_i7_1_lambda_manipulation.png) · [05_i7_1_fold_spearman.png](2026-10-20_i7_1/05_i7_1_fold_spearman.png) · [06_table_i7_1_posthoc_within_lambda.png](2026-10-20_i7_1/06_table_i7_1_posthoc_within_lambda.png) · [07_i7_1_posthoc_residual.png](2026-10-20_i7_1/07_i7_1_posthoc_residual.png) · [08_table_i7_1_retro_datasets.png](2026-10-20_i7_1/08_table_i7_1_retro_datasets.png)
+Figures and tables: [01_table_i7_1_decision.png](2026-10-20_i7_1/01_table_i7_1_decision.png) · [02_i7_1_scatter_S1_lodo.png](2026-10-20_i7_1/02_i7_1_scatter_S1_lodo.png) · [03_table_i7_1_new_datasets.png](2026-10-20_i7_1/03_table_i7_1_new_datasets.png) · [04_i7_1_lambda_manipulation.png](2026-10-20_i7_1/04_i7_1_lambda_manipulation.png) · [05_i7_1_fold_spearman.png](2026-10-20_i7_1/05_i7_1_fold_spearman.png) · [06_table_i7_1_posthoc_within_lambda.png](2026-10-20_i7_1/06_table_i7_1_posthoc_within_lambda.png) · [07_i7_1_posthoc_residual.png](2026-10-20_i7_1/07_i7_1_posthoc_residual.png) · [08_table_i7_1_retro_datasets.png](2026-10-20_i7_1/08_table_i7_1_retro_datasets.png) · [09_i7_1_scatter_S1_lodo_vs_S3.png](2026-10-20_i7_1/09_i7_1_scatter_S1_lodo_vs_S3.png)
 
 ## 2026-10-20 · i6_1
 
