@@ -1,0 +1,15 @@
+{
+ "amends": "out/research/explore/I3_2/followup_prereg.json (commit 4ae726a; file unchanged)",
+ "written": "2026-10-20, after the F1 smoke run on 2 REAL_DEV devices (nmos_L0p15_W1p6, pmos_L2_W5; out/research/explore/I3_2/followup/smoke_f1) and before any full F1 or F2 run",
+ "observed_in_smoke": {
+  "F1.1": "ngspice-46 vs ngspice-41, four uncorrected cards: max relative current difference 0.0 and RRMS difference 0.0 on both devices",
+  "F1.2_literal": "the pre-registered statistic max |a - b| / |b| over scored points with |b| > 0 was 2.9e10 (fold) on pmos_L2_W5. The maximum is at Id-Vd points at Vds = 0, where both the SPICE-native and the Python currents are numerical zeros (|I| between 1e-84 A and 1e-31 A); e.g. pmos_L2_W5 idvd@1.11 index 0: Python 4.28e-84 A, SPICE-native 1.24e-73 A",
+  "F1.2_nonzero": "over scored points with |b| >= 1e-20 A: 9.65e-4 (pmos_L2_W5) and 9.03e-4 (nmos_L0p15_W1p6); per-device |delta RRMS| vs Python on ngspice-46: 3.9e-6 and 9.7e-6",
+  "tolerance_diagnostic": "the same two devices with '.options reltol=1e-6 abstol=1e-15' (both the corrected and the uncorrected deck): max relative difference 9.7e-7 and 1.0e-6; with 'reltol=1e-9 abstol=1e-18': 7.6e-9 and 1.0e-8, and RRMS equal to 1e-9. The SPICE-native vs Python difference therefore scales with the ngspice Newton tolerance (default reltol 1e-3). The uncorrected pmos_L2_W5 deck itself changes by up to 5.8e-4 between default and reltol 1e-6, so the canonical (default-tolerance) uncorrected currents carry the same order of Newton error"
+ },
+ "amendments": {
+  "A1_numerical_zero_points": "In F1.1 and F1.2, the primary 'max relative current difference over scored points' excludes points where |b| < 1e-20 A (numerical zeros at Vds = 0; 8 orders of magnitude below the ngspice abstol of 1e-12 A and below any measured current in the records). The pre-registered literal value (|b| > 0) is still computed and reported, with the check outcome under the literal definition stated next to the amended outcome",
+  "A2_tolerance_diagnostic": "F1 adds, per device, the M_bias refit card uncorrected and SPICE-native corrected on ngspice-46 with '.options reltol=1e-9 abstol=1e-18' (Python reference = the tight uncorrected currents times exp(g)). Reported: max relative difference (scored points, |b| >= 1e-20 A) and |delta RRMS|. Diagnostic only; no pass/fail. The canonical numbers (F1.1-F1.3) stay at the default tolerances of the cryoml.spice_pdk deck",
+  "unchanged": "all thresholds (1e-3, 1e-4, 2e-4, 1e-4, 1e-9), the cards, models, metric, F1.3 and all of F2"
+ }
+}
