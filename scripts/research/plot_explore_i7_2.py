@@ -15,6 +15,12 @@ Reads stored files only (no NGSpice, no training):
 * the measured records of each dataset (E1 real_dev, I5-1 / I6-1 starting records)
   through the driver's dataset adapters (file reads only), the stored fold
   corrections g_shared (evaluated in Python on the measured bias points)
+* ``out/research/explore/I7_2/examples/<dataset>__<tag>__<draw>.json`` when
+  present (``scripts/research/explore/i7_2_examples.py``: NGSpice re-simulation
+  of the stored arm cards of the figure 08-11 pairs). Figures 08-11 then draw
+  the arm curves; each arm's held-out and adaptation RRMS is recomputed from
+  these curves and must match results.json within 1e-6 relative. Without the
+  files the figures show measured points only.
 
 Consistency checks against the stored files: the curve split of every row is
 recomputed from the records; per-device values (all draws, K = 2, K = 4), the
@@ -749,11 +755,61 @@ def pick_examples(d: dict) -> dict:
     return out
 
 
+EX_DIR = I7 / "examples"
+EX_REL_TOL = 1e-6
+EX_LEGEND = {"a_C0": "a_C0: NGSpice card output (no correction)",
+             "b_shared": "b_shared: NGSpice card output x exp(g) applied in Python, g = g_shared",
+             "c_hier": "c_hier: NGSpice card output x exp(g) applied in Python, g = g_shared + phi . delta",
+             "c_ml": "c_ml: NGSpice card output x exp(g) applied in Python, g = g_shared + phi . delta (mu = 0)",
+             "d_scratch": "d_scratch: NGSpice card output x exp(g) applied in Python, g = per-device MLP refit "
+                          "on the K curves",
+             "e_crossinterp": "e_crossinterp: a_C0 NGSpice card output + crossing residual interpolation "
+                              "applied in Python"}
+EX_LS = {"c_ml": "--", "e_crossinterp": "-."}
+EX_MAX_HELD = 4  # held-out curves per sweep kind drawn with arm curves (evenly spaced in curve order)
+
+
+def example_path(ds: str, x: dict) -> Path:
+    return EX_DIR / f"{ds}__{x['tag']}__{x['draw']}.json"
+
+
+def ex_output(c: dict, arm: str) -> np.ndarray:
+    a = c["arms"][arm]
+    return np.asarray(a["output"] if a["output"] is not None else a["ngspice_card"], float)
+
+
+def check_example(ds: str, dset, x: dict, ex: dict) -> dict:
+    """Recompute each arm's held-out and adaptation RRMS from the stored example curves
+    (strict paper metric on the measured record) and compare with results.json."""
+    rec = dset.by_tag[x["tag"]]
+    assert (ex["dataset"], ex["tag"], ex["draw"]) == (ds, x["tag"], x["draw"])
+    assert ex["adapt"] == x["adapt"] and ex["heldout"] == x["heldout"]
+    assert [c["key"] for c in ex["curves"]] == [c.key for c in rec.curves], (ds, x["tag"])
+    for c, rc in zip(ex["curves"], rec.curves):
+        assert np.array_equal(np.asarray(c["measured"], float), np.asarray(rc.target, float)), (ds, x["tag"], c["key"])
+    worst = {}
+    for arm in ARMS:
+        sims = [ex_output(c, arm) for c in ex["curves"]]
+        for keys, field in ((x["heldout"], "heldout_rrms"), (x["adapt"], "adapt_rrms")):
+            v = float(h.score_keys(rec, sims, keys)["rrms"])
+            st = float(x["arms"][arm][field])
+            rd = 0.0 if (math.isnan(v) and math.isnan(st)) else abs(v - st) / max(abs(st), 1e-300)
+            assert rd <= EX_REL_TOL, (ds, x["tag"], x["draw"], arm, field, v, st)
+            worst[arm] = max(worst.get(arm, 0.0), rd)
+    return worst
+
+
 def fig_iv(ds: str, d: dict, picks: list, path: Path) -> list[str]:
     dset = d["ds"][ds]
     r = d["res"][ds]
     per = r["summary"]["all"]["per_device"]
-    fig, axs = plt.subplots(2, 3, figsize=(20, 10.4), dpi=DPI)
+    exs = {i: load(example_path(ds, pk["row"])) for i, pk in enumerate(picks)
+           if example_path(ds, pk["row"]).exists()}
+    curves_on = len(exs) == len(picks)
+    if curves_on:
+        d.setdefault("example_checks", {})[ds] = {pk["row"]["tag"]: check_example(ds, dset, pk["row"], exs[i])
+                                                 for i, pk in enumerate(picks)}
+    fig, axs = plt.subplots(2, 3, figsize=(20, 10.8 if curves_on else 10.4), dpi=DPI)
     fig.patch.set_facecolor(BG)
     for i, pk in enumerate(picks):
         x = pk["row"]
@@ -766,23 +822,48 @@ def fig_iv(ds: str, d: dict, picks: list, path: Path) -> list[str]:
             ax = axs[i, j]
             style(ax)
             ks = [k for k in pts if pts[k]["kind"] == kind]
-            cmap = plt.get_cmap("viridis")
-            for q, k in enumerate(ks):
-                p = pts[k]
-                col = cmap(q / max(1, len(ks) - 1))
-                if k in x["adapt"]:
-                    ax.scatter(p["x"], p["y"], s=11, facecolor="none", edgecolor=RED, lw=0.9, zorder=3,
-                               label=f"{k} (adaptation)")
-                else:
-                    ax.scatter(p["x"], p["y"], s=6, color=col, zorder=2,
-                               label=k if len(ks) <= 12 or q % 3 == 0 else None)
+            if curves_on:
+                ex_c = {c["key"]: c for c in exs[i]["curves"]}
+                held_k = [k for k in ks if k in x["heldout"]]
+                idx = sorted(set(np.round(np.linspace(0, len(held_k) - 1, min(EX_MAX_HELD, len(held_k))))
+                                 .astype(int).tolist())) if held_k else []
+                shown = [k for k in ks if k in x["adapt"]] + [held_k[q] for q in idx]
+                for k in shown:
+                    p, c = pts[k], ex_c[k]
+                    s = slice(c["start"], None)
+                    xs = np.abs(np.asarray(c["vg"] if kind == "idvg" else c["vd"], float)[s])
+                    for arm in ARMS:
+                        ax.plot(xs, np.abs(ex_output(c, arm)[s]), color=ARM_COLOR[arm], lw=0.9, alpha=0.85,
+                                ls=EX_LS.get(arm, "-"), zorder=2)
+                    if k in x["adapt"]:
+                        ax.scatter(p["x"], p["y"], s=12, facecolor="none", edgecolor=INK, lw=0.8, zorder=3)
+                    else:
+                        ax.scatter(p["x"], p["y"], s=7, color=MUTED, zorder=3)
+                    ax.annotate(k, (p["x"][-1], p["y"][-1]), fontsize=5.8, color=INK, xytext=(2, 0),
+                                textcoords="offset points", va="center")
+                ax.set_title(f"{x['tag']} ({pk['side']}), draw {x['draw']}: {'Id-Vg' if kind == 'idvg' else 'Id-Vd'}; "
+                             f"{sum(k in x['adapt'] for k in ks)} adaptation + {len(idx)} of {len(held_k)} held-out "
+                             "curves shown", fontsize=8.5, color=INK, loc="left")
+                ax.set_ylabel("|Id| (A)", fontsize=8.5)
+            else:
+                cmap = plt.get_cmap("viridis")
+                for q, k in enumerate(ks):
+                    p = pts[k]
+                    col = cmap(q / max(1, len(ks) - 1))
+                    if k in x["adapt"]:
+                        ax.scatter(p["x"], p["y"], s=11, facecolor="none", edgecolor=RED, lw=0.9, zorder=3,
+                                   label=f"{k} (adaptation)")
+                    else:
+                        ax.scatter(p["x"], p["y"], s=6, color=col, zorder=2,
+                                   label=k if len(ks) <= 12 or q % 3 == 0 else None)
+                ax.set_ylabel("measured |Id| (A)", fontsize=8.5)
+                ax.legend(fontsize=6.3, frameon=False, ncol=2, loc="lower right" if kind == "idvg" else "upper left")
+                ax.set_title(f"{x['tag']} ({pk['side']}), draw {x['draw']}: measured "
+                             f"{'Id-Vg' if kind == 'idvg' else 'Id-Vd'} points (red open: adaptation curves)",
+                             fontsize=8.5, color=INK, loc="left")
             if kind == "idvg":
                 ax.set_yscale("log")
             ax.set_xlabel("|Vg| (V)" if kind == "idvg" else "|Vd| (V)", fontsize=8.5)
-            ax.set_ylabel("measured |Id| (A)", fontsize=8.5)
-            ax.legend(fontsize=6.3, frameon=False, ncol=2, loc="lower right" if kind == "idvg" else "upper left")
-            ax.set_title(f"{x['tag']} ({pk['side']}), draw {x['draw']}: measured {'Id-Vg' if kind == 'idvg' else 'Id-Vd'}"
-                         " points (red open: adaptation curves)", fontsize=8.5, color=INK, loc="left")
         ax = axs[i, 2]
         style(ax)
         for k in x["heldout"]:
@@ -808,14 +889,31 @@ def fig_iv(ds: str, d: dict, picks: list, path: Path) -> list[str]:
                 color=INK, bbox=dict(facecolor=BG, edgecolor=GREY, lw=0.6))
         ax.set_title("correction factor of c relative to b on the held-out points (Python, no simulation)",
                      fontsize=8.5, color=INK, loc="left")
-    fig.suptitle(wrap(f"I7-2 {DS_LABEL[ds]}: two example devices (median device among those where c_hier beats d_scratch, "
-                 "and among those where d_scratch beats c_hier). Measured points only: the arm I-V curves are not "
-                 "stored (results.json keeps the RRMS, cards.json the cards; d_scratch's MLP is not stored); plotting "
-                 "them needs NGSpice re-simulation of the cards, not done in this batch", 170), fontsize=9.5, color=INK)
-    fig.subplots_adjust(left=0.05, right=0.99, top=0.9, bottom=0.06, wspace=0.22, hspace=0.32)
+    srcs = [rel(RES[ds]), rel(CARDS[ds])]
+    if curves_on:
+        handles = [plt.Line2D([], [], color=ARM_COLOR[a], lw=1.4, ls=EX_LS.get(a, "-"), label=EX_LEGEND[a])
+                   for a in ARMS]
+        handles += [plt.Line2D([], [], ls="", marker="o", ms=4, color=MUTED, label="measured, held-out curve"),
+                    plt.Line2D([], [], ls="", marker="o", ms=4.5, mfc="none", mec=INK,
+                               label="measured, adaptation curve")]
+        fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=7.6, frameon=False)
+        fig.suptitle(wrap(f"I7-2 {DS_LABEL[ds]}: two example devices (median device among those where c_hier beats "
+                          "d_scratch, and among those where d_scratch beats c_hier). Lines: NGSpice re-simulation of "
+                          "each arm's stored final card on the measured bias grid, with the arm's correction applied "
+                          "in Python to the NGSpice output (legend); the held-out RRMS recomputed from these curves "
+                          "matches results.json", 170), fontsize=9.5, color=INK)
+        fig.subplots_adjust(left=0.05, right=0.99, top=0.9, bottom=0.14, wspace=0.22, hspace=0.32)
+        srcs += [rel(example_path(ds, pk["row"])) for pk in picks]
+    else:
+        fig.suptitle(wrap(f"I7-2 {DS_LABEL[ds]}: two example devices (median device among those where c_hier beats "
+                          "d_scratch, and among those where d_scratch beats c_hier). Measured points only: the arm I-V "
+                          "curves are not stored (results.json keeps the RRMS, cards.json the cards; d_scratch's MLP is "
+                          "not stored); plotting them needs NGSpice re-simulation of the cards, not done in this "
+                          "batch", 170), fontsize=9.5, color=INK)
+        fig.subplots_adjust(left=0.05, right=0.99, top=0.9, bottom=0.06, wspace=0.22, hspace=0.32)
     fig.savefig(path, facecolor=BG)
     plt.close(fig)
-    return [rel(RES[ds]), rel(CARDS[ds])]
+    return srcs
 
 
 # ================================================================== main
@@ -863,10 +961,16 @@ def main() -> int:
     for j, ds in enumerate(DATASETS):
         name = f"{8 + j:02d}_i7_2_examples_{ds}.png"
         src = fig_iv(ds, d, picks[ds], folder / name)
+        if ds in d.get("example_checks", {}):
+            what = ("measured Id-Vg and Id-Vd points of the shown draw (adaptation curves and up to "
+                    f"{EX_MAX_HELD} held-out curves per sweep kind) with each arm's NGSpice-re-simulated card output "
+                    "(correction exp(g) applied in Python for b, c, c_ml, d; crossing residual added in Python for e)")
+        else:
+            what = ("measured Id-Vg and Id-Vd points of the shown draw (adaptation curves marked); no arm I-V curves "
+                    "(examples/*.json not present)")
         items.append((name, f"{DS_LABEL[ds]}: two example devices ({picks[ds][0]['tag']}, c beats d; "
-                      f"{picks[ds][1]['tag']}, d beats c): measured Id-Vg and Id-Vd points of the shown draw "
-                      "(adaptation curves marked), the factor exp(phi . delta) of c_hier and c_ml on the held-out "
-                      "points, per-arm held-out RRMS; no arm I-V curves (not stored)", src))
+                      f"{picks[ds][1]['tag']}, d beats c): {what}, the factor exp(phi . delta) of c_hier and c_ml on "
+                      "the held-out points, per-arm held-out RRMS", src))
 
     now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
     gen = f"`PYTHONPATH=src .venv/bin/python scripts/research/plot_explore_i7_2.py --date {args.date}`"
@@ -893,8 +997,32 @@ def main() -> int:
     med = {ds: (np.median([x["c_hier_rms"] for x in pd_[ds]["rows"]]),
                 np.median([x["c_ml_rms"] for x in pd_[ds]["rows"]]),
                 np.median([x["g0_rms"] for x in pd_[ds]["rows"]])) for ds in DATASETS}
+    ex_on = sorted(d.get("example_checks", {}))
+    if len(ex_on) == len(DATASETS):
+        worst = max(v for ds in ex_on for t in d["example_checks"][ds].values() for v in t.values())
+        ex_line = ("- Figures 08-11 (example devices): lines are NGSpice re-simulations of each arm's stored final card "
+                   f"on the measured bias grid (`{rel(EX_DIR)}/`, written by "
+                   "`scripts/research/explore/i7_2_examples.py` with the simulator of the I7-2 run for each dataset). "
+                   "a_C0: NGSpice card output. b_shared, c_hier, c_ml, d_scratch: NGSpice card output x exp(g) "
+                   "applied in Python (g_shared; g_shared + phi . delta with the stored delta; d_scratch's per-device "
+                   "MLP refit on the K curves with the run's seeds and hyperparameters, as the run did not store it). "
+                   "e_crossinterp: a_C0's NGSpice card output plus the crossing residual interpolation in Python. "
+                   "Held-out and adaptation RRMS of every arm recomputed from the stored curves match results.json "
+                   f"(largest relative difference {worst:.1e} over the 8 pairs and 6 arms). Each I-V panel shows the "
+                   f"adaptation curves and up to {EX_MAX_HELD} held-out curves per sweep kind, evenly spaced in the "
+                   "curve order. The third panel shows exp(phi . delta), the factor between c's and b's correction, "
+                   "computed in Python on the measured bias points; it is a correction factor, not a current.")
+    else:
+        ex_line = ("- Figures 08-11 (example devices) show measured points only. The arm I-V curves are not stored "
+                   f"(`{rel(EX_DIR)}/` absent for {', '.join(ds for ds in DATASETS if ds not in ex_on)}): "
+                   "results.json keeps per-split held-out and adaptation RRMS, cards.json keeps the final card of "
+                   "each arm, and d_scratch's per-device MLP is not stored. "
+                   "`scripts/research/explore/i7_2_examples.py` writes the NGSpice re-simulation of the stored cards. "
+                   "The third panel shows exp(phi . delta), the factor between c's and b's correction, computed in "
+                   "Python on the measured bias points; it is a correction factor, not a current.")
     readme = [f"# Report batch {args.date} · {TOPIC}", "",
-              f"Generated {now} by {gen} from stored files only (no NGSpice, no training).", "",
+              f"Generated {now} by {gen} from stored files only (no NGSpice, no training in this script; the "
+              "example curves of figures 08-11, when present, come from the stored NGSpice re-simulation files).", "",
               "## Contents", "",
               "- I7-2: hierarchical bias-only correction g_d = g_shared + phi . delta_d (phi = 1, a, b, a^2, ab, b^2 "
               "in a = 2|Vgs|/VDD - 1, b = 2|Vds|/VDD - 1; g_shared = the stored fold M_bias corrections of I3-2, "
@@ -922,12 +1050,7 @@ def main() -> int:
               + " splits. Median RMS over the held-out points of phi . delta (c_hier / c_ml) and of g_shared: "
               + ", ".join(f"{DS_SHORT[ds]} {med[ds][0]:.4f} / {med[ds][1]:.4f} / {med[ds][2]:.4f}" for ds in DATASETS)
               + ".",
-              "- Figures 08-11 (example devices) show measured points only. The arm I-V curves are not stored: "
-              "results.json keeps per-split held-out and adaptation RRMS, cards.json keeps the final card of each "
-              "arm, and d_scratch's per-device MLP is not stored. Plotting the arm curves needs an NGSpice "
-              "re-simulation of the stored cards (and a refit of d_scratch's MLP), which this batch does not run. "
-              "The third panel shows exp(phi . delta), the factor between c's and b's correction, computed in "
-              "Python on the measured bias points; it is a correction factor, not a current.",
+              ex_line,
               "", "## Figures and tables", ""]
     for png, desc, srcs in items:
         readme.append(f"- `{png}`: {desc}; sources: " + ", ".join(f"`{x}`" for x in srcs) + ".")
@@ -961,7 +1084,9 @@ def main() -> int:
               f"{np.round(np.median(p['sd'], axis=0), 3).tolist()}; training-delta fold spread max "
               f"{p['train_fold_spread']:.4f}")
         for pkk in picks[ds]:
-            print(f"   example {pkk['side']}: {pkk['tag']} draw {pkk['row']['draw']} ln(c/d) {pkk['lr']:+.3f}")
+            print(f"   example {pkk['side']}: {pkk['tag']} draw {pkk['row']['draw']} ln(c/d) {pkk['lr']:+.3f}"
+                  + (f"; curve RRMS check max rel diff {max(d['example_checks'][ds][pkk['tag']].values()):.1e}"
+                     if ds in d.get("example_checks", {}) else "; no example curves"))
     return 0
 
 
