@@ -931,3 +931,45 @@ card x exp(g), not the stock-card curve. The batch figures 11-13 stack the store
 figure. No simulation was run for the batch.
 Site: new claim `i5-1` (refuted, "not replicated on IHP SG13G2 room-temperature data"); caveats linking i5-1
 added to claims `i3-2` and `i4-1`; Exploration status block updated. Site rebuilt, not published.
+
+## I6-1 pre-registration and pipeline (2026-10-20 12:10): TU Delft 40-nm CMOS, 4.2 K vs 295 K
+
+Question: does the I3-2 bias-only correction lower held-out error where the compact model has a model-form error a
+local card refit cannot absorb (BSIM4 at 4.2 K), and not where the card fits (same devices at 295 K)?
+Pre-registration `out/research/explore/I6_1/prereg.json` (commit a967f04, before any correction fit and before the
+starting-card fits); amendment `prereg_amendment_2026-10-20.json` (after the smoke runs, before any full run): DVT0W
+removed from the B1 universe (DVT1W = 0 in the card makes the BSIM4 narrow-width term 0/0; DVT0W > 0 gave no DC
+solution), simulator timeout 10 s per ngspice process.
+Data: doi:10.4121/c41c26f7-586f-48ca-8abe-9127b2d97c60.v1 (CC0), I3-1 download (results/dc, 16.3 MB), read with an
+unpickler restricted to numpy reconstruction globals. Campaign 1, 69 low-Vt devices with files at 4.13-4.14 K and
+295.0 K stage temperature; 10 (polarity, W, L) groups of 2-8 copies (nMOS die 3, pMOS die 5). Per device and
+temperature 12 Id-Vg (Vd = 0.05 V and 11 values to 1.1 V) and 11 Id-Vd (Vd 0-1.1 V), 111 points; Vg starts at
+0.45 V (nMOS 4 K), 0.30 V (nMOS 295 K), -0.60 / -0.40 V (pMOS). Float64 currents, smallest nonzero |Id| 4.9e-14 A,
+no stored compliance, largest |Id| 0.87 mA, no clipped curve. Inclusion (pdk2 rule, measured only): 3161 of 3174
+curves. Manifest `out/research/explore/I6_1/data/manifest.json`.
+Card: BSIM4 4.5.0 N1/P1 from ngspice-41 `examples/mos/ro_17_4.cir` (CMOSedu 50 nm, VDD 1 V; ngspice Modified BSD),
+copied verbatim to `I6_1/card/`; temperature coefficients (kt1, kt1l, kt2, ute, ua1, ub1, uc1, at, prt) set to 0;
+deck temperature = stage temperature; one card fitted per temperature. PTM 45 nm not used (host does not resolve,
+no license statement found); the ngspice BSIM4 QA card has xl = -30 nm (non-positive Leff at L = 40 nm).
+Simulator: ngspice-41 arm64, 0.03 s per device and card (23 sweeps).
+Fitted set: the 43-parameter sky130 set; box VTH0, VFB +/- 0.5 V, VOFF +/- 0.3 V, other nonzero values log
+|v|/10..10|v| (chosen after a 3-device trial, `box_trial.json`), CIT, CDSCD, B0, B1 zero ranges; 36 (nMOS) / 37
+(pMOS) active (UB inactive under the ParameterBox rule, as in sky130).
+Split (seed 20261020, by W/L pair): TEST = W/L 4/4 (both polarities) and nMOS 1/0.36, 24 devices; DEV 45 devices in
+7 groups (nMOS 0.12/0.04, 0.12/0.05, 0.36/0.04, 1/0.04, 1/1; pMOS 1/0.04, 1/1).
+DEV stock-card RRMS: 4 K 5.105 (median 5.344), 295 K 7.264 (median 8.639).
+Starting cards (queue job I6_1_start, polish max_nfev 3000, irls 3; 1083 s, 0 simulator timeouts): 4 K 0.0628
+(median 0.0437, combined 0.0553), 295 K 0.0271 (median 0.0227, combined 0.0253); per group 4 K 0.028-0.156,
+295 K 0.015-0.046.
+Arms per temperature, leave-one-geometry-out over the 7 DEV groups (training on the other 6 groups, both
+polarities, VDD 1.1 V): C0_refit, M_bias (I3-2 recipe unchanged), T1_inloop, B1, B2, B3_d3, B5.
+Rule: at 4 K R1 (device-bootstrap CI upper of GMR(M_bias, C0_refit) < 1), R2 (M_bias mean <= T1_inloop + 0.005),
+R3 (0 failed) and every B1, B2, B3_d3 beaten (CI upper of GMR(M_bias, X) < 1); at 295 K R1 fails; premise P:
+C0_refit mean at 4 K >= 1.5 x at 295 K; contrast K = GMR of (M_bias/C0_refit at 4 K) / (same at 295 K).
+Outcomes: refuted (4 K R1 fails), inconclusive (4 K R2 or R3 fails), matched by baselines, supported, supported
+with premise not met, temperature-graded (R1 at both, K CI upper < 1), not temperature-specific (R1 at both, K
+fails). Group-cluster bootstrap CIs reported, not deciding.
+Smoke (one device per DEV group, start max_nfev 100, 2 folds, 1 seed, 200 steps; 107 s; not used for any
+conclusion): runs end to end through decide and figs.
+Queue: I6_1_start (done), I6_1_screen, I6_1_lodo_4, I6_1_lodo_295, I6_1_decide, I6_1_figs. Estimated remaining
+wall time about 60-75 min (screen 2 min, each LODO 25-35 min).
