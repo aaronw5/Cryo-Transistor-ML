@@ -641,3 +641,63 @@ Smoke (`runs/smoke/tier_M`, nmos_L1_W3 and pmos_L2_W5, n_train 2, n_test 1, 7-te
 the switch, 0 clips, 4 rejected draws (2 truths regenerated); pipeline check only, not a decision input.
 Queued after the existing jobs: `E3b_full_M` (decision) and `E3b_full_W` (secondary), same settings as
 E3_full_M/W; estimated 15-17 min each.
+
+## Iteration 2, I2-0 follow-up (2026-10-19): u0 fix applied
+
+After user approval, the proposed patch from I2-0 part B was applied in commit 40545e0
+(`src/cryoml/explore/e3_temp.py`: truth rejection at the BSIM4 u0 switch, x_u0 fit bound 0.02 below it, helpers;
+`scripts/research/explore/e3_temp_misspec.py --study E3b`; 14 unit tests). The E3b pre-registration is commit
+787e8aa. The I2-0 part-C values (devices removed after the fact) are diagnostic only; no stored verdict changed.
+
+## Iteration 2, I2-1 (2026-10-19 22:25): correction trained jointly with the training cards
+
+Queue jobs `i2_1_real` (17:59-18:35, 2152 s), `i2_1_gf180` (18:35-20:24, 6534 s), `i2_1_ihp` (20:24-22:25, 7246 s),
+`scripts/research/explore/i2_1_joint.py`, pre-registration `out/research/explore/I2_1/prereg.json` (commit 97127c9).
+REAL_DEV leave-one-device-out, K = 3 rounds, held-out card refit with the frozen correction; 0 failed devices in
+every arm. All-device (combined): C0_refit 0.1072 (0.0981), M_post 0.0871 (0.0842), M_joint 0.0903 (0.0884),
+T1_joint 0.0803 (0.0744), ORACLE_joint (in-sample) 0.0368 (0.0344).
+Checks: M_joint <= 0.080 no; M_joint < M_post on 6/12 (>= 8 no); M_joint <= T1_joint + 0.005 no; 0 failed yes: KILL.
+T1_joint < C0 on 11/12; M_joint < C0 on 7/12.
+Round diagnostics (not decision inputs): training-device RRMS with g_r on c_r, mean over the 12 folds, 0.0609 ->
+0.0583 -> 0.0562 -> 0.0541 (fold nmos_L0p15_W1p6: 0.0629 -> 0.0580); post-hoc held-out RRMS of g_r on the starting
+card 0.1276 -> 0.1501; held-out after the refit with g_0..g_3 0.0871, 0.0893, 0.0914, 0.0903.
+Simulated (secondary), tier c leave-one-geometry-out, 48 targets each: GF180 C0 0.0457, M_post 0.0389, M_joint
+0.0381 (ratio 0.834, check_S pass; M_joint < M_post on 37/48); IHP C0 0.1011, M_post 0.1019, M_joint 0.0915
+(ratio 0.904, check_S fail; 27/48). Identifiability: g correlates most with the injected series-resistance
+component (r 0.35/0.32 GF180, 0.20/0.27 IHP for M_post/M_joint); OLS R^2 on the four components 0.18/0.21 (GF180),
+0.04/0.07 (IHP). I2-1 is stopped.
+Report batch: `out/research/report/2026-10-20_explore_i2_e3b/` (08-14).
+
+## Iteration 2, E3b (2026-10-19 22:57): E3 rerun with the u0 fix (simulated only)
+
+Queue jobs `E3b_full_M` (22:25-22:40, 910 s, decision) and `E3b_full_W` (22:40-22:57, 989 s, secondary).
+u0 check valid on both tiers: 0/108 truths, 0/1332 fitted, 0/4032 predicted and 0/4140 evaluated cards at or above
+the switch; 0 clipped cards; tier M 4 truths regenerated (7 rejected draws), tier W 2 (2).
+Tier M, 36 simulated test devices, held-out 110/190/260 K: O4 lrn 0.2778, par3 0.4197, pt_interp 0.3689, floor
+0.0135; R_O4 0.338 [0.160, 0.495], lrn vs pt_interp 0.247, 0 failed cells: O4 meets all conditions. O2 lrn 0.4945,
+par3_pop 0.6052, pt_interp 0.9579; R_O2 0.183 [0.019, 0.281]. Rule output CONTINUE.
+Secondary (not decisive): lrn vs lrn_mean O4 0.033 [-0.154, 0.161], O2 0.375 [0.031, 0.533]; lrn vs lrn_noH O4
+0.008, O2 -0.013; gap closed to floor O4 0.349, O2 0.187; paired geometric-mean ratio lrn/control O4 0.639
+[0.516, 0.793] (29/36), O2 0.899 [0.784, 1.035] (23/36). Per temperature (O4 lrn / par3): 110 K 0.366 / 0.684,
+190 K 0.395 / 0.375, 260 K 0.072 / 0.200. lrn_param has 1 failed cell of 108.
+Tier W (secondary): R_O4 -0.667 (lrn 0.1139 vs par3 0.0666, 35 devices, 1 failed lrn cell), R_O2 0.333 [-0.034,
+0.462]: INCONCLUSIVE; the E3 pre-registration expected the parametric law to win on tier W.
+E3 vs E3b, tier M O4: lrn 9.801 -> 0.278, par3 9.123 -> 0.420. The E3 KILL stands; E3b is a separate
+pre-registered probe. Simulated devices only; no measured multi-temperature I-V exists. In O4 lrn does not
+separate from lrn_mean; a continuation needs a law-shift test.
+Report batch: `out/research/report/2026-10-20_explore_i2_e3b/` (15-19).
+
+## Temperature benchmark table complete (2026-10-19 23:13)
+
+`temp_sur_fno_r` (22:56-23:13, 1002 s, rc 0) loaded the FNO checkpoint trained in the killed job `temp_sur_fno`
+(25 epochs, 14402 s, rc 137 after training), ran the held-out emulator and validation passes with the --eval-batch
+memory fix (commit 168cf9f) and completed sets 0-2. `temp_table` wrote `out/research/temp/table.json`.
+Held-out all-device raw / + FD (simulated, well-specified, 3 sets x 18 devices, 0/54 failed records per row):
+direct 0.0362 / 0.0117; direct MLP 0.0707 / 0.0006; NGSpice search 0.0021 / 0.0004; surrogate paper MLP
+0.0081 / 0.0007, ResMLP 0.0105 / 0.0003, DeepONet 0.0120 / 0.0022, FNO 0.0227 / 0.0012.
+Report batch: `out/research/report/2026-10-20_explore_i2_e3b/20_table_temp_benchmark.png`.
+
+## Exploration iteration 2 complete (2026-10-20)
+
+I2-0 diagnosis complete (u0 fix applied); I2-1 KILL; E3b CONTINUE on simulated tier M (tier W INCONCLUSIVE).
+Iteration 3 is being designed.
