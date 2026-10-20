@@ -1,0 +1,25 @@
+{
+ "prereg": "out/research/explore/I7_1/prereg.json",
+ "hyper": {
+  "seeds": [
+   0
+  ],
+  "steps": 50
+ },
+ "smoke": true,
+ "per_fold": {
+  "sky130_77K": {
+   "nmos_L0p15_W1p6": 0.022180728034061077,
+   "nmos_L0p25_W1p6": 0.023643024605125493
+  },
+  "tudelft_4K": {
+   "t40_nmos_W0p12_L0p04": -0.07541316459018406,
+   "t40_nmos_W0p12_L0p05": -0.07641427727295132
+  },
+  "gf180_c": {
+   "nmos_L0.3_W0.3": -0.0646547100098319,
+   "nmos_L0.4_W5": -0.05499166821109631
+  }
+ },
+ "runtime_s": 14.9
+}

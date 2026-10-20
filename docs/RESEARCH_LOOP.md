@@ -1007,3 +1007,69 @@ B1 returned the starting card unchanged for 16/45 (4.13 K) and 13/45 (295.0 K) d
 Site: new claim `i6-1` (refuted; headline gives the 4.13 K and 295.0 K GMRs); caveats linking i6-1 added to claims
 `i3-2`, `i4-1`, `i5-1`; Exploration status block updated with the I6-1 item and the cross-dataset table
 (`build_site.py` now renders a block, such as a batch_table, as a status item). Site rebuilt, not published.
+
+## I7-1 pre-registration, retrospective calibration and prospective queue (2026-10-20 14:55): training-set statistic for the transfer of the shared bias-only correction
+
+Question: does a statistic S computed from the training devices of a fold only (no held-out information) predict
+the held-out log gain y = ln(M_bias / C0_refit) of the I3-2 bias-only correction?
+Pre-registration `out/research/explore/I7_1/prereg.json` (commit d406939, before any S value was computed; the
+dataset-level outcomes of the stored datasets were known, so step 2 is retrospective and exploratory).
+Residual of a training device at an included trimmed point of its starting-card record: r = clip(ln(|I_target| /
+|I_sim|), -1, 1), weight w = (|I_target| / den)^2 / (n_curve points x n_curves), so sum w (r - g)^2 is the
+first-order form of the M_bias loss term of the device. Common grid: 0.1-wide bins of (|Vgs|/VDD, |Vds|/VDD), 12 x
+12, per polarity; shared function m = weighted bin mean.
+S1_lodo (primary): 1 - sum_d E_d(m without d) / sum_d E_d(0) over the fold's training devices. Secondary:
+S1_pooled (m includes d), S2 (mean same-polarity pairwise weighted uncentered cosine of bin-mean residuals), S3
+(inner leave-one-group-out post-hoc gain of M_bias with 1 seed and 500 steps). S1_lodo chosen as primary because it
+measures the shared part of the fitted-card residual on the M_bias inputs, uses the M_bias loss weights, estimates
+transfer to an unseen device (no in-sample inflation), and needs no training or simulation.
+Code: `src/cryoml/explore/i7_1_transfer.py`, `scripts/research/explore/i7_1_transfer.py` (modes retro, s3_retro,
+amend, run, s3_new, decide, figs), `tests/test_i7_1_transfer.py` (12 cases).
+
+Step 2 (retrospective; 11 stored datasets, 162 folds, fold structure and training sets as in the stored runs;
+`retro/results.json`, commit 968d973). Dataset S = fold mean weighted by held-out devices; y_D = ln GMR.
+
+| dataset | folds | held-out | S1_lodo | S1_pooled | S2 | y_D | GMR | within-dataset fold Spearman (S1_lodo, y_f) |
+|---|---|---|---|---|---|---|---|---|
+| sky130 77 K | 12 | 12 | +0.322 | +0.647 | +0.679 | -0.2631 | 0.769 | +0.69 |
+| IHP meas 233 K | 18 | 18 | -0.314 | +0.297 | +0.228 | +0.1012 | 1.106 | +0.11 |
+| IHP meas 300 K | 18 | 18 | -0.223 | +0.371 | +0.321 | +0.1943 | 1.214 | +0.30 |
+| IHP meas 343 K | 18 | 18 | -0.331 | +0.336 | +0.340 | +0.1664 | 1.181 | -0.10 |
+| IHP meas 398 K | 18 | 18 | -0.379 | +0.534 | +0.314 | +0.2405 | 1.272 | +0.11 |
+| TU Delft 4.13 K | 7 | 45 | +0.504 | +0.531 | +0.781 | -0.0634 | 0.939 | -0.57 |
+| TU Delft 295 K | 7 | 45 | +0.323 | +0.374 | +0.476 | -0.2265 | 0.797 | +0.79 |
+| GF180 tier c | 16 | 48 | +0.248 | +0.307 | +0.435 | -0.1275 | 0.880 | +0.72 |
+| IHP tier c | 16 | 48 | +0.224 | +0.302 | +0.373 | -0.1219 | 0.885 | +0.53 |
+| GF180 tier b | 16 | 48 | +0.012 | +0.042 | +0.076 | -0.0039 | 0.996 | +0.79 |
+| IHP tier b | 16 | 48 | +0.032 | +0.064 | +0.140 | -0.0148 | 0.985 | +0.94 |
+
+Dataset-level Spearman with y_D (11 datasets): S1_lodo -0.873, S1_pooled -0.145, S2 -0.636. Pooled fold-level
+Spearman (162 folds): S1_lodo -0.333, S1_pooled -0.150, S2 -0.287. Within datasets the fold-level Spearman of
+S1_lodo with y_f is positive in 9 of 11 datasets: a fold whose training set has a higher S1_lodo has a smaller gain
+(when a device with a device-specific residual is held out, the remaining training devices share more of their
+residual, and the held-out device is the one the shared correction fits least). S1_lodo predicts at dataset level,
+not per fold. TU Delft 4.13 K has the largest S1_lodo (0.504) and a small gain (0.939).
+Frozen rule (OLS over the 11 datasets, amendment `prereg_amendment_2026-10-20.json`, commit 968d973, before any
+step-3 data): y_D = 0.007619 - 0.485184 S1_lodo_D, R^2 0.785; predicted gain iff S1_lodo_D > 0.0157. In-sample
+sign 10 of 11 (GF180 tier b wrong: S1_lodo 0.012, y -0.0039); leave-one-dataset-out sign 10 of 11. The IHP
+measured temperatures share devices, as do the TU Delft temperatures; the 11 points are not independent.
+S3 retrospective values are a queued job and do not change the rule.
+
+Step 3 (prospective, pre-registered): new truth sets from the GF180 / IHP generators, 2 PDKs x 2 replicates x 5
+mixing levels lambda (0, 0.25, 0.5, 0.75, 1) x 16 devices. Base = make_truth tier-a draw (seven fitted parameters
+in their box, other values stock, 27 C); I_obs = I_clean exp(e_d) (1 + 0.01 N(0,1)), e_d = 0.10 (sqrt(lambda)
+s_polarity + sqrt(1 - lambda) u_d), s and u_d random Fourier feature functions of (|Vgs|/VDD, |Vds|/VDD) (16
+features, length scale 0.35, unit RMS on a 21 x 21 grid); levels of one (PDK, replicate) share base cards, s, u_d
+and noise. Pipeline unchanged from I3-2 / F2 (starting fits wide box nfev 300 irls 3; LOGO 16 folds; M_bias 5
+seeds 2000 steps; C0_refit and M_bias refits nfev 400 irls 2). Truth under `out/research/pdk2/{truth,ihp_truth}/
+i7_1_r{r}_l{lambda}`; results `out/research/explore/I7_1/new/`.
+Prediction: P1 Spearman(S1_lodo_D, y_D) <= -0.50 over the 20 datasets; P2 frozen-rule sign correct in >= 15 of 20;
+supported (both), partially supported (one), not supported (neither). Datasets with > 4 of 16 targets left out are
+excluded from P1 and counted as wrong in P2.
+Smoke (4 devices, lambda 0 and 1, 1 seed, 200 steps; tiers `i7_1smoke_*`; code check only, not used for any
+conclusion): GF180 r0 73 s, IHP r1 117 s; decide and S3 (50 steps, 2 folds of 3 datasets, 15 s) run end to end.
+Queue (appended to `out/research/queue.txt`, runner started): I7_1_run_gf180_r0, I7_1_run_ihp_r0,
+I7_1_run_gf180_r1, I7_1_run_ihp_r1, I7_1_decide, I7_1_figs, I7_1_s3_retro, I7_1_s3_new, I7_1_retro_s3,
+I7_1_decide_s3, I7_1_figs_s3. Estimated wall time: run jobs 25-30 min each (about 1 h 50 min), S3 retro about
+35 min, S3 new about 50 min; total about 3 h 15 min. The decision (I7_1_decide) is available after the four run
+jobs; the S3 jobs add secondary values only.
