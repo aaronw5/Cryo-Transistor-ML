@@ -812,3 +812,32 @@ I3-2 text. Corrected export `out/research/explore/I3_2/real_dev/m_bias_sky130_de
 warnings with OpenVAF-Reloaded v24 and OpenVAF 23.5.0; in the ngspice-41 OSDI build its currents equal the F1c
 full-model SPICE-native currents (max relative difference 0.0 on pmos_L2_W5, nmos_L20_W0p64, pmos_L0p35_W0p55).
 The stored `m_bias_sky130_dev_full.va` is unchanged.
+
+## I4-1 baselines for I3-2, I4-2 interpretation (2026-10-20 06:40): pre-registered, smoke run, queued
+
+Pre-registration `out/research/explore/I4_1/prereg.json` (commit e57afce, committed alone before any B1-B5
+held-out result); amendment `prereg_amendment_2026-10-20.json` corrects one parenthetical (REAL_DEV base-box TRF
+budget per IRLS round is 4 or 5, not 4; rule unchanged). Code `src/cryoml/explore/i4_1_baselines.py`,
+driver `scripts/research/explore/i4_1_baselines.py`, tests `tests/test_i4_1_baselines.py` (13 tests).
+`spice_pdk.simulate_pdk` has a new `rs_ext_ohm` argument (default 0 gives the same deck text as before).
+Arms, all with the held-out card refit in the loop and the I3-2 folds and settings: B1 wider card parameter set;
+B2 extrinsic series resistance per side (netlist resistors) plus a self-heating factor
+exp(kappa |Vds I| / P_max), both fitted per device; B3_d2 / B3_d3 shared polynomial g of total degree 2 / 3 in
+(|Vgs|, |Vds|) per polarity; B4 GP posterior mean of ln|I_meas / I_sim| on (is_pmos, |Vgs|/VDD, |Vds|/VDD),
+ARD squared-exponential kernel plus white noise, type-II ML; B5 per-device M_bias-form MLP fitted on the
+held-out device (in-sample reference). B1 and B2 get the same TRF iterations per IRLS round as C0_refit.
+B1 extras from an edge screen of the starting cards (`b1_screen.json`; response >= 1e-4 at a box edge):
+sky130 19 (a1, alpha1, cdsc, dvt0w, dvtp0, etab, fprout, minv, pdiblc1, pdits, phin, pscbe1, pscbe2, pvag, rbpb,
+rdswmin, ud, up, voffl), GF180 35, IHP 71. GF180 B1 contains 9 of the 12 parameters the tier c truth perturbs and
+IHP B1 all 9; the tier c truths also contain an extrinsic resistance of the B2 form.
+Rule: for each X in {B1, B2, B3_d2, B3_d3, B4}, X is beaten if the REAL_DEV bootstrap 95% CI upper bound of
+GMR(M_bias, X) is < 1, or GMR(M_bias, X) < 0.95 on both GF180 and IHP; "supported against baselines" if all are
+beaten, otherwise "matched by baseline X" with the list.
+Smoke (1 fold; B3/B5 200 steps, B5 1 seed; not used for any conclusion). REAL_DEV nmos_L0p15_W1p6 (45 s):
+C0_refit_rerun 0.019338 (stored 0.019338, |diff| 0.0), B1 0.019341, B2 0.019341, B3_d2 0.018626, B3_d3 0.018350,
+B4 0.036776, B5 0.015044, M_bias (stored) 0.023513. IHP geometry nmos_L0p13_W0p2, 3 targets (133 s):
+all-device C0_refit_rerun 0.19533 (|diff| 0.0 vs stored), B1 0.04315, B2 0.05341, B3_d2 0.16173,
+B3_d3 0.15981, B4 0.14632, B5 0.05399, M_bias (stored) 0.15920. B1 and B2 start from the C0 start current
+(first objective equal to C0's).
+Estimated wall time: real 10 min, GF180 30 min, IHP 42 min, decide and analyze 1 min (about 85 min).
+Queue: `I4_1_real`, `I4_1_gf180`, `I4_1_ihp`, `I4_1_decide`, `I4_2_analyze`.

@@ -244,36 +244,46 @@ def _patch_params_in_bin(text: str, dev_type: str, bin_index: int,
 _MINIMAL_INSTANCE = {("pmos", 0.35, 1.6), ("pmos", 2.0, 5.0)}
 
 
-def _instance_line(dev_type: str, L_um: float, W_um: float) -> str:
+def _instance_line(dev_type: str, L_um: float, W_um: float,
+                   rs_ext_ohm: float = 0.0) -> str:
     """sweeps.spice instance, with the primed µm expressions pre-evaluated
     for our deck convention (deck scale=1.0, suffixed values): ad/as in µm²
-    (p), pd/ps in µm (u), nrd/nrs unitless, per-device mult=m."""
+    (p), pd/ps in µm (u), nrd/nrs unitless, per-device mult=m.
+
+    ``rs_ext_ohm`` > 0 adds equal extrinsic resistors outside the card in
+    series with the drain and the source terminals (exploration baseline
+    I4-1 B2); the body stays at the external ground.  With the default 0 the
+    line is unchanged."""
     subckt = _SUBCKT[dev_type]
     m = device_mult(dev_type, L_um, W_um)
+    drain, source = ("ndi", "nsi") if rs_ext_ohm > 0 else ("nd", "0")
+    ext = (f"RDEXT nd ndi {rs_ext_ohm:.10g}\nRSEXT nsi 0 {rs_ext_ohm:.10g}\n"
+           if rs_ext_ohm > 0 else "")
     if any(dev_type == t and abs(l - L_um) < 1e-3 and abs(w - W_um) < 1e-3
            for t, l, w in _MINIMAL_INSTANCE):
-        return (f"Xm1 nd ng 0 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u "
-                f"mult={m} m={m}\n")
+        return (f"Xm1 {drain} ng {source} 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u "
+                f"mult={m} m={m}\n") + ext
     area_um2 = W_um * 0.29                 # floor((nf+1)/2)*w/nf*0.29, nf=1
     perimeter_um = 2 * (W_um + 0.29)       # 2*floor((nf+1)/2)*(w/nf+0.29)
     squares = 0.29 / W_um
     return (
-        f"Xm1 nd ng 0 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u nf=1 "
+        f"Xm1 {drain} ng {source} 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u nf=1 "
         f"ad={area_um2:.6g}p as={area_um2:.6g}p "
         f"pd={perimeter_um:.6g}u ps={perimeter_um:.6g}u "
         f"nrd={squares:.6g} nrs={squares:.6g} sa=0 sb=0 sd=0 "
-        f"mult={m} m={m}\n")
+        f"mult={m} m={m}\n") + ext
 
 
 def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
                 lib_path: Path, raw_dir: Path, temp_K: float,
-                temps_K: list[float] | None = None) -> str:
+                temps_K: list[float] | None = None,
+                rs_ext_ohm: float = 0.0) -> str:
     """One deck that runs every curve's DC sweep in a single ngspice process.
 
     With ``temps_K`` the sweeps repeat at each temperature (``option temp``
     inside the control block re-evaluates ``temper`` expressions); outputs are
     ``raw_t{j}_{i}.dat``."""
-    instance = _instance_line(dev_type, L_um, W_um)
+    instance = _instance_line(dev_type, L_um, W_um, rs_ext_ohm)
     lines = [
         "* corrected-repository batched DC sweeps\n",
         ".options scale=1.0\n",
@@ -334,13 +344,15 @@ def simulate_pdk(
     bin_index: int | None = None,
     library_path: Path | None = None,
     temps_K: list[float] | None = None,
+    rs_ext_ohm: float = 0.0,
 ) -> list[np.ndarray]:
     """Simulate measured-bias curves with the corrected-repository deck.
 
     ``params`` overrides values inside ``bin_index`` or, when omitted, the
     geometry-matching bin. ``library_path`` validates an exported combined
     card and cannot be combined with parameter injection. NGSpice always
-    performs native L/W bin selection.
+    performs native L/W bin selection.  ``rs_ext_ohm`` > 0 adds equal
+    extrinsic drain and source resistors outside the card (``_instance_line``).
     """
     err = ensure_pdk77k()
     if err:
@@ -371,7 +383,7 @@ def simulate_pdk(
         deck_path = td / "deck_batch.sp"
         deck_path.write_text(
             _batch_deck(dev_type, L_um, W_um, curves, lib_path, td, temp_K,
-                        temps_K))
+                        temps_K, rs_ext_ohm))
         try:
             proc = subprocess.run([_NGSPICE_BIN, "-b", str(deck_path)],
                                   cwd=str(td), capture_output=True,

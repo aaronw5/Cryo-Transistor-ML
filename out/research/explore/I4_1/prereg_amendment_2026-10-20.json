@@ -1,0 +1,7 @@
+{
+ "id": "I4_1",
+ "amends": "out/research/explore/I4_1/prereg.json (unchanged)",
+ "written": "2026-10-20, after the smoke runs (smoke_real, smoke_ihp) and before any full run",
+ "correction": "common_protocol.heldout_refit states in a parenthetical that the REAL_DEV base-box TRF budget per IRLS round is 4. The 43-set box has 37 to 40 active parameters on the REAL_DEV devices (inactive entries have lo = hi), so the per-device base-box value max(2, 400 // 2 // (n_active + 2)) is 5 for nine devices and 4 for pmos_L0p35_W0p55, pmos_L0p35_W5, pmos_L0p5_W0p42. GF180 (21 active) 8 and IHP (12 active) 14 are as stated. The rule itself (B1/B2 per-IRLS-round budget equal to the base-box value of the same device, i4_1_baselines.matched_nfev) is unchanged and is what the code implements",
+ "no_other_change": true
+}
