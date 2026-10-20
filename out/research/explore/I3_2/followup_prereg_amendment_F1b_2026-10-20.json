@@ -1,0 +1,30 @@
+{
+ "amends": "out/research/explore/I3_2/followup_prereg.json (commit 4ae726a) and out/research/explore/I3_2/followup_prereg_amendment_2026-10-20.json (commit 4f4e7ef); both files unchanged",
+ "id": "I3_2_followup_F1b",
+ "written": "2026-10-20, after the full F1 run (out/research/explore/I3_2/followup/f1/summary.json, runtime 32.2 s) and before any F1b run",
+ "reason": "In F1 the SPICE-native runs used Homebrew ngspice-46 because the canonical arm64 ngspice-41 build has no OSDI support. On the uncorrected published 77 K card, ngspice-46 and ngspice-41 give different RRMS on pmos_L0p35_W0p55 (0.7270 ngspice-41, 2.6351 ngspice-46) and pmos_L8_W5 (0.3146, 0.8670); the other 10 REAL_DEV devices agree. F1 recorded F1.0 pass, F1.1 fail (max relative current difference 21.5, max |delta RRMS| 2.23), F1.2 fail (max relative difference 2.4e-3 fold, 1.4e-3 full; max |delta RRMS| 1.4e-5), F1.3 fail (max device |delta| 2.12, all-device |delta| 0.240). F1 results stay recorded as run in out/research/explore/I3_2/followup/f1/ and the f1_iv_*.png figures; they are not overwritten",
+ "simulator_built_for_F1b": {
+  "binary": "/Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice (ngspice-41)",
+  "source": "/Users/anrunw/cryo-ng41/src/ngspice-41 (the same source tree as the canonical build)",
+  "build_dir": "/Users/anrunw/cryo-ng41/src/ngspice-41/build-arm64-osdi (the canonical build-arm64 and prefix /Users/anrunw/cryo-ng41/arm64 are unchanged)",
+  "configure": "../configure --prefix=/Users/anrunw/cryo-ng41/arm64-osdi --enable-xspice --enable-cider --disable-debug --with-readline=no --disable-openmp --enable-osdi CFLAGS=-O2 (the canonical command from build-arm64/config.log plus --enable-osdi; configure appends -std=gnu11 to CFLAGS when OSDI is enabled)",
+  "make": "make -j8 CXXFLAGS=\"-O2 -Wno-invalid-specialization\"; make install (the canonical build needs the same CXXFLAGS for the HICUM C++ sources with Apple clang 21)",
+  "compiler": "Apple clang 21.0.0 (clang-2100.0.123.102), arm64-apple-darwin27.0.0",
+  "reproduction_check_done_before_this_file": {
+   "verify_simulator": "scripts/verify_simulator.py with NGSPICE_BIN set to the new binary: all 18 devices; per-device results identical to out/tables/simulator_verification_arm64_ng41.json (worst absolute difference to the upstream sweeps 1.0e-11 A at nmos_0.19_7 idVg_vd_1p110, as for the canonical build). Output: out/tables/simulator_verification_arm64_ng41_osdi.json",
+   "binary_vs_binary": "published card, all 18 devices, the 11 metric curves on the upstream sweep grids, cryoml.spice_pdk.simulate_pdk (native bin selection included) with the canonical and the new binary: 36828 of 36828 currents bit-identical, max absolute and max relative difference 0.0. Output: out/tables/simulator_compare_ng41_arm64_vs_arm64_osdi.json (script scripts/research/compare_ngspice_bins.py)"
+  }
+ },
+ "F1b": {
+  "definition": "F1 as pre-registered and amended (A1 numerical-zero floor 1e-20 A, A2 tight-tolerance diagnostic), with the ngspice-41 OSDI build above in every place where F1 used ngspice-46: the SPICE-native runs (fold and full .osdi on the M_bias refit cards), the uncorrected runs of the four cards on the second simulator, the Python-corrected reference on the same simulator, and the A2 tight-tolerance runs. The canonical arm64 ngspice-41 (no OSDI) remains the reference simulator for the uncorrected runs and the stored-value checks",
+  "checks": {
+   "F1.0_export_text": "unchanged",
+   "F1.1_simulator_reproduction": "ngspice-41 OSDI build vs canonical ngspice-41, uncorrected, four cards, 12 REAL_DEV devices; same thresholds (max relative current difference over scored points 1e-3, per-device |delta RRMS| 1e-4) and the same stored-value check (1e-9)",
+   "F1.2_va_implementation": "SPICE-native (ngspice-41 OSDI build + .osdi) vs Python-corrected on the same simulator (ngspice-41 OSDI build I_bsim * exp(g)); same thresholds and convergence rule",
+   "F1.3_end_to_end": "SPICE-native (ngspice-41 OSDI build) per-device strict RRMS vs the stored I3-2 M_bias value; same thresholds (2e-4 per device, 1e-4 all-device mean)"
+  },
+  "unchanged": "models, cards, metric, Verilog-A construction (osdi_va_text), netlist, thresholds, the literal-statistic reporting of A1, all of F2",
+  "outputs": "out/research/explore/I3_2/followup/f1b/: summary.json, va/ (text), curves.npz and osdi/ (not committed); figures out/research/explore/I3_2/followup/f1b_iv_{pmos_L0p35_W0p55,pmos_L2_W5,nmos_L20_W0p64}.png with measured points, NGSpice published 77 K card, NGSpice C0_refit card (canonical ngspice-41) and the SPICE-native corrected M_bias refit card (ngspice-41 OSDI build + compiled fold Verilog-A)",
+  "command": "PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f1 --workers 4 --native-bin /Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice --native-label ng41osdi --out-name f1b --amendment out/research/explore/I3_2/followup_prereg_amendment_F1b_2026-10-20.json"
+ }
+}
