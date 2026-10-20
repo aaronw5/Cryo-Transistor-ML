@@ -1,6 +1,6 @@
 # Tables, 2026-10-20 i7_2
 
-Generated 2026-10-20 19:41 by `PYTHONPATH=src .venv/bin/python scripts/research/plot_explore_i7_2.py --date 2026-10-20` from stored files only. RRMS is the strict paper metric on the held-out curves of each split (frozen inclusion). I7-2 values are on DEV devices (development evidence); REAL_TEST and TEST are not loaded.
+Generated 2026-10-20 19:49 by `PYTHONPATH=src .venv/bin/python scripts/research/plot_explore_i7_2.py --date 2026-10-20` from stored files only. RRMS is the strict paper metric on the held-out curves of each split (frozen inclusion). I7-2 values are on DEV devices (development evidence); REAL_TEST and TEST are not loaded.
 
 ### I7-2 decision: pre-registered conditions C1-C4 per dataset, counts and the outcome list
 

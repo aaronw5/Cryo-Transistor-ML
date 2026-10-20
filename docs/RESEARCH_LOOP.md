@@ -1212,3 +1212,7 @@ exp(phi . delta) only: the arm I-V curves are not stored (results.json keeps RRM
 MLP is not stored) and were not re-simulated.
 Site: new claim `i7-2` (status in progress; headline "inconclusive (pre-registered rule)") in the Exploration tab;
 status block: iteration 7 complete, I7-2 item and the I7-2 decision table. Site rebuilt, not published.
+
+### I7-2 example I-V curves (2026-10-20 19:50)
+
+Queue jobs I7_2_examples (6 s) and I7_2_figs (6 s), script scripts/research/explore/i7_2_examples.py (commit dd55131). The 8 example device/draw pairs in figures 08-11 of batch 2026-10-20_i7_2 are re-simulated with NGSpice from each arm's stored final card (sky130 ngspice-41 arm64, IHP ngspice-46 + psp103.osdi, TU Delft ngspice-41 arm64); corrections are applied in Python to the NGSpice output (b, c, c_ml, d: x exp(g); e: + crossing residual). d's per-device MLP is refit with the run's seeds and gives the stored result exactly. Held-out and adaptation RRMS recomputed from these curves match results.json with relative difference 0 for every arm. Figures 08-11 now show the arm curves.
