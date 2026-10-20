@@ -1,0 +1,71 @@
+{
+ "id": "I3_2",
+ "title": "Bias-only correction g(is_pmos, |Vgs|/VDD, |Vds|/VDD) with held-out card refit in the loop",
+ "iteration": "exploration iteration 3, direction I3-2 (follow-up of E1 and I2-1)",
+ "written": "2026-10-20",
+ "status": "pre-registered before any M_bias or M_bias_geom correction was trained or scored. Smoke runs at reduced budget (output directories named smoke_*) check the code only and are not used for the decision",
+ "parents": {
+  "E1_prereg": "out/research/explore/E1/prereg.json",
+  "I2_1_prereg": "out/research/explore/I2_1/prereg.json",
+  "E1_stage2_real_dev": "out/research/explore/E1/real_dev_refit/results.json: C0 refit 0.10719, T1 0.08198, M 0.08708 all-device mean; T1 < C0 refit on 11 of 12 devices",
+  "I2_1_real_dev": "out/research/explore/I2_1/real_dev/results.json: C0_refit 0.10719, T1_joint 0.08035 (< C0_refit on 11 of 12), M_joint 0.09034, M_post 0.08708; decision kill",
+  "I2_1_simulated": "out/research/explore/I2_1/{gf180,ihp}_c_logo/results.json: C0_refit GF180 0.04566, IHP 0.10113; M_joint / C0_refit mean ratio GF180 0.834, IHP 0.904",
+  "parent_paired_geometric_mean_ratios_vs_C0_refit_computed_from_stored_rows": {"REAL_DEV_E1_stage2_T1": 0.794, "REAL_DEV_I2_1_T1_joint": 0.777, "REAL_DEV_M_post": 0.866, "REAL_DEV_M_joint": 0.907, "GF180_M_post": 0.861, "GF180_M_joint": 0.835, "IHP_M_post": 1.050, "IHP_M_joint": 0.971}
+ },
+ "hypothesis": "A smooth low-capacity correction g(is_pmos, |Vgs|/VDD, |Vds|/VDD) with no geometry input and no simulated-current input, trained post-hoc on the training devices and used in the loop of the held-out card refit, gives held-out strict paper RRMS equal to the per-(family, curve tag) gain table T1 within 0.005 all-device mean and lower than the no-correction refit C0_refit. Reason stated as a hypothesis: a curve tag is a fixed terminal bias, so T1 is a function of polarity and terminal bias only; the shared residual component is a function of bias; the E1 M inputs log L, log W and log|I_sim| L/W let the MLP fit device-specific residual that does not transfer to a held-out device.",
+ "data": {
+  "real": "REAL_DEV (12) from out/research/explore/real_split.json; records out/research/explore/E1/real_dev.{npz,json}; starting cards out/research/polished/direct43_r3_fd/real/summary.json; box round-3 43-parameter box (out/cold_loop/full_direct/round_3/spec.json, cold_loop.box_for). REAL_TEST is not loaded by any I3_2 script",
+  "simulated": "GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c truth sets 0-2, 48 targets per PDK; records out/research/explore/E1/{gf180,ihp}_c_set{0,1,2}.{npz,json}; starting cards = the E1 fitted cards stored in the records (wide box: GF180 21 parameters, IHP 12)",
+  "training_records": "every correction is trained on the E1 stored training records: one NGSpice simulation of each training device's starting card on its measured (or truth) bias grid. No joint rounds (I2-1 showed that joint rounds did not lower the REAL_DEV held-out RRMS)"
+ },
+ "correction_model": {
+  "form": "I_corr = I_sim * exp(g), g = 1.0 * tanh(h(x)); multiplicative, keeps the sign and zero crossings of I_sim",
+  "M_bias": {
+   "role": "PRIMARY",
+   "inputs_x": ["is_pmos (0/1)", "|Vgs| / VDD", "|Vds| / VDD"],
+   "note_on_inputs": "these are E1 features 0-2. In every record nMOS biases are >= 0 and pMOS biases are <= 0, so |V| equals the polarity-normalized bias type * V. VDD = 1.85 V (sky130), 3.3 V (GF180), 1.2 V (IHP)",
+   "h": "MLP 3-16-16-1, tanh hidden activations, last layer weights and bias initialized to zero",
+   "scaling": "|Vgs|/VDD and |Vds|/VDD standardized with the mean/std of the training points of the fold; is_pmos left as 0/1",
+   "training": "loss = mean over training devices of the paper per-device RRMS of the corrected current (mean over frozen-included curves of trimmed RMSE / trimmed mean |I_target|; e1_correction._loss_fn) + 1e-4 * sum of squared weight-matrix entries; Adam lr 3e-3, 2000 full-batch steps, float64; ensemble of 5 seeds (0-4), g = mean of the members' g. This is the E1 M recipe with the input set and hidden width changed",
+   "parameters_per_member": 353
+  },
+  "M_bias_geom": {
+   "role": "secondary (tests whether geometry inputs lower held-out accuracy)",
+   "inputs_x": ["is_pmos", "|Vgs| / VDD", "|Vds| / VDD", "log10 L_um", "log10 W_um"],
+   "h": "MLP 5-16-16-1, otherwise identical to M_bias (log10 L and log10 W standardized with the fold training statistics)"
+  },
+  "frozen_hyperparameters": {"hidden": 16, "layers": 2, "activation": "tanh", "out_scale": 1.0, "l2": 1e-4, "lr": 3e-3, "steps": 2000, "seeds": [0, 1, 2, 3, 4], "dtype": "float64"},
+  "deployability": "M_bias is a function of the device polarity and the terminal voltages V(g,s), V(d,s) only. It is written out as Verilog-A text (zero-volt sense branch in series with the compact-model drain; I(d,s) <+ (exp(g) - 1) * I(sense); g an explicit tanh network of pmos, abs(V(g,s))/VDD, abs(V(d,s))/VDD). The text is generated by scripts/research/explore/i3_2_bias.py --mode export and checked by unit tests that evaluate the emitted assignment lines; it is not compiled in this phase. Limitation: abs() folds reverse-mode bias (Vds of the wrong sign) onto forward mode; reverse bias does not occur in any record"
+ },
+ "arms": {
+  "C0_refit": "control: held-out card refit without correction (polish max_nfev 400, irls 2, diff_step 0.01 from the starting card). Rows reused from stored I2-1 results, which used identical settings and starting cards: REAL_DEV out/research/explore/I2_1/real_dev/results.json per_device.C0_refit (equal to E1 stage-2 C0, max |diff| 0); GF180/IHP out/research/explore/I2_1/{pdk}_c_logo/results.json per_device.C0_refit. The full runs re-run C0_refit as a reproduction check and record max |rerun - stored|; the decision uses the stored rows",
+  "T1_inloop": "non-deployable comparator: one log-gain per (family, curve tag), trained post-hoc on the training devices' starting-card records (E1 T1), held-out card refit with it in the loop, same refit settings. REAL_DEV: stored E1 stage-2 T1 rows reused (out/research/explore/E1/real_dev_refit/results.json rows.T1, all-device mean 0.08198). Chosen over the I2-1 T1_joint rows because its training protocol (post-hoc on the starting cards, no joint rounds) matches M_bias; I2-1 T1_joint (0.08035) is reported as a reference row and is not used in the rule. The REAL_DEV full run re-runs T1_inloop from the stored E1 fold T1 corrections (out/research/explore/E1/real_dev_lodo/fold_corrections.json) as a reproduction check. GF180/IHP: new run, held-out refit with the E1 leave-one-geometry-out fold T1 correction (out/research/explore/E1/{pdk}_c_logo/fold_corrections.json); reported, not in the rule",
+  "M_bias": "PRIMARY: trained post-hoc on the fold's training records, frozen, held-out card refit with it in the loop (polish max_nfev 400, irls 2, diff_step 0.01; the E1 stage-2 settings), best card re-simulated, corrected with the same g, scored",
+  "M_bias_geom": "secondary: same protocol as M_bias with the 5-input network",
+  "reference_rows_reported_not_rerun": "REAL_DEV: E1 stage-2 M (M_post), I2-1 M_joint, I2-1 T1_joint. GF180/IHP: I2-1 M_post, I2-1 M_joint",
+  "diagnostics": "post-hoc held-out score of M_bias and M_bias_geom on the starting card's simulation (no refit); a full M_bias trained on all 12 REAL_DEV devices, exported as Verilog-A (not a held-out result)"
+ },
+ "evaluation": {
+  "folds": "REAL_DEV: leave-one-device-out, 12 folds. GF180 and IHP: leave-one-geometry-out, 16 folds of 3 targets (the three truth draws of the held-out geometry are removed from training), 48 held-out targets per PDK",
+  "metric": "strict paper RRMS with frozen inclusion: e1_correction.score_device (sky130: metrics.device_rrms_new with the published-baseline include tags stored on the record; pdk2: target-frozen inclusion); a non-finite included curve makes the device NaN (failed). Every scored current is a fresh NGSpice simulation of the refit card multiplied by exp(g) of the frozen correction",
+  "aggregates": "all-device mean (12 devices, or 48 targets), combined = mean of the nMOS and pMOS family means, median, per-device values, failed count",
+  "decision_statistic": "paired geometric-mean ratio of per-device RRMS, R(method, control) = exp(mean_i ln(rrms_method_i / rrms_control_i)) over devices where both values are finite; bootstrap 95% CI = 2.5 and 97.5 percentiles of R over 10000 resamples (numpy default_rng(0)); resampling unit: device on REAL_DEV (12 units), geometry on GF180/IHP (16 clusters of 3 targets, a resampled geometry contributes all 3 targets); win count = number of devices with rrms_method < rrms_control (strict). Reported for M_bias vs C0_refit, M_bias vs T1_inloop, M_bias_geom vs C0_refit, M_bias_geom vs M_bias, M_bias vs the reference rows"
+ },
+ "criterion": {
+  "continue_if_all": [
+   "R1 (REAL_DEV): the upper bound of the bootstrap 95% CI of the paired geometric-mean ratio R(M_bias, C0_refit) over the 12 devices is < 1",
+   "R2 (REAL_DEV): M_bias all-device mean <= T1_inloop all-device mean + 0.005, where T1_inloop = stored E1 stage-2 T1 (0.08198), i.e. M_bias all-device mean <= 0.08698",
+   "R3 (REAL_DEV): 0 failed (NaN) devices for M_bias",
+   "R4 (simulated): on at least one of GF180 and IHP, the point estimate of R(M_bias, C0_refit) over the 48 leave-one-geometry-out targets is <= 0.90 and M_bias has 0 failed targets on that PDK"
+  ],
+  "stop_otherwise": "I3_2 is stopped if any of R1-R4 fails",
+  "not_used_for_the_decision": ["M_bias_geom", "T1_inloop on GF180/IHP", "I2-1 T1_joint", "reference rows", "post-hoc diagnostics", "reproduction-check reruns", "REAL_TEST"]
+ },
+ "data_reuse_note": "REAL_DEV has been used by E1 (design and decision), I2-1 (design and decision) and in the design of this direction (the I3-2 hypothesis was formed from the REAL_DEV T1 and M results). REAL_DEV results of I3_2 are development evidence, not a held-out test. A method that passes R1-R4 goes to REAL_TEST only at the method freeze, with its configuration fixed before REAL_TEST is loaded",
+ "compute": {
+  "real": "one queue job, process pool (4 workers, 1 torch thread each); training split into one pool task per (fold, arm, seed)",
+  "simulated": "one queue job per PDK, process pool (6 workers)",
+  "smoke": "1-2 folds, 1 seed, 200 steps, full refit settings; output smoke_* directories, labelled smoke, not used for any conclusion"
+ },
+ "frozen_choices_note": "All choices above were fixed before any M_bias or M_bias_geom result existed. No REAL_DEV result is used to change them; any later variant gets a new id or a dated amendment that leaves this file unchanged"
+}
