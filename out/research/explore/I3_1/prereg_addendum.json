@@ -1,0 +1,17 @@
+{
+ "id": "I3_1",
+ "written": "2026-10-20",
+ "relation_to_prereg": "Written after prereg.json (commit c877413, sha256 25ca079e670ee787eda1ab11d3d938ca8338a3ca4bae09361633b557d3b71f9c) and before any run of the new arms on NGSpice data (including the smoke run) and before any simulation of tier H. prereg.json is unchanged. Hypothesis, tiers (including the tier H definition), metric, decision statistic, CONTINUE/KILL/INCONCLUSIVE/INVALID rule, settings and queue jobs are unchanged. Only the hyb network inputs and the output-penalty weight change.",
+ "reason": [
+  "Unit test on synthetic data without NGSpice (tests/test_i3_1_hybrid.py; 20 devices with par3 laws drawn at random plus one residual shape shared by all devices): with the pre-registered 53 inputs (geometry, standardised anchor fits, standardised par3 parameters, temperature feature) the training loss reached 1e-6 while the device-level validation loss rose from 0.028 (zero correction) to 0.11 by step 1500; early stopping returned step 25 in every member and the learned correction did not depend on temperature. The anchor fits and the par3 parameters identify each training device, and the network fitted the residual through those inputs. With the temperature feature as the only input the same data gave validation loss 6e-8.",
+  "The E3b lrn members (inputs geometry, anchor fits, temperature) stopped at steps 25-100 of 3000 on tier M and 25-75 on tier W (out/research/explore/E3b/runs/full/tier_*/learn_info.json). This is reported as a finding about the E3b lrn arm; lrn is not changed in I3_1.",
+  "With output penalty 0.1 mean(NN^2) and NN about 1 (residual about sigma_h), the penalty has the same weight as the 0.1 mean((d/sigma_h)^2) data term, and the fitted correction was about half of the residual in the synthetic test (0.036 vs 0.067 at 110 K)."
+ ],
+ "changes": {
+  "hyb_inputs": "Each ensemble member trains two networks with the same device split and torch seed and keeps the one with the lower validation criterion (both include the step -1 zero-correction state): input set geo_t = geometry features (3) + temperature_feature(T) (1); input set geo_t_res = geometry features (3) + par3 residuals at the O4 anchors, x_hat(T_a) - law_x(mu, c, lg, T_a) for T_a in {77, 150, 225, 300} K (28, standardised with training-row mean and std, std floor 1e-3) + temperature_feature(T) (1). The raw anchor fits and the par3 parameters are no longer inputs. The chosen input set and best step per member are recorded (learn_info_i3_1.json; summary.json i3_1.hyb_feature_sets, hyb_best_steps).",
+  "hyb_output_penalty": "0.01 mean(NN^2) (was 0.1). The remaining loss terms, architecture, optimiser, steps, ensemble size, seeds, split and early-stopping rule are as in prereg.json.",
+  "applies_to": "hyb, hyb_n3, hyb_n12. hyb_mean, lrn, lrn_n3, lrn_n12 and every E3b arm are unchanged.",
+  "synthetic_check_after_change": "tests/test_i3_1_hybrid.py: zero residual gives exactly par3 (|pred - par3| < 1e-7); a residual shared by all devices is learned (held-out RMS error < 0.5 x par3 error); a residual whose amplitude depends on a geometry feature is learned (< 0.3 x par3 error)."
+ },
+ "files": ["src/cryoml/explore/i3_hybrid.py", "scripts/research/explore/e3_temp_misspec.py", "tests/test_i3_1_hybrid.py", "tests/test_i3_1_tier_h.py"]
+}

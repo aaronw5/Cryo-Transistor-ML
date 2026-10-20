@@ -28,6 +28,17 @@ predicted or evaluated card has u0 >= 1 (a failed check makes the run
 INVALID), and adds the paired geometric-mean ratio statistic.  The default
 ``--study E3`` behaves as before.
 
+``--study I3_1`` (pre-registration out/research/explore/I3_1/prereg.json) writes
+under out/research/explore/I3_1 with the E3b guard and adds: tier H (allowed
+only in I3_1); par3 law fits of the training devices on their O4 anchors
+(stage train_law); the hybrid arms O4|hyb and O4|hyb_mean
+(``cryoml.explore.i3_hybrid``); ``--primary-n-train`` (the first draws per
+geometry used by every primary arm) and ``--scaling`` (lrn and hyb trained
+on the first n draws, stored as O4|lrn_n<n> and O4|hyb_n<n>); per-tier
+statistics summary.json["i3_1"].  ``--decide`` reads tier_M, tier_W and
+tier_H summaries of ``--name`` and writes decision.json (the pre-registered
+rule).
+
   PYTHONPATH=src .venv/bin/python scripts/research/explore/e3_temp_misspec.py \
       --name full --tier M --n-train 6 --n-test 3 --workers 8
 """
@@ -50,9 +61,10 @@ from cryoml.config import OUT_DIR  # noqa: E402
 from cryoml.explore import e3_temp as E  # noqa: E402
 
 E3_DIR = OUT_DIR / "research" / "explore" / "E3"
-STUDY_DIRS = {"E3": E3_DIR, "E3b": OUT_DIR / "research" / "explore" / "E3b"}
+STUDY_DIRS = {"E3": E3_DIR, "E3b": OUT_DIR / "research" / "explore" / "E3b",
+              "I3_1": OUT_DIR / "research" / "explore" / "I3_1"}
 SPLIT = OUT_DIR / "research" / "explore" / "real_split.json"
-TIER_CODE = {"W": 0, "M": 1}
+TIER_CODE = {"W": 0, "M": 1, "H": 2}
 SETTINGS = {"O4": ("par3", "par14", "par3_pop"), "O2": ("par3_pop", "par3_g1", "par14_g1")}
 PRIMARY_CONTROL = {"O4": "par3", "O2": "par3_pop"}
 LEARNED = ("lrn", "lrn_param", "lrn_noH", "lrn_mean")
@@ -153,6 +165,23 @@ def law_job(job):
     return str(path)
 
 
+def train_law_job(job):
+    """I3_1: par3 law of one training device fitted on its O4 anchors (truth
+    re-simulated at the anchors from the stored truth)."""
+    train_path, law_iter, out = job
+    path = Path(out)
+    if path.exists():
+        return str(path)
+    t0 = time.time()
+    rec = json.loads(Path(train_path).read_text())
+    temps = E.OBS_SETS["O4"]
+    targets = {t: E.simulate_truth_at(rec["tag"], rec["truth"], t) for t in temps}
+    law = E.fit_law(rec["tag"], targets, temps, "par3", rec["fits"], max_iter=law_iter)
+    dump(path, {**law, "tag": rec["tag"], "draw": rec["draw"],
+                "runtime_s": round(time.time() - t0, 1)})
+    return str(path)
+
+
 def eval_job(job):
     from cryoml.spice_batch import simulate_pdk_multi
     test_path, cards, out = job      # cards: {temp: [(key, x), ...]}
@@ -188,7 +217,23 @@ def pool_map(fn, jobs, workers):
         return list(pool.imap_unordered(fn, jobs))
 
 
+def check_study_args(args) -> tuple[int, list[int]]:
+    """Reject options outside their study before anything is written; returns
+    (primary training draws per geometry, scaling list)."""
+    i31 = args.study == "I3_1"
+    if args.tier == "H" and not i31:
+        raise SystemExit("tier H is defined only for --study I3_1")
+    primary_n = args.primary_n_train or args.n_train
+    scaling = [int(n) for n in args.scaling.split(",")] if args.scaling else []
+    if not i31 and (args.primary_n_train or scaling):
+        raise SystemExit("--primary-n-train and --scaling are I3_1 options")
+    if primary_n > args.n_train or any(n > args.n_train or n < 1 for n in scaling):
+        raise SystemExit("--primary-n-train and --scaling must be in 1..--n-train")
+    return primary_n, scaling
+
+
 def cmd_run(args):
+    check_study_args(args)
     base = run_dir(args)
     base.mkdir(parents=True, exist_ok=True)
     split = json.loads(SPLIT.read_text())
@@ -202,9 +247,13 @@ def cmd_run(args):
     config = {"tags": tags, "tier": args.tier, "n_train": args.n_train,
               "n_test": args.n_test, "dense": dense, "seed": args.seed,
               "law_iter": args.law_iter, "learn_seeds": args.learn_seeds}
-    e3b = args.study == "E3b"
+    e3b = args.study in ("E3b", "I3_1")
+    i31 = args.study == "I3_1"
+    primary_n, scaling = check_study_args(args)
     if e3b:
-        config["study"] = "E3b"
+        config["study"] = args.study
+    if i31:
+        config.update({"primary_n_train": primary_n, "scaling": scaling})
     dump(base / "config.json", config)
     t0 = time.time()
 
@@ -221,7 +270,8 @@ def cmd_run(args):
     pool_map(test_job, test_jobs, args.workers)
     print(f"test fits done {time.time() - t0:.0f}s", flush=True)
 
-    train = [json.loads(Path(j[-1]).read_text()) for j in train_jobs]
+    train_all = [json.loads(Path(j[-1]).read_text()) for j in train_jobs]
+    train = [r for r in train_all if r["draw"] < primary_n]
     tests = {Path(j[-1]).stem: Path(j[-1]) for j in test_jobs}
     pop_lg = E.pooled_lg([r["fits"] for r in train], dense)
     dump(base / "pooled_lg.json", {"lg": pop_lg.tolist(), "g": np.exp(pop_lg).tolist()})
@@ -233,9 +283,20 @@ def cmd_run(args):
     pool_map(law_job, law_jobs, args.workers)
     print(f"laws done {time.time() - t0:.0f}s", flush=True)
 
+    if i31:
+        tl_jobs = [(j[-1], args.law_iter,
+                    str(base / "train_law" / Path(j[-1]).name)) for j in train_jobs]
+        pool_map(train_law_job, tl_jobs, args.workers)
+        for rec, job in zip(train_all, tl_jobs):
+            rec["law_O4_par3"] = json.loads(Path(job[-1]).read_text())
+        print(f"train laws done {time.time() - t0:.0f}s", flush=True)
+
     preds_path = base / "preds.json"
     if not preds_path.exists():
         preds = learn(train, tests, dense, args)
+        if i31:
+            preds["O4"].update(learn_i3_1(train_all, primary_n, scaling, tests, base,
+                                          dense, args))
         for job in law_jobs:
             s, v, dev = Path(job[-1]).stem.split("__", 2)
             preds[s][v][dev] = json.loads(Path(job[-1]).read_text())["pred"]
@@ -263,12 +324,20 @@ def cmd_run(args):
     print(f"eval done {time.time() - t0:.0f}s", flush=True)
     summary = summarize(base, tests, train, paired=e3b)
     if e3b:
-        check = u0_switch_check(train, tests, preds, eval_jobs, base)
+        check = u0_switch_check(train_all, tests, preds, eval_jobs, base)
         check["n_evaluated_cards_u0_clipped"] = u0_clips
         summary["u0_switch_check"] = check
         if not check["valid"]:
             summary["verdict_rule_output_if_valid"] = summary["verdict_rule_output"]
             summary["verdict_rule_output"] = "INVALID"
+    if i31:
+        # The E3 rule output is reported only; the I3_1 decision is --decide.
+        summary["e3_rule_output_reported"] = summary.pop("verdict_rule_output")
+        summary.pop("verdict_rule_output_if_valid", None)
+        summary["verdict_rule_output"] = "see decision.json (--decide)"
+        summary["n_train_devices_total"] = len(train_all)
+        summary["i3_1"] = i3_1_tier_stats(base, tests, scaling, primary_n,
+                                          summary["u0_switch_check"]["valid"])
     summary["wall_s"] = round(time.time() - t0, 1)
     dump(base / "summary.json", summary)
     print_summary(summary)
@@ -301,6 +370,155 @@ def learn(train, tests, dense, args) -> dict:
                 preds[s][k][dev] = {f"{t:g}": x.tolist() for t, x in zip(temps, out)}
     dump(Path(run_dir(args)) / "learn_info.json", info)
     return preds
+
+
+def learn_i3_1(train_all, primary_n, scaling, tests, base, dense, args) -> dict:
+    """I3_1 arms in O4: hyb and hyb_mean on the primary training draws, and
+    the scaling arms lrn_n<n> and hyb_n<n> on the first n draws."""
+    from cryoml.explore.e3_learn import NetLaw
+    from cryoml.explore.i3_hybrid import HybridLaw, HybridMeanLaw
+    anchors = E.OBS_SETS["O4"]
+    temps = list(E.TEMPS_TEST)
+    test_recs = {dev: json.loads(p.read_text()) for dev, p in tests.items()}
+    test_laws = {dev: json.loads((base / "law" / f"O4__par3__{dev}.json").read_text())
+                 for dev in tests}
+
+    def subset(n):
+        return [r for r in train_all if r["draw"] < n]
+
+    models = {}
+    primary = subset(primary_n)
+    laws = [r["law_O4_par3"] for r in primary]
+    models["hyb"] = HybridLaw(primary, laws, anchors, dense, seeds=args.learn_seeds)
+    models["hyb_mean"] = HybridMeanLaw(primary, laws, anchors, dense)
+    for n in scaling:
+        if n == primary_n:
+            continue
+        sub = subset(n)
+        models[f"hyb_n{n}"] = HybridLaw(sub, [r["law_O4_par3"] for r in sub], anchors,
+                                        dense, seeds=args.learn_seeds)
+        models[f"lrn_n{n}"] = NetLaw(sub, anchors, dense, "sens", seeds=args.learn_seeds)
+    out = {k: {} for k in models}
+    for dev, rec in test_recs.items():
+        ax = np.array([rec["fits"]["O4"][f"{t:g}"]["x"] for t in anchors])
+        for k, m in models.items():
+            if k.startswith("lrn_"):
+                xs = m.predict(rec["geometry"], ax, temps)
+            else:
+                xs = m.predict(rec["geometry"], ax, test_laws[dev], temps)
+            out[k][dev] = {f"{t:g}": x.tolist() for t, x in zip(temps, xs)}
+    dump(base / "learn_info_i3_1.json",
+         {k: {"sigma": m.sigma.tolist(), "n_rows": m.n_rows,
+              "history": getattr(m, "history", None)} for k, m in models.items()})
+    return out
+
+
+I31_COMPARE = ("par3", "par14", "par3_pop", "pt_interp", "lrn", "lrn_mean", "hyb_mean")
+
+
+def i3_1_tier_stats(base, tests, scaling, primary_n, valid) -> dict:
+    """Per-tier I3_1 statistics (setting O4): GMR (eps 0.01 and 0.001) with
+    CI and wins, E3-style reductions, failed-cell fractions, scaling arm."""
+    from cryoml.explore.i3_hybrid import EPS_SENSITIVITY, gmr
+    evals = {dev: json.loads((base / "eval" / f"{dev}.json").read_text()) for dev in tests}
+    held = [f"{t:g}" for t in E.TEMPS_HELDOUT]
+    devs = list(tests)
+
+    def cells(key):
+        return np.array([[evals[d][key].get(t, np.nan) for t in held] for d in devs])
+
+    def per_device(key):
+        return cells(key).mean(1)
+
+    def reduction(a, b):
+        ok = np.isfinite(a) & np.isfinite(b)
+        return bootstrap_reduction(a[ok], b[ok])
+
+    hyb = per_device("O4|hyb")
+    out = {"valid": bool(valid), "eps": 0.01, "gmr": {}, "gmr_eps_0.001": {},
+           "reduction": {}, "per_device": {}, "failed_fraction": {}}
+    for m in ("hyb", "par3", "lrn_mean", "pt_interp", "lrn", "hyb_mean"):
+        c = cells(f"O4|{m}")
+        out["failed_fraction"][m] = float(np.isnan(c).sum() / c.size)
+    for m in I31_COMPARE:
+        other = per_device(f"O4|{m}")
+        out["gmr"][f"hyb_vs_{m}"] = gmr(hyb, other)
+        out["gmr_eps_0.001"][f"hyb_vs_{m}"] = gmr(hyb, other, eps=EPS_SENSITIVITY)
+        out["reduction"][f"hyb_vs_{m}"] = reduction(hyb, other)
+    lrn = per_device("O4|lrn")
+    for m in ("par3", "lrn_mean", "pt_interp"):
+        out["gmr"][f"lrn_vs_{m}"] = gmr(lrn, per_device(f"O4|{m}"))
+        out["reduction"][f"lrn_vs_{m}"] = reduction(lrn, per_device(f"O4|{m}"))
+    hm = per_device("O4|hyb_mean")
+    out["gmr"]["hyb_mean_vs_par3"] = gmr(hm, per_device("O4|par3"))
+    keys = ["par3", "par14", "par3_pop", "pt_interp", "lrn", "lrn_mean", "hyb", "hyb_mean"]
+    for m in keys:
+        out["per_device"][m] = dict(zip(devs, [float(v) for v in per_device(f"O4|{m}")]))
+    scale = {}
+    par3 = per_device("O4|par3")
+    for n in scaling:
+        for arm in ("lrn", "hyb"):
+            key = arm if n == primary_n else f"{arm}_n{n}"
+            v = per_device(f"O4|{key}")
+            scale[f"{arm}_n{n}"] = {"key": f"O4|{key}",
+                                    "heldout_all_device_mean": float(np.nanmean(v)),
+                                    "gmr_vs_par3": gmr(v, par3)}
+    out["scaling"] = scale
+    info = base / "learn_info_i3_1.json"
+    if info.exists():
+        hist = json.loads(info.read_text()).get("hyb", {}).get("history") or []
+        out["hyb_best_steps"] = [h["best_step"] for h in hist]
+        out["hyb_feature_sets"] = [h.get("feature_set") for h in hist]
+        out["hyb_members_zero_state"] = int(sum(h["best_step"] == -1 for h in hist))
+    return out
+
+
+def cmd_decide(args) -> None:
+    """Apply the pre-registered I3_1 rule to tier_M, tier_W and tier_H of
+    ``--name`` and write decision.json next to them."""
+    from cryoml.explore.i3_hybrid import decide
+    root = STUDY_DIRS["I3_1"] / "runs" / args.name
+    tiers = {}
+    for t in "MWH":
+        summary = json.loads((root / f"tier_{t}" / "summary.json").read_text())
+        tiers[t] = summary["i3_1"]
+    out = decide(tiers)
+    out["per_tier"] = {t: {"gmr": tiers[t]["gmr"], "gmr_eps_0.001": tiers[t]["gmr_eps_0.001"],
+                           "reduction": tiers[t]["reduction"],
+                           "failed_fraction": tiers[t]["failed_fraction"],
+                           "hyb_members_zero_state": tiers[t].get("hyb_members_zero_state"),
+                           "scaling": tiers[t].get("scaling")}
+                       for t in "MWH"}
+    out["reproduction_vs_E3b"] = reproduction_check(root)
+    out["prereg"] = "out/research/explore/I3_1/prereg.json"
+    dump(root / "decision.json", out)
+    print(json.dumps({k: out[k] for k in ("verdict_rule_output", "continue_conditions",
+                                          "kill_conditions", "valid")}, indent=1))
+
+
+def reproduction_check(root: Path) -> dict:
+    """Largest absolute per-device difference of the existing O4 arms between
+    the I3_1 run and the E3b full run (tiers M and W), when both exist."""
+    out = {}
+    for t in "MW":
+        mine = root / f"tier_{t}" / "eval"
+        ref = STUDY_DIRS["E3b"] / "runs" / "full" / f"tier_{t}" / "eval"
+        if not (mine.is_dir() and ref.is_dir()):
+            out[t] = "not available"
+            continue
+        row = {}
+        for key in ("O4|par3", "O4|pt_interp", "O4|lrn", "O4|lrn_mean", "O2|par3_pop"):
+            diffs = []
+            for path in sorted(ref.glob("*.json")):
+                if not (mine / path.name).exists():
+                    continue
+                a = json.loads(path.read_text())[key]
+                b = json.loads((mine / path.name).read_text())[key]
+                diffs += [abs(a[k] - b[k]) for k in a if k in b]
+            row[key] = {"max_abs_diff": float(np.nanmax(diffs)) if diffs else None,
+                        "n_cells": len(diffs)}
+        out[t] = row
+    return out
 
 
 # ----------------------------------------------------------- summary
@@ -440,13 +658,24 @@ def print_summary(summary):
                              if k in d}))
     if "u0_switch_check" in summary:
         print("u0 switch check:", json.dumps(summary["u0_switch_check"]))
+    if "i3_1" in summary:
+        i31 = summary["i3_1"]
+        for k, v in i31["gmr"].items():
+            print(f"I3_1 GMR {k}: {v['gmr']:.4f} CI [{v['ci95'][0]:.4f}, "
+                  f"{v['ci95'][1]:.4f}] wins {v['wins']}/{v['n_devices']}")
+        for k, v in i31["scaling"].items():
+            print(f"I3_1 scaling {k}: mean {v['heldout_all_device_mean']:.4f} "
+                  f"GMR vs par3 {v['gmr_vs_par3']['gmr']:.4f}")
+        print("I3_1 hyb members returning the zero state:",
+              i31.get("hyb_members_zero_state"), i31.get("hyb_best_steps"))
     print("verdict (rule output):", summary["verdict_rule_output"])
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True)
-    parser.add_argument("--tier", choices=("M", "W"), default="M")
+    parser.add_argument("--tier", choices=("M", "W", "H"), default="M",
+                        help="H only with --study I3_1")
     parser.add_argument("--tags", default=None, help="comma list (default: REAL_DEV)")
     parser.add_argument("--n-train", type=int, default=6)
     parser.add_argument("--n-test", type=int, default=3)
@@ -456,8 +685,20 @@ def main() -> int:
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--seed", type=int, default=20261019)
     parser.add_argument("--study", choices=tuple(STUDY_DIRS), default="E3",
-                        help="E3 (default) or E3b (u0-switch check, x_u0 clip, paired ratio)")
+                        help="E3 (default), E3b (u0-switch check, x_u0 clip, paired "
+                             "ratio) or I3_1 (E3b plus tier H, hybrid and scaling arms)")
+    parser.add_argument("--primary-n-train", type=int, default=None,
+                        help="I3_1: draws per geometry used by the primary arms")
+    parser.add_argument("--scaling", default=None,
+                        help="I3_1: comma list of n for the lrn/hyb scaling arms")
+    parser.add_argument("--decide", action="store_true",
+                        help="I3_1: apply the pre-registered rule to tiers M, W, H")
     args = parser.parse_args()
+    if args.decide:
+        if args.study != "I3_1":
+            raise SystemExit("--decide is an I3_1 option")
+        cmd_decide(args)
+        return 0
     cmd_run(args)
     return 0
 

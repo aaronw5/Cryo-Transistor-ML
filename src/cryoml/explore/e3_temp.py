@@ -19,6 +19,12 @@ parameter vector (``p_stock`` from ``cryoml.temperature``).  Two truth tiers:
     ``R(T) = R300 * (1 + alpha (T - 300.15 K))`` per side, simulated with
     ``sky130_misspec.instance_lines``.
 
+* ``H`` (I3-1, out/research/explore/I3_1/prereg.json): piecewise-linear law
+  with a kink plus a freeze-out step on vth0 and u0,
+  ``x(T) = c + (mu - c - f) P(T) + f S(T)``; ``P`` is linear in T through
+  (77 K, 1), (Tkink, v), (300.15 K, 0); ``S`` is a normalised logistic step
+  of width 5 K at ``Tf``; no extrinsic resistance.
+
 Fits never see the series resistors; every fitted card is simulated with
 ``spice_pdk.simulate_pdk`` / ``spice_batch.simulate_pdk_multi``.
 
@@ -156,6 +162,8 @@ def _draw_truth_once(tag: str, tier: str, rng: np.random.Generator) -> dict:
     if tier == "W":
         out["g"] = np.exp(rng.uniform(math.log(1 / 3), math.log(3), N_PAR)).tolist()
         return out
+    if tier == "H":
+        return _draw_tier_h(out, rng)
     if tier != "M":
         raise ValueError(tier)
     knee = rng.uniform(120.0, 230.0)
@@ -172,6 +180,35 @@ def _draw_truth_once(tag: str, tier: str, rng: np.random.Generator) -> dict:
     return out
 
 
+FREEZE_RANGE = {"vth0": (0.02, 0.06), "u0": (-0.20, -0.05)}
+FREEZE_WIDTH_K = 5.0
+
+
+def _draw_tier_h(out: dict, rng: np.random.Generator) -> dict:
+    """Tier H draws after mu (I3-1 pre-registration, order fixed there):
+    c, device kink, per-parameter kink jitter, kink values, freeze-out
+    temperature, vth0 and u0 step amplitudes."""
+    out["c"] = (rng.uniform(-1, 1, N_PAR)
+                * np.array([0.05 if p == "vth0" else 0.10 for p in PARAMS7])).tolist()
+    kink = rng.uniform(100.0, 240.0)
+    out["Tkink"] = np.clip(kink + rng.uniform(-20.0, 20.0, N_PAR), 90.0, 260.0).tolist()
+    out["v_kink"] = rng.uniform(0.10, 0.90, N_PAR).tolist()
+    out["Tf"] = float(rng.uniform(90.0, 140.0))
+    f_vth0 = float(rng.uniform(*FREEZE_RANGE["vth0"]))
+    f_u0 = float(rng.uniform(*FREEZE_RANGE["u0"]))
+    out["freeze"] = [f_vth0 if p == "vth0" else f_u0 if p == "u0" else 0.0
+                     for p in PARAMS7]
+    return out
+
+
+def freeze_step(tf: float, temp_K: float) -> float:
+    """Logistic step of width FREEZE_WIDTH_K at ``tf``, normalised to 1 at
+    77 K and 0 at 300.15 K."""
+    def sig(t):
+        return float(_sigmoid((tf - t) / FREEZE_WIDTH_K))
+    return (sig(temp_K) - sig(T_HOT)) / (sig(T_COLD) - sig(T_HOT))
+
+
 def _sigmoid(v):
     return 1.0 / (1.0 + np.exp(-np.asarray(v, dtype=np.float64)))
 
@@ -181,6 +218,11 @@ def truth_x(truth: dict, temp_K: float) -> np.ndarray:
     w = float(w_of(temp_K))
     if truth["tier"] == "W":
         return mu * w ** np.asarray(truth["g"])
+    if truth["tier"] == "H":
+        c, f = np.asarray(truth["c"]), np.asarray(truth["freeze"])
+        P = np.array([np.interp(temp_K, [T_COLD, tk, T_HOT], [1.0, v, 0.0])
+                      for tk, v in zip(truth["Tkink"], truth["v_kink"])])
+        return c + (mu - c - f) * P + f * freeze_step(truth["Tf"], temp_K)
     c, tk, tau = (np.asarray(truth[k]) for k in ("c", "Tk", "tau"))
     top, bottom = _sigmoid((tk - T_COLD) / tau), _sigmoid((tk - T_HOT) / tau)
     s = (_sigmoid((tk - temp_K) / tau) - bottom) / (top - bottom)

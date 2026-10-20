@@ -1,0 +1,47 @@
+train done 56s
+test fits done 95s
+laws done 103s
+train laws done 108s
+learn done 120s
+eval done 123s
+| key | held-out mean | anchors mean | per temperature | failed |
+| O2|lrn | 1.6780 | 0.0011 | 77:0.0018 110:2.6529 150:1.0675 190:1.6213 225:1.4393 260:0.7599 300:0.0003 | 0/6 |
+| O2|lrn_mean | 0.9716 | 0.0011 | 77:0.0018 110:1.7949 150:0.5407 190:0.8430 225:0.9625 260:0.2768 300:0.0003 | 0/6 |
+| O2|lrn_noH | 1.5253 | 0.0011 | 77:0.0018 110:2.3995 150:0.9524 190:1.4398 225:1.2858 260:0.7366 300:0.0003 | 0/6 |
+| O2|lrn_param | 2.1382 | 0.0011 | 77:0.0018 110:3.8771 150:2.1207 190:1.7249 225:1.5461 260:0.8126 300:0.0003 | 0/6 |
+| O2|par14_g1 | 1.1970 | 0.0674 | 77:0.0020 110:1.7366 150:1.4232 190:1.2382 225:1.1003 260:0.6162 300:0.1328 | 0/6 |
+| O2|par3_g1 | 1.1120 | 0.0003 | 77:0.0002 110:1.6653 150:1.3016 190:1.1264 225:1.0018 260:0.5443 300:0.0003 | 0/6 |
+| O2|par3_pop | 0.3182 | 0.0003 | 77:0.0002 110:0.3251 150:0.4936 190:0.5025 225:0.3079 260:0.1270 300:0.0003 | 0/6 |
+| O2|pt_interp | 1.1058 | 0.0011 | 77:0.0018 110:1.6602 150:1.2841 190:1.1175 225:0.9940 260:0.5398 300:0.0003 | 0/6 |
+| O4|hyb | 0.6958 | 0.0348 | 77:0.0069 110:1.8865 150:0.0422 190:0.1517 225:0.0848 260:0.0492 300:0.0051 | 0/6 |
+| O4|hyb_mean | 0.6409 | 0.2128 | 77:0.0301 110:0.9561 150:0.4657 190:0.5787 225:0.1896 260:0.3879 300:0.1660 | 0/6 |
+| O4|hyb_n1 | 0.6441 | 0.0724 | 77:0.1116 110:1.7418 150:0.0793 190:0.1413 225:0.0845 260:0.0490 300:0.0140 | 0/6 |
+| O4|lrn | 0.3886 | 0.0079 | 77:0.0018 110:0.5828 150:0.0111 190:0.3155 225:0.0184 260:0.2675 300:0.0003 | 0/6 |
+| O4|lrn_mean | 0.3737 | 0.0079 | 77:0.0018 110:0.6868 150:0.0111 190:0.2788 225:0.0184 260:0.1557 300:0.0003 | 0/6 |
+| O4|lrn_n1 | 0.6440 | 0.0079 | 77:0.0018 110:1.6855 150:0.0111 190:0.2160 225:0.0184 260:0.0305 300:0.0003 | 0/6 |
+| O4|lrn_param | 0.7203 | 0.0079 | 77:0.0018 110:1.8791 150:0.0111 190:0.2462 225:0.0184 260:0.0356 300:0.0003 | 0/6 |
+| O4|par14 | 0.6986 | 0.0800 | 77:0.0027 110:1.7737 150:0.0567 190:0.1791 225:0.1290 260:0.1432 300:0.1314 | 0/6 |
+| O4|par3 | 0.6972 | 0.0336 | 77:0.0024 110:1.8870 150:0.0437 190:0.1552 225:0.0861 260:0.0494 300:0.0022 | 0/6 |
+| O4|par3_pop | 0.3338 | 0.2177 | 77:0.0087 110:0.3573 150:0.5210 190:0.5036 225:0.3276 260:0.1406 300:0.0135 | 0/6 |
+| O4|pt_interp | 0.7283 | 0.0079 | 77:0.0018 110:1.9097 150:0.0111 190:0.2433 225:0.0184 260:0.0318 300:0.0003 | 0/6 |
+| floor|floor | 0.0029 | nan | 110:0.0044 190:0.0041 260:0.0003 | 0/6 |
+O4 {"lrn_vs_control": {"reduction": 0.44263113450658087, "ci95": [-0.4766060288310938, 0.6241683585007658], "n_devices": 2}, "lrn_vs_pt_interp": {"reduction": 0.4663992436590547, "ci95": [-0.013226368924722953, 0.6097375002488354], "n_devices": 2}, "gap_closed_to_floor": 0.44450215531305465, "meets_continue": false, "secondary_paired_ratio_lrn_over_control": {"geometric_mean_ratio": 0.7449531983039307, "ci95": [0.3758316414992342, 1.4766060288310938], "wins": 1, "n_devices": 2}}
+O2 {"lrn_vs_control": {"reduction": -4.273436800757477, "ci95": [-4.33489767457097, -4.212439550747035], "n_devices": 2}, "lrn_vs_pt_interp": {"reduction": -0.5174310456426081, "ci95": [-1.0708094825523466, -0.20137500708598766], "n_devices": 2}, "gap_closed_to_floor": -4.313216699067304, "meets_continue": false, "secondary_paired_ratio_lrn_over_control": {"geometric_mean_ratio": 5.273313155704117, "ci95": [5.212439550747035, 5.3348976745709695], "wins": 0, "n_devices": 2}}
+u0 switch check: {"truths": {"n_checked": 6, "n_at_or_above": 0, "n_rejected_draws": 4, "n_regenerated": 2}, "fitted_cards": {"n_checked": 46, "n_at_or_above": 0}, "predicted_cards_before_clip": {"n_checked": 266, "n_at_or_above": 0}, "evaluated_cards": {"n_checked": 272, "n_at_or_above": 0}, "valid": true, "rule": "valid requires 0 truths, 0 fitted cards and 0 evaluated cards at or above the switch; predicted cards are counted before the x_u0 clip", "n_evaluated_cards_u0_clipped": {"O4|pt_interp": 0, "O4|lrn": 0, "O4|lrn_param": 0, "O4|lrn_mean": 0, "O4|par3": 0, "O4|par14": 0, "O4|par3_pop": 0, "O4|hyb": 0, "O4|hyb_mean": 0, "O4|hyb_n1": 0, "O4|lrn_n1": 0, "O2|pt_interp": 0, "O2|lrn": 0, "O2|lrn_param": 0, "O2|lrn_noH": 0, "O2|lrn_mean": 0, "O2|par3_pop": 0, "O2|par3_g1": 0, "O2|par14_g1": 0}}
+I3_1 GMR hyb_vs_par3: 1.0006 CI [0.9967, 1.0046] wins 1/2
+I3_1 GMR hyb_vs_par14: 0.9334 CI [0.8417, 1.0351] wins 1/2
+I3_1 GMR hyb_vs_par3_pop: 1.5565 CI [0.7983, 3.0347] wins 1/2
+I3_1 GMR hyb_vs_pt_interp: 0.8501 CI [0.6985, 1.0346] wins 1/2
+I3_1 GMR hyb_vs_lrn: 1.3429 CI [0.6896, 2.6149] wins 1/2
+I3_1 GMR hyb_vs_lrn_mean: 1.3863 CI [0.6637, 2.8954] wins 1/2
+I3_1 GMR hyb_vs_hyb_mean: 0.8814 CI [0.5953, 1.3052] wins 1/2
+I3_1 GMR lrn_vs_par3: 0.7451 CI [0.3811, 1.4567] wins 1/2
+I3_1 GMR lrn_vs_lrn_mean: 1.0323 CI [0.9625, 1.1073] wins 1/2
+I3_1 GMR lrn_vs_pt_interp: 0.6330 CI [0.3957, 1.0128] wins 1/2
+I3_1 GMR hyb_mean_vs_par3: 1.1352 CI [0.7636, 1.6877] wins 1/2
+I3_1 scaling lrn_n1: mean 0.6440 GMR vs par3 1.0468
+I3_1 scaling hyb_n1: mean 0.6441 GMR vs par3 0.8960
+I3_1 scaling lrn_n2: mean 0.3886 GMR vs par3 0.7451
+I3_1 scaling hyb_n2: mean 0.6958 GMR vs par3 1.0006
+I3_1 hyb members returning the zero state: 0 [0]
+verdict (rule output): see decision.json (--decide)
