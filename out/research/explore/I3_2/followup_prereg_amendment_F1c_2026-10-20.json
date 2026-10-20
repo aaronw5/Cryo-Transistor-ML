@@ -1,0 +1,24 @@
+{
+ "amends": "out/research/explore/I3_2/followup_prereg_amendment_F1b_2026-10-20.json (commit db1064b; unchanged). The pre-registration and the first amendment are also unchanged",
+ "id": "I3_2_followup_F1c",
+ "written": "2026-10-20, after the F1b run (out/research/explore/I3_2/followup/f1b/summary.json) and before any F1c run",
+ "F1b_as_run": {
+  "result": "F1.0 pass; F1.1 pass (ngspice-41 OSDI build vs canonical ngspice-41, four uncorrected cards, 12 devices: max relative current difference 0.0, max |delta RRMS| 0.0, stored values reproduced with difference 0.0); F1.2 and F1.3 fail because no SPICE-native run produced a current: ngspice-41 refuses every .osdi file with 'NGSPICE only supports OSDI v0.3 but ... targets v0.4!' (OpenVAF-Reloaded v24 emits OSDI 0.4; ngspice-41 src/osdi/osdi.h defines OSDI_VERSION 0.3). All 12 devices: native RRMS NaN, 49104 non-finite native currents",
+  "check_code_fix": "the first F1b run reported F1.3 'fail': false with NaN deltas, because 'NaN > tol' is False. The check code now counts a non-finite statistic as a failure (cryoml.explore.i3_2_followup.exceeds) and the device maximum returns NaN when any device value is NaN. F1b was run again with the fixed code (same settings, same currents); the stored f1b/summary.json is the second run. Log of the first run: out/research/explore/I3_2/logs/f1b_first_run_nan_check_bug.log",
+  "figures": "out/research/explore/I3_2/followup/f1b_iv_*.png show no SPICE-native curve (all NaN); they are kept as run"
+ },
+ "compiler_built_for_F1c": {
+  "binary": "/Users/anrunw/cryo-ng41/openvaf/bin/openvaf ('openvaf 23.5.0', emits OSDI 0.3), sha256 3bdc62d30d73796d1146d056ddb843d8135bd066a049c94218db6aedde86d89f",
+  "source": "https://github.com/pascalkuthe/OpenVAF tag OpenVAF-v23.5.0 (commit d4079e776f4b54b23e158b7857c4e238e5cacd05), the last release of the original OpenVAF; no macOS binary was released",
+  "toolchain": "rustc/cargo 1.64.0 (repo rust-toolchain.toml; rustup from Homebrew), LLVM/clang 15.0.7 (Homebrew llvm@15)",
+  "build": "RUSTFLAGS='-Aunused -L/opt/homebrew/lib' CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER=/usr/bin/cc LLVM_CONFIG=/opt/homebrew/opt/llvm@15/bin/llvm-config cargo build --release --bin openvaf, with llvm@15/bin first on PATH",
+  "local_patches": "two, both outside code generation (/Users/anrunw/cryo-ng41/openvaf/local_patches.diff): (1) openvaf/target/build.rs passes '--' before the ucrt.c path to clang-cl (build-time Windows import library; on macOS the '/Users/...' path was parsed as the clang-cl '/U' option); (2) openvaf/target/src/spec/aarch64_apple_darwin.rs adds '-syslibroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -lSystem' to the ld64 arguments that link the .osdi dylib (ld64 of the current Command Line Tools refuses a dylib without libSystem)",
+  "invocation": "openvaf --target aarch64-apple-darwin -o <model>.osdi <model>.va (the default target string of this build is 'aarch64-apple', which the option parser rejects)",
+  "load_check_done_before_this_file": "the F1b full-model text (f1b/va/m_bias_full_osdi.va) compiled with this binary loads in /Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice with the 'osdi' command without an error message. No circuit was simulated with it"
+ },
+ "F1c": {
+  "definition": "F1b with one change: the Verilog-A texts (the same osdi_va_text output as in F1 and F1b) are compiled with OpenVAF 23.5.0 above instead of OpenVAF-Reloaded v24. Simulators, cards, models, netlist, metric, checks F1.0-F1.3, thresholds, amendment A1 and A2 are as in F1b",
+  "outputs": "out/research/explore/I3_2/followup/f1c/: summary.json, va/ (text), curves.npz and osdi/ (not committed); figures out/research/explore/I3_2/followup/f1c_iv_{pmos_L0p35_W0p55,pmos_L2_W5,nmos_L20_W0p64}.png (measured, NGSpice published 77 K card, NGSpice C0_refit card with canonical ngspice-41, SPICE-native corrected M_bias refit card with the ngspice-41 OSDI build and the compiled fold Verilog-A)",
+  "command": "PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f1 --workers 4 --native-bin /Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice --native-label ng41osdi --out-name f1c --openvaf /Users/anrunw/cryo-ng41/openvaf/bin/openvaf --openvaf-args '--target aarch64-apple-darwin' --amendment out/research/explore/I3_2/followup_prereg_amendment_F1b_2026-10-20.json --amendment out/research/explore/I3_2/followup_prereg_amendment_F1c_2026-10-20.json"
+ }
+}
