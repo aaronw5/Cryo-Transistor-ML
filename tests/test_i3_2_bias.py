@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import math
 import sys
 import unittest
@@ -14,6 +15,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from cryoml.explore.e1_correction import (Correction, CurveRec, DeviceRec,  # noqa: E402
                                           fit_arm, raw_features)
 from cryoml.explore.i2_1_joint import CorrectedProblem, corrected_score  # noqa: E402
+from cryoml.explore.i3_2_bias import (RS_DECL, SENSE_BRANCH, SENSE_LEGACY,  # noqa: E402
+                                      correction_from_json)
+from cryoml.explore.i3_2_followup import OPENVAF_R, compile_va  # noqa: E402
 from cryoml.explore.i3_2_bias import (ARM_COLUMNS, BiasCorrection,  # noqa: E402
                                       correction_from_json, eval_verilog_a_g, fit_bias,
                                       merge_seed_results, paired_ratio, split_seed_tasks,
@@ -207,6 +211,55 @@ class VerilogATest(unittest.TestCase):
                                  math.log10(L), math.log10(W), -6.0]])
                 self.assertAlmostEqual(eval_verilog_a_g(text, pmos, vgs, vds, L, W),
                                        float(corr.g(phi)[0]), places=9)
+
+    def test_sense_branch_form_and_parameter_name(self):
+        corr = fit_bias("M_bias", toy_devices(3), hyper={"seeds": (0, 1), "steps": 40})
+        text = to_verilog_a_bias(corr, vdd=VDD)
+        legacy = to_verilog_a_bias(corr, vdd=VDD, legacy=True)
+        lines = text.splitlines()
+        self.assertEqual(lines.count(SENSE_BRANCH), 1)
+        self.assertEqual(lines.count(RS_DECL), 1)
+        self.assertNotIn(SENSE_LEGACY, lines)
+        self.assertIn("  parameter real is_pmos = 0;  // 0 nMOS, 1 pMOS", lines)
+        self.assertFalse(any(ln.startswith("  parameter real pmos") for ln in lines))
+        self.assertNotIn("(pmos -", text)
+        # RS declared before use; the sense line precedes the read of I(sense)
+        self.assertLess(lines.index(RS_DECL), lines.index(SENSE_BRANCH))
+        self.assertEqual(lines.index(SENSE_BRANCH) + 1, lines.index("    ib = I(sense);"))
+        # legacy text = the I3-2 stored form
+        self.assertIn(SENSE_LEGACY, legacy.splitlines())
+        self.assertIn("  parameter real pmos = 0;  // 0 nMOS, 1 pMOS", legacy.splitlines())
+        self.assertNotIn(RS_DECL, legacy)
+        # same network arithmetic in both forms
+        rng = np.random.default_rng(1)
+        for _ in range(20):
+            pmos = float(rng.integers(0, 2))
+            sgn = -1.0 if pmos else 1.0
+            vgs, vds = sgn * rng.uniform(0, VDD), sgn * rng.uniform(0, VDD)
+            self.assertEqual(eval_verilog_a_g(text, pmos, vgs, vds),
+                             eval_verilog_a_g(legacy, pmos, vgs, vds))
+
+    def test_legacy_reproduces_stored_i3_2_export(self):
+        root = Path(__file__).resolve().parents[1] / "out/research/explore/I3_2/real_dev"
+        if not (root / "corrections.json").exists():
+            self.skipTest("I3-2 corrections.json not present")
+        corr = correction_from_json(
+            json.loads((root / "corrections.json").read_text())["full|M_bias"])
+        self.assertEqual(to_verilog_a_bias(corr, vdd=1.85, legacy=True),
+                         (root / "m_bias_sky130_dev_full.va").read_text())
+        fixed = root / "m_bias_sky130_dev_full_sense_rs.va"
+        if fixed.exists():
+            self.assertEqual(to_verilog_a_bias(corr, vdd=1.85), fixed.read_text())
+
+    @unittest.skipUnless(OPENVAF_R.exists(), "OpenVAF-Reloaded not present")
+    def test_openvaf_compiles_without_warnings(self):
+        import tempfile
+        corr = fit_bias("M_bias", toy_devices(2), hyper={"seeds": (0,), "steps": 10})
+        with tempfile.TemporaryDirectory() as td:
+            c = compile_va(to_verilog_a_bias(corr, vdd=VDD), Path(td) / "m.va",
+                           Path(td) / "m.osdi")
+            self.assertTrue(Path(c["osdi"]).exists())
+            self.assertNotIn("warning", c["log"].lower())
 
     def test_current_feature_is_rejected(self):
         corr = fit_bias("M_bias", toy_devices(2), hyper={"seeds": (0,), "steps": 5},

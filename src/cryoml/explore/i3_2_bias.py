@@ -191,18 +191,38 @@ VA_INPUTS = {0: "pmos", 1: "abs(V(g, s)) / VDD", 2: "abs(V(d, s)) / VDD",
              3: "log(L)", 4: "log(W)"}   # Verilog-A log() is base 10
 
 
+# Sense branch d->di.  The I3-2 export used ``V(sense) <+ 0.0``; OpenVAF
+# treats a constant-zero voltage contribution as a collapse of d and di, which
+# ngspice does not apply, so no current flows (I3-2 follow-up prereg,
+# setup_facts.sense_branch).  ``V(sense) <+ RS * I(sense)`` with RS = 0 is a
+# zero-volt source with a branch-current unknown.
+SENSE_LEGACY = "    V(sense) <+ 0.0;"
+SENSE_BRANCH = "    V(sense) <+ RS * I(sense);"
+RS_DECL = "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+PMOS_PARAM = "is_pmos"        # 'pmos' is a reserved Verilog-AMS keyword (OpenVAF warning)
+PMOS_PARAM_LEGACY = "pmos"
+
+
 def to_verilog_a_bias(corr: BiasCorrection, module: str = "i3_2_bias_corr",
-                      vdd: float = 1.85) -> str:
+                      vdd: float = 1.85, legacy: bool = False) -> str:
     """Verilog-A text of a ``BiasCorrection`` (columns within 0-4).
 
     Ports (d, g, s, di): the compact-model drain connects to ``di``; the
     zero-volt branch d->di senses the drain current entering the compact
     model, I_sim; the module adds (exp(g) - 1) * I_sim from d to s, so the
     current entering terminal d is I_sim * exp(g).  ``g`` depends on the
-    parameter ``pmos`` (0/1), V(g, s), V(d, s) and, for ``M_bias_geom``, the
-    parameters L and W (um); it does not depend on the sensed current."""
+    parameter ``is_pmos`` (0/1), V(g, s), V(d, s) and, for ``M_bias_geom``,
+    the parameters L and W (um); it does not depend on the sensed current.
+
+    The sense branch is ``V(sense) <+ RS * I(sense)`` with ``parameter real
+    RS = 0.0``.  ``legacy=True`` reproduces the text stored by I3-2
+    (``V(sense) <+ 0.0``, parameter ``pmos``), which conducts no current
+    after OpenVAF compilation; it is kept only to regenerate stored
+    artifacts."""
     if any(c not in VA_INPUTS for c in corr.cols):
         raise ValueError(f"columns {corr.cols} include a current-dependent feature")
+    pname = PMOS_PARAM_LEGACY if legacy else PMOS_PARAM
+    inputs_va = {**VA_INPUTS, 0: pname}
     fmt = lambda v: f"{float(v):.10e}"
     n_in = len(corr.cols)
     hidden = max(w.shape[1] for layers in corr.nets for w, _ in layers[:-1])
@@ -212,7 +232,7 @@ def to_verilog_a_bias(corr: BiasCorrection, module: str = "i3_2_bias_corr",
         f"// I3-2 multiplicative correction ({corr.arm}), {len(corr.nets)}-member "
         f"{n_in}-{hidden}-...-1 tanh MLP ensemble.",
         "// I(d->s) total = I_sim * exp(g); g = mean over members of tanh(h(x)),",
-        "// x = standardized [" + ", ".join(VA_INPUTS[c] for c in corr.cols) + "].",
+        "// x = standardized [" + ", ".join(inputs_va[c] for c in corr.cols) + "].",
         "// abs() maps pMOS and nMOS forward bias to the same range; reverse-mode",
         "// bias (Vds of the opposite sign) is folded onto forward mode.",
         f"module {module}(d, g, s, di);",
@@ -221,17 +241,18 @@ def to_verilog_a_bias(corr: BiasCorrection, module: str = "i3_2_bias_corr",
         "  branch (d, di) sense;   // I(sense) = drain current into the compact model",
         "  parameter real L = 1.0;   // um",
         "  parameter real W = 1.0;   // um",
-        "  parameter real pmos = 0;  // 0 nMOS, 1 pMOS",
+        f"  parameter real {pname} = 0;  // 0 nMOS, 1 pMOS",
         f"  parameter real VDD = {vdd};",
+        *([] if legacy else [RS_DECL]),
         "  real ib, gsum, acc, " + ", ".join(f"x{i}" for i in range(n_in)) + ";",
         "  real " + ", ".join(f"h{i}" for i in range(hidden)) + ";",
         "  real " + ", ".join(f"k{i}" for i in range(hidden)) + ";",
         "  analog begin",
-        "    V(sense) <+ 0.0;",
+        SENSE_LEGACY if legacy else SENSE_BRANCH,
         "    ib = I(sense);",
     ]
     for i, c in enumerate(corr.cols):
-        lines.append(f"    x{i} = ({VA_INPUTS[c]} - {fmt(corr.mu[i])}) / {fmt(corr.sd[i])};")
+        lines.append(f"    x{i} = ({inputs_va[c]} - {fmt(corr.mu[i])}) / {fmt(corr.sd[i])};")
     lines.append("    gsum = 0.0;")
     xs = [f"x{i}" for i in range(n_in)]
     for m_i, layers in enumerate(corr.nets):
@@ -255,8 +276,12 @@ def to_verilog_a_bias(corr: BiasCorrection, module: str = "i3_2_bias_corr",
         "",
         "// Netlist use (one transistor):",
         "//   M1 di g s b <compact-model card> L=.. W=..",
-        f"//   YCORR d g s di {module} L=.. W=.. pmos=..",
     ]
+    if legacy:
+        lines.append(f"//   YCORR d g s di {module} L=.. W=.. pmos=..")
+    else:
+        lines += ["//   NCORR d g s di corrmodel   (ngspice: 'pre_osdi <file>.osdi' in .control)",
+                  f"//   .model corrmodel {module} L=.. W=.. {pname}=.. VDD=.. RS=0"]
     return "\n".join(lines) + "\n"
 
 
@@ -268,6 +293,7 @@ def eval_verilog_a_g(text: str, pmos: float, vgs: float, vds: float,
     if vdd is None:
         vdd = float(text.split("parameter real VDD = ", 1)[1].split(";", 1)[0])
     env = {"tanh": math.tanh, "abs": abs, "log": math.log10, "pmos": float(pmos),
+           PMOS_PARAM: float(pmos), "RS": 0.0,
            "L": float(L), "W": float(W), "VDD": vdd, "VGS": float(vgs), "VDS": float(vds)}
     for raw in body.splitlines():
         line = raw.strip()

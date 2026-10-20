@@ -32,12 +32,12 @@ from typing import Iterable, Sequence
 import numpy as np
 
 from ..config import ROOT
+from .i3_2_bias import RS_DECL, SENSE_BRANCH, SENSE_LEGACY
 
 OPENVAF_R = (ROOT / "data/raw/pdk2/ihp_sg13g2/tools/openvaf-r-v24.0.2mob-macos-aarch64"
              / "openvaf-r-v24.0.2mob-macos-aarch64/bin/openvaf-r")
-SENSE_EXPORTED = "    V(sense) <+ 0.0;"
-SENSE_OSDI = "    V(sense) <+ RS * I(sense);"
-RS_DECL = "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+SENSE_EXPORTED = SENSE_LEGACY      # I3-2 stored export (to_verilog_a_bias(legacy=True))
+SENSE_OSDI = SENSE_BRANCH
 VA_MODULE = "i3_2_bias_corr"
 MODEL_NAME = "i32corr"
 CONVERGENCE_MESSAGES = ("singular matrix", "timestep too small", "no convergence",
@@ -63,12 +63,15 @@ def osdi_va_text(text: str) -> str:
 
 
 def insert_correction(deck: str, osdi_path: Path | str, pmos: bool, vdd: float,
-                      module: str = VA_MODULE, model: str = MODEL_NAME) -> str:
+                      module: str = VA_MODULE, model: str = MODEL_NAME,
+                      pmos_param: str = "pmos") -> str:
     """Add the OSDI correction to a ``spice_pdk._batch_deck`` deck.
 
     The instance ``Xm1 nd ng 0 0 ...`` becomes ``Xm1 ndi ng 0 0 ...``; the
     correction ``NCORR nd ng 0 ndi`` and its ``.model`` follow it, and
-    ``pre_osdi`` is the first line of the control block."""
+    ``pre_osdi`` is the first line of the control block.  ``pmos_param`` is
+    the polarity parameter name of the module (``pmos`` in the I3-2 stored
+    export, ``is_pmos`` in the current ``to_verilog_a_bias`` export)."""
     lines = deck.splitlines(keepends=True)
     inst = [i for i, ln in enumerate(lines) if ln.startswith("Xm1 nd ng 0 0 ")]
     ctrl = [i for i, ln in enumerate(lines) if ln.strip() == ".control"]
@@ -77,7 +80,7 @@ def insert_correction(deck: str, osdi_path: Path | str, pmos: bool, vdd: float,
     i = inst[0]
     lines[i] = "Xm1 ndi ng 0 0 " + lines[i][len("Xm1 nd ng 0 0 "):]
     add = [f"NCORR nd ng 0 ndi {model}\n",
-           f".model {model} {module} pmos={1 if pmos else 0} VDD={vdd:.10g} RS=0\n"]
+           f".model {model} {module} {pmos_param}={1 if pmos else 0} VDD={vdd:.10g} RS=0\n"]
     lines[i + 1:i + 1] = add
     c = ctrl[0] + len(add)
     lines[c + 1:c + 1] = [f"pre_osdi {Path(osdi_path).as_posix()}\n"]
@@ -136,18 +139,31 @@ def scored_masks(rec) -> list[np.ndarray]:
 # ---------------------------------------------------------------------------
 # Compilation and simulation
 # ---------------------------------------------------------------------------
-def compile_va(text: str, va: Path, osdi: Path, openvaf: Path | str = OPENVAF_R) -> dict:
+def exceeds(value: float, tol: float) -> bool:
+    """Check failure ``value > tol``, with a non-finite value (NaN, inf)
+    counted as a failure."""
+    return bool(not np.isfinite(value) or value > tol)
+
+
+def compile_va(text: str, va: Path, osdi: Path, openvaf: Path | str = OPENVAF_R,
+               extra_args: Sequence[str] = ()) -> dict:
     """Write ``text`` to ``va`` and compile it to ``osdi`` (skipped when the
-    existing ``osdi`` was built from the same text, by sha256)."""
+    existing ``osdi`` was built from the same text, by sha256).  ``extra_args``
+    are passed to the compiler before ``-o`` (e.g. ``("--target",
+    "aarch64-apple-darwin")`` for OpenVAF 23.5.0); a non-default compiler or
+    extra arguments enter the cache digest."""
     va, osdi = Path(va), Path(osdi)
     va.parent.mkdir(parents=True, exist_ok=True)
     osdi.parent.mkdir(parents=True, exist_ok=True)
-    digest = hashlib.sha256(text.encode()).hexdigest()
+    key = text if (Path(openvaf) == Path(OPENVAF_R) and not extra_args) else (
+        f"{openvaf}\n{' '.join(extra_args)}\n{text}")
+    digest = hashlib.sha256(key.encode()).hexdigest()
     stamp = osdi.with_suffix(".sha256")
     if osdi.exists() and stamp.exists() and stamp.read_text().strip() == digest:
         return {"va": va, "osdi": osdi, "sha256": digest, "compiled": False, "log": ""}
     va.write_text(text)
-    proc = subprocess.run([str(openvaf), "-o", str(osdi), str(va)], capture_output=True,
+    proc = subprocess.run([str(openvaf), *extra_args, "-o", str(osdi), str(va)],
+                          capture_output=True,
                           text=True, timeout=300, check=False)
     log = re.sub(r"\x1b\[[0-9;]*m", "", proc.stdout + proc.stderr)
     if proc.returncode != 0 or not osdi.exists():
@@ -159,7 +175,7 @@ def compile_va(text: str, va: Path, osdi: Path, openvaf: Path | str = OPENVAF_R)
 def simulate_sky130(dev_type: str, L_um: float, W_um: float, curves: Iterable,
                     params: dict | None, bin_index: int | None, ngspice_bin: str,
                     osdi: Path | None = None, vdd: float = 1.85, options: str = "",
-                    timeout_s: float = 120.0) -> tuple[list[np.ndarray], list[str]]:
+                    timeout_s: float = 120.0, pmos_param: str = "pmos") -> tuple[list[np.ndarray], list[str]]:
     """``spice_pdk.simulate_pdk`` (same deck, card patching and read-back)
     with an explicit ngspice binary and, when ``osdi`` is given, the
     correction inserted by ``insert_correction``.  ``options`` (e.g.
@@ -190,7 +206,8 @@ def simulate_sky130(dev_type: str, L_um: float, W_um: float, curves: Iterable,
         if options:
             deck = add_options(deck, options)
         if osdi is not None:
-            deck = insert_correction(deck, osdi, dev_type == "pmos", vdd)
+            deck = insert_correction(deck, osdi, dev_type == "pmos", vdd,
+                                     pmos_param=pmos_param)
         deck_path = td / "deck_batch.sp"
         deck_path.write_text(deck)
         try:

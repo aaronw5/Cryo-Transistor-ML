@@ -14,7 +14,7 @@ from cryoml.explore.e1_correction import CurveRec, DeviceRec  # noqa: E402
 from cryoml.explore.i3_2_bias import (BiasCorrection, eval_verilog_a_g,  # noqa: E402
                                       to_verilog_a_bias)
 from cryoml.explore.i3_2_followup import (F2_GROUPS, F2_REAL_VARIANTS,  # noqa: E402
-                                          RS_DECL, SENSE_EXPORTED, SENSE_OSDI,
+                                          RS_DECL, exceeds, SENSE_EXPORTED, SENSE_OSDI,
                                           convergence_messages, insert_correction,
                                           max_rel_diff, network_dims, osdi_va_text,
                                           real_variant_fails, scored_masks,
@@ -41,7 +41,7 @@ DECK = ("* corrected-repository batched DC sweeps\n.options scale=1.0\n"
 class TestOsdiText(unittest.TestCase):
     def test_one_line_changed_and_g_unchanged(self):
         corr = tiny_corr()
-        text = to_verilog_a_bias(corr, vdd=1.85)
+        text = to_verilog_a_bias(corr, vdd=1.85, legacy=True)
         new = osdi_va_text(text)
         self.assertNotIn(SENSE_EXPORTED, new)
         self.assertEqual(new.count(SENSE_OSDI), 1)
@@ -55,6 +55,14 @@ class TestOsdiText(unittest.TestCase):
     def test_rejects_unexpected_text(self):
         with self.assertRaises(ValueError):
             osdi_va_text("module x; endmodule")
+
+
+class TestExceeds(unittest.TestCase):
+    def test_non_finite_counts_as_failure(self):
+        self.assertFalse(exceeds(1e-5, 1e-4))
+        self.assertTrue(exceeds(2e-4, 1e-4))
+        self.assertTrue(exceeds(float("nan"), 1e-4))
+        self.assertTrue(exceeds(float("inf"), 1e-4))
 
 
 class TestDeck(unittest.TestCase):
@@ -74,6 +82,8 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(len(lines), len(DECK.splitlines()) + 3)
         nm = insert_correction(DECK, "/o/m.osdi", pmos=False, vdd=1.85)
         self.assertIn("pmos=0 ", nm)
+        ip = insert_correction(DECK, "/o/m.osdi", pmos=True, vdd=1.85, pmos_param="is_pmos")
+        self.assertIn(".model i32corr i3_2_bias_corr is_pmos=1 VDD=1.85 RS=0", ip.splitlines())
 
     def test_rejects_two_instances(self):
         with self.assertRaises(ValueError):

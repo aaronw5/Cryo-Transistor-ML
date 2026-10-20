@@ -99,8 +99,11 @@ def max_abs_diff(a: dict, b: dict) -> float:
     return float(max(d)) if d else float("nan")
 
 
-def export_va(corr: BiasCorrection, vdd: float, path: Path, n_check: int = 200) -> dict:
-    text = to_verilog_a_bias(corr, vdd=vdd)
+def export_va(corr: BiasCorrection, vdd: float, path: Path, n_check: int = 200,
+              legacy: bool = False) -> dict:
+    """Write the Verilog-A export and check its arithmetic.  ``legacy=True``
+    writes the I3-2 stored form (``V(sense) <+ 0.0``, parameter ``pmos``)."""
+    text = to_verilog_a_bias(corr, vdd=vdd, legacy=legacy)
     path.write_text(text)
     rng = np.random.default_rng(0)
     diffs = []
@@ -296,8 +299,10 @@ def main() -> int:
     target = OUT / args.name
     target.mkdir(parents=True, exist_ok=True)
     if real:
+        # legacy form: reproduces the stored I3-2 artifact; the corrected
+        # export is m_bias_sky130_dev_full_sense_rs.va (--mode export)
         result["export"] = export_va(corrs["full|M_bias"], 1.85,
-                                     target / "m_bias_sky130_dev_full.va")
+                                     target / "m_bias_sky130_dev_full.va", legacy=True)
     result["heldout_rows"] = {lab: {t: {k: v for k, v in r.items() if k != "params"}
                                     for t, r in v.items()} for lab, v in rows.items()}
     result["runtime_s"] = round(time.time() - t_start, 1)

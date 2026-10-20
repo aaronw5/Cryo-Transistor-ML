@@ -20,6 +20,11 @@ Modes:
   f2_summary  table of all F2 variants and the pre-registered checks.
 
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f1 --workers 4
+  # F1b (amendment followup_prereg_amendment_F1b_2026-10-20.json): SPICE-native runs on
+  # the ngspice-41 OSDI build instead of ngspice-46
+  PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f1 --workers 4 \
+      --native-bin /Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice --native-label ng41osdi \
+      --out-name f1b --amendment out/research/explore/I3_2/followup_prereg_amendment_F1b_2026-10-20.json
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f2_real --workers 6
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f2_pdk2 --pdk gf180 --workers 6
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f2_summary
@@ -27,6 +32,7 @@ Modes:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -48,7 +54,7 @@ from cryoml.explore.i3_2_bias import (correction_from_json, eval_verilog_a_g,  #
                                       merge_seed_results, paired_ratio, split_seed_tasks,
                                       to_verilog_a_bias)
 from cryoml.explore.i3_2_followup import (F2_GROUPS, F2_REAL_VARIANTS,  # noqa: E402
-                                          compile_va, max_rel_diff, network_dims,
+                                          OPENVAF_R, compile_va, exceeds, max_rel_diff, network_dims,
                                           osdi_va_text, real_variant_fails, scored_masks,
                                           simulate_sky130, tier_b_pdk_passes)
 
@@ -85,10 +91,31 @@ def aggregate(values: dict) -> dict:
     return agg(values)
 
 
-def binaries() -> dict:
+NATIVE_DESC = {"ng46": "ngspice-46", "ng41osdi": "ngspice-41 OSDI build"}
+
+
+def native_label(args) -> str:
+    return getattr(args, "native_label", "ng46") or "ng46"
+
+
+def native_desc(label: str) -> str:
+    return NATIVE_DESC.get(label, label)
+
+
+def f1_out_name(args) -> str:
+    name = getattr(args, "out_name", "") or "f1"
+    return f"smoke_{name}" if args.smoke else name
+
+
+def binaries(native_bin: str = "", label: str = "ng46") -> dict:
+    """Canonical ngspice-41 ("ng41") and the second simulator used for the
+    SPICE-native runs (key ``label``; default Homebrew ngspice-46, F1b: the
+    ngspice-41 OSDI build passed as ``native_bin``)."""
     from cryoml.config import resolve_ngspice_bin
     from cryoml.pdk2.ihp import ngspice46_bin
-    out = {"ng41": resolve_ngspice_bin(), "ng46": ngspice46_bin()}
+    if label == "ng41":
+        raise ValueError("native label must differ from 'ng41'")
+    out = {"ng41": resolve_ngspice_bin(), label: native_bin or ngspice46_bin()}
     for k in list(out):
         v = subprocess.run([out[k], "-v"], capture_output=True, text=True, timeout=30).stdout
         out[f"{k}_version"] = next((ln.strip("* ").strip() for ln in v.splitlines()
@@ -114,7 +141,7 @@ def _record_order(tag: str):
 def f1_device_task(task):
     """All F1 simulations of one REAL_DEV device."""
     from cryoml.cold_start import device_bins
-    tag, cards, fold_osdi, full_osdi, bins = task
+    tag, cards, fold_osdi, full_osdi, bins, N = task
     rec = {r.tag: r for r in load_devices(E1 / "real_dev")}[tag]
     fold = correction_from_json(json.loads((I32 / "real_dev/corrections.json").read_text())
                                 [f"M_bias|{tag}"])
@@ -132,18 +159,18 @@ def f1_device_task(task):
 
     sims, msgs = {}, {}
     for card, params in cards.items():
-        for ng in ("ng41", "ng46"):
+        for ng in ("ng41", N):
             sims[f"{card}_{ng}"], msgs[f"{card}_{ng}"] = run(params, ng)
-    sims["native_fold_ng46"], msgs["native_fold_ng46"] = run(cards["mbias"], "ng46", fold_osdi)
-    sims["native_full_ng46"], msgs["native_full_ng46"] = run(cards["mbias"], "ng46", full_osdi)
-    sims["mbias_ng46_tight"], msgs["mbias_ng46_tight"] = run(cards["mbias"], "ng46",
+    sims[f"native_fold_{N}"], msgs[f"native_fold_{N}"] = run(cards["mbias"], N, fold_osdi)
+    sims[f"native_full_{N}"], msgs[f"native_full_{N}"] = run(cards["mbias"], N, full_osdi)
+    sims[f"mbias_{N}_tight"], msgs[f"mbias_{N}_tight"] = run(cards["mbias"], N,
                                                               options=TIGHT)
-    sims["native_fold_ng46_tight"], msgs["native_fold_ng46_tight"] = run(
-        cards["mbias"], "ng46", fold_osdi, options=TIGHT)
-    sims["py_fold_ng46_tight"] = fold.apply(with_sims(rec, sims["mbias_ng46_tight"]))
+    sims[f"native_fold_{N}_tight"], msgs[f"native_fold_{N}_tight"] = run(
+        cards["mbias"], N, fold_osdi, options=TIGHT)
+    sims[f"py_fold_{N}_tight"] = fold.apply(with_sims(rec, sims[f"mbias_{N}_tight"]))
     sims["py_fold_ng41"] = fold.apply(with_sims(rec, sims["mbias_ng41"]))
-    sims["py_fold_ng46"] = fold.apply(with_sims(rec, sims["mbias_ng46"]))
-    sims["py_full_ng46"] = full.apply(with_sims(rec, sims["mbias_ng46"]))
+    sims[f"py_fold_{N}"] = fold.apply(with_sims(rec, sims[f"mbias_{N}"]))
+    sims[f"py_full_{N}"] = full.apply(with_sims(rec, sims[f"mbias_{N}"]))
     scores = {k: float(score_device(rec, v)["rrms"]) for k, v in sims.items()}
     masks = scored_masks(rec)
     return {"tag": tag, "sims": sims, "msgs": msgs, "scores": scores,
@@ -164,13 +191,20 @@ def va_g_check(corr, text: str, n: int = 200) -> float:
 
 def f1(args) -> int:
     t_start = time.time()
-    out = FU / ("smoke_f1" if args.smoke else "f1")
+    N = native_label(args)
+    out = FU / f1_out_name(args)
     va_dir, osdi_dir = out / "va", out / "osdi"
     va_dir.mkdir(parents=True, exist_ok=True)
     tags = dev_tags()
     if args.tags:
         tags = [t for t in args.tags.split(",") if t]
-    bins = binaries()
+    bins = binaries(args.native_bin, N)
+    compiler = {"openvaf": args.openvaf or OPENVAF_R,
+                "extra_args": tuple(a for a in args.openvaf_args.split() if a)}
+    cv = subprocess.run([str(compiler["openvaf"]), "--version"], capture_output=True, text=True,
+                        timeout=30, check=False)
+    compiler_info = {"openvaf": str(compiler["openvaf"]), "extra_args": list(compiler["extra_args"]),
+                     "version": (cv.stdout + cv.stderr).strip()[:120]}
     corrs = json.loads((I32 / "real_dev/corrections.json").read_text())
     held = json.loads((I32 / "real_dev/heldout_cards.json").read_text())
     stored = json.loads((I32 / "real_dev/results.json").read_text())["per_device"]
@@ -183,21 +217,24 @@ def f1(args) -> int:
     full_text = (I32 / "real_dev/m_bias_sky130_dev_full.va").read_text()
     models = [("full", full_corr, full_text)]
     models += [(f"fold_{t}", correction_from_json(corrs[f"M_bias|{t}"]),
-                to_verilog_a_bias(correction_from_json(corrs[f"M_bias|{t}"]), vdd=VDD))
+                to_verilog_a_bias(correction_from_json(corrs[f"M_bias|{t}"]), vdd=VDD,
+                                  legacy=True))
                for t in tags]
     for name, corr, text in models:
         (va_dir / f"m_bias_{name}.va").write_text(text)
         otext = osdi_va_text(text)
-        c = compile_va(otext, va_dir / f"m_bias_{name}_osdi.va", osdi_dir / f"m_bias_{name}.osdi")
+        c = compile_va(otext, va_dir / f"m_bias_{name}_osdi.va", osdi_dir / f"m_bias_{name}.osdi",
+                       **compiler)
         export[name] = {"va": rel(va_dir / f"m_bias_{name}.va"),
                         "va_osdi": rel(c["va"]), "osdi": rel(c["osdi"]),
-                        "sha256_va_osdi": c["sha256"],
+                        "sha256_va_osdi": hashlib.sha256(otext.encode()).hexdigest(),
+                        "sha256_compile_key": c["sha256"],
                         "compile_warnings": c["log"].count("warning["),
                         "max_abs_g_diff_va_text_vs_python": va_g_check(corr, text),
                         "changed_lines_vs_export": sorted(
                             set(otext.splitlines()) ^ set(text.splitlines()))}
     export["full"]["export_text_equals_stored_file"] = (
-        to_verilog_a_bias(full_corr, vdd=VDD) == full_text)
+        to_verilog_a_bias(full_corr, vdd=VDD, legacy=True) == full_text)
     print(json.dumps({k: {kk: v[kk] for kk in ("compile_warnings",
                                                "max_abs_g_diff_va_text_vs_python")}
                       for k, v in export.items()}), flush=True)
@@ -208,7 +245,7 @@ def f1(args) -> int:
         cards = {"published": None, "start": dict(start_cards[t]["params"]),
                  "c0": dict(held["C0_refit_rerun"][t]), "mbias": dict(held["M_bias"][t])}
         tasks.append((t, cards, ROOT / export[f"fold_{t}"]["osdi"],
-                      ROOT / export["full"]["osdi"], bins))
+                      ROOT / export["full"]["osdi"], bins, N))
     with get_context("spawn").Pool(args.workers) as pool:
         rows = pool.map(f1_device_task, tasks, chunksize=1)
 
@@ -219,45 +256,45 @@ def f1(args) -> int:
         rec = recs[t]
         repro = {}
         for card in ("published", "start", "c0", "mbias"):
-            a, b = s[f"{card}_ng46"], s[f"{card}_ng41"]
-            repro[card] = {"rrms_ng41": sc[f"{card}_ng41"], "rrms_ng46": sc[f"{card}_ng46"],
-                           "abs_delta_rrms": abs(sc[f"{card}_ng46"] - sc[f"{card}_ng41"]),
+            a, b = s[f"{card}_{N}"], s[f"{card}_ng41"]
+            repro[card] = {"rrms_ng41": sc[f"{card}_ng41"], f"rrms_{N}": sc[f"{card}_{N}"],
+                           "abs_delta_rrms": abs(sc[f"{card}_{N}"] - sc[f"{card}_ng41"]),
                            "max_rel_scored": max_rel_diff(a, b, m, ZERO_FLOOR),
                            "max_rel_scored_literal": max_rel_diff(a, b, m),
                            "max_rel_all_ge_1e-12A": max_rel_diff(a, b, floor=1e-12)}
-        nat = {"rrms_native_ng46": sc["native_fold_ng46"], "rrms_stored": stored["M_bias"][t],
-               "rrms_python_ng41": sc["py_fold_ng41"], "rrms_python_ng46": sc["py_fold_ng46"],
-               "delta_native_vs_stored": sc["native_fold_ng46"] - stored["M_bias"][t],
-               "delta_native_vs_python_ng46": sc["native_fold_ng46"] - sc["py_fold_ng46"],
-               "max_rel_native_vs_python_ng46_scored": max_rel_diff(
-                   s["native_fold_ng46"], s["py_fold_ng46"], m, ZERO_FLOOR),
-               "max_rel_native_vs_python_ng46_scored_literal": max_rel_diff(
-                   s["native_fold_ng46"], s["py_fold_ng46"], m),
-               "max_rel_native_vs_python_ng46_all_ge_1e-12A": max_rel_diff(
-                   s["native_fold_ng46"], s["py_fold_ng46"], floor=1e-12),
+        nat = {f"rrms_native_{N}": sc[f"native_fold_{N}"], "rrms_stored": stored["M_bias"][t],
+               "rrms_python_ng41": sc["py_fold_ng41"], f"rrms_python_{N}": sc[f"py_fold_{N}"],
+               "delta_native_vs_stored": sc[f"native_fold_{N}"] - stored["M_bias"][t],
+               f"delta_native_vs_python_{N}": sc[f"native_fold_{N}"] - sc[f"py_fold_{N}"],
+               f"max_rel_native_vs_python_{N}_scored": max_rel_diff(
+                   s[f"native_fold_{N}"], s[f"py_fold_{N}"], m, ZERO_FLOOR),
+               f"max_rel_native_vs_python_{N}_scored_literal": max_rel_diff(
+                   s[f"native_fold_{N}"], s[f"py_fold_{N}"], m),
+               f"max_rel_native_vs_python_{N}_all_ge_1e-12A": max_rel_diff(
+                   s[f"native_fold_{N}"], s[f"py_fold_{N}"], floor=1e-12),
                "max_rel_native_vs_python_ng41_scored": max_rel_diff(
-                   s["native_fold_ng46"], s["py_fold_ng41"], m, ZERO_FLOOR),
-               "max_rel_full_native_vs_python_ng46_scored": max_rel_diff(
-                   s["native_full_ng46"], s["py_full_ng46"], m, ZERO_FLOOR),
-               "max_rel_full_native_vs_python_ng46_scored_literal": max_rel_diff(
-                   s["native_full_ng46"], s["py_full_ng46"], m),
+                   s[f"native_fold_{N}"], s["py_fold_ng41"], m, ZERO_FLOOR),
+               f"max_rel_full_native_vs_python_{N}_scored": max_rel_diff(
+                   s[f"native_full_{N}"], s[f"py_full_{N}"], m, ZERO_FLOOR),
+               f"max_rel_full_native_vs_python_{N}_scored_literal": max_rel_diff(
+                   s[f"native_full_{N}"], s[f"py_full_{N}"], m),
                "tight_tolerance_diagnostic": {
                    "options": TIGHT,
                    "max_rel_native_vs_python_scored": max_rel_diff(
-                       s["native_fold_ng46_tight"], s["py_fold_ng46_tight"], m, ZERO_FLOOR),
-                   "abs_delta_rrms": abs(sc["native_fold_ng46_tight"]
-                                         - sc["py_fold_ng46_tight"]),
-                   "rrms_native_tight": sc["native_fold_ng46_tight"],
+                       s[f"native_fold_{N}_tight"], s[f"py_fold_{N}_tight"], m, ZERO_FLOOR),
+                   "abs_delta_rrms": abs(sc[f"native_fold_{N}_tight"]
+                                         - sc[f"py_fold_{N}_tight"]),
+                   "rrms_native_tight": sc[f"native_fold_{N}_tight"],
                    "max_rel_uncorrected_tight_vs_default_scored": max_rel_diff(
-                       s["mbias_ng46_tight"], s["mbias_ng46"], m, ZERO_FLOOR)},
-               "max_rel_full_native_vs_python_ng46_all_ge_1e-12A": max_rel_diff(
-                   s["native_full_ng46"], s["py_full_ng46"], floor=1e-12),
+                       s[f"mbias_{N}_tight"], s[f"mbias_{N}"], m, ZERO_FLOOR)},
+               f"max_rel_full_native_vs_python_{N}_all_ge_1e-12A": max_rel_diff(
+                   s[f"native_full_{N}"], s[f"py_full_{N}"], floor=1e-12),
                "convergence_messages": {k: v for k, v in row["msgs"].items() if v},
                "n_nonfinite_native": int(sum(np.sum(~np.isfinite(x))
-                                             for k in ("native_fold_ng46", "native_full_ng46")
+                                             for k in (f"native_fold_{N}", f"native_full_{N}")
                                              for x in s[k])),
                "n_nonfinite_native_tight": int(sum(np.sum(~np.isfinite(x))
-                                                   for x in s["native_fold_ng46_tight"]))}
+                                                   for x in s[f"native_fold_{N}_tight"]))}
         stored_ok = {"c0_ng41_vs_stored_C0_refit": abs(sc["c0_ng41"] - stored["C0_refit"][t]),
                      "mbias_python_ng41_vs_stored_M_bias": abs(sc["py_fold_ng41"]
                                                                - stored["M_bias"][t]),
@@ -271,23 +308,25 @@ def f1(args) -> int:
             arrays[f"{t}|{i}|measured"] = c.target
             for k, v in s.items():
                 arrays[f"{t}|{i}|{k}"] = v[i]
-        print(t, json.dumps({"rrms_native": nat["rrms_native_ng46"],
+        print(t, json.dumps({"rrms_native": nat[f"rrms_native_{N}"],
                              "rrms_stored": nat["rrms_stored"],
-                             "max_rel_native_vs_py46": nat["max_rel_native_vs_python_ng46_scored"],
-                             "max_rel_ng46_vs_ng41": max(r["max_rel_scored"]
+                             "max_rel_native_vs_python_same_sim": nat[f"max_rel_native_vs_python_{N}_scored"],
+                             f"max_rel_{N}_vs_ng41": max(r["max_rel_scored"]
                                                          for r in repro.values())}), flush=True)
 
     def agg(key_fn):
         return aggregate({t: key_fn(per[t]) for t in tags})
 
-    aggs = {"native_ng46": agg(lambda p: p["native"]["rrms_native_ng46"]),
+    aggs = {f"native_{N}": agg(lambda p: p["native"][f"rrms_native_{N}"]),
             "stored_M_bias": agg(lambda p: p["native"]["rrms_stored"]),
-            "python_ng46": agg(lambda p: p["native"]["rrms_python_ng46"]),
+            f"python_{N}": agg(lambda p: p["native"][f"rrms_python_{N}"]),
             "c0_card_ng41": agg(lambda p: p["rrms"]["c0_ng41"]),
-            "c0_card_ng46": agg(lambda p: p["rrms"]["c0_ng46"]),
+            f"c0_card_{N}": agg(lambda p: p["rrms"][f"c0_{N}"]),
             "published_ng41": agg(lambda p: p["rrms"]["published_ng41"]),
             "mbias_card_uncorrected_ng41": agg(lambda p: p["rrms"]["mbias_ng41"])}
-    mx = lambda f: float(max(f(per[t]) for t in tags))
+    def mx(f):
+        vals = [float(f(per[t])) for t in tags]
+        return float("nan") if any(np.isnan(v) for v in vals) else float(max(vals))
     checks = {
         "F1.0_export_text": {
             "max_abs_g_diff": max(v["max_abs_g_diff_va_text_vs_python"] for v in export.values()),
@@ -303,14 +342,14 @@ def f1(args) -> int:
                                                    for r in p["reproduction"].values())),
             "max_stored_check": mx(lambda p: max(p["stored_check"].values()))},
         "F1.2_va_implementation": {
-            "max_rel_fold_scored": mx(lambda p: p["native"]["max_rel_native_vs_python_ng46_scored"]),
+            "max_rel_fold_scored": mx(lambda p: p["native"][f"max_rel_native_vs_python_{N}_scored"]),
             "max_rel_full_scored": mx(
-                lambda p: p["native"]["max_rel_full_native_vs_python_ng46_scored"]),
+                lambda p: p["native"][f"max_rel_full_native_vs_python_{N}_scored"]),
             "max_rel_fold_scored_literal": mx(
-                lambda p: p["native"]["max_rel_native_vs_python_ng46_scored_literal"]),
+                lambda p: p["native"][f"max_rel_native_vs_python_{N}_scored_literal"]),
             "max_rel_full_scored_literal": mx(
-                lambda p: p["native"]["max_rel_full_native_vs_python_ng46_scored_literal"]),
-            "max_abs_delta_rrms": mx(lambda p: abs(p["native"]["delta_native_vs_python_ng46"])),
+                lambda p: p["native"][f"max_rel_full_native_vs_python_{N}_scored_literal"]),
+            "max_abs_delta_rrms": mx(lambda p: abs(p["native"][f"delta_native_vs_python_{N}"])),
             "n_devices_with_convergence_messages": int(sum(
                 any(not k.endswith("_tight") for k in per[t]["native"]["convergence_messages"])
                 for t in tags)),
@@ -320,29 +359,29 @@ def f1(args) -> int:
             "n_nonfinite": int(sum(per[t]["native"]["n_nonfinite_native"] for t in tags))},
         "F1.3_end_to_end": {
             "max_abs_delta_device": mx(lambda p: abs(p["native"]["delta_native_vs_stored"])),
-            "abs_delta_all_device_mean": abs(aggs["native_ng46"]["all_device_mean"]
+            "abs_delta_all_device_mean": abs(aggs[f"native_{N}"]["all_device_mean"]
                                              - aggs["stored_M_bias"]["all_device_mean"])}}
     c = checks
-    c["F1.0_export_text"]["fail"] = bool(c["F1.0_export_text"]["max_abs_g_diff"] > TOL["F1.0_g"])
+    c["F1.0_export_text"]["fail"] = bool(exceeds(c["F1.0_export_text"]["max_abs_g_diff"], TOL["F1.0_g"]))
     c["F1.1_simulator_reproduction"]["fail"] = bool(
-        c["F1.1_simulator_reproduction"]["max_rel_scored"] > TOL["F1.1_rel"]
-        or c["F1.1_simulator_reproduction"]["max_abs_delta_rrms"] > TOL["F1.1_rrms"])
+        exceeds(c["F1.1_simulator_reproduction"]["max_rel_scored"], TOL["F1.1_rel"])
+        or exceeds(c["F1.1_simulator_reproduction"]["max_abs_delta_rrms"], TOL["F1.1_rrms"]))
     c["F1.1_simulator_reproduction"]["fail_literal"] = bool(
-        c["F1.1_simulator_reproduction"]["max_rel_scored_literal"] > TOL["F1.1_rel"]
-        or c["F1.1_simulator_reproduction"]["max_abs_delta_rrms"] > TOL["F1.1_rrms"])
+        exceeds(c["F1.1_simulator_reproduction"]["max_rel_scored_literal"], TOL["F1.1_rel"])
+        or exceeds(c["F1.1_simulator_reproduction"]["max_abs_delta_rrms"], TOL["F1.1_rrms"]))
     c["F1.1_simulator_reproduction"]["stored_values_reproduced"] = bool(
         c["F1.1_simulator_reproduction"]["max_stored_check"] <= TOL["F1.1_stored"])
     c["F1.2_va_implementation"]["fail"] = bool(
-        c["F1.2_va_implementation"]["max_rel_fold_scored"] > TOL["F1.2_rel"]
-        or c["F1.2_va_implementation"]["max_rel_full_scored"] > TOL["F1.2_rel"]
-        or c["F1.2_va_implementation"]["max_abs_delta_rrms"] > TOL["F1.2_rrms"]
+        exceeds(c["F1.2_va_implementation"]["max_rel_fold_scored"], TOL["F1.2_rel"])
+        or exceeds(c["F1.2_va_implementation"]["max_rel_full_scored"], TOL["F1.2_rel"])
+        or exceeds(c["F1.2_va_implementation"]["max_abs_delta_rrms"], TOL["F1.2_rrms"])
         or c["F1.2_va_implementation"]["n_devices_with_convergence_messages"] > 0
         or c["F1.2_va_implementation"]["n_nonfinite"] > 0)
     f12 = c["F1.2_va_implementation"]
     f12["fail_literal"] = bool(
-        f12["max_rel_fold_scored_literal"] > TOL["F1.2_rel"]
-        or f12["max_rel_full_scored_literal"] > TOL["F1.2_rel"]
-        or f12["max_abs_delta_rrms"] > TOL["F1.2_rrms"]
+        exceeds(f12["max_rel_fold_scored_literal"], TOL["F1.2_rel"])
+        or exceeds(f12["max_rel_full_scored_literal"], TOL["F1.2_rel"])
+        or exceeds(f12["max_abs_delta_rrms"], TOL["F1.2_rrms"])
         or f12["n_devices_with_convergence_messages"] > 0 or f12["n_nonfinite"] > 0)
     c["tight_tolerance_diagnostic"] = {
         "options": TIGHT,
@@ -351,14 +390,18 @@ def f1(args) -> int:
         "max_abs_delta_rrms": mx(
             lambda p: p["native"]["tight_tolerance_diagnostic"]["abs_delta_rrms"])}
     c["F1.3_end_to_end"]["fail"] = bool(
-        c["F1.3_end_to_end"]["max_abs_delta_device"] > TOL["F1.3_dev"]
-        or c["F1.3_end_to_end"]["abs_delta_all_device_mean"] > TOL["F1.3_mean"])
+        exceeds(c["F1.3_end_to_end"]["max_abs_delta_device"], TOL["F1.3_dev"])
+        or exceeds(c["F1.3_end_to_end"]["abs_delta_all_device_mean"], TOL["F1.3_mean"]))
 
-    summary = {"prereg": rel(PREREG), "amendment": rel(AMENDMENT),
+    amendments = [rel(AMENDMENT)] + [rel(ROOT / a) for a in args.amendment]
+    summary = {"prereg": rel(PREREG), "amendment": rel(AMENDMENT), "amendments": amendments,
                "zero_floor_A": ZERO_FLOOR, "smoke": bool(args.smoke), "tags": tags,
-               "binaries": bins, "osdi_in_ngspice41": False,
-               "osdi_note": "ngspice-41 arm64 configured without OSDI; SPICE-native runs use "
-                            "ngspice-46 (prereg setup_facts)",
+               "binaries": bins, "compiler": compiler_info, "native_label": N, "native_simulator": native_desc(N),
+               "osdi_in_ngspice41": N != "ng46",
+               "osdi_note": ("ngspice-41 arm64 configured without OSDI; SPICE-native runs use "
+                             "ngspice-46 (prereg setup_facts)" if N == "ng46" else
+                             f"SPICE-native runs use {bins[N]} ({native_desc(N)}); "
+                             "uncorrected reference runs use the canonical ngspice-41"),
                "tolerances": TOL, "export": export, "aggregates": aggs, "checks": checks,
                "per_device": per, "runtime_s": round(time.time() - t_start, 1)}
     (out / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
@@ -377,8 +420,11 @@ def f1_plot(args, out: Path | None = None) -> int:
     import plot_explore_e2_e3_e4 as pe
     from matplotlib.lines import Line2D
     plt = pe.plt
-    out = out or FU / ("smoke_f1" if args.smoke else "f1")
+    out = out or FU / f1_out_name(args)
     summ = json.loads((out / "summary.json").read_text())
+    N = summ.get("native_label", "ng46")
+    desc = native_desc(N)
+    stem = out.name.removeprefix("smoke_")
     with np.load(out / "curves.npz") as z:
         arr = {k: z[k] for k in z.files}
     recs = {r.tag: r for r in load_devices(E1 / "real_dev")}
@@ -407,7 +453,7 @@ def f1_plot(args, out: Path | None = None) -> int:
                 ax.plot(xv, g("published_ng41"), color=pe.GREY, ls="--", lw=1.2, alpha=alpha,
                         zorder=2)
                 ax.plot(xv, g("c0_ng41"), color=pe.BLUE, lw=1.3, alpha=alpha, zorder=3)
-                ax.plot(xv, g("native_fold_ng46"), color=pe.ORANGE, lw=1.3, alpha=alpha,
+                ax.plot(xv, g(f"native_fold_{N}"), color=pe.ORANGE, lw=1.3, alpha=alpha,
                         zorder=3)
                 lab = c.key.split("@")[1]
                 ax.annotate(f"{'|Vgs|' if kind == 'idvd' else '|Vds|'} {lab}"
@@ -433,22 +479,22 @@ def f1_plot(args, out: Path | None = None) -> int:
                    label=f"NGSpice (ngspice-41), C0_refit card (held-out refit, no correction): "
                          f"RRMS {r['c0_ng41']:.4f}"),
             Line2D([], [], color=pe.ORANGE, lw=1.3,
-                   label="SPICE-native corrected (ngspice-46): M_bias refit card in the netlist with "
+                   label=f"SPICE-native corrected ({desc}): M_bias refit card in the netlist with "
                          "the compiled fold Verilog-A correction (trained on the other 11 devices): "
-                         f"RRMS {r['native_fold_ng46']:.4f}"),
+                         f"RRMS {r[f'native_fold_{N}']:.4f}"),
         ]
         fig.legend(handles=handles, loc="lower center", ncol=1, fontsize=8.3, frameon=False,
                    bbox_to_anchor=(0.5, -0.005))
         fig.suptitle(
-            f"{tag}, held out (I3-2 follow-up F1). Stored I3-2 values: C0_refit "
+            f"{tag}, held out (I3-2 follow-up {stem.upper()}). Stored I3-2 values: C0_refit "
             f"{stored['C0_refit'][tag]:.4f}, M_bias {stored['M_bias'][tag]:.4f} (ngspice-41 x "
             f"exp(g) in Python).\nSPICE-native minus stored M_bias RRMS: "
             f"{p['native']['delta_native_vs_stored']:+.2e}; max relative current difference, "
-            f"SPICE-native vs Python on ngspice-46 (scored points, |I| >= 1e-20 A): "
-            f"{p['native']['max_rel_native_vs_python_ng46_scored']:.2e}",
+            f"SPICE-native vs Python on {desc} (scored points, |I| >= 1e-20 A): "
+            f"{p['native'][f'max_rel_native_vs_python_{N}_scored']:.2e}",
             fontsize=9.6, color=pe.INK)
         fig.tight_layout(rect=(0, 0.13, 1, 0.93))
-        path = (out.parent if not summ["smoke"] else out) / f"f1_iv_{tag}.png"
+        path = (out.parent if not summ["smoke"] else out) / f"{stem}_iv_{tag}.png"
         fig.savefig(path, facecolor=pe.BG)
         plt.close(fig)
         written.append(rel(path))
@@ -733,6 +779,20 @@ def main() -> int:
     ap.add_argument("--tags", default="", help="f1: subset of REAL_DEV tags")
     ap.add_argument("--variants", default="", help="f2_real: subset of variants")
     ap.add_argument("--folds-limit", type=int, default=0, help="f2_real smoke: first N folds")
+    ap.add_argument("--native-bin", default="",
+                    help="f1: ngspice binary for the SPICE-native runs (default: Homebrew "
+                         "ngspice-46); F1b uses the ngspice-41 OSDI build")
+    ap.add_argument("--native-label", default="ng46",
+                    help="f1: key of the --native-bin simulator in the outputs (default ng46)")
+    ap.add_argument("--out-name", default="f1",
+                    help="f1/f1_plot: output directory under followup/ and figure prefix")
+    ap.add_argument("--amendment", action="append", default=[],
+                    help="f1: additional amendment file recorded in summary.json (repeatable)")
+    ap.add_argument("--openvaf", default="",
+                    help="f1: Verilog-A compiler (default: OpenVAF-Reloaded v24, OSDI 0.4); "
+                         "F1c uses OpenVAF 23.5.0 (OSDI 0.3) for the ngspice-41 OSDI build")
+    ap.add_argument("--openvaf-args", default="",
+                    help="f1: extra compiler arguments, e.g. '--target aarch64-apple-darwin'")
     ap.add_argument("--smoke", action="store_true",
                     help="code check: smoke_* outputs; f2: first seed only, 200 steps")
     args = ap.parse_args()
