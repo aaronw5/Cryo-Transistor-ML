@@ -1,0 +1,690 @@
+{
+  "written": "2026-10-20",
+  "purpose": "Find publicly downloadable measured CMOS transistor I-V data at multiple temperatures between about 4 K and 300 K, to test a learned, population-shared temperature law for BSIM4 parameters (VTH0, U0, etc.) on real data.",
+  "criteria": {
+    "usable_for_learned_temperature_law": "at least 4 temperatures per device, several devices (different geometries or dies), Id-Vg and/or Id-Vd sweeps available as numeric files (not only plots)",
+    "priority": [
+      "SkyWater sky130",
+      "GF180MCU, IHP SG13G2, or another open 22-180 nm process",
+      "any CMOS process with downloadable multi-temperature data"
+    ],
+    "evidence_labels": {
+      "confirmed from files": "checked by reading downloaded files",
+      "stated by the source page": "taken from metadata or a landing page without reading the data",
+      "stated by source code": "taken from code in the source repository"
+    },
+    "download_policy": "about 200 MB budget; each source in its own new directory under data/external/; files read only with python3 -I scripts stored outside those directories; pickled .npy payloads read with a restricted unpickler limited to numpy reconstruction globals"
+  },
+  "candidates": [
+    {
+      "rank": 1,
+      "name": "Delft 40-nm CMOS low-frequency-noise dataset (DC subset)",
+      "url": "https://doi.org/10.4121/c41c26f7-586f-48ca-8abe-9127b2d97c60.v1",
+      "landing_page": "https://data.4tu.nl/datasets/c41c26f7-586f-48ca-8abe-9127b2d97c60",
+      "title": "Data underlying the publication: Cryogenic Characterization of Low-Frequency Noise in 40-nm CMOS",
+      "authors": "G. Kiene, S. Ilik, L. Mastrodomenico, M. Babaie, F. Sebastiano (TU Delft)",
+      "process": "commercial 40-nm bulk CMOS (foundry not named in the dataset); flavors: low-, standard- and high-Vth core devices",
+      "temperatures_K": {
+        "all_values_in_file_names": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          14,
+          16,
+          18,
+          20,
+          25,
+          30,
+          50,
+          56,
+          70,
+          80,
+          100,
+          295,
+          300
+        ],
+        "measured_stage_temperature_field": "each file stores temperature_meas_start/end; files named temp_300 read 290-295 K, temp_100 read 105-130 K, temp_56 reads 5.6 K",
+        "per_device_coverage": {
+          "exactly 2 temperatures (4.1-4.2 K and 295 K)": 591,
+          "4.1 K only": 199,
+          "295 K only": 9,
+          "4.1 K, 105-130 K, 295 K": 7,
+          ">= 7 temperatures": 3
+        },
+        "dense_temperature_devices": [
+          {
+            "device": "nMOS low-Vt W=4 um L=4 um, sample 2, device 136",
+            "temperatures_K": [
+              4.1,
+              5.0,
+              5.6,
+              6.1,
+              7.0,
+              8.0,
+              9.0,
+              10.4,
+              11.5,
+              12.0,
+              14.0,
+              16.0,
+              17.5,
+              20.0,
+              25.0,
+              50.0,
+              70.0,
+              80.0,
+              295.0
+            ]
+          },
+          {
+            "device": "nMOS low-Vt W=4 um L=4 um, sample 3, device 136",
+            "temperatures_K": [
+              4.1,
+              5.9,
+              8.1,
+              10.0,
+              12.1,
+              30.0,
+              295.0
+            ]
+          },
+          {
+            "device": "pMOS low-Vt W=4 um L=4 um, sample 5, device 336",
+            "temperatures_K": [
+              4.1,
+              6.0,
+              8.0,
+              10.0,
+              12.0,
+              105.0,
+              295.0
+            ]
+          }
+        ],
+        "source": "confirmed from files"
+      },
+      "devices": {
+        "count": "809 physical devices (n and p) on several samples/dies; 1716 non-test DC files",
+        "geometries": "17 W/L pairs per polarity for low-Vt (W 0.12-4 um, L 0.04-4 um) plus W=L=1 um standard-Vt and high-Vt devices; 38 (type, Vt flavor, W, L) combinations in total; 601 devices covering all 38 combinations have data at both 4.2 K and 295 K, but only 69 of them (10 combinations: nMOS W/L 0.12/0.04, 0.12/0.05, 0.36/0.04, 1/0.04, 1/0.36, 1/1, 4/4 um; pMOS 1/0.04, 1/1, 4/4 um) have wide-sweep families (campaigns other than 2) at both temperatures",
+        "source": "confirmed from files"
+      },
+      "curve_types": {
+        "Id-Vg": "family at up to 12 Vd values (typ. Vd = 0.05 V and a set between Vg_start and 1.1 V), 111 points per curve",
+        "Id-Vd": "family at up to 11 Vg values, Vd 0 to 1.1 V, 111 points per curve",
+        "other": "diode-connected and triode Id at 11 bias points; Id at Vg=0 (leakage)",
+        "bias_ranges": "|Vg| from about 0.30-0.60 V (above threshold, depends on temperature/flavor) to 1.1 V; |Vd| 0 to 1.1 V; sweeps do not cover deep subthreshold",
+        "note": "campaign 2 files (1400 of 1716) contain only 2 Id-Vg curves and 1 Id-Vd curve over a narrow Vg range (1.05-1.1 V); campaigns 1, 3, 4, 5, 7, 8, 9, 10 contain the wider families",
+        "source": "confirmed from files"
+      },
+      "license": "CC0",
+      "file_format": "NumPy .npy files holding one pickled Python dict each (object array). Loaded here with a restricted unpickler that allows only numpy._reconstruct, numpy.ndarray, numpy.dtype and numpy scalar; pickletools disassembly showed no other globals.",
+      "approximate_size": "full record 91.3 GB (main.zip 6.18 GB, lfn_n.zip 42.0 GB, lfn_p.zip 43.2 GB); the DC folder inside main.zip is 15.9 MB uncompressed (13.3 MB compressed) and was extracted with HTTP range requests",
+      "usable_for_learned_temperature_law": true,
+      "usable_reason": "Confirmed from files: 3 devices on 3 different dies (2 nMOS, 1 pMOS, all W=L=4 um) have 7 to 19 measured temperatures from 4.1 K to 295 K, which meets the >=4-temperature, several-device criterion at its minimum; geometry variation is available only at 4.2 K and 295 K (69 devices over 10 geometries with wide sweeps), so a geometry-dependent law can be fitted on two temperatures and its temperature shape checked on 3 devices.",
+      "limitations": [
+        "Only 3 devices have more than 3 temperatures, and they share one geometry.",
+        "Vg sweeps start near or above threshold; subthreshold parameters (NFACTOR, VOFF) are weakly constrained.",
+        "Intermediate temperatures 4-80 K for the dense devices use smaller families (4-7 Id-Vg curves).",
+        "Campaign 2 (1400 of 1716 files, most of the 601 two-temperature devices) holds only 2 Id-Vg curves over Vg 1.05-1.1 V and 1 Id-Vd curve at Vg 1.1 V.",
+        "40-nm process differs from sky130; parameter priors from the sky130 workflow do not transfer directly."
+      ],
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/delft_kiene_40nm_lfn"
+    },
+    {
+      "rank": 2,
+      "name": "IHP SG13G2 Open PDK MOS measurement data (libs.doc/meas/MOS)",
+      "url": "https://github.com/IHP-GmbH/IHP-Open-PDK/tree/main/ihp-sg13g2/libs.doc/meas/MOS",
+      "title": "IHP-Open-PDK SG13G2 MOS device measurement data (IC-CAP MDM)",
+      "process": "IHP SG13G2 130-nm SiGe BiCMOS (CMOS devices: sg13_lv_nmos/pmos 1.2 V, sg13_hv_nmos/pmos 3.3 V)",
+      "temperatures_K": {
+        "values": [
+          233,
+          300,
+          343,
+          398
+        ],
+        "header_TEMP_C": [
+          -40,
+          27,
+          70,
+          125
+        ],
+        "per_device_coverage": {
+          "4 temperatures": 28,
+          "300 K only": 101
+        },
+        "source": "confirmed from files (TEMP field in each MDM header matches the file-name temperature)"
+      },
+      "devices": {
+        "count": "28 DUTs at 4 temperatures: 8 LV nMOS, 8 LV pMOS, 6 HV nMOS, 6 HV pMOS; 101 more DUTs at 300 K only",
+        "geometries": "LV: W 0.15-10 um x L 0.13-10 um (e.g. 10/0.13, 10/0.18, 10/10, 0.15/0.13, 0.15/0.18, 0.15/10, 0.3/0.13, 0.3/10); HV: W 0.3-10 um x L 0.35-10 um",
+        "source": "confirmed from files"
+      },
+      "curve_types": {
+        "Id-Vg": "dc_idvg: LV nMOS Vg -0.5 to 1.35 V (38 points), Vd = 0.05/0.6/1.2 V, Vb = 0 to -1.2 V (5 values) -> 15 curves per file; HV Vg -0.5 to 3.6 V, Vd 0.1/1.7/3.3 V",
+        "Id-Vd": "dc_idvd, dc_idvd_vbmin, dc_idvd_vth, dc_idvd_vth_vbmin: Vd sweeps 0 to Vdd at 3-5 Vg values, with Vb = 0 and Vb = Vbmin",
+        "outputs": "id, ig, ib, is",
+        "source": "confirmed from files"
+      },
+      "license": "Apache-2.0 (repository LICENSE)",
+      "file_format": "Keysight IC-CAP MDM text (.mdm)",
+      "approximate_size": "MOS measurement folder 347 MB in total (including PNG report figures); all .mdm files 37.6 MB; the 560 DC files of the 28 multi-temperature DUTs are 19.5 MB",
+      "usable_for_learned_temperature_law": true,
+      "usable_reason": "Confirmed from files: 28 devices (one W/L each, 4 device types) each have Id-Vg and Id-Vd families at 4 temperatures with the temperature recorded in the file header; the temperature range is 233-398 K, so it does not test cryogenic behaviour.",
+      "limitations": [
+        "No temperatures below 233 K.",
+        "Single DUT per geometry per temperature (no die-to-die replicates at multiple temperatures)."
+      ],
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/ihp_sg13g2_open_pdk_meas"
+    },
+    {
+      "rank": 3,
+      "name": "UTA pyvisa_instrument_control Data folder (sky130 measurement campaign behind the 77 K models)",
+      "url": "https://github.com/UTA-Advanced-Detector-Technologies/pyvisa_instrument_control/tree/main/Data",
+      "title": "PyVISA Instrument Control - Data (SkyWater 130 nm LV nMOS/pMOS, May 2025)",
+      "process": "SkyWater sky130 (sky130_fd_pr nfet/pfet_01v8_lvt, same chip and bonding diagrams as the 77 K data used by cryo-ml)",
+      "temperatures_K": {
+        "folder_labels": [
+          77,
+          100,
+          160,
+          300,
+          "roomtemp",
+          "cold (unlabeled)",
+          "coldish (unlabeled)"
+        ],
+        "note": "temperature is given only by the folder name; the CSV files carry no temperature field",
+        "max_per_device": "4 folder temperatures for pMOS L=4 W=7 (77, 100, 160, 300 K); the 100 K file set is a partial test (1 Id-Vg, 5 Id-Vd) with |Id| = 9.7 mA at Vd = -0.01 V, which is not consistent with the 77/160/300 K data",
+        "devices_with_3_temperatures": [
+          {
+            "device": "nmos L=0.19 W=7",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77
+            ]
+          },
+          {
+            "device": "nmos L=1 W=3",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              300
+            ]
+          },
+          {
+            "device": "nmos L=100 W=100",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              160,
+              300
+            ]
+          },
+          {
+            "device": "nmos L=100 W=3",
+            "temps_K_with_any_files": [
+              77,
+              160
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": []
+          },
+          {
+            "device": "nmos L=2 W=5",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              300
+            ]
+          },
+          {
+            "device": "nmos L=8 W=1.6",
+            "temps_K_with_any_files": [
+              77,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              300
+            ]
+          },
+          {
+            "device": "nmos L=8 W=100",
+            "temps_K_with_any_files": [
+              77,
+              160
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77
+            ]
+          },
+          {
+            "device": "pmos L=0.35 W=1.6",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              300
+            ]
+          },
+          {
+            "device": "pmos L=0.5 W=0.42",
+            "temps_K_with_any_files": [
+              77,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77
+            ]
+          },
+          {
+            "device": "pmos L=0.5 W=0.55",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              160,
+              300
+            ]
+          },
+          {
+            "device": "pmos L=0.5 W=0.84",
+            "temps_K_with_any_files": [
+              77,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77
+            ]
+          },
+          {
+            "device": "pmos L=2 W=5",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              300
+            ]
+          },
+          {
+            "device": "pmos L=20 W=0.42",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              300
+            ]
+          },
+          {
+            "device": "pmos L=20 W=0.55",
+            "temps_K_with_any_files": [
+              77,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              300
+            ]
+          },
+          {
+            "device": "pmos L=20 W=7",
+            "temps_K_with_any_files": [
+              77,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              300
+            ]
+          },
+          {
+            "device": "pmos L=4 W=7",
+            "temps_K_with_any_files": [
+              77,
+              100,
+              160,
+              300
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              160,
+              300
+            ]
+          },
+          {
+            "device": "pmos L=8 W=1.6",
+            "temps_K_with_any_files": [
+              77,
+              160
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77,
+              160
+            ]
+          },
+          {
+            "device": "pmos L=8 W=5",
+            "temps_K_with_any_files": [
+              77,
+              160
+            ],
+            "temps_K_full_11_curve_set_and_saturation_check_passed": [
+              77
+            ]
+          }
+        ],
+        "source": "confirmed from files"
+      },
+      "devices": {
+        "count": "about 40 distinct geometries in total; 15 geometries have files at 2 or more temperatures; 2 geometries (nMOS L=100 W=100; pMOS L=4 W=7) have complete 11-curve sets at 77, 160 and 300 K that pass a saturation/linear current consistency check",
+        "source": "confirmed from files"
+      },
+      "curve_types": {
+        "Id-Vg": "|Vg| 0 to 1.85 V in 0.01 V steps (186 points) at |Vd| = 0.01, 0.37, 0.74, 1.11, 1.48, 1.85 V",
+        "Id-Vd": "|Vd| 0 to 1.85 V (186 points) at |Vg| = 0.37, 0.74, 1.11, 1.48, 1.85 V",
+        "columns": "Vd_src, Vg_src, Id, Ig (plus a mystic_format/ copy per folder)",
+        "source": "confirmed from files"
+      },
+      "data_quality_findings": [
+        "All 242 CSV files in Skywater-130nm-77K-Cryogenic-Models/cryo_data (the 77 K data used by cryo-ml) are byte-identical to files in the 77K_* folders here.",
+        "160K_bonding_diagram_1_05-15-2025 folders show |Id| at Vg=1.85 V nearly equal for Vd=0.01 V and Vd=1.85 V (ratio 0.4-1.0) and 20x larger than the 77 K values, which indicates a measurement or wiring fault.",
+        "Several 160 K folders (05-16, some 05-19) show |Id| below 1e-7 A at Vg=1.85 V where 77 K and 300 K show 1e-5-1e-4 A.",
+        "Plausible 160 K sets: nMOS L=100 W=100 (05-20), pMOS L=4 W=7 test2 (05-19), pMOS L=8 W=1.6 (05-20).",
+        "pMOS L=0.5 W=0.55 at 160 K passes the automatic saturation/linear ratio check in the table above, but its |Id| at Vg=1.85 V (1.9e-8 A) is about 3000x below the 77 K and 300 K values, so it is not counted as consistent."
+      ],
+      "license": "none stated (no LICENSE file; GitHub API reports license null)",
+      "file_format": "CSV",
+      "approximate_size": "repository 20.1 MB (GitHub size field); Data/ folder 19.4 MB",
+      "usable_for_learned_temperature_law": false,
+      "usable_reason": "Confirmed from files: no sky130 device has 4 usable temperatures; at most 2 devices have consistent 77/160/300 K sets and most 160 K data fail a basic consistency check, and the repository has no license.",
+      "related_forks": [
+        "Rimal12345/pyvisa_instrument_control (same folders, 5 extra files)",
+        "caizikun/pyvisa_instrument_control (same as upstream)"
+      ],
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/uta_pyvisa_instrument_control"
+    },
+    {
+      "rank": 4,
+      "name": "NIST CHIPS METIS: CMOS Sky130 Primitives measured at cryogenic temperatures",
+      "url": "https://doi.org/10.18434/mds2-2997",
+      "landing_page": "https://data.nist.gov/od/id/mds2-2997",
+      "title": "CMOS Sky130 Primitives measured at cryogenic temperatures",
+      "authors": "A. Akturk (CoolCAD), A. Li, M. Saligane (U. Michigan), J. Riem, G. Adam (George Washington U.), B. D. Hoskins, P. Shrestha (NIST)",
+      "process": "SkyWater sky130 (ETest tile and MPW-5 test tile)",
+      "temperatures_K": {
+        "values": "unknown",
+        "source": "not stated in the metadata; the record says 'low temperatures'"
+      },
+      "devices": {
+        "count": "unknown",
+        "source": "not stated in the metadata"
+      },
+      "curve_types": "unknown (metadata does not describe the files)",
+      "license": "NIST open license (https://www.nist.gov/open/license)",
+      "file_format": "ZIP archives (ETest Tile.zip 3,807,177 bytes; MPW-5 Test Tile.zip 39,471,626 bytes) and 2997_README_v4.txt (4,456 bytes)",
+      "approximate_size": "43.3 MB total (from the NIST metadata API)",
+      "related_paper": "A. Akturk, A. Tripathi, M. Saligane, 'Cryogenic modeling for open-source process design kit technology', IEEE BCICTS 2023, pp. 58-65, doi:10.1109/BCICTS54660.2023.10310944 (cited by arXiv:2604.21625 as the prior sky130 4 K characterization)",
+      "download_status": "not downloaded: the file URLs under data.nist.gov/od/ds/mds2-2997/ (and the mds2-3196 alias listed by catalog.data.gov) returned HTTP 524 (origin timeout) or no response on 7 attempts on 2026-10-20 between 00:40 and 01:05 EDT; the metadata API (data.nist.gov/rmm/records/mds2-2997) responded and gave the file list and sizes; no local directory was kept",
+      "usable_for_learned_temperature_law": false,
+      "usable_reason": "Not confirmed: the NIST file server (data.nist.gov/od/ds/...) returned HTTP 524 or timed out on every attempt on 2026-10-20, so temperatures, devices and format could not be checked.",
+      "local_path": null
+    },
+    {
+      "rank": 5,
+      "name": "Kabaoglu et al. cryogenic BSIM3 modeling repository",
+      "url": "https://github.com/aykutkabaoglu/CryogenicMOSFETModelingBSIM3",
+      "title": "CryogenicMOSFETModelingBSIM3 (data for IEEE papers 7981578 and 8550668)",
+      "process": "unnamed 1.8 V bulk CMOS (0.18 um class; sweeps to 1.8 V); not stated in repository",
+      "temperatures_K": {
+        "meas_results_manual": "device T5 (nMOS): folders -145, -160, -170, -196 C (128, 113, 103, 77 K); device T12 (pMOS): -145, -170, -196 C (128, 103, 77 K); other devices (T1, T2, T4, T9, T10, T15, TO2_*_LN2) have no or a single temperature label",
+        "meas_results_backup": "wafers W03, W05, W06 x cells C1-C8 at an unlabeled temperature (assumed room temperature) plus C5_LN2, C7_LN2, C8_LN2 at 77 K and a few files suffixed _96, _98, _120, _142",
+        "source": "confirmed from files for meas_results_manual; backup folder from file listing only"
+      },
+      "devices": {
+        "count": "1 nMOS with 4 cryogenic temperatures, 1 pMOS with 3; about 25 cells in the backup folder at room temperature and 3 at 77 K",
+        "source": "confirmed from files / file listing"
+      },
+      "curve_types": {
+        "Id-Vg": "0 to 1.8 V, 181 points, at Vd min and Vd max",
+        "Id-Vd": "at Vg max",
+        "backup": "Id-Vd at Vgs 0.6-1.8 V and Vbs 0 to -0.4 V; Id-Vg at Vds 0.01/0.05/1.8 V and Vbs 0 to -0.4 V"
+      },
+      "license": "none stated",
+      "file_format": "CSV (two columns: V, Id)",
+      "approximate_size": "repository 116 MB (includes a 25 MB .mat); meas_results_manual 0.44 MB",
+      "usable_for_learned_temperature_law": false,
+      "usable_reason": "Confirmed from files: only one device has 4 temperatures (77-128 K) and no device covers both cryogenic and room temperature in the labeled folders.",
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/kabaoglu_cryo_bsim3"
+    },
+    {
+      "rank": 6,
+      "name": "SUSTech cryogenic long-channel bulk CMOS dataset (IEEE DataPort)",
+      "url": "https://ieee-dataport.org/documents/cryogenic-long-channel-bulk-cmos-dataset-cryogenic-cmos-modeling",
+      "doi": "10.21227/0fb6-2034",
+      "title": "Cryogenic Long Channel Bulk CMOS Dataset for Cryogenic CMOS Modeling",
+      "authors": "H. Su, Y. Cai, S. Zhou, K. Chen (Southern University of Science and Technology)",
+      "process": "bulk CMOS, node not stated",
+      "temperatures_K": {
+        "values": "300 K down to 4 K; the page names 4 K, 77 K and 300 K files and does not list intermediate values",
+        "source": "stated by the source page"
+      },
+      "devices": {
+        "count": "2 (one nMOS, one pMOS, W/L = 10 um / 1 um)",
+        "source": "stated by the source page"
+      },
+      "curve_types": {
+        "Id-Vg": "Vd = 0.1 V (-0.1 V for pMOS)",
+        "Id-Vd": "folder per temperature",
+        "source": "stated by the source page"
+      },
+      "license": "not stated",
+      "file_format": "xlsx in a 1.05 MB zip",
+      "approximate_size": "1.05 MB",
+      "access": "IEEE DataPort login/subscription required for download",
+      "usable_for_learned_temperature_law": false,
+      "usable_reason": "Stated by the source page: one geometry per polarity, so no population of devices; download requires an IEEE DataPort account and was not attempted."
+    },
+    {
+      "rank": 7,
+      "name": "GF180MCU fd_pr model regression data (180MCU_SPICE_DATA)",
+      "url": "https://github.com/google/globalfoundries-pdk-libs-gf180mcu_fd_pr/tree/main/models/ngspice/testing/180MCU_SPICE_DATA/MOS",
+      "title": "GF180MCU MOS I-V data used by the ngspice model regression",
+      "process": "GlobalFoundries 180MCU (3.3 V and 6.0 V nMOS/pMOS, native, SAB variants)",
+      "temperatures_K": {
+        "values": [
+          233,
+          298,
+          398
+        ],
+        "source": "stated by source code (regression/mos_iv_vgs/models_regression.py assigns 25, -40, 125 C to thirds of the runs)"
+      },
+      "devices": {
+        "count": "multiple W/L per device type (not counted)",
+        "source": "file listing"
+      },
+      "curve_types": "Id-Vds families and Id-Vgs families per W/L (nmos_3p3_iv, pmos_3p3_iv, nmos_6p0_iv, ...)",
+      "license": "Apache-2.0",
+      "file_format": "xlsx named *.nl_out.xlsx",
+      "approximate_size": "MOS folder 42.4 MB",
+      "usable_for_learned_temperature_law": false,
+      "usable_reason": "Stated by source code, not downloaded: 3 temperatures (233-398 K), none cryogenic, and the '.nl_out' file names indicate these may be foundry model (netlist) outputs rather than silicon measurements."
+    }
+  ],
+  "negative_findings": [
+    {
+      "source": "github.com/ogzamour/CryoPDK_Skywater130nm_ML (HEAD, pushed 2026-10-15)",
+      "checked": "full recursive file tree (1134 files)",
+      "finding": "No measured I-V at any temperature other than what is pulled from the UTA 77 K repository; data folders are NGSpice simulation outputs (nfet_mod/, pfet_mod/), Monte Carlo outputs, comparison PNGs, and outside_data/ (simulation text files and an ngspice.xlsx). montecarlo/roomtempparam.txt is a parameter list, not I-V. No 4 K, 300 K or intermediate measured data."
+    },
+    {
+      "source": "github.com/UTA-Advanced-Detector-Technologies/Skywater-130nm-77K-Cryogenic-Models",
+      "checked": "full tree and commit history (latest 2026-07-09)",
+      "finding": "cryo_data/ contains 77 K data only (22 device folders, 242 CSV). arXiv:2604.21625 states that 300 K and 77 K data are in this repository, but no 300 K files are present; the 300 K files exist only in UTA pyvisa_instrument_control (candidate rank 3)."
+    },
+    {
+      "source": "github.com/ogzamour/CryoSkywater130nm_CorrectedForNgspice",
+      "checked": "file tree",
+      "finding": "NGSpice simulation outputs and Monte Carlo CSVs only; no measurements."
+    },
+    {
+      "source": "github.com/google/skywater-pdk-sky130-raw-data",
+      "checked": "file tree and one MDM header",
+      "finding": "1380 IC-CAP MDM files of sky130 I-V/C-V (Apache-2.0) with no temperature field and no temperature in file names; single (room) temperature."
+    },
+    {
+      "source": "GitHub repository search",
+      "checked": "queries: cryogenic sky130, sky130 cryogenic, cryo-CMOS characterization, cryogenic MOSFET measurement, gf180 cryogenic, SG13G2 cryogenic, cryo PDK, cryogenic compact model, 4K MOSFET, cryogenic transistor IV data, cryo cmos measurement data, skywater cryogenic, cryogenic bsim, cryogenic transistor, cryo cmos, 4K cmos, cryogenic pdk, liquid nitrogen mosfet",
+      "finding": "Only ogzamour/CryoPDK_Skywater130nm_ML and aykutkabaoglu/CryogenicMOSFETModelingBSIM3 contain transistor data; PHARAOH-star/CRYOGENIC_MOSFET is empty; CormacCTB/Cryo-CMOS-MATLAB-Scripts, coustam/cryoCmos-testgen, nlquantumm-source/Cryo-CMOS-ICs contain no measurement data."
+    },
+    {
+      "source": "Zenodo (API search, all types and type=dataset)",
+      "checked": "cryogenic MOSFET, cryo-CMOS, cryogenic transistor characterization, cryogenic CMOS, sky130 cryogenic, temperature dependent MOSFET, MOSFET 4.2 K, cryogenic FDSOI, BSIM cryogenic, SG13G2, gf180mcu, liquid helium MOSFET, subthreshold swing cryogenic",
+      "finding": "No transistor I-V dataset at multiple temperatures. Related records are papers/presentations/posters (e.g. 10.5281/zenodo.5537420 FDSOI cryogenic compact modelling presentation; 10.5281/zenodo.4252770 180 nm CMOS at 100 mK poster) or circuit-level data (10.5281/zenodo.4061970, 6 KB)."
+    },
+    {
+      "source": "4TU.ResearchData (TU Delft) API search",
+      "checked": "cryogenic CMOS, cryo-CMOS, cryogenic MOSFET, cryogenic transistor, cryogenic mismatch, compact model cryogenic, FinFET cryogenic, 22-nm FDSOI, cryogenic 28-nm",
+      "finding": "Only the Kiene et al. 40-nm dataset (rank 1) holds transistor I-V. Other Delft cryo-CMOS records are circuit data: voltage references 300-4.2 K (10.4121/61411994-...), smart temperature sensor 5-296 K (10.4121/66890c3b-...), SAR ADC, embedded SRAM/DRAM benchmark, integrator DAC, color-center SoC."
+    },
+    {
+      "source": "figshare API search",
+      "checked": "cryogenic MOSFET, cryo-CMOS, cryogenic CMOS transistor characterization",
+      "finding": "SiC/Ge power-device papers and theses; no CMOS multi-temperature I-V dataset."
+    },
+    {
+      "source": "Dryad API search",
+      "checked": "cryogenic MOSFET, cryogenic transistor CMOS",
+      "finding": "0 results."
+    },
+    {
+      "source": "Juelich DATA (Dataverse API)",
+      "checked": "cryogenic CMOS, cryogenic MOSFET, cryo-CMOS",
+      "finding": "No relevant records (one atmospheric dataset)."
+    },
+    {
+      "source": "Mendeley Data",
+      "checked": "web search",
+      "finding": "No cryogenic MOSFET I-V dataset found."
+    },
+    {
+      "source": "ETH Research Collection",
+      "checked": "API query (response not parseable) and web search",
+      "finding": "No cryogenic MOSFET dataset found."
+    },
+    {
+      "source": "EPFL (Beckers, Enz; 28-nm bulk and FDSOI to 4.2 K / 1.4 K)",
+      "checked": "web search, Infoscience records",
+      "finding": "Papers only (arXiv:1806.01142, 1809.09013); no dataset located."
+    },
+    {
+      "source": "NPL / Quantum Motion (Eastoe et al., arXiv:2404.11451, IEEE TIM 2024)",
+      "checked": "arXiv abstract page",
+      "finding": "4.2 K multiplexed characterization of thousands of devices; no data availability statement or dataset link."
+    },
+    {
+      "source": "SemiQon / U. Jyvaskyla (arXiv:2410.01077, millikelvin FDSOI MOSFETs)",
+      "checked": "arXiv HTML",
+      "finding": "I-V at 280 K, 77 K, 4.2 K, 0.42 K for a few devices; no data availability statement."
+    },
+    {
+      "source": "SMIC 0.18 um cryogenic papers (arXiv:1811.09987, 1811.11497, 2104.03094, 2104.12165)",
+      "checked": "web search",
+      "finding": "Papers only; no dataset located."
+    },
+    {
+      "source": "UK CryoCMOS consortium / SemiWise / Incize (GF 22FDX at 4 K and 77 K)",
+      "checked": "web search",
+      "finding": "Commercial PDK/models; no public measurement data."
+    },
+    {
+      "source": "Fermilab / EPFL / Synopsys 22FDX 4 K work (HEPIC 2024 slides, 2026 Fermilab-UTA talk)",
+      "checked": "web search",
+      "finding": "Slides only; an open characterization flow is described as planned; no data."
+    },
+    {
+      "source": "Akturk, Tripathi, Saligane, BCICTS 2023 (sky130 at 4 K)",
+      "checked": "web search",
+      "finding": "Paper not openly accessible; related data are expected in NIST mds2-2997 (rank 4), which could not be downloaded."
+    },
+    {
+      "source": "MIT / Efabless / Open MPW sky130 cryogenic characterization",
+      "checked": "web and GitHub search",
+      "finding": "No public multi-temperature measurement data found."
+    },
+    {
+      "source": "Intel, imec, Chalmers, KIT, University of Sydney cryo-CMOS work",
+      "checked": "web search terms combined with cryogenic MOSFET dataset / data availability",
+      "finding": "No public multi-temperature transistor I-V datasets found."
+    }
+  ],
+  "downloads": [
+    {
+      "source": "UTA pyvisa_instrument_control",
+      "url": "https://codeload.github.com/UTA-Advanced-Detector-Technologies/pyvisa_instrument_control/tar.gz/dba8484d93e08fb6f3ebb9fe4cdc713518e283f9",
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/uta_pyvisa_instrument_control",
+      "bytes": 18611293,
+      "contents": "repo_<sha>.tar.gz (18,611,293 bytes) and extracted/ with Data/ (1,782 files) and README.md only",
+      "verified": "temperature folders 77K, 100K, 160K, 300K, roomtemp, cold, coldish; 132 device folders; Id-Vg/Id-Vd sweeps 0 to +/-1.85 V in 0.01 V steps (186 points); 77 K files byte-identical to the cryo-ml 77 K data; 160 K data mostly inconsistent (see candidate rank 3)"
+    },
+    {
+      "source": "Delft Kiene 40-nm LFN dataset (DC subset only)",
+      "url": "https://data.4tu.nl/file/c41c26f7-586f-48ca-8abe-9127b2d97c60/1847afd3-e31f-4c88-80f8-4dbf5a2a7d1d",
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/delft_kiene_40nm_lfn",
+      "bytes": 21700000,
+      "bytes_note": "approximate network bytes: zip central-directory reads (about 3.9 MB over 3 passes) plus one 13.3 MB byte range for results/dc and the analysis notebook/pptx; 16,298,069 bytes on disk after extraction; README.txt fetched separately (810 bytes)",
+      "contents": "1,717 .npy files under repository_for_upload_slim/measurement_automation/main/results/dc/, measurement_evaluation/analyze_dc.ipynb, 'Explanation about campaigns repo.pptx', README.txt",
+      "verified": "809 devices, 38 type/flavor/W/L combinations; measured stage temperatures 4.1-295 K; 591 devices at 4.2 K and 295 K; 3 devices with 7-19 temperatures; Id-Vg and Id-Vd families with 111 points per curve"
+    },
+    {
+      "source": "IHP SG13G2 Open PDK MOS measurements (multi-temperature DC subset)",
+      "url": "https://raw.githubusercontent.com/IHP-GmbH/IHP-Open-PDK/5e6d592e4002946a4616f798c357f0f3c06cf3b6/ihp-sg13g2/libs.doc/meas/MOS/",
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/ihp_sg13g2_open_pdk_meas",
+      "bytes": 19556713,
+      "contents": "560 .mdm files (dc_idvg, dc_idvd, dc_idvd_vbmin, dc_idvd_vth, dc_idvd_vth_vbmin at 233/300/343/398 K for 28 DUTs), README_MOS_meas.md, LICENSE, COMMIT.txt",
+      "verified": "TEMP header -40/27/70/125 C matches file names for all 28 DUTs; geometries and sweep ranges as listed in candidate rank 2; Id at Vg max decreases and threshold decreases with temperature for nMOS W=L=10 um, as expected"
+    },
+    {
+      "source": "Kabaoglu CryogenicMOSFETModelingBSIM3 (meas_results_manual only)",
+      "url": "https://raw.githubusercontent.com/aykutkabaoglu/CryogenicMOSFETModelingBSIM3/8c6c60f23d5c42ddf8a7dd0dfa3d6e6da65e7536/meas_results_manual/",
+      "local_path": "/Users/anrunw/Documents/cryo-ml/data/external/kabaoglu_cryo_bsim3",
+      "bytes": 443994,
+      "contents": "150 CSV files and COMMIT.txt",
+      "verified": "Id-Vg 0 to +/-1.8 V (181 points); T5 nMOS at 128/113/103/77 K and T12 pMOS at 128/103/77 K by folder label"
+    }
+  ],
+  "total_downloaded_bytes": 60312000,
+  "summary": "The TU Delft 40-nm CMOS dataset (4TU, CC0, doi:10.4121/c41c26f7-586f-48ca-8abe-9127b2d97c60.v1) is the only confirmed cryogenic source that meets the criterion: 3 devices (W=L=4 um, 2 nMOS on 2 dies and 1 pMOS) have 7-19 measured temperatures from 4.1 K to 295 K, and 69 devices across 10 geometries have wide-sweep 4.2 K and 295 K Id-Vg/Id-Vd families (601 devices have some data at both temperatures). The IHP SG13G2 Open PDK measurements (Apache-2.0) give 28 devices (8 LV nMOS, 8 LV pMOS, 6 HV nMOS, 6 HV pMOS, one W/L each) at 4 temperatures, but only from 233 K to 398 K. No sky130 source is usable now: the UTA campaign behind the 77 K data adds 160 K and 300 K (and one partial 100 K set) with at most 2 devices holding consistent 77/160/300 K sets, and the NIST sky130 cryogenic dataset (mds2-2997) could not be downloaded because the NIST file server timed out."
+}

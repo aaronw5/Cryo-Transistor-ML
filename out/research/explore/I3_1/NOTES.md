@@ -73,3 +73,16 @@ for 72 devices. Estimates with 8 workers and no other heavy job:
 | I3_1_full_H | about 18 min |
 | I3_1_decide | under 10 s |
 | total | about 63 min (range 55-75 min) |
+
+## Real-data search (task A)
+
+Catalog: `real_data_catalog.json` (7 candidates, 21 negative findings; 60.3 MB
+downloaded under `data/external/`, not committed). The only cryogenic source
+that meets the criterion (at least 4 temperatures per device, several devices)
+is the TU Delft 40-nm dataset (4TU, CC0): 3 devices of one geometry
+(W = L = 4 um) with 7-19 temperatures from 4.1 K to 295 K; 69 devices in 10
+geometries have wide sweeps at 4.2 K and 295 K only. IHP SG13G2 Open PDK
+data: 28 devices at 233/300/343/398 K (not cryogenic). No sky130 source
+is usable now. The UTA repository has 77/160/300 K for at most 2 consistent
+devices. NIST mds2-2997 (sky130 cryogenic) could not be downloaded because
+the server timed out, so it is not verified.
