@@ -1109,3 +1109,39 @@ d / e: sky130 nmos_L0p15_W1p6 0.669 / 0.663 / 0.660 / 0.551 / 0.203; IHP hv_nmos
 0.030. 0 simulator timeouts. Simulation cost 0.022 s (sky130, IHP) and 0.014 s (TU Delft) per K-curve call.
 Queue: I7_2_sky130, I7_2_ihp300, I7_2_tud4, I7_2_tud295, I7_2_decide (8 workers), after the queued I7-1 jobs.
 Estimated wall time of the four runs 1.2-2 h (about 3000 simulations and two MLP fits per split); no draw reduction.
+
+## I7-1 outcome, report batch and site (2026-10-20 17:45): S1_lodo predicts the sign of the held-out gain on 20 new simulated datasets, supported
+
+Step 3 (prospective; queue jobs I7_1_run_gf180_r0 1847 s, I7_1_run_ihp_r0 1855 s, I7_1_run_gf180_r1 1743 s,
+I7_1_run_ihp_r1 1936 s, I7_1_decide; `out/research/explore/I7_1/decision.json`): 20 datasets (GF180 / IHP x 2
+replicates x lambda 0, 0.25, 0.5, 0.75, 1), 16 targets and 16 leave-one-geometry-out folds each, 0 targets left out,
+0 datasets excluded.
+P1: Spearman(S1_lodo_D, y_D) = -0.970 (threshold -0.50), holds. P2: frozen-rule sign correct 16/20 (required 15),
+holds. Verdict: supported. Permutation p 1e-4 (one-sided, 10000 permutations); per PDK GF180 -0.988, IHP -0.976;
+S1_pooled -0.974, S2 -0.979; pooled fold-level Spearman over 320 folds S1_lodo -0.751.
+The 4 sign errors are all datasets the rule predicted 'no gain' that had a small gain: GF180 r0 lambda 0 (S1_lodo
+-0.103, y -0.045), GF180 r1 lambda 0.25 (+0.006, -0.039), IHP r1 lambda 0 (-0.050, -0.131), IHP r1 lambda 0.25
+(-0.001, -0.037).
+Magnitude: prospective OLS y = -0.0102 - 1.419 S1_lodo (R^2 0.864) vs frozen slope -0.485; rule MAE 0.357. The
+frozen line predicts the sign of y_D, not its magnitude.
+Manipulation check: Spearman(lambda, S1_lodo_D) 0.981, Spearman(lambda, y_D) -0.956.
+Fold level: within each of the 20 new datasets Spearman(S1_lodo_f, y_f) is positive (0.28 to 0.96), the opposite
+sign of the dataset-level relation, as in step 2 (positive in 9 of 11 stored datasets).
+Post hoc, not pre-registered: within each lambda level (4 datasets) Spearman(S1_lodo, y) is -0.80, -1.00, -0.80,
+-0.80, +0.40 for lambda 0, 0.25, 0.5, 0.75, 1 (mean -0.60). After regressing S1_lodo and y on lambda as a
+categorical variable the residual Pearson r is -0.590 (Spearman -0.696, slope -0.659, df 14; permutation of y
+within lambda levels, 10000, p 0.0037); after lambda x PDK (10 cells of 2 replicates) r -0.751 (Spearman -0.749,
+p 0.0020).
+Caveat: the synthetic error (prereg step3_prospective.error_functions) is of exactly the shared-plus-device form that
+S1_lodo measures, on the M_bias inputs, so step 3 checks the statistic under its own model. The evidence outside
+that model is the 11 retrospective datasets (7 measured, 4 simulated tiers), whose outcomes were known when S1_lodo
+was defined and the rule was fitted.
+S3: pending (I7_1_s3_new running; I7_1_retro_s3, I7_1_decide_s3, I7_1_figs_s3 queued). S3 does not enter P1, P2 or
+the rule.
+Report batch `out/research/report/2026-10-20_i7_1/` (`scripts/research/plot_explore_i7_1.py`, stored files only;
+recomputes every dataset aggregate, P1, P2, the verdict, secondary statistics and the frozen rule from the per-fold
+values and checks them against the stored values): decision table, S1_lodo scatter (stored and new datasets, frozen
+rule, zero crossing, prospective OLS, errors circled), new-dataset table, lambda manipulation panel, fold-level
+Spearman bars, post-hoc within-lambda table and residual scatter, step-2 table.
+Site: new claim `i7-1` (status in progress; headline "supported (simulated, prospective); S3 pending") in the
+Exploration tab; status block gains the I7-1 item and the I7-1 decision table. Site rebuilt, not published.
