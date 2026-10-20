@@ -1073,3 +1073,39 @@ I7_1_run_gf180_r1, I7_1_run_ihp_r1, I7_1_decide, I7_1_figs, I7_1_s3_retro, I7_1_
 I7_1_decide_s3, I7_1_figs_s3. Estimated wall time: run jobs 25-30 min each (about 1 h 50 min), S3 retro about
 35 min, S3 new about 50 min; total about 3 h 15 min. The decision (I7_1_decide) is available after the four run
 jobs; the S3 jobs add secondary values only.
+
+## I7-2 pre-registration and pipeline (2026-10-20 15:30): hierarchical correction, few-shot adaptation on K curves
+
+Question: can a low-dimensional per-device adjustment of the shared bias-only correction, fitted with the card on a
+few curves of the held-out device, lower the error on that device's other curves? (In I3-2 / I5-1 / I6-1 the
+in-sample per-device correction B5 was about 2x lower than every shared arm.)
+Pre-registration `out/research/explore/I7_2/prereg.json` (commit be7d69e, before any I7-2 code was run on data).
+Form: g_d = g_shared + phi . delta_d, phi = (1, a, b, a^2, ab, b^2), a = 2|Vgs|/VDD - 1, b = 2|Vds|/VDD - 1
+(6 coefficients); g_shared = the stored fold M_bias corrections of I3-2 (sky130), I5-1 (IHP 300 K), I6-1 (TU Delft
+4 K, 295 K), not retrained. Prior per fold: delta_j of each training device fitted on its starting record (card
+fixed), N(m, S), S = 0.5 Sigma_hat + 0.5 diag + 1e-6 I. MAP on the K curves: J = mean curve RRMS + mu |z|^2,
+z = whitened delta; mu chosen per fold and K on the training devices (card fixed, leave-one-out prior) from
+{0, 1e-5 .. 1, inf}.
+Split rule: included Id-Vg by |Vd|, Id-Vd by |Vg|; K2a (top Id-Vg, top Id-Vd), K2b (lowest Id-Vg, middle Id-Vd),
+K4a (K2a + K2b), K4b (Id-Vg and Id-Vd at the 1/3 and 2/3 positions); a draw needs distinct picks and >= 2 held-out
+curves. Undefined draws: 6 (IHP K4). Splits: sky130 48, IHP 66, TU Delft 180 per temperature.
+Per split: start = lower-K-curve-RRMS of (box-center card, polarity median of the training starting cards in local
+coordinates); base fit on the K curves (polish 1200 / irls 2, no correction); sky130 uses the round-1 43-parameter
+box (center = released card), because the round-3 box center is a card fitted to all curves. Arms from the base card,
+polish 400 / irls 2 on the K curves: a_C0, b_shared, c_hier (primary, joint card + z, prior residual, nfev matched
+to b), c_ml (mu = 0), d_scratch (B5 recipe on the K curves), e_crossinterp (E4 cross-curve residual on a's card).
+Score: strict paper RRMS on the held-out curves only.
+Rule: C1 CI upper of GMR(c, b) < 1 on >= 3 of 4 datasets; C2 CI upper of GMR(c, a) < 1 on all 4; C3 GMR(c, d) < 1 on
+all 4 and CI upper < 1 on >= 3; C4 c failures <= 10% and >= 8 paired devices per dataset. Outcomes in order:
+invalid (C4 fails on >= 2), supported_continue (C1-C4), delta_no_gain_stop (GMR(c, b) >= 0.98 on >= 2),
+sharing_no_gain (C1, C2, not C3), inconclusive.
+Dry check of the mu selection (fold 1 of sky130, IHP, TU 295 K, K = 2): selected mu inf, 0.003, 1.0; the
+card-fixed criterion decreases with mu on all three, so the prior mean is preferred over a K-curve fit of delta
+when the training card is fitted to all curves.
+Smoke (queue job I7_2_smoke, 65 s; one device per dataset, K2a only, base nfev 100, arm nfev 60, d 1 seed 200
+steps; not used for any conclusion): runs end to end for all four datasets and decide. Held-out RRMS a / b / c /
+d / e: sky130 nmos_L0p15_W1p6 0.669 / 0.663 / 0.660 / 0.551 / 0.203; IHP hv_nmos_W0p3_L0p5 0.164 / 0.166 / 0.165 /
+0.105 / 0.156; TU 4 K d152 0.548 / 0.611 / 0.864 / 1.021 / 0.385; TU 295 K d152 0.042 / 0.148 / 0.030 / 0.027 /
+0.030. 0 simulator timeouts. Simulation cost 0.022 s (sky130, IHP) and 0.014 s (TU Delft) per K-curve call.
+Queue: I7_2_sky130, I7_2_ihp300, I7_2_tud4, I7_2_tud295, I7_2_decide (8 workers), after the queued I7-1 jobs.
+Estimated wall time of the four runs 1.2-2 h (about 3000 simulations and two MLP fits per split); no draw reduction.
