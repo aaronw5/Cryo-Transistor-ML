@@ -738,3 +738,45 @@ M_bias RRMS <= 9.7e-6. F2: REAL_DEV seed sets {5-9, 10-14, 15-19}, widths 8 and 
 round-1 43-parameter cards; GF180/IHP tier b sets 0-2 (tier c has only sets 0-2). Queue jobs I3_2_F1,
 I3_2_F2_real, I3_2_F2_gf180_b, I3_2_F2_ihp_b, I3_2_F2_summary (about 65-80 min after the I3_1 jobs).
 REAL_TEST not loaded.
+
+## Iteration 3, I3-1 (2026-10-20 02:58): hybrid temperature law, rule output KILL
+
+Pre-registration `out/research/explore/I3_1/prereg.json` (commit c877413) and `prereg_addendum.json`; code commit
+c59ce14. Queue jobs `I3_1_full_M` (01:55-02:22, 1629 s), `I3_1_full_W` (02:22-02:40), `I3_1_full_H` (02:40-02:58),
+`I3_1_decide` (02:58). Simulated devices only, 36 test devices per tier, setting O4, per-device held-out RRMS =
+mean over 110/190/260 K, GMR with eps 0.01 and 4000-resample bootstrap CI.
+hyb = per-device par3 law + learned population residual. GMR(hyb, par3): M 0.741 [0.610, 0.901] (27/36),
+W 1.739 [1.432, 2.132] (6/36), H 1.224 [1.062, 1.422] (13/36). GMR(hyb, lrn_mean): M 1.119 [0.951, 1.312],
+H 1.306. GMR(hyb, pt_interp): M 0.885, H 1.763. GMR(hyb, hyb_mean): M 0.791, W 0.750, H 0.906.
+Held-out all-device mean, hyb / par3 / pt_interp / lrn / lrn_mean: M 0.3086 / 0.4197 / 0.3689 / 0.2778 / 0.2872;
+W 0.0935 / 0.0666 / 0.1019 / 0.1139 / 0.1507; H 0.2197 / 0.1838 / 0.1654 / 0.1572 / 0.2178.
+Conditions: M1 met, M2 not met, M3 met, W1 not met, H1 not met, H2 not met, F met; KILL conditions W >= 1.50 and
+H >= 1.00 hit. Rule output KILL (`out/research/explore/I3_1/runs/full/decision.json`). u0 check valid on all tiers.
+hyb anchor-temperature mean RRMS 0.213 / 0.089 / 0.178 (M / W / H) vs par3 0.171 / 0.038 / 0.081.
+lrn (E3b method, unchanged; tier M and W values identical to E3b): GMR vs par3 M 0.650, W 2.603, H 0.752
+[0.640, 0.886]; vs lrn_mean H 0.802 [0.697, 0.919]; vs pt_interp H 1.083 [1.010, 1.164] (15/36 lower).
+E3-rule output for lrn: M CONTINUE, W INCONCLUSIVE, H INCONCLUSIVE (R_O4 0.145 < 0.25; reduction vs pt_interp
+0.049 < 0.10). Scaling arm (tier M, 3 / 6 / 12 draws per geometry): lrn 0.2644 / 0.2778 / 0.2468, hyb
+0.3333 / 0.3086 / 0.3102. The e3b site claim carries a caveat with the tier H and W lrn values.
+
+## I3-2 follow-up F1/F2 (2026-10-20 03:49): results
+
+Queue jobs `I3_2_F1` (02:58-02:59), `I3_2_F2_real` (02:59-03:15), `I3_2_F2_gf180_b` (03:15-03:31),
+`I3_2_F2_ihp_b` (03:31-03:49), `I3_2_F2_summary` (03:49). The I3-2 rule output (CONTINUE) is unchanged.
+F1.0 pass: 13 models compile; g from the emitted lines matches Python within 5.3e-11.
+F1.2: SPICE-native (ngspice-46 + OSDI) vs Python correction on ngspice-46, per-device |dRRMS| <= 1.4e-5 on 12
+devices (<= 1.4e-9 at reltol 1e-9); max relative current difference 2.4e-3 > 1e-3 on 3 pMOS devices, so F1.2 is
+recorded as fail; 0 convergence messages.
+F1.1 and F1.3 fail: ngspice-46 and ngspice-41 differ for the uncorrected cards on pmos_L0p35_W0p55 (published card
+RRMS 2.6351 vs 0.7270) and pmos_L8_W5 (0.8670 vs 0.3146); on these two devices ngspice-46 returns identical
+currents for the published, starting, C0_refit and M_bias refit cards. The other 10 devices agree exactly.
+SPICE-native all-device 0.3205 vs stored M_bias 0.0806. F1b (OSDI-enabled ngspice-41) is in progress.
+F2 REAL_DEV, all-device (combined), GMR vs C0_refit: seeds 5-9 0.0805 (0.0748) 0.771; seeds 10-14 0.0813 (0.0754)
+0.779; seeds 15-19 0.0804 (0.0748) 0.771; width 8 0.0805 (0.0748) 0.759; width 32 0.0814 (0.0755) 0.777; 3-16-1
+0.0804 (0.0747) 0.770; round-1 training cards 0.0828 (0.0769) 0.832 [0.710, 0.996]. All CI upper bounds < 1,
+0 failed; seed, capacity and training-card checks pass. GMR vs I3-2 M_bias 0.988-1.083, every CI includes 1.
+F2(d) tier b, 48 targets: GMR(M_bias, C0_refit) GF180 0.996 [0.986, 1.006] (26/48), IHP 0.985 [0.975, 0.995]
+(28/48); R4 rule not met on either PDK: F2(d) fails. All-target means M_bias / C0_refit: GF180 0.0133 / 0.0133,
+IHP 0.0138 / 0.0141; seven-parameter refit floors (3 devices, set 0): GF180 0.0136, IHP 0.0146.
+Report batch: `out/research/report/2026-10-20_i3_1_i3_2f/` (`scripts/research/plot_explore_i3_1_i3_2f.py`); site
+claims `i3-1` (refuted, new), `e3b` (caveat added), `i3-2` (follow-up section, status unchanged).

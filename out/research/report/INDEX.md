@@ -2,6 +2,17 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-20 · i3_1_i3_2f
+
+Folder: [2026-10-20_i3_1_i3_2f/](2026-10-20_i3_1_i3_2f/) · [tables.md](2026-10-20_i3_1_i3_2f/tables.md) · [README.md](2026-10-20_i3_1_i3_2f/README.md)
+
+- I3-1 (simulated, 36 test devices per tier, O4): GMR(hyb, par3) M 0.741 [0.610, 0.901], W 1.739 [1.432, 2.132], H 1.224 [1.062, 1.422]; GMR(hyb, lrn_mean) M 1.119 [0.951, 1.312]. Conditions met: M1, M3, F; not met: M2, W1, H1, H2; KILL conditions W >= 1.50 and H >= 1.00 hit. Rule output KILL.
+- I3-1, lrn (E3b method): GMR vs par3 M 0.650 [0.532, 0.798], W 2.603 [1.800, 3.783], H 0.752 [0.640, 0.886]; vs pt_interp H 1.083 [1.010, 1.164]; held-out mean H lrn 0.1572, par3 0.1838, pt_interp 0.1654; E3 rule output on tier H INCONCLUSIVE.
+- I3-2 F1: SPICE-native (ngspice-46 + OSDI) vs Python correction on ngspice-46, max per-device |dRRMS| 1.4e-05 (tight tolerance 1.4e-09); F1.1 and F1.3 fail because ngspice-46 and ngspice-41 differ on pmos_L0p35_W0p55 and pmos_L8_W5 for the uncorrected cards; F1.2 fails on the current criterion (max relative difference 2.4e-03 > 1e-3). F1b (OSDI-enabled ngspice-41) in progress.
+- I3-2 F2 REAL_DEV: all seven variants pass (all-device 0.0804-0.0828; seed-set range 0.0804-0.0813; I3-2 M_bias 0.0806, C0_refit 0.1072). Tier b: GMR(M_bias, C0_refit) GF180 0.996 [0.986, 1.006], IHP 0.985 [0.975, 0.995]; R4 rule not met on either PDK (F2(d) fail); tier b means 0.0133 (GF180) and 0.0138 (IHP) vs seven-parameter floors 0.0136 and 0.0146.
+
+Figures and tables: [01_table_i3_1_decision.png](2026-10-20_i3_1_i3_2f/01_table_i3_1_decision.png) · [02_i3_1_gmr_forest_tier_M.png](2026-10-20_i3_1_i3_2f/02_i3_1_gmr_forest_tier_M.png) · [03_i3_1_gmr_forest_tier_W.png](2026-10-20_i3_1_i3_2f/03_i3_1_gmr_forest_tier_W.png) · [04_i3_1_gmr_forest_tier_H.png](2026-10-20_i3_1_i3_2f/04_i3_1_gmr_forest_tier_H.png) · [05_table_i3_1_gmr.png](2026-10-20_i3_1_i3_2f/05_table_i3_1_gmr.png) · [06_table_i3_1_per_temperature.png](2026-10-20_i3_1_i3_2f/06_table_i3_1_per_temperature.png) · [07_i3_1_per_temperature.png](2026-10-20_i3_1_i3_2f/07_i3_1_per_temperature.png) · [08_i3_1_scaling.png](2026-10-20_i3_1_i3_2f/08_i3_1_scaling.png) · [09_table_i3_1_lrn_by_tier.png](2026-10-20_i3_1_i3_2f/09_table_i3_1_lrn_by_tier.png) · [10_table_i3_1_checks.png](2026-10-20_i3_1_i3_2f/10_table_i3_1_checks.png) · [11_table_i3_2f_f1_checks.png](2026-10-20_i3_1_i3_2f/11_table_i3_2f_f1_checks.png) · [12_table_i3_2f_f1_per_device.png](2026-10-20_i3_1_i3_2f/12_table_i3_2f_f1_per_device.png) · [13_i3_2f_f1_iv_ng41_vs_ng46.png](2026-10-20_i3_1_i3_2f/13_i3_2f_f1_iv_ng41_vs_ng46.png) · [14_table_i3_2f_f2_real.png](2026-10-20_i3_1_i3_2f/14_table_i3_2f_f2_real.png) · [15_table_i3_2f_f2_tier_b.png](2026-10-20_i3_1_i3_2f/15_table_i3_2f_f2_tier_b.png) · [16_i3_2f_f2_forest.png](2026-10-20_i3_1_i3_2f/16_i3_2f_f2_forest.png)
+
 ## 2026-10-20 · i3_2_bias
 
 Folder: [2026-10-20_i3_2_bias/](2026-10-20_i3_2_bias/) · [tables.md](2026-10-20_i3_2_bias/tables.md) · [README.md](2026-10-20_i3_2_bias/README.md)
