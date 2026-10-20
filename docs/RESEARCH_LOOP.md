@@ -912,7 +912,7 @@ Queue: `I5_1_start`, `I5_1_screen`, `I5_1_lodo_300`, `I5_1_lodo_233`, `I5_1_lodo
 
 Pre-registered rule (out/research/explore/I5_1/prereg.json), 300 K, 18 DEV DUTs, LODO. R1 fails: GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18 lower. R2 and R3 hold. All-device means: C0_refit 0.0191, M_bias 0.0203, T1_inloop 0.0215, B1 0.0160, B2 0.0176, B3_d3 0.0214, B5 (in-sample) 0.0054. Baseline verdict: matched by B1, B2. Secondary temperatures (233, 343, 398 K) also not replicated. The starting PSP103 fits here are about 5x lower than sky130 77 K C0_refit (0.107). Report batch and site update pending.
 
-## I5-1 report batch and site (2026-10-20 10:50)
+## I5-1 report batch and site (2026-10-20 10:42)
 
 Report batch `out/research/report/2026-10-20_i5_1/` (`scripts/research/plot_explore_i5_1.py`, stored files only;
 recomputes every aggregate, paired ratio, per-class ratio, X300 ratio and the R1-R3 / baseline rule outputs from
