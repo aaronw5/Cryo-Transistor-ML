@@ -2,6 +2,17 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-20 · i5_1
+
+Folder: [2026-10-20_i5_1/](2026-10-20_i5_1/) · [tables.md](2026-10-20_i5_1/tables.md) · [README.md](2026-10-20_i5_1/README.md)
+
+- I5-1 rule output (300 K, 18 IHP SG13G2 DEV DUTs): not replicated (R1_ci_high_lt_1); baseline rule output: matched by baseline(s) B1, B2. GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18. All-device: C0_refit 0.0191, M_bias 0.0203, T1_inloop 0.0215, B1 0.0160, B2 0.0176, B3_d3 0.0214, B5 0.0054.
+- Secondary temperatures, GMR(M_bias, C0_refit): 233 K 1.106 [0.908, 1.425]; 343 K 1.181 [0.983, 1.502]; 398 K 1.272 [1.030, 1.627]; not replicated at each.
+- sky130 77 K REAL_DEV vs IHP 300 K: C0_refit 0.1072 vs 0.0191; GMR(M_bias, C0_refit) 0.769 vs 1.214; fraction of the C0_refit -> B5 gap closed (means / log GMR) +0.403 / +0.298 vs -0.090 / -0.185.
+- X300 (300 K correction at T), GMR(X300, C0_refit): 233 K 1.116 [0.934, 1.382]; 343 K 1.197 [0.980, 1.549]; 398 K 1.341 [1.064, 1.770].
+
+Figures and tables: [01_table_i5_1_dataset.png](2026-10-20_i5_1/01_table_i5_1_dataset.png) · [02_table_i5_1_stock_start.png](2026-10-20_i5_1/02_table_i5_1_stock_start.png) · [03_table_i5_1_decision.png](2026-10-20_i5_1/03_table_i5_1_decision.png) · [04_table_i5_1_results.png](2026-10-20_i5_1/04_table_i5_1_results.png) · [05_table_i5_1_class.png](2026-10-20_i5_1/05_table_i5_1_class.png) · [06_i5_1_gmr_forest.png](2026-10-20_i5_1/06_i5_1_gmr_forest.png) · [07_i5_1_per_device_300K.png](2026-10-20_i5_1/07_i5_1_per_device_300K.png) · [08_i5_1_ratio_by_temperature.png](2026-10-20_i5_1/08_i5_1_ratio_by_temperature.png) · [09_table_i5_1_cross_x300.png](2026-10-20_i5_1/09_table_i5_1_cross_x300.png) · [10_table_i5_1_sky130_vs_ihp.png](2026-10-20_i5_1/10_table_i5_1_sky130_vs_ihp.png) · [11_i5_1_iv_lv_nmos_W0p3_L0p13_300K.png](2026-10-20_i5_1/11_i5_1_iv_lv_nmos_W0p3_L0p13_300K.png) · [12_i5_1_iv_lv_pmos_W0p15_L0p18_300K.png](2026-10-20_i5_1/12_i5_1_iv_lv_pmos_W0p15_L0p18_300K.png) · [13_i5_1_iv_hv_nmos_W10_L0p5_300K.png](2026-10-20_i5_1/13_i5_1_iv_hv_nmos_W10_L0p5_300K.png) · [14_i5_1_iv_hv_pmos_W10_L0p35_300K.png](2026-10-20_i5_1/14_i5_1_iv_hv_pmos_W10_L0p35_300K.png)
+
 ## 2026-10-20 · i4
 
 Folder: [2026-10-20_i4/](2026-10-20_i4/) · [tables.md](2026-10-20_i4/tables.md) · [README.md](2026-10-20_i4/README.md)

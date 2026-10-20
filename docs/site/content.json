@@ -308,10 +308,18 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 4 (2026-10-20): I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 5 (2026-10-20): I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
+     },
+     {
+      "text": "I5-1 IHP SG13G2 measured, 18 DEV DUTs, 300 K, all-device: C0_refit 0.0191, M_bias 0.0203, T1_inloop 0.0215, B1 0.0160, B2 0.0176, B3_d3 0.0214, B5 (in-sample) 0.0054; GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18 (R1 fails). Rule output: not replicated; matched by B1, B2. 233/343/398 K: not replicated. sky130 77 K C0_refit 0.1072 vs IHP 300 K 0.0191.",
+      "source": [
+       "out/research/explore/I5_1/decision.json",
+       "out/research/explore/I5_1/lodo_300K/results.json"
+      ],
+      "claim": "i5-1"
      },
      {
       "text": "I4-1 baselines, REAL_DEV all-device: M_bias 0.0806 vs B1 0.1069, B2 0.1063, B3_d2 0.1034, B3_d3 0.0956, B4 0.1317 (C0_refit 0.1072, B5 in-sample 0.0410); GMR(M_bias, X) CI upper < 1 for every X. Simulated condition not met for any X (GF180/IHP B2 0.0272/0.0381, M_bias 0.0399/0.0871). Rule output: supported against baselines (development set).",
@@ -4609,7 +4617,8 @@
     "The held-out card refit uses the held-out device's measured curves (card extraction); only g is held out. C0_refit uses the same refit with g = 0.",
     "Verilog-A: compiled with OpenVAF 23.5.0 and simulated in an OSDI-enabled ngspice-41 build that is bit-identical to the canonical build on the published card (F1c); SPICE-native all-device 0.080555 vs stored 0.080550. F1.2 fails on the pre-registered relative current criterion at small currents (max 2.45e-3). The stored export line `V(sense) <+ 0.0` passes no current after compilation; the corrected exporter emits `V(sense) <+ RS * I(sense)`, RS = 0. abs() folds reverse-mode bias onto forward mode.",
     "Follow-up F2(d): on simulated tier b M_bias does not reach the R4 ratio 0.90 on GF180 or IHP; tier b C0_refit means (0.0133, 0.0141) are close to the seven-parameter refit floors (0.0136, 0.0146).",
-    "I4-1 (claim i4-1): M_bias beats the five pre-registered baselines on REAL_DEV (development set); on simulated tier c, B2 and B1 have lower means than M_bias."
+    "I4-1 (claim i4-1): M_bias beats the five pre-registered baselines on REAL_DEV (development set); on simulated tier c, B2 and B1 have lower means than M_bias.",
+    "I5-1 (claim [i5-1](#claim-i5-1)): with the recipe unchanged on 18 IHP SG13G2 measured DEV DUTs at 300 K, M_bias is not below C0_refit (GMR 1.214 [1.008, 1.537], 9/18); not replicated, also at 233, 343 and 398 K."
    ],
    "sources": [
     "out/research/explore/I3_2/prereg.json",
@@ -4767,7 +4776,8 @@
     "The rule output rests on the REAL_DEV condition only; on the simulated tiers B2 (both PDKs) and B1 (IHP) have lower all-target means than M_bias, and GMR(M_bias, B3) is 0.985-0.997.",
     "B1 and B2 are local refits from the starting card with a budget matched per IRLS round, not global searches over the wider parameter set.",
     "The B2 heating term is pointwise and multiplicative; the simulated truths use a per-curve temperature rise.",
-    "12 devices; pmos_L0p35_W0p55 has the largest RRMS in every arm."
+    "12 devices; pmos_L0p35_W0p55 has the largest RRMS in every arm.",
+    "I5-1 (claim [i5-1](#claim-i5-1)): on 18 IHP SG13G2 measured DEV DUTs at 300 K, B1 and B2 have lower held-out RRMS than M_bias (GMR(M_bias, B1) 1.567 [1.261, 1.981], GMR(M_bias, B2) 1.284 [1.059, 1.627]); baseline rule output there: matched by B1, B2."
    ],
    "sources": [
     "out/research/explore/I4_1/prereg.json",
@@ -4875,6 +4885,172 @@
     "out/research/explore/I3_2/gf180_c_logo/corrections.json",
     "out/research/explore/I3_2/ihp_c_logo/corrections.json",
     "scripts/research/plot_explore_i4.py"
+   ],
+   "updated": "2026-10-20"
+  },
+  {
+   "id": "i5-1",
+   "tab": "explore",
+   "statement": "I5-1: on 18 IHP SG13G2 measured DEV DUTs (PSP103, NGSpice-46) at 300 K, the I3-2 correction M_bias with the recipe unchanged gives a higher held-out RRMS than the no-correction refit C0_refit (GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18 DUTs lower); the pre-registered rule output is 'not replicated' (R1 fails), and the baseline rule output is 'matched by B1, B2'. 233, 343 and 398 K (secondary) are also not replicated. DEV values are development evidence.",
+   "status": "refuted",
+   "headline": {
+    "value": "not replicated on IHP SG13G2 room-temperature data",
+    "convention": "300 K, 18 IHP SG13G2 measured DEV DUTs, leave-one-DUT-out within class, strict paper RRMS (inclusion frozen from the measured current) after the held-out 12-parameter PSP card refit; R1 needs the device-bootstrap 95% CI upper bound of GMR(M_bias, C0_refit) < 1: 1.214 [1.008, 1.537]"
+   },
+   "numbers": [
+    {
+     "label": "300 K all-device: C0_refit / M_bias / T1_inloop / B1 / B2 / B3_d3 / B5",
+     "value": "0.0191 / 0.0203 / 0.0215 / 0.0160 / 0.0176 / 0.0214 / 0.0054",
+     "convention": "18 DEV DUTs (9 nMOS, 9 pMOS; combined = all-device), 0 failed in every arm; B5 is in-sample",
+     "source": "out/research/explore/I5_1/lodo_300K/results.json"
+    },
+    {
+     "label": "300 K rule: R1 / R2 / R3",
+     "value": "GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18 (fails); M_bias 0.0203 <= T1_inloop + 0.005 = 0.0265 (holds); 0 failed (holds)",
+     "convention": "device bootstrap, 10000 resamples, default_rng(0)",
+     "source": "out/research/explore/I5_1/decision.json"
+    },
+    {
+     "label": "300 K GMR(M_bias, X) [95% CI], DUTs with M_bias < X",
+     "value": "B1 1.567 [1.261, 1.981] 4/18; B2 1.284 [1.059, 1.627] 9/18; B3_d3 0.883 [0.804, 0.961] 12/18",
+     "convention": "X beaten if CI upper < 1: B3_d3 beaten, B1 and B2 not beaten",
+     "source": "out/research/explore/I5_1/decision.json"
+    },
+    {
+     "label": "GMR(M_bias, C0_refit) at 233 / 343 / 398 K",
+     "value": "1.106 [0.908, 1.425] 11/18; 1.181 [0.983, 1.502] 8/18; 1.272 [1.030, 1.627] 11/18",
+     "convention": "secondary, reported, not deciding; R1 fails at each",
+     "source": "out/research/explore/I5_1/decision.json"
+    },
+    {
+     "label": "GMR(B1, C0_refit) / GMR(B2, C0_refit) at 233 / 300 / 343 / 398 K",
+     "value": "0.794 / 0.916; 0.775 / 0.946; 0.695 / 0.889; 0.809 / 0.886",
+     "convention": "B1: base box + 70-73 screened PSP extras; B2: extrinsic series resistance + heating factor",
+     "source": "out/research/report/2026-10-20_i5_1/tables.md"
+    },
+    {
+     "label": "X300 (300 K correction applied at T), GMR(X300, C0_refit) at 233 / 343 / 398 K",
+     "value": "1.116 [0.934, 1.382]; 1.197 [0.980, 1.549]; 1.341 [1.064, 1.770]",
+     "convention": "secondary",
+     "source": "out/research/explore/I5_1/cross/results.json"
+    },
+    {
+     "label": "Stock card -> starting card, DEV all-device, 300 K",
+     "value": "0.1899 -> 0.0218 (C0_refit 0.0191)",
+     "convention": "stock PDK card without fit; starting card = 12-parameter PSP fit from the stock card",
+     "source": "out/research/explore/I5_1/start/summary.json"
+    },
+    {
+     "label": "sky130 77 K REAL_DEV vs IHP 300 K: C0_refit, GMR(M_bias, C0_refit), fraction of the C0_refit -> B5 gap closed (means / log GMR)",
+     "value": "0.1072 vs 0.0191; 0.769 vs 1.214; 0.403 / 0.298 vs -0.090 / -0.185",
+     "convention": "same M_bias recipe and refit settings; different cards (43 BSIM4 vs 12 PSP), simulators (ngspice-41 vs NGSpice-46) and inclusion rules",
+     "source": "out/research/report/2026-10-20_i5_1/tables.md"
+    }
+   ],
+   "what": [
+    "Question: does the I3-2 result (M_bias in the held-out card refit gives lower held-out RRMS than the refit without it, and is not worse than T1 + 0.005) hold on a second, independent set of measured devices from a different process and compact model?",
+    {
+     "type": "list",
+     "items": [
+      "Data: IHP-Open-PDK `ihp-sg13g2/libs.doc/meas/MOS` (commit 5e6d592e, Apache-2.0): 28 DUTs (LV 8 nMOS + 8 pMOS, HV 6 + 6), 233/300/343/398 K; the 11 Vb = 0 curves per DUT and temperature; 946 of 1232 curves included by the measured-current rule. Split DEV 18 / TEST 10 (seed 20261020); TEST not loaded.",
+      "Cards: stock PSP103 PDK card; 12-parameter pdk2 IHP wide set fitted from the stock card (starting card); every held-out arm refits from the starting card (max_nfev 400, irls 2).",
+      "Arms: C0_refit (control), M_bias (I3-2 recipe unchanged; training within class, VDD 1.2 V LV / 3.3 V HV), T1_inloop, B1 (wider PSP set), B2 (extrinsic resistance + heating factor), B3_d3 (polynomial g), B5 (in-sample reference), X300 (300 K correction applied at 233/343/398 K).",
+      "Rule at 300 K: R1 CI upper of GMR(M_bias, C0_refit) < 1; R2 M_bias mean <= T1_inloop mean + 0.005; R3 0 failed -> 'replicated'. Baselines B1, B2, B3_d3 beaten if CI upper of GMR(M_bias, X) < 1."
+     ]
+    }
+   ],
+   "did": [
+    "Pre-registration `out/research/explore/I5_1/prereg.json` (commit 9267a90), committed before any card fit on the IHP data; the stock-card RRMS was seen before the rule was fixed.",
+    "Code, dataset manifest, split, stock-card RRMS, smoke runs: commit c58c087 (`src/cryoml/explore/i5_1_ihp_real.py`, `scripts/research/explore/i5_1_ihp_real.py`).",
+    "Queue jobs I5_1_start (2026-10-20 07:52-07:59), I5_1_screen, I5_1_lodo_300/233/343/398 (07:59-08:30, about 470 s each), I5_1_cross (08:30-08:32), I5_1_decide, I5_1_figs (08:32). Outcome log commit 8010a61.",
+    "Report `scripts/research/plot_explore_i5_1.py` (batch 2026-10-20_i5_1) recomputes every aggregate, paired ratio, per-class ratio, X300 ratio and the rule output from the stored per-DUT values and checks them against the stored values."
+   ],
+   "result": {
+    "text": [
+     "At 300 K M_bias is above C0_refit (0.0203 vs 0.0191) and below it on 9 of 18 DUTs; R1 fails. R2 and R3 hold. Rule output: not replicated. The same holds at 233, 343 and 398 K.",
+     "B1 and B2 are below C0_refit at every temperature (GMR 0.695-0.809 and 0.886-0.946) and below M_bias at 300 K (GMR(M_bias, B1) 1.567, GMR(M_bias, B2) 1.284). Baseline rule output: matched by B1, B2.",
+     "The C0_refit level on IHP 300 K (0.0191) is 5.6 times lower than on sky130 77 K REAL_DEV (0.1072). M_bias closes -0.090 of the C0_refit -> B5 gap on the means (sky130: 0.403).",
+     "I-V figures 11-14 combine the stored stock-card figure (measured points and stock card) with the stored refit figure (measured points, C0_refit card, M_bias refit card x exp(g)); hv_pmos_W10_L0p35 has no stored stock-card figure. B1 and B2 cards are not plotted."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "03_table_i5_1_decision.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "06_i5_1_gmr_forest.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "04_table_i5_1_results.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "05_table_i5_1_class.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "10_table_i5_1_sky130_vs_ihp.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "08_i5_1_ratio_by_temperature.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "07_i5_1_per_device_300K.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "09_table_i5_1_cross_x300.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "01_table_i5_1_dataset.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "02_table_i5_1_stock_start.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "11_i5_1_iv_lv_nmos_W0p3_L0p13_300K.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "12_i5_1_iv_lv_pmos_W0p15_L0p18_300K.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "13_i5_1_iv_hv_nmos_W10_L0p5_300K.png"
+     },
+     {
+      "batch": "2026-10-20_i5_1",
+      "file": "14_i5_1_iv_hv_pmos_W10_L0p35_300K.png"
+     }
+    ]
+   },
+   "caveats": [
+    "DEV results are development evidence; the rule, budgets, box and arms were fixed after the stock-card RRMS was seen and before any fit. TEST (10 DUTs) is not loaded.",
+    "The IHP runs use NGSpice-46 + psp103.osdi (OpenVAF-Reloaded); the sky130 runs use ngspice-41. The IHP RRMS freezes inclusion from the measured current, the sky130 RRMS from the published-card baseline.",
+    "The IHP refit has 12 PSP parameters from a starting card fitted to the same DUT; the sky130 refit has 43 BSIM4 parameters. The C0_refit levels differ by a factor of 5.6.",
+    "Training pools are within class: 9 LV or 7 HV training DUTs per fold (sky130: 11).",
+    "The M_bias I-V curves are NGSpice-46 currents of the refit card multiplied by exp(g) in Python, not SPICE-native simulations of the correction. The stored refit I-V figures do not contain the stock-card curve; it is taken from separate stored figures for 3 of the 4 DUTs."
+   ],
+   "sources": [
+    "out/research/explore/I5_1/prereg.json",
+    "out/research/explore/I5_1/split.json",
+    "out/research/explore/I5_1/data/manifest.json",
+    "out/research/explore/I5_1/stock/stock_rrms.json",
+    "out/research/explore/I5_1/start/summary.json",
+    "out/research/explore/I5_1/lodo_300K/results.json",
+    "out/research/explore/I5_1/cross/results.json",
+    "out/research/explore/I5_1/decision.json",
+    "src/cryoml/explore/i5_1_ihp_real.py",
+    "scripts/research/explore/i5_1_ihp_real.py",
+    "scripts/research/plot_explore_i5_1.py",
+    "commits 9267a90 (pre-registration), c58c087 (code), 8010a61 (outcome)"
    ],
    "updated": "2026-10-20"
   },

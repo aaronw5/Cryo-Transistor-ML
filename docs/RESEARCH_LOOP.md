@@ -911,3 +911,23 @@ Queue: `I5_1_start`, `I5_1_screen`, `I5_1_lodo_300`, `I5_1_lodo_233`, `I5_1_lodo
 ## I5-1 outcome (2026-10-20 08:32): IHP SG13G2 real data, not replicated
 
 Pre-registered rule (out/research/explore/I5_1/prereg.json), 300 K, 18 DEV DUTs, LODO. R1 fails: GMR(M_bias, C0_refit) 1.214 [1.008, 1.537], 9/18 lower. R2 and R3 hold. All-device means: C0_refit 0.0191, M_bias 0.0203, T1_inloop 0.0215, B1 0.0160, B2 0.0176, B3_d3 0.0214, B5 (in-sample) 0.0054. Baseline verdict: matched by B1, B2. Secondary temperatures (233, 343, 398 K) also not replicated. The starting PSP103 fits here are about 5x lower than sky130 77 K C0_refit (0.107). Report batch and site update pending.
+
+## I5-1 report batch and site (2026-10-20 10:50)
+
+Report batch `out/research/report/2026-10-20_i5_1/` (`scripts/research/plot_explore_i5_1.py`, stored files only;
+recomputes every aggregate, paired ratio, per-class ratio, X300 ratio and the R1-R3 / baseline rule outputs from
+the stored per-DUT values and checks them against `lodo_*K/results.json`, `cross/results.json` and
+`decision.json`). Contents: dataset table (28 DUTs, split, included curves per temperature: DEV 146/143/142/140
+of 198 at 233/300/343/398 K), stock vs starting-card RRMS (DEV 300 K 0.1899 -> 0.0218, C0_refit 0.0191),
+decision per temperature, results per temperature for every arm, LV/HV class split, forest plot, per-DUT
+300 K, per-DUT ratio to C0_refit by temperature, X300 table, sky130 77 K vs IHP comparison, four I-V figures.
+LV/HV at 300 K, GMR(M_bias, C0_refit): LV 1.192 [0.938, 1.712] 6/10, HV 1.244 [0.991, 1.643] 3/8; GMR(B1,
+C0_refit) LV 0.821, HV 0.721. sky130 77 K vs IHP 300 K: C0_refit 0.1072 vs 0.0191, GMR(M_bias, C0_refit) 0.769
+vs 1.214, fraction of the C0_refit -> B5 gap closed by M_bias (means / log GMR) 0.403 / 0.298 vs -0.090 /
+-0.185. X300 GMR vs C0_refit: 233 K 1.116, 343 K 1.197, 398 K 1.341.
+I-V figures: the stored `figs/iv_*_300K.png` contain measured points, the C0_refit card and the M_bias refit
+card x exp(g), not the stock-card curve. The batch figures 11-13 stack the stored stock-card figure
+(`stock/figs/stock_*_300K.png`) above the refit figure; hv_pmos_W10_L0p35 (figure 14) has no stored stock-card
+figure. No simulation was run for the batch.
+Site: new claim `i5-1` (refuted, "not replicated on IHP SG13G2 room-temperature data"); caveats linking i5-1
+added to claims `i3-2` and `i4-1`; Exploration status block updated. Site rebuilt, not published.
