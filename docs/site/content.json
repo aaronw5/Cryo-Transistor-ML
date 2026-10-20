@@ -308,10 +308,24 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 7 (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
+     },
+     {
+      "text": "I7-2 (sky130 77 K, IHP 300 K, TU Delft 4.13 K / 295 K; K = 2 / 4 adaptation curves per held-out device): rule output inconclusive. GMR(c_hier, b_shared) 0.992 / 0.904 / 0.912 / 0.939 (CI upper < 1 on 2/4, C1 needs 3); GMR(c_hier, a_C0) CI upper < 1 on 3/4 (IHP 1.025); GMR(c_hier, d_scratch) 0.912 / 1.253 / 1.153 / 1.121 (C3 1/4). Not in the rule: GMR(c_hier, e_crossinterp) 1.036 / 1.102 / 1.397 / 1.125; GMR(c_hier, c_ml) 1.126 / 0.930 / 1.005 / 1.065. c_hier is ahead of d_scratch at K = 2 on 3/4 datasets and behind at K = 4 on 3/4.",
+      "source": [
+       "out/research/explore/I7_2/decision.json"
+      ],
+      "claim": "i7-2",
+      "queue_match": "^I7_2_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-20_i7_2",
+      "table": "I7-2 decision",
+      "caption": "I7-2 pre-registered conditions C1-C4 per dataset and the outcome list"
      },
      {
       "text": "I7-1 (prospective, 20 new simulated datasets, GF180 / IHP x 2 replicates x lambda 0-1): Spearman(S1_lodo, y) -0.970 (P1 <= -0.50 holds), frozen-rule sign correct 16/20 (P2 >= 15 holds); verdict supported. Prospective OLS slope -1.419 vs frozen -0.485 (rule MAE 0.357): sign predicted, not magnitude. The synthetic error has the form S1_lodo measures; the evidence outside that model is the 11 retrospective datasets. S3 (secondary): Spearman +0.985 (20 new), +0.927 (11 stored), sign 19/20; within-dataset fold Spearman negative in 20/20; 2409 s + 3442 s queue time.",
@@ -4931,6 +4945,184 @@
     "out/research/explore/I3_2/gf180_c_logo/corrections.json",
     "out/research/explore/I3_2/ihp_c_logo/corrections.json",
     "scripts/research/plot_explore_i4.py"
+   ],
+   "updated": "2026-10-20"
+  },
+  {
+   "id": "i7-2",
+   "tab": "explore",
+   "statement": "I7-2: a per-device quadratic adjustment delta_d of the shared bias-only correction, fitted with the card on K = 2 or 4 curves of a held-out device under a prior learned from the training devices (c_hier), lowers the held-out RRMS against the shared correction alone (b_shared) with a bootstrap CI below 1 on 2 of 4 datasets (3 required), against the uncorrected card refit (a_C0) on 3 of 4 (4 required), and against a per-device correction fitted from scratch on the same K curves (d_scratch) on 1 of 4 (4 required); rule output 'inconclusive'. GMR(c_hier, e_crossinterp), against the non-learned cross-curve residual control, is above 1 on all four datasets.",
+   "status": "in_progress",
+   "headline": {
+    "value": "inconclusive (pre-registered rule): C1 2/4, C2 3/4, C3 1/4, C4 4/4; GMR(c_hier, b_shared) 0.992 / 0.904 / 0.912 / 0.939",
+    "convention": "sky130 77 K REAL_DEV (12), IHP SG13G2 300 K DEV (18), TU Delft 40 nm 4.13 K and 295 K DEV (45 each); per device the geometric mean over draws K2a, K2b, K4a, K4b of the strict paper RRMS on the held-out curves; GMR = paired geometric-mean ratio, 95% device bootstrap"
+   },
+   "numbers": [
+    {
+     "label": "C1: GMR(c_hier, b_shared), CI upper < 1 on >= 3 of 4",
+     "value": "2/4: sky130 0.992 [0.929, 1.066] 6/11; IHP 300 K 0.904 [0.803, 1.024] 13/18; TU Delft 4.13 K 0.912 [0.863, 0.958] 37/45; TU Delft 295 K 0.939 [0.904, 0.973] 32/45",
+     "convention": "wins = devices with c_hier < b_shared",
+     "source": "out/research/explore/I7_2/decision.json"
+    },
+    {
+     "label": "C2: GMR(c_hier, a_C0), CI upper < 1 on 4 of 4",
+     "value": "3/4: sky130 0.766 [0.636, 0.913]; IHP 300 K 1.025 [0.848, 1.264]; TU Delft 4.13 K 0.818 [0.773, 0.863]; 295 K 0.758 [0.703, 0.819]",
+     "convention": "a_C0 = card refit on the K curves without correction",
+     "source": "out/research/explore/I7_2/decision.json"
+    },
+    {
+     "label": "C3: GMR(c_hier, d_scratch), point < 1 on 4 of 4 and CI upper < 1 on >= 3",
+     "value": "point 1/4, CI 1/4: sky130 0.912 [0.840, 0.994]; IHP 300 K 1.253 [1.038, 1.535]; TU Delft 4.13 K 1.153 [1.008, 1.314]; 295 K 1.121 [0.992, 1.268]",
+     "convention": "d_scratch = per-device M_bias-form MLP fitted from scratch on the K curves (I4-1 B5 recipe on the adaptation set)",
+     "source": "out/research/explore/I7_2/decision.json"
+    },
+    {
+     "label": "C4: c_hier failures <= 10% and >= 8 paired devices",
+     "value": "holds on 4/4; sky130 1/12 devices failed in every arm (pmos_L0p35_W0p55, draws K2b and K4b), 10 paired for c vs d",
+     "convention": "a device fails for an arm if any of its draws gives a non-finite held-out RRMS",
+     "source": "out/research/explore/I7_2/decision.json"
+    },
+    {
+     "label": "Not in the rule: GMR(c_hier, e_crossinterp)",
+     "value": "sky130 1.036 [0.831, 1.314]; IHP 300 K 1.102 [0.931, 1.332]; TU Delft 4.13 K 1.397 [1.287, 1.518] (3/45); 295 K 1.125 [1.033, 1.227]",
+     "convention": "e_crossinterp = a_C0's card plus the measured-minus-simulated residual of the adaptation curves at their crossings with the held-out curve, no learning, no extra simulation; GMR(e, a_C0) 0.713 / 0.930 / 0.585 / 0.673",
+     "source": "out/research/explore/I7_2/decision.json"
+    },
+    {
+     "label": "Not in the rule: GMR(c_hier, c_ml) (learned prior vs flat prior)",
+     "value": "sky130 1.126 [1.046, 1.213]; IHP 300 K 0.930 [0.818, 1.040]; TU Delft 4.13 K 1.005 [0.960, 1.061]; 295 K 1.065 [1.023, 1.109]",
+     "convention": "c_ml = c_hier with mu = 0 (z only bounded to [-5, 5]^6)",
+     "source": "out/research/explore/I7_2/decision.json"
+    },
+    {
+     "label": "Not in the rule: GMR(b_shared, a_C0), GMR(d_scratch, a_C0)",
+     "value": "b: 0.772 / 1.134 / 0.897 / 0.807; d: 0.811 / 0.818 / 0.709 / 0.676 (sky130 / IHP 300 K / TU Delft 4.13 K / 295 K)",
+     "convention": "device bootstrap CIs in table 03",
+     "source": "out/research/report/2026-10-20_i7_2/tables.md"
+    },
+    {
+     "label": "Per K: GMR(c_hier, d_scratch) at K = 2 vs K = 4",
+     "value": "sky130 0.897 vs 0.959; IHP 300 K 1.148 vs 1.392; TU Delft 4.13 K 0.851 vs 1.562; 295 K 0.984 vs 1.278",
+     "convention": "per K: geometric mean over that K's two draws; c_hier is ahead of d_scratch at K = 2 on 3 of 4 datasets and behind at K = 4 on 3 of 4",
+     "source": "out/research/report/2026-10-20_i7_2/tables.md"
+    },
+    {
+     "label": "Per K: GMR(c_hier, b_shared) at K = 2 vs K = 4",
+     "value": "sky130 0.982 vs 1.002; IHP 300 K 0.949 vs 0.800; TU Delft 4.13 K 0.943 vs 0.882; 295 K 0.986 vs 0.894",
+     "convention": "device bootstrap CIs in table 04",
+     "source": "out/research/report/2026-10-20_i7_2/tables.md"
+    },
+    {
+     "label": "Selected mu (empirical Bayes, card fixed)",
+     "value": "mu = inf (delta = prior mean) in sky130 44/48 splits, TU Delft 4.13 K 26/180, IHP 300 K 0/66, TU Delft 295 K 0/180; finite selections 1e-5 to 1",
+     "convention": "mu chosen per fold and K on the training devices with their starting cards fixed",
+     "source": "out/research/explore/I7_2/sky130/results.json"
+    },
+    {
+     "label": "Size of the per-device term on the held-out points",
+     "value": "median RMS of phi . delta, c_hier / c_ml / RMS of g_shared: sky130 0.0148 / 0.0341 / 0.0440; IHP 300 K 0.0074 / 0.0144 / 0.0071; TU Delft 4.13 K 0.0072 / 0.0171 / 0.0699; 295 K 0.0052 / 0.0110 / 0.0208",
+     "convention": "phi . delta = c's correction minus b's correction in ln I",
+     "source": "out/research/report/2026-10-20_i7_2/tables.md"
+    },
+    {
+     "label": "Compute",
+     "value": "queue jobs I7_2_sky130 540 s (48 splits), I7_2_ihp300 610 s (66), I7_2_tud4 1266 s (180; 2 simulator timeouts), I7_2_tud295 1234 s (180); 8 workers",
+     "convention": "6 IHP K4 draws undefined (fewer than 2 held-out curves would remain)",
+     "source": "out/research/done.txt"
+    }
+   ],
+   "what": [
+    "Question: when a held-out device is characterized by K = 2 or 4 of its curves, does a low-dimensional per-device adjustment of the shared bias-only correction, fitted with the card on those curves under a prior learned from the training devices, lower the strict paper RRMS on the device's other curves? In I3-2, I5-1 and I6-1 the in-sample per-device correction B5 was about 2x lower than every shared arm.",
+    {
+     "type": "list",
+     "items": [
+      "Model: I_corr = I_card x exp(g_d), g_d = g_shared + phi . delta_d, phi = (1, a, b, a^2, ab, b^2), a = 2|Vgs|/VDD - 1, b = 2|Vds|/VDD - 1. g_shared = the stored fold M_bias correction of I3-2 (sky130), I5-1 (IHP 300 K) or I6-1 (TU Delft), not retrained.",
+      "Prior per fold: delta_j of each training device fitted on its starting record with the card fixed; N(m, S), S = 0.5 Sigma_hat + 0.5 diag(Sigma_hat) + 1e-6 I; whitened z = Lc^-1 (delta - m). MAP objective on the K curves: mean curve RRMS + mu |z|^2. mu is selected per fold and K from {0, 1e-5, ..., 1, inf} on the training devices (card fixed, leave-one-out prior); mu = inf gives delta = m.",
+      "Draws: Id-Vg curves ordered by |Vd|, Id-Vd by |Vg|; K2a = top Id-Vg and top Id-Vd; K2b = lowest Id-Vg and middle Id-Vd; K4a = K2a + K2b; K4b = Id-Vg and Id-Vd at the 1/3 and 2/3 positions. Held-out set = every other included curve (at least 2).",
+      "Per split: start card (box center or training median, lower K-curve RRMS), base fit on the K curves, then each arm refits from the base card on the K curves (polish 400, irls 2): a_C0 (no correction), b_shared (g_shared), c_hier (joint card + z, primary), c_ml (mu = 0), d_scratch (from-scratch per-device MLP on the K curves), e_crossinterp (a's card + cross-curve residual). Score: fresh NGSpice simulation of the final card on all curves times exp(g), strict paper RRMS on the held-out curves.",
+      "Rule: C1 CI upper of GMR(c, b) < 1 on >= 3 of 4 datasets; C2 CI upper of GMR(c, a) < 1 on 4 of 4; C3 GMR(c, d) < 1 on 4 of 4 and CI upper < 1 on >= 3; C4 c failures <= 10% and >= 8 paired. Outcomes in order: invalid, supported_continue, delta_no_gain_stop (GMR(c, b) >= 0.98 on >= 2), sharing_no_gain (C1, C2, not C3), inconclusive."
+     ]
+    }
+   ],
+   "did": [
+    "Pre-registration `out/research/explore/I7_2/prereg.json` (commit be7d69e, before any I7-2 code was run on data); code, unit tests and smoke runs commit 7c9aeec.",
+    "Queue jobs I7_2_sky130, I7_2_ihp300, I7_2_tud4, I7_2_tud295, I7_2_decide (2026-10-20, finished 19:32); no draw reduction; DEV devices only.",
+    "Report `scripts/research/plot_explore_i7_2.py` (batch 2026-10-20_i7_2, stored files only) recomputes the curve split of every row from the records, the per-device values, aggregates and paired ratios (device and TU Delft cluster bootstrap), the decision, each fold's prior, the selected mu and every stored delta, and checks them against the stored files."
+   ],
+   "result": {
+    "text": [
+     "Rule output 'inconclusive': C1 holds on 2 datasets (TU Delft 4.13 K and 295 K; IHP 300 K CI upper 1.024, sky130 point 0.992), C2 on 3 (IHP 300 K 1.025), C3 on 1 (sky130 0.912). The delta_no_gain_stop condition is met on 1 dataset (sky130), not on 2.",
+     "e_crossinterp, which uses no learning and no extra simulation, has the lowest held-out RRMS of all arms on TU Delft 4.13 K (GMR(e, a_C0) 0.585, 45/45) and 295 K (0.673); GMR(c_hier, e_crossinterp) is above 1 on all four datasets.",
+     "The learned prior is not better than the flat prior: GMR(c_hier, c_ml) 1.126 (sky130), 0.930 (IHP), 1.005 (TU Delft 4.13 K), 1.065 (295 K). On sky130 the empirical-Bayes selection chose mu = inf in 44/48 splits, so c_hier there applied the fold's mean delta to every device.",
+     "The order changes with K. At K = 2, c_hier is ahead of d_scratch on sky130 (0.897), TU Delft 4.13 K (0.851) and 295 K (0.984), and behind on IHP (1.148). At K = 4, d_scratch is ahead of c_hier on IHP (1.392), TU Delft 4.13 K (1.562) and 295 K (1.278), and behind on sky130 (0.959); at K = 4 the two lowest arms are d_scratch and e_crossinterp on IHP and both TU Delft datasets. GMR(c, b) is lower at K = 4 than at K = 2 on IHP and TU Delft.",
+     "The per-device term is small on the held-out points: median RMS of phi . delta for c_hier is 0.005-0.015 in ln I (0.5-1.5% in current), below the RMS of g_shared except on IHP.",
+     "The example-device figures (08-11) show measured points only: the arm I-V curves are not stored (results.json keeps RRMS, cards.json the cards, d_scratch's MLP is not stored) and were not re-simulated in this batch."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "01_table_i7_2_decision.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "02_i7_2_gmr_forest.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "03_table_i7_2_arm_means.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "04_table_i7_2_per_draw.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "05_i7_2_per_draw.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "06_table_i7_2_prior.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "07_i7_2_prior_delta.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "08_i7_2_examples_sky130.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "09_i7_2_examples_ihp300.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "10_i7_2_examples_tud4.png"
+     },
+     {
+      "batch": "2026-10-20_i7_2",
+      "file": "11_i7_2_examples_tud295.png"
+     }
+    ]
+   },
+   "caveats": [
+    "DEV devices of all four datasets were used by earlier directions; I7-2 results are development evidence. REAL_TEST and TEST were not loaded.",
+    "The prior and mu are estimated on training devices whose cards were fitted to all their curves (card fixed), while the held-out card is fitted on K curves (stated in the pre-registration).",
+    "The 4 draws per device are not independent; the per-device value is their geometric mean. TU Delft devices share geometry groups (cluster-bootstrap CIs in figure 02 are wider than the device CIs).",
+    "IHP: 3 of 18 DUTs have no K4 draw. sky130: one device failed in every arm; d_scratch and e_crossinterp also failed in one K4b split.",
+    "Every scored current is a card simulation multiplied by exp(g) in Python, not a SPICE-native simulation of the correction."
+   ],
+   "sources": [
+    "out/research/explore/I7_2/prereg.json",
+    "out/research/explore/I7_2/decision.json",
+    "out/research/explore/I7_2/sky130/results.json",
+    "out/research/explore/I7_2/ihp300/results.json",
+    "out/research/explore/I7_2/tud4/results.json",
+    "out/research/explore/I7_2/tud295/results.json",
+    "src/cryoml/explore/i7_2_hier.py",
+    "scripts/research/explore/i7_2_hier.py",
+    "scripts/research/plot_explore_i7_2.py",
+    "commits be7d69e (pre-registration), 7c9aeec (code, tests, smoke)"
    ],
    "updated": "2026-10-20"
   },

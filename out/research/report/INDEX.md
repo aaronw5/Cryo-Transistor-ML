@@ -2,6 +2,17 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-20 · i7_2
+
+Folder: [2026-10-20_i7_2/](2026-10-20_i7_2/) · [tables.md](2026-10-20_i7_2/tables.md) · [README.md](2026-10-20_i7_2/README.md)
+
+- I7-2 rule output (hierarchical correction, K = 2 / 4 adaptation curves, 4 datasets): inconclusive. C1 GMR(c_hier, b_shared) CI upper < 1 on 2/4: sky130 0.992 [0.929, 1.066] 6/11, IHP 300 K 0.904 [0.803, 1.024] 13/18, TU Delft 4.13 K 0.912 [0.863, 0.958] 37/45, TU Delft 295 K 0.939 [0.904, 0.973] 32/45.
+- C2 GMR(c_hier, a_C0) on 3/4: sky130 0.766 [0.636, 0.913] 8/11, IHP 300 K 1.025 [0.848, 1.264] 12/18, TU Delft 4.13 K 0.818 [0.773, 0.863] 39/45, TU Delft 295 K 0.758 [0.703, 0.819] 38/45. C3 GMR(c_hier, d_scratch) point < 1 on 1/4: sky130 0.912 [0.840, 0.994] 7/10, IHP 300 K 1.253 [1.038, 1.535] 6/18, TU Delft 4.13 K 1.153 [1.008, 1.314] 22/45, TU Delft 295 K 1.121 [0.992, 1.268] 21/45.
+- Not in the rule: GMR(c_hier, e_crossinterp) sky130 1.036 [0.831, 1.314] 5/10, IHP 300 K 1.102 [0.931, 1.332] 9/18, TU Delft 4.13 K 1.397 [1.287, 1.518] 3/45, TU Delft 295 K 1.125 [1.033, 1.227] 17/45; GMR(c_hier, c_ml) sky130 1.126 [1.046, 1.213] 3/11, IHP 300 K 0.930 [0.818, 1.040] 6/18, TU Delft 4.13 K 1.005 [0.960, 1.061] 28/45, TU Delft 295 K 1.065 [1.023, 1.109] 14/45.
+- Selected mu = inf (delta = prior mean) in sky130 44/48, IHP 300 K 0/66, TU Delft 4.13 K 26/180, TU Delft 295 K 0/180 splits.
+
+Figures and tables: [01_table_i7_2_decision.png](2026-10-20_i7_2/01_table_i7_2_decision.png) · [02_i7_2_gmr_forest.png](2026-10-20_i7_2/02_i7_2_gmr_forest.png) · [03_table_i7_2_arm_means.png](2026-10-20_i7_2/03_table_i7_2_arm_means.png) · [04_table_i7_2_per_draw.png](2026-10-20_i7_2/04_table_i7_2_per_draw.png) · [05_i7_2_per_draw.png](2026-10-20_i7_2/05_i7_2_per_draw.png) · [06_table_i7_2_prior.png](2026-10-20_i7_2/06_table_i7_2_prior.png) · [07_i7_2_prior_delta.png](2026-10-20_i7_2/07_i7_2_prior_delta.png) · [08_i7_2_examples_sky130.png](2026-10-20_i7_2/08_i7_2_examples_sky130.png) · [09_i7_2_examples_ihp300.png](2026-10-20_i7_2/09_i7_2_examples_ihp300.png) · [10_i7_2_examples_tud4.png](2026-10-20_i7_2/10_i7_2_examples_tud4.png) · [11_i7_2_examples_tud295.png](2026-10-20_i7_2/11_i7_2_examples_tud295.png)
+
 ## 2026-10-20 · i7_1
 
 Folder: [2026-10-20_i7_1/](2026-10-20_i7_1/) · [tables.md](2026-10-20_i7_1/tables.md) · [README.md](2026-10-20_i7_1/README.md)

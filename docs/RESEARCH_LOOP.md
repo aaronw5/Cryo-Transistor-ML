@@ -1179,3 +1179,36 @@ level, compute), tables 03 and 08 gain S3 columns (08 also S3 sign and within-da
 `09_i7_1_scatter_S1_lodo_vs_S3.png` (S1_lodo and S3 scatter panels side by side). Site: claim `i7-1` headline
 "supported (simulated, prospective); S3 secondary done", S3 numbers, compute comparison, figure 09; status block
 text updated. Site rebuilt, not published.
+
+## I7-2 outcome, report batch and site (2026-10-20 19:50): hierarchical correction on K curves, inconclusive
+
+Queue jobs I7_2_sky130 (540 s, 48 splits), I7_2_ihp300 (610 s, 66 splits; 6 K4 draws undefined), I7_2_tud4
+(1266 s, 180 splits; 2 simulator timeouts), I7_2_tud295 (1234 s, 180 splits), I7_2_decide (finished 19:32);
+`out/research/explore/I7_2/decision.json`. Preregistered configuration, no draw reduction, DEV devices only.
+Rule output: inconclusive. C1 GMR(c_hier, b_shared), CI upper < 1 on 2/4 (needs 3): sky130 0.992 [0.929, 1.066],
+IHP 300 K 0.904 [0.803, 1.024], TU Delft 4.13 K 0.912 [0.863, 0.958], 295 K 0.939 [0.904, 0.973]. C2
+GMR(c_hier, a_C0), CI upper < 1 on 3/4 (needs 4): 0.766, 1.025 (IHP), 0.818, 0.758. C3 GMR(c_hier, d_scratch) point
+< 1 on 1/4 (needs 4): 0.912 [0.840, 0.994], 1.253, 1.153, 1.121. C4 holds on 4/4 (sky130: pmos_L0p35_W0p55 failed
+in every arm, draws K2b and K4b; 11 paired for c vs b and a, 10 for c vs d). Stop condition GMR(c, b) >= 0.98 on
+1/4 (sky130), not 2.
+Not in the rule: GMR(c_hier, e_crossinterp) 1.036 / 1.102 / 1.397 / 1.125 (sky130 / IHP / TU 4.13 K / TU 295 K);
+GMR(e_crossinterp, a_C0) 0.713 / 0.930 / 0.585 / 0.673 (e is the lowest arm on both TU Delft datasets);
+GMR(c_hier, c_ml) 1.126 / 0.930 / 1.005 / 1.065 (the learned prior is not lower than the flat prior); GMR(b_shared,
+a_C0) 0.772 / 1.134 / 0.897 / 0.807; GMR(d_scratch, a_C0) 0.811 / 0.818 / 0.709 / 0.676.
+Per K (geometric mean over the K's two draws): GMR(c, d) at K = 2 0.897 / 1.148 / 0.851 / 0.984, at K = 4 0.959 /
+1.392 / 1.562 / 1.278: c_hier is ahead of d_scratch at K = 2 on 3/4 datasets and behind at K = 4 on 3/4. At K = 4
+the two lowest arms are d_scratch and e_crossinterp on IHP and both TU Delft datasets. GMR(c, b) at K = 2 0.982 /
+0.949 / 0.943 / 0.986, at K = 4 1.002 / 0.800 / 0.882 / 0.894.
+Learned prior: mu = inf (delta = fold prior mean, z = 0) in sky130 44/48 splits, TU Delft 4.13 K 26/180, IHP 0/66,
+TU Delft 295 K 0/180. Median RMS over the held-out points of phi . delta (c's correction minus b's) for c_hier /
+c_ml and RMS of g_shared: sky130 0.0148 / 0.0341 / 0.0440, IHP 0.0074 / 0.0144 / 0.0071, TU 4.13 K 0.0072 / 0.0171 /
+0.0699, TU 295 K 0.0052 / 0.0110 / 0.0208.
+Report batch `out/research/report/2026-10-20_i7_2/` (`scripts/research/plot_explore_i7_2.py`, stored files only;
+recomputes the curve split of every row from the records, per-device values, aggregates, paired ratios with device
+and TU Delft cluster bootstrap, the decision, each fold's prior, selected mu and every stored delta, and checks them
+against the stored files): decision table, forest plot, arm-mean table, per-draw / per-K table and figure, prior
+table and figure, example-device figures for 2 devices per dataset. The example figures show measured points and
+exp(phi . delta) only: the arm I-V curves are not stored (results.json keeps RRMS, cards.json the cards; d_scratch's
+MLP is not stored) and were not re-simulated.
+Site: new claim `i7-2` (status in progress; headline "inconclusive (pre-registered rule)") in the Exploration tab;
+status block: iteration 7 complete, I7-2 item and the I7-2 decision table. Site rebuilt, not published.
