@@ -1,0 +1,139 @@
+I3_2 real sky130: 2 folds, 2 held-out records, arms ['M_bias', 'M_bias_geom'], opts {'heldout_nfev': 400, 'heldout_irls': 2, 'diff_step': 0.01}, hyper {'seeds': (0,), 'steps': 200}, preregistered=False
+training done (3.8 s, 5 seed tasks)
+{
+ "summary": {
+  "M_bias": {
+   "all_device_mean": 0.02504408756754128,
+   "combined": NaN,
+   "median": 0.02504408756754128,
+   "n_failed": 0
+  },
+  "M_bias_geom": {
+   "all_device_mean": 0.029826589694368886,
+   "combined": NaN,
+   "median": 0.029826589694368886,
+   "n_failed": 0
+  },
+  "C0_refit_rerun": {
+   "all_device_mean": 0.019078026316548487,
+   "combined": NaN,
+   "median": 0.019078026316548487,
+   "n_failed": 0
+  },
+  "T1_inloop_rerun": {
+   "all_device_mean": 0.020137524574716414,
+   "combined": NaN,
+   "median": 0.020137524574716414,
+   "n_failed": 0
+  },
+  "C0_refit": {
+   "all_device_mean": 0.019078026316548487,
+   "combined": NaN,
+   "median": 0.019078026316548487,
+   "n_failed": 0
+  },
+  "T1_inloop": {
+   "all_device_mean": 0.020137524574716414,
+   "combined": NaN,
+   "median": 0.020137524574716414,
+   "n_failed": 0
+  },
+  "ref_M_post_E1_stage2": {
+   "all_device_mean": 0.023044411031817574,
+   "combined": NaN,
+   "median": 0.023044411031817574,
+   "n_failed": 0
+  },
+  "ref_M_joint_I2_1": {
+   "all_device_mean": 0.023277152207363518,
+   "combined": NaN,
+   "median": 0.023277152207363518,
+   "n_failed": 0
+  },
+  "ref_T1_joint_I2_1": {
+   "all_device_mean": 0.019787276759119996,
+   "combined": NaN,
+   "median": 0.019787276759119996,
+   "n_failed": 0
+  }
+ },
+ "comparisons": {
+  "M_bias_vs_C0_refit": {
+   "ratio": 1.2918404802160957,
+   "ci_low": 1.093778065912904,
+   "ci_high": 1.525768232454061,
+   "wins": 0,
+   "n_used": 2
+  },
+  "M_bias_vs_T1_inloop": {
+   "ratio": 1.2265266092645661,
+   "ci_low": 1.0956632526433507,
+   "ci_high": 1.3730199672250216,
+   "wins": 0,
+   "n_used": 2
+  },
+  "M_bias_geom_vs_C0_refit": {
+   "ratio": 1.486717309368868,
+   "ci_low": 1.0942760135904464,
+   "ci_high": 2.0199002176102376,
+   "wins": 0,
+   "n_used": 2
+  },
+  "M_bias_geom_vs_M_bias": {
+   "ratio": 1.1508520843999048,
+   "ci_low": 1.0004552547660814,
+   "ci_high": 1.3238578275819846,
+   "wins": 0,
+   "n_used": 2
+  },
+  "T1_inloop_vs_C0_refit": {
+   "ratio": 1.0532510835543079,
+   "ci_low": 0.9982794104612903,
+   "ci_high": 1.1112498498749113,
+   "wins": 1,
+   "n_used": 2
+  },
+  "M_bias_vs_ref_M_post_E1_stage2": {
+   "ratio": 1.109972021884896,
+   "ci_low": 1.0098227945155045,
+   "ci_high": 1.2200535540083097,
+   "wins": 0,
+   "n_used": 2
+  },
+  "M_bias_vs_ref_M_joint_I2_1": {
+   "ratio": 1.0646072204976051,
+   "ci_low": 0.9882134044567878,
+   "ci_high": 1.14690665884931,
+   "wins": 1,
+   "n_used": 2
+  },
+  "M_bias_vs_ref_T1_joint_I2_1": {
+   "ratio": 1.2488805533784957,
+   "ci_low": 1.1237884831573788,
+   "ci_high": 1.3878969752607369,
+   "wins": 0,
+   "n_used": 2
+  }
+ },
+ "reproduction": {
+  "C0_refit": {
+   "max_abs_diff_rerun_vs_stored": 0.0
+  },
+  "T1_inloop": {
+   "max_abs_diff_rerun_vs_stored": 0.0
+  }
+ },
+ "criterion": null,
+ "export": {
+  "path": "out/research/explore/I3_2/smoke_real/m_bias_sky130_dev_full.va",
+  "lines": 67,
+  "max_abs_g_diff_va_vs_python": 6.624280117495385e-12
+ },
+ "timing": {
+  "train_s": 3.8,
+  "train_n_seed_tasks": 5,
+  "heldout_refit_s": 40.1,
+  "heldout_refit_n": 8
+ }
+}
+runtime 44.2 s

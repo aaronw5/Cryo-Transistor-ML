@@ -1,0 +1,113 @@
+I3_2 pdk2 gf180: 1 folds, 3 held-out records, arms ['M_bias', 'M_bias_geom'], opts {'heldout_nfev': 400, 'heldout_irls': 2, 'diff_step': 0.01}, hyper {'seeds': (0,), 'steps': 200}, preregistered=False
+training done (5.7 s, 2 seed tasks)
+{
+ "summary": {
+  "M_bias": {
+   "all_device_mean": 0.10695501767244392,
+   "combined": NaN,
+   "median": 0.09994922254708637,
+   "n_failed": 0
+  },
+  "M_bias_geom": {
+   "all_device_mean": 0.1055153927537278,
+   "combined": NaN,
+   "median": 0.09608147661956684,
+   "n_failed": 0
+  },
+  "T1_inloop": {
+   "all_device_mean": 0.11067956117100318,
+   "combined": NaN,
+   "median": 0.1040728604104932,
+   "n_failed": 0
+  },
+  "C0_refit_rerun": {
+   "all_device_mean": 0.1216424746732479,
+   "combined": NaN,
+   "median": 0.11354966578852749,
+   "n_failed": 0
+  },
+  "C0_refit": {
+   "all_device_mean": 0.1216424746732479,
+   "combined": NaN,
+   "median": 0.11354966578852749,
+   "n_failed": 0
+  },
+  "ref_M_post_I2_1": {
+   "all_device_mean": 0.11047412908644254,
+   "combined": NaN,
+   "median": 0.10089712629665269,
+   "n_failed": 0
+  },
+  "ref_M_joint_I2_1": {
+   "all_device_mean": 0.1171828372087741,
+   "combined": NaN,
+   "median": 0.10650554784120878,
+   "n_failed": 0
+  }
+ },
+ "comparisons": {
+  "M_bias_vs_C0_refit": {
+   "ratio": 0.8740470604272336,
+   "ci_low": 0.8740470604272336,
+   "ci_high": 0.8740470604272336,
+   "wins": 3,
+   "n_used": 3
+  },
+  "M_bias_vs_T1_inloop": {
+   "ratio": 0.9640314050883684,
+   "ci_low": 0.9640314050883684,
+   "ci_high": 0.9640314050883684,
+   "wins": 3,
+   "n_used": 3
+  },
+  "M_bias_geom_vs_C0_refit": {
+   "ratio": 0.8620189154680998,
+   "ci_low": 0.8620189154680998,
+   "ci_high": 0.8620189154680998,
+   "wins": 3,
+   "n_used": 3
+  },
+  "M_bias_geom_vs_M_bias": {
+   "ratio": 0.986238561395934,
+   "ci_low": 0.986238561395934,
+   "ci_high": 0.986238561395934,
+   "wins": 2,
+   "n_used": 3
+  },
+  "T1_inloop_vs_C0_refit": {
+   "ratio": 0.9066582850038103,
+   "ci_low": 0.9066582850038103,
+   "ci_high": 0.9066582850038103,
+   "wins": 3,
+   "n_used": 3
+  },
+  "M_bias_vs_ref_M_post_I2_1": {
+   "ratio": 0.9658020581876797,
+   "ci_low": 0.9658020581876797,
+   "ci_high": 0.9658020581876797,
+   "wins": 3,
+   "n_used": 3
+  },
+  "M_bias_vs_ref_M_joint_I2_1": {
+   "ratio": 0.908257913461227,
+   "ci_low": 0.908257913461227,
+   "ci_high": 0.908257913461227,
+   "wins": 3,
+   "n_used": 3
+  }
+ },
+ "reproduction": {
+  "C0_refit": {
+   "max_abs_diff_rerun_vs_stored": 0.0
+  }
+ },
+ "criterion": null,
+ "export": null,
+ "timing": {
+  "train_s": 5.7,
+  "train_n_seed_tasks": 2,
+  "heldout_refit_s": 49.7,
+  "heldout_refit_n": 12
+ }
+}
+runtime 55.5 s
