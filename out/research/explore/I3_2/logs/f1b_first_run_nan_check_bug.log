@@ -1,0 +1,86 @@
+{"full": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 1.6046081130483003e-11}, "fold_nmos_L0p15_W1p6": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 5.261949209689476e-11}, "fold_nmos_L0p25_W1p6": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 1.3560430556225356e-11}, "fold_nmos_L100_W100": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 2.7809005098689e-11}, "fold_nmos_L1_W3": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 3.7322755996882506e-11}, "fold_nmos_L20_W0p64": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 9.63482071902888e-12}, "fold_pmos_L0p35_W0p55": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 9.540126501283996e-12}, "fold_pmos_L0p35_W5": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 2.992353587139007e-11}, "fold_pmos_L0p5_W0p42": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 1.3922446528980004e-11}, "fold_pmos_L2_W5": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 5.221112431286201e-11}, "fold_pmos_L4_W7": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 4.647915385902479e-11}, "fold_pmos_L8_W1p6": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 2.0269341760581483e-11}, "fold_pmos_L8_W5": {"compile_warnings": 1, "max_abs_g_diff_va_text_vs_python": 5.263744995431807e-11}}
+nmos_L0p15_W1p6 {"rrms_native": NaN, "rrms_stored": 0.02351260648256785, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+nmos_L0p25_W1p6 {"rrms_native": NaN, "rrms_stored": 0.018263520862232686, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+nmos_L100_W100 {"rrms_native": NaN, "rrms_stored": 0.06856396308911172, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+nmos_L1_W3 {"rrms_native": NaN, "rrms_stored": 0.050384003628634745, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+nmos_L20_W0p64 {"rrms_native": NaN, "rrms_stored": 0.042807601483511225, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+pmos_L0p35_W0p55 {"rrms_native": NaN, "rrms_stored": 0.3496385927853836, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+pmos_L0p35_W5 {"rrms_native": NaN, "rrms_stored": 0.06933309842557664, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+pmos_L0p5_W0p42 {"rrms_native": NaN, "rrms_stored": 0.10830003049852338, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+pmos_L2_W5 {"rrms_native": NaN, "rrms_stored": 0.05531893173217242, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+pmos_L4_W7 {"rrms_native": NaN, "rrms_stored": 0.0656473829603411, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+pmos_L8_W1p6 {"rrms_native": NaN, "rrms_stored": 0.07235261977360515, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+pmos_L8_W5 {"rrms_native": NaN, "rrms_stored": 0.042479029290259665, "max_rel_native_vs_python_same_sim": Infinity, "max_rel_ng41osdi_vs_ng41": 0.0}
+{
+ "aggregates": {
+  "native_ng41osdi": {
+   "all_device_mean": NaN,
+   "combined": NaN
+  },
+  "stored_M_bias": {
+   "all_device_mean": 0.08055011508432668,
+   "combined": 0.07485814708788169
+  },
+  "python_ng41osdi": {
+   "all_device_mean": 0.08055011508432668,
+   "combined": 0.07485814708788169
+  },
+  "c0_card_ng41": {
+   "all_device_mean": 0.10718725633410031,
+   "combined": 0.09805070700538537
+  },
+  "c0_card_ng41osdi": {
+   "all_device_mean": 0.10718725633410031,
+   "combined": 0.09805070700538537
+  },
+  "published_ng41": {
+   "all_device_mean": 0.28476449695569434,
+   "combined": 0.2608331140696581
+  },
+  "mbias_card_uncorrected_ng41": {
+   "all_device_mean": 0.1096492259886031,
+   "combined": 0.10037293729962779
+  }
+ },
+ "checks": {
+  "F1.0_export_text": {
+   "max_abs_g_diff": 5.263744995431807e-11,
+   "all_compiled": true,
+   "fail": false
+  },
+  "F1.1_simulator_reproduction": {
+   "max_rel_scored": 0.0,
+   "max_rel_scored_literal": 0.0,
+   "max_rel_all_ge_1e-12A": 0.0,
+   "max_abs_delta_rrms": 0.0,
+   "max_stored_check": 0.0,
+   "fail": false,
+   "fail_literal": false,
+   "stored_values_reproduced": true
+  },
+  "F1.2_va_implementation": {
+   "max_rel_fold_scored": Infinity,
+   "max_rel_full_scored": Infinity,
+   "max_rel_fold_scored_literal": Infinity,
+   "max_rel_full_scored_literal": Infinity,
+   "max_abs_delta_rrms": NaN,
+   "n_devices_with_convergence_messages": 12,
+   "n_devices_with_convergence_messages_tight_runs": 12,
+   "n_nonfinite": 49104,
+   "fail": true,
+   "fail_literal": true
+  },
+  "F1.3_end_to_end": {
+   "max_abs_delta_device": NaN,
+   "abs_delta_all_device_mean": NaN,
+   "fail": false
+  },
+  "tight_tolerance_diagnostic": {
+   "options": "reltol=1e-9 abstol=1e-18",
+   "max_rel_native_vs_python_scored": Infinity,
+   "max_abs_delta_rrms": NaN
+  }
+ }
+}
+{"figures": ["out/research/explore/I3_2/followup/f1b_iv_pmos_L0p35_W0p55.png", "out/research/explore/I3_2/followup/f1b_iv_pmos_L2_W5.png", "out/research/explore/I3_2/followup/f1b_iv_nmos_L20_W0p64.png"]}
+runtime 31.1 s

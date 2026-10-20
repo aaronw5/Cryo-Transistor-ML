@@ -1,0 +1,1546 @@
+{
+ "prereg": "out/research/explore/I3_2/followup_prereg.json",
+ "amendment": "out/research/explore/I3_2/followup_prereg_amendment_2026-10-20.json",
+ "amendments": [
+  "out/research/explore/I3_2/followup_prereg_amendment_2026-10-20.json",
+  "out/research/explore/I3_2/followup_prereg_amendment_F1b_2026-10-20.json"
+ ],
+ "zero_floor_A": 1e-20,
+ "smoke": false,
+ "tags": [
+  "nmos_L0p15_W1p6",
+  "nmos_L0p25_W1p6",
+  "nmos_L100_W100",
+  "nmos_L1_W3",
+  "nmos_L20_W0p64",
+  "pmos_L0p35_W0p55",
+  "pmos_L0p35_W5",
+  "pmos_L0p5_W0p42",
+  "pmos_L2_W5",
+  "pmos_L4_W7",
+  "pmos_L8_W1p6",
+  "pmos_L8_W5"
+ ],
+ "binaries": {
+  "ng41": "/Users/anrunw/cryo-ng41/arm64/bin/ngspice",
+  "ng41osdi": "/Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice",
+  "ng41_version": "ngspice-41 : Circuit level simulation program",
+  "ng41osdi_version": "ngspice-41 : Circuit level simulation program"
+ },
+ "compiler": {
+  "openvaf": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk2/ihp_sg13g2/tools/openvaf-r-v24.0.2mob-macos-aarch64/openvaf-r-v24.0.2mob-macos-aarch64/bin/openvaf-r",
+  "extra_args": [],
+  "version": "OpenVAF-reloaded unknown"
+ },
+ "native_label": "ng41osdi",
+ "native_simulator": "ngspice-41 OSDI build",
+ "osdi_in_ngspice41": true,
+ "osdi_note": "SPICE-native runs use /Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice (ngspice-41 OSDI build); uncorrected reference runs use the canonical ngspice-41",
+ "tolerances": {
+  "F1.0_g": 1e-09,
+  "F1.1_rel": 0.001,
+  "F1.1_rrms": 0.0001,
+  "F1.1_stored": 1e-09,
+  "F1.2_rel": 0.001,
+  "F1.2_rrms": 0.0001,
+  "F1.3_dev": 0.0002,
+  "F1.3_mean": 0.0001
+ },
+ "export": {
+  "full": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_full.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_full_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_full.osdi",
+   "sha256_va_osdi": "d8c01440bb93c3a9b52f8e5676b87f24a37808e24c45f35f36b71c0231238998",
+   "sha256_compile_key": "d8c01440bb93c3a9b52f8e5676b87f24a37808e24c45f35f36b71c0231238998",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 1.6046081130483003e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ],
+   "export_text_equals_stored_file": true
+  },
+  "fold_nmos_L0p15_W1p6": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L0p15_W1p6.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L0p15_W1p6_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_nmos_L0p15_W1p6.osdi",
+   "sha256_va_osdi": "6f6c15ddad9658ea47bf36ea9284b439156fede7a8de4520ec3912d2d07a7934",
+   "sha256_compile_key": "6f6c15ddad9658ea47bf36ea9284b439156fede7a8de4520ec3912d2d07a7934",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 5.261949209689476e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_nmos_L0p25_W1p6": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L0p25_W1p6.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L0p25_W1p6_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_nmos_L0p25_W1p6.osdi",
+   "sha256_va_osdi": "e41aad451eb4dde91e6790fd5715b5a70980bc9504af13cc044960b6be92e609",
+   "sha256_compile_key": "e41aad451eb4dde91e6790fd5715b5a70980bc9504af13cc044960b6be92e609",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 1.3560430556225356e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_nmos_L100_W100": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L100_W100.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L100_W100_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_nmos_L100_W100.osdi",
+   "sha256_va_osdi": "a32b7e2c1447a2e0a5eb3712ae6d3fd51d029bba71224d3eaab47beb3ba0fc5f",
+   "sha256_compile_key": "a32b7e2c1447a2e0a5eb3712ae6d3fd51d029bba71224d3eaab47beb3ba0fc5f",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 2.7809005098689e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_nmos_L1_W3": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L1_W3.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L1_W3_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_nmos_L1_W3.osdi",
+   "sha256_va_osdi": "2ff0b8bec15e64269c02396530d96c399d5f74c307bd0ac898d3f76f2ba45cf8",
+   "sha256_compile_key": "2ff0b8bec15e64269c02396530d96c399d5f74c307bd0ac898d3f76f2ba45cf8",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 3.7322755996882506e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_nmos_L20_W0p64": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L20_W0p64.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_nmos_L20_W0p64_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_nmos_L20_W0p64.osdi",
+   "sha256_va_osdi": "5cb3a30bff42261949b54d6369d8301ba98e55f4bbb91cb060062f15bf9800be",
+   "sha256_compile_key": "5cb3a30bff42261949b54d6369d8301ba98e55f4bbb91cb060062f15bf9800be",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 9.63482071902888e-12,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L0p35_W0p55": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L0p35_W0p55.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L0p35_W0p55_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_pmos_L0p35_W0p55.osdi",
+   "sha256_va_osdi": "f68ac963af049fc7d03ef80fba0683e9950de8b3fcdc39bcde726abcaef43ba6",
+   "sha256_compile_key": "f68ac963af049fc7d03ef80fba0683e9950de8b3fcdc39bcde726abcaef43ba6",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 9.540126501283996e-12,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L0p35_W5": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L0p35_W5.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L0p35_W5_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_pmos_L0p35_W5.osdi",
+   "sha256_va_osdi": "d41ee7704d21c2cb5500ae39a6e13662a63e7da1a7b2d72e7e50de2f0449a059",
+   "sha256_compile_key": "d41ee7704d21c2cb5500ae39a6e13662a63e7da1a7b2d72e7e50de2f0449a059",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 2.992353587139007e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L0p5_W0p42": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L0p5_W0p42.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L0p5_W0p42_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_pmos_L0p5_W0p42.osdi",
+   "sha256_va_osdi": "553d065de43ef58a382997e218a15cc22f72d37479000baf71542b99d5e3cb86",
+   "sha256_compile_key": "553d065de43ef58a382997e218a15cc22f72d37479000baf71542b99d5e3cb86",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 1.3922446528980004e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L2_W5": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L2_W5.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L2_W5_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_pmos_L2_W5.osdi",
+   "sha256_va_osdi": "c8ecad88952cab3ef3a9f4773951da3a046422117ec938ec3c208f0fab0e5c36",
+   "sha256_compile_key": "c8ecad88952cab3ef3a9f4773951da3a046422117ec938ec3c208f0fab0e5c36",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 5.221112431286201e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L4_W7": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L4_W7.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L4_W7_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_pmos_L4_W7.osdi",
+   "sha256_va_osdi": "006704a106b2beaf8c9b71dce7ca342518bbb44d1af3ad18712df7754291b84b",
+   "sha256_compile_key": "006704a106b2beaf8c9b71dce7ca342518bbb44d1af3ad18712df7754291b84b",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 4.647915385902479e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L8_W1p6": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L8_W1p6.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L8_W1p6_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_pmos_L8_W1p6.osdi",
+   "sha256_va_osdi": "d7c3ab1cb63fe06c047e33d826bef250e2824e66cd29098eadd68aae3f4b927f",
+   "sha256_compile_key": "d7c3ab1cb63fe06c047e33d826bef250e2824e66cd29098eadd68aae3f4b927f",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 2.0269341760581483e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L8_W5": {
+   "va": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L8_W5.va",
+   "va_osdi": "out/research/explore/I3_2/followup/f1b/va/m_bias_fold_pmos_L8_W5_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/f1b/osdi/m_bias_fold_pmos_L8_W5.osdi",
+   "sha256_va_osdi": "4b94af6290337fd6851008c3bbf6a4cd03f5dd8e0c33ffedf8930fd5ea631417",
+   "sha256_compile_key": "4b94af6290337fd6851008c3bbf6a4cd03f5dd8e0c33ffedf8930fd5ea631417",
+   "compile_warnings": 0,
+   "max_abs_g_diff_va_text_vs_python": 5.263744995431807e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  }
+ },
+ "aggregates": {
+  "native_ng41osdi": {
+   "n": 12,
+   "n_failed": 12,
+   "all_device_mean": NaN,
+   "valid_only_mean": NaN,
+   "median": NaN,
+   "combined": NaN
+  },
+  "stored_M_bias": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.08055011508432668,
+   "valid_only_mean": 0.08055011508432668,
+   "median": 0.06048315734625676,
+   "combined": 0.07485814708788169
+  },
+  "python_ng41osdi": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.08055011508432668,
+   "valid_only_mean": 0.08055011508432668,
+   "median": 0.06048315734625676,
+   "combined": 0.07485814708788169
+  },
+  "c0_card_ng41": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.10718725633410031,
+   "valid_only_mean": 0.10718725633410031,
+   "median": 0.08197973624689832,
+   "combined": 0.09805070700538537
+  },
+  "c0_card_ng41osdi": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.10718725633410031,
+   "valid_only_mean": 0.10718725633410031,
+   "median": 0.08197973624689832,
+   "combined": 0.09805070700538537
+  },
+  "published_ng41": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.28476449695569434,
+   "valid_only_mean": 0.28476449695569434,
+   "median": 0.2304317505747112,
+   "combined": 0.2608331140696581
+  },
+  "mbias_card_uncorrected_ng41": {
+   "n": 12,
+   "n_failed": 0,
+   "all_device_mean": 0.1096492259886031,
+   "valid_only_mean": 0.1096492259886031,
+   "median": 0.08391544472884396,
+   "combined": 0.10037293729962779
+  }
+ },
+ "checks": {
+  "F1.0_export_text": {
+   "max_abs_g_diff": 5.263744995431807e-11,
+   "all_compiled": true,
+   "fail": false
+  },
+  "F1.1_simulator_reproduction": {
+   "max_rel_scored": 0.0,
+   "max_rel_scored_literal": 0.0,
+   "max_rel_all_ge_1e-12A": 0.0,
+   "max_abs_delta_rrms": 0.0,
+   "max_stored_check": 0.0,
+   "fail": false,
+   "fail_literal": false,
+   "stored_values_reproduced": true
+  },
+  "F1.2_va_implementation": {
+   "max_rel_fold_scored": Infinity,
+   "max_rel_full_scored": Infinity,
+   "max_rel_fold_scored_literal": Infinity,
+   "max_rel_full_scored_literal": Infinity,
+   "max_abs_delta_rrms": NaN,
+   "n_devices_with_convergence_messages": 12,
+   "n_devices_with_convergence_messages_tight_runs": 12,
+   "n_nonfinite": 49104,
+   "fail": true,
+   "fail_literal": true
+  },
+  "F1.3_end_to_end": {
+   "max_abs_delta_device": NaN,
+   "abs_delta_all_device_mean": NaN,
+   "fail": true
+  },
+  "tight_tolerance_diagnostic": {
+   "options": "reltol=1e-9 abstol=1e-18",
+   "max_rel_native_vs_python_scored": Infinity,
+   "max_abs_delta_rrms": NaN
+  }
+ },
+ "per_device": {
+  "nmos_L0p15_W1p6": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.05946531667751279,
+     "rrms_ng41osdi": 0.05946531667751279,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.019346215556613325,
+     "rrms_ng41osdi": 0.019346215556613325,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.01933822186294346,
+     "rrms_ng41osdi": 0.01933822186294346,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.020334085844609457,
+     "rrms_ng41osdi": 0.020334085844609457,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.02351260648256785,
+    "rrms_python_ng41": 0.02351260648256785,
+    "rrms_python_ng41osdi": 0.02351260648256785,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 1.0000000000000504
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l0p15_w1p6.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l0p15_w1p6.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.05946531667751279,
+    "published_ng41osdi": 0.05946531667751279,
+    "start_ng41": 0.019346215556613325,
+    "start_ng41osdi": 0.019346215556613325,
+    "c0_ng41": 0.01933822186294346,
+    "c0_ng41osdi": 0.01933822186294346,
+    "mbias_ng41": 0.020334085844609457,
+    "mbias_ng41osdi": 0.020334085844609457,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.020334085844609353,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.023512606482567873,
+    "py_fold_ng41": 0.02351260648256785,
+    "py_fold_ng41osdi": 0.02351260648256785,
+    "py_full_ng41osdi": 0.019932613856102954
+   },
+   "runtime_s": 0.4
+  },
+  "nmos_L0p25_W1p6": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.09829904413523788,
+     "rrms_ng41osdi": 0.09829904413523788,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.018820740904157647,
+     "rrms_ng41osdi": 0.018820740904157647,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.018817830770153515,
+     "rrms_ng41osdi": 0.018817830770153515,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.024686177184731883,
+     "rrms_ng41osdi": 0.024686177184731883,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.018263520862232686,
+    "rrms_python_ng41": 0.018263520862232686,
+    "rrms_python_ng41osdi": 0.018263520862232686,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 1.1137951965586702e-08
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l0p25_w1p6.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l0p25_w1p6.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.09829904413523788,
+    "published_ng41osdi": 0.09829904413523788,
+    "start_ng41": 0.018820740904157647,
+    "start_ng41osdi": 0.018820740904157647,
+    "c0_ng41": 0.018817830770153515,
+    "c0_ng41osdi": 0.018817830770153515,
+    "mbias_ng41": 0.024686177184731883,
+    "mbias_ng41osdi": 0.024686177184731883,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.02468617718479602,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.01826352086230379,
+    "py_fold_ng41": 0.018263520862232686,
+    "py_fold_ng41osdi": 0.018263520862232686,
+    "py_full_ng41osdi": 0.01791523835677456
+   },
+   "runtime_s": 0.4
+  },
+  "nmos_L100_W100": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.1403032057381227,
+     "rrms_ng41osdi": 0.1403032057381227,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.07320415598179018,
+     "rrms_ng41osdi": 0.07320415598179018,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.07305685624884838,
+     "rrms_ng41osdi": 0.07305685624884838,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.07338444506129346,
+     "rrms_ng41osdi": 0.07338444506129346,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.06856396308911172,
+    "rrms_python_ng41": 0.06856396308911172,
+    "rrms_python_ng41osdi": 0.06856396308911172,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 2.0235707347485598e-07
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l100_w100.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l100_w100.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.1403032057381227,
+    "published_ng41osdi": 0.1403032057381227,
+    "start_ng41": 0.07320415598179018,
+    "start_ng41osdi": 0.07320415598179018,
+    "c0_ng41": 0.07305685624884838,
+    "c0_ng41osdi": 0.07305685624884838,
+    "mbias_ng41": 0.07338444506129346,
+    "mbias_ng41osdi": 0.07338444506129346,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.07338444506482147,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.06856396309237928,
+    "py_fold_ng41": 0.06856396308911172,
+    "py_fold_ng41osdi": 0.06856396308911172,
+    "py_full_ng41osdi": 0.06686758827571651
+   },
+   "runtime_s": 0.4
+  },
+  "nmos_L1_W3": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.15988525219912195,
+     "rrms_ng41osdi": 0.15988525219912195,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.05606534136513077,
+     "rrms_ng41osdi": 0.05606534136513077,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.05606145239312362,
+     "rrms_ng41osdi": 0.05606145239312362,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.05617888422839294,
+     "rrms_ng41osdi": 0.05617888422839294,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.050384003628634745,
+    "rrms_python_ng41": 0.050384003628634745,
+    "rrms_python_ng41osdi": 0.050384003628634745,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 1.9362411410066683e-08
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l1_w3.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l1_w3.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.15988525219912195,
+    "published_ng41osdi": 0.15988525219912195,
+    "start_ng41": 0.05606534136513077,
+    "start_ng41osdi": 0.05606534136513077,
+    "c0_ng41": 0.05606145239312362,
+    "c0_ng41osdi": 0.05606145239312362,
+    "mbias_ng41": 0.05617888422839294,
+    "mbias_ng41osdi": 0.05617888422839294,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.05617888422842261,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.05038400362866576,
+    "py_fold_ng41": 0.050384003628634745,
+    "py_fold_ng41osdi": 0.050384003628634745,
+    "py_full_ng41osdi": 0.04791257106605608
+   },
+   "runtime_s": 0.4
+  },
+  "nmos_L20_W0p64": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.1282712650172066,
+     "rrms_ng41osdi": 0.1282712650172066,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.049068498521782654,
+     "rrms_ng41osdi": 0.049068498521782654,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.04888269389040993,
+     "rrms_ng41osdi": 0.04888269389040993,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.048992433509851954,
+     "rrms_ng41osdi": 0.048992433509851954,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.042807601483511225,
+    "rrms_python_ng41": 0.042807601483511225,
+    "rrms_python_ng41osdi": 0.042807601483511225,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 0.007931311300977115
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l20_w0p64.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_nmos_l20_w0p64.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.1282712650172066,
+    "published_ng41osdi": 0.1282712650172066,
+    "start_ng41": 0.049068498521782654,
+    "start_ng41osdi": 0.049068498521782654,
+    "c0_ng41": 0.04888269389040993,
+    "c0_ng41osdi": 0.04888269389040993,
+    "mbias_ng41": 0.048992433509851954,
+    "mbias_ng41osdi": 0.048992433509851954,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.0489924335125991,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.042807601486742154,
+    "py_fold_ng41": 0.042807601483511225,
+    "py_fold_ng41osdi": 0.042807601483511225,
+    "py_full_ng41osdi": 0.0392557757266578
+   },
+   "runtime_s": 0.4
+  },
+  "pmos_L0p35_W0p55": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.7269992338640718,
+     "rrms_ng41osdi": 0.7269992338640718,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.4089580371937662,
+     "rrms_ng41osdi": 0.4089580371937662,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.4089481228607454,
+     "rrms_ng41osdi": 0.4089481228607454,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.4103358022516417,
+     "rrms_ng41osdi": 0.4103358022516417,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.3496385927853836,
+    "rrms_python_ng41": 0.3496385927853836,
+    "rrms_python_ng41osdi": 0.3496385927853836,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 0.002570167649542714
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l0p35_w0p55.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l0p35_w0p55.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.7269992338640718,
+    "published_ng41osdi": 0.7269992338640718,
+    "start_ng41": 0.4089580371937662,
+    "start_ng41osdi": 0.4089580371937662,
+    "c0_ng41": 0.4089481228607454,
+    "c0_ng41osdi": 0.4089481228607454,
+    "mbias_ng41": 0.4103358022516417,
+    "mbias_ng41osdi": 0.4103358022516417,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.4103358019817097,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.3496385926251446,
+    "py_fold_ng41": 0.3496385927853836,
+    "py_fold_ng41osdi": 0.3496385927853836,
+    "py_full_ng41osdi": 0.3419503100536085
+   },
+   "runtime_s": 0.4
+  },
+  "pmos_L0p35_W5": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.32913108838437155,
+     "rrms_ng41osdi": 0.32913108838437155,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.11217780980200227,
+     "rrms_ng41osdi": 0.11217780980200227,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.11217550845450705,
+     "rrms_ng41osdi": 0.11217550845450705,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.1141105452873753,
+     "rrms_ng41osdi": 0.1141105452873753,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.06933309842557664,
+    "rrms_python_ng41": 0.06933309842557664,
+    "rrms_python_ng41osdi": 0.06933309842557664,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 0.0007459025373162185
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l0p35_w5.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l0p35_w5.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.32913108838437155,
+    "published_ng41osdi": 0.32913108838437155,
+    "start_ng41": 0.11217780980200227,
+    "start_ng41osdi": 0.11217780980200227,
+    "c0_ng41": 0.11217550845450705,
+    "c0_ng41osdi": 0.11217550845450705,
+    "mbias_ng41": 0.1141105452873753,
+    "mbias_ng41osdi": 0.1141105452873753,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.11411053954148194,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.06933309647900335,
+    "py_fold_ng41": 0.06933309842557664,
+    "py_fold_ng41osdi": 0.06933309842557664,
+    "py_full_ng41osdi": 0.06400414306701015
+   },
+   "runtime_s": 0.4
+  },
+  "pmos_L0p5_W0p42": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.45602926252186976,
+     "rrms_ng41osdi": 0.45602926252186976,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.16165131010324207,
+     "rrms_ng41osdi": 0.16165131010324207,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.1615395283006506,
+     "rrms_ng41osdi": 0.1615395283006506,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.16305500841494414,
+     "rrms_ng41osdi": 0.16305500841494414,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.10830003049852338,
+    "rrms_python_ng41": 0.10830003049852338,
+    "rrms_python_ng41osdi": 0.10830003049852338,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 0.0010550233216693949
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l0p5_w0p42.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l0p5_w0p42.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.45602926252186976,
+    "published_ng41osdi": 0.45602926252186976,
+    "start_ng41": 0.16165131010324207,
+    "start_ng41osdi": 0.16165131010324207,
+    "c0_ng41": 0.1615395283006506,
+    "c0_ng41osdi": 0.1615395283006506,
+    "mbias_ng41": 0.16305500841494414,
+    "mbias_ng41osdi": 0.16305500841494414,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.16305500841698145,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.10830003050021145,
+    "py_fold_ng41": 0.10830003049852338,
+    "py_fold_ng41osdi": 0.10830003049852338,
+    "py_full_ng41osdi": 0.10225672210186693
+   },
+   "runtime_s": 0.4
+  },
+  "pmos_L2_W5": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.1906723146913902,
+     "rrms_ng41osdi": 0.1906723146913902,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.07957727425256603,
+     "rrms_ng41osdi": 0.07957727425256603,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.07956687868117468,
+     "rrms_ng41osdi": 0.07956687868117468,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.07973763019247282,
+     "rrms_ng41osdi": 0.07973763019247282,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.05531893173217242,
+    "rrms_python_ng41": 0.05531893173217242,
+    "rrms_python_ng41osdi": 0.05531893173217242,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 0.0005818481296837832
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l2_w5.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l2_w5.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.1906723146913902,
+    "published_ng41osdi": 0.1906723146913902,
+    "start_ng41": 0.07957727425256603,
+    "start_ng41osdi": 0.07957727425256603,
+    "c0_ng41": 0.07956687868117468,
+    "c0_ng41osdi": 0.07956687868117468,
+    "mbias_ng41": 0.07973763019247282,
+    "mbias_ng41osdi": 0.07973763019247282,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.07973762894875422,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.05531893090406766,
+    "py_fold_ng41": 0.05531893173217242,
+    "py_fold_ng41osdi": 0.05531893173217242,
+    "py_full_ng41osdi": 0.04976345324587268
+   },
+   "runtime_s": 0.4
+  },
+  "pmos_L4_W7": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.27019118645803225,
+     "rrms_ng41osdi": 0.27019118645803225,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.08494184882764236,
+     "rrms_ng41osdi": 0.08494184882764236,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.08439259381262196,
+     "rrms_ng41osdi": 0.08439259381262196,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.08809325926521511,
+     "rrms_ng41osdi": 0.08809325926521511,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.0656473829603411,
+    "rrms_python_ng41": 0.0656473829603411,
+    "rrms_python_ng41osdi": 0.0656473829603411,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 2.609160177229797e-08
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l4_w7.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l4_w7.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.27019118645803225,
+    "published_ng41osdi": 0.27019118645803225,
+    "start_ng41": 0.08494184882764236,
+    "start_ng41osdi": 0.08494184882764236,
+    "c0_ng41": 0.08439259381262196,
+    "c0_ng41osdi": 0.08439259381262196,
+    "mbias_ng41": 0.08809325926521511,
+    "mbias_ng41osdi": 0.08809325926521511,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.08809325926528026,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.0656473829604731,
+    "py_fold_ng41": 0.0656473829603411,
+    "py_fold_ng41osdi": 0.0656473829603411,
+    "py_full_ng41osdi": 0.058333665088707076
+   },
+   "runtime_s": 0.4
+  },
+  "pmos_L8_W1p6": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.5432786686555809,
+     "rrms_ng41osdi": 0.5432786686555809,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.13215233348611127,
+     "rrms_ng41osdi": 0.13215233348611127,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.1321134465364467,
+     "rrms_ng41osdi": 0.1321134465364467,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.14268605289558656,
+     "rrms_ng41osdi": 0.14268605289558656,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.07235261977360515,
+    "rrms_python_ng41": 0.07235261977360515,
+    "rrms_python_ng41osdi": 0.07235261977360515,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 0.0010017156041270607
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l8_w1p6.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l8_w1p6.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.5432786686555809,
+    "published_ng41osdi": 0.5432786686555809,
+    "start_ng41": 0.13215233348611127,
+    "start_ng41osdi": 0.13215233348611127,
+    "c0_ng41": 0.1321134465364467,
+    "c0_ng41osdi": 0.1321134465364467,
+    "mbias_ng41": 0.14268605289558656,
+    "mbias_ng41osdi": 0.14268605289558656,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.14268605068559131,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.07235261830281559,
+    "py_fold_ng41": 0.07235261977360515,
+    "py_fold_ng41osdi": 0.07235261977360515,
+    "py_full_ng41osdi": 0.07194824583828158
+   },
+   "runtime_s": 0.4
+  },
+  "pmos_L8_W5": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.3146481251258138,
+     "rrms_ng41osdi": 0.3146481251258138,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.09143981014334958,
+     "rrms_ng41osdi": 0.09143981014334958,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.09135394219757843,
+     "rrms_ng41osdi": 0.09135394219757843,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.09419638772712181,
+     "rrms_ng41osdi": 0.09419638772712181,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng41osdi": NaN,
+    "rrms_stored": 0.042479029290259665,
+    "rrms_python_ng41": 0.042479029290259665,
+    "rrms_python_ng41osdi": 0.042479029290259665,
+    "delta_native_vs_stored": NaN,
+    "delta_native_vs_python_ng41osdi": NaN,
+    "max_rel_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "max_rel_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "max_rel_native_vs_python_ng41_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored": Infinity,
+    "max_rel_full_native_vs_python_ng41osdi_scored_literal": Infinity,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": Infinity,
+     "abs_delta_rrms": NaN,
+     "rrms_native_tight": NaN,
+     "max_rel_uncorrected_tight_vs_default_scored": 8.720482339229702e-09
+    },
+    "max_rel_full_native_vs_python_ng41osdi_all_ge_1e-12A": Infinity,
+    "convergence_messages": {
+     "native_fold_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l8_w5.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_full_ng41osdi": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_full.osdi couldn't be loaded!",
+      "error on line 6 or its substitute:",
+      "simulation interrupted due to error!"
+     ],
+     "native_fold_ng41osdi_tight": [
+      "error: library /users/anrunw/documents/cryo-ml/out/research/explore/i3_2/followup/f1b/osdi/m_bias_fold_pmos_l8_w5.osdi couldn't be loaded!",
+      "error on line 7 or its substitute:",
+      "simulation interrupted due to error!"
+     ]
+    },
+    "n_nonfinite_native": 4092,
+    "n_nonfinite_native_tight": 2046
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.3146481251258138,
+    "published_ng41osdi": 0.3146481251258138,
+    "start_ng41": 0.09143981014334958,
+    "start_ng41osdi": 0.09143981014334958,
+    "c0_ng41": 0.09135394219757843,
+    "c0_ng41osdi": 0.09135394219757843,
+    "mbias_ng41": 0.09419638772712181,
+    "mbias_ng41osdi": 0.09419638772712181,
+    "native_fold_ng41osdi": NaN,
+    "native_full_ng41osdi": NaN,
+    "mbias_ng41osdi_tight": 0.09419638771253722,
+    "native_fold_ng41osdi_tight": NaN,
+    "py_fold_ng41osdi_tight": 0.04247902927104908,
+    "py_fold_ng41": 0.042479029290259665,
+    "py_fold_ng41osdi": 0.042479029290259665,
+    "py_full_ng41osdi": 0.04124033080033272
+   },
+   "runtime_s": 0.4
+  }
+ },
+ "runtime_s": 18.5
+}

@@ -780,3 +780,35 @@ F2(d) tier b, 48 targets: GMR(M_bias, C0_refit) GF180 0.996 [0.986, 1.006] (26/4
 IHP 0.0138 / 0.0141; seven-parameter refit floors (3 devices, set 0): GF180 0.0136, IHP 0.0146.
 Report batch: `out/research/report/2026-10-20_i3_1_i3_2f/` (`scripts/research/plot_explore_i3_1_i3_2f.py`); site
 claims `i3-1` (refuted, new), `e3b` (caveat added), `i3-2` (follow-up section, status unchanged).
+
+## I3-2 follow-up F1b/F1c (2026-10-20 06:00): SPICE-native runs on ngspice-41
+
+Simulator: ngspice-41 rebuilt from the same source with `--enable-osdi` (otherwise the canonical configure flags;
+`make CXXFLAGS="-O2 -Wno-invalid-specialization"`), build dir `~/cryo-ng41/src/ngspice-41/build-arm64-osdi`,
+prefix `~/cryo-ng41/arm64-osdi`. The canonical build `~/cryo-ng41/arm64` is unchanged. Reproduction:
+`scripts/verify_simulator.py` per-device output identical to the canonical file
+(`out/tables/simulator_verification_arm64_ng41_osdi.json`); published card, 18 devices, 36828 of 36828 currents
+bit-identical to the canonical binary (`scripts/research/compare_ngspice_bins.py`,
+`out/tables/simulator_compare_ng41_arm64_vs_arm64_osdi.json`).
+F1b (amendment `followup_prereg_amendment_F1b_2026-10-20.json`): F1.0 pass, F1.1 pass (max relative difference
+0.0, max |dRRMS| 0.0). F1.2 and F1.3 fail: ngspice-41 accepts only OSDI 0.3 and OpenVAF-Reloaded v24 emits OSDI
+0.4, so no .osdi file loaded and every SPICE-native current is NaN. The first F1b run reported F1.3 as pass with
+NaN deltas; the check code now counts a non-finite statistic as a failure, and F1b was run again.
+F1c (amendment `followup_prereg_amendment_F1c_2026-10-20.json`): F1b with OpenVAF 23.5.0 (OSDI 0.3) built from
+source at `~/cryo-ng41/openvaf` (rust 1.64, Homebrew llvm@15; two link-step patches recorded in the amendment).
+F1.0 pass. F1.1 pass (OSDI build vs canonical ngspice-41: max relative current difference 0.0, max |dRRMS| 0.0,
+stored values reproduced with difference 0.0). F1.2 fail: max relative difference SPICE-native vs Python on the
+same simulator 2.45e-3 (fold, pmos_L0p5_W0p42, idvg@1.85 at 2.0e-12 A) and 1.43e-3 (full model) > 1e-3;
+pmos_L0p35_W0p55 1.23e-3 and pmos_L8_W1p6 1.45e-3 also exceed 1e-3; the other 9 devices are below 1e-3;
+max per-device |dRRMS| 1.24e-5; 0 convergence messages, 0 non-finite currents. F1.3 pass: max per-device
+|native - stored M_bias| 1.24e-5 (limit 2e-4), all-device |delta| 5.3e-6 (limit 1e-4).
+SPICE-native all-device (combined): 0.080555 (0.074863) vs stored M_bias 0.080550 (0.074858); C0_refit card
+0.107187 (0.098051); published card 0.284764 (0.260833). The two pMOS devices that failed in F1 now give
+pmos_L0p35_W0p55 0.349646 (stored 0.349639) and pmos_L8_W5 0.042485 (stored 0.042479).
+Figures: `out/research/explore/I3_2/followup/f1c_iv_{pmos_L0p35_W0p55,pmos_L2_W5,nmos_L20_W0p64}.png`.
+Exporter: `to_verilog_a_bias` now emits `V(sense) <+ RS * I(sense);` with `parameter real RS = 0.0;` and names
+the polarity parameter `is_pmos` (`pmos` is a reserved Verilog-AMS keyword); `legacy=True` reproduces the stored
+I3-2 text. Corrected export `out/research/explore/I3_2/real_dev/m_bias_sky130_dev_full_sense_rs.va`: 0 compiler
+warnings with OpenVAF-Reloaded v24 and OpenVAF 23.5.0; in the ngspice-41 OSDI build its currents equal the F1c
+full-model SPICE-native currents (max relative difference 0.0 on pmos_L2_W5, nmos_L20_W0p64, pmos_L0p35_W0p55).
+The stored `m_bias_sky130_dev_full.va` is unchanged.
