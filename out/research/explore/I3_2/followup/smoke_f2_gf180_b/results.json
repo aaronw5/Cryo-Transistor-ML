@@ -1,0 +1,81 @@
+{
+ "prereg": "out/research/explore/I3_2/followup_prereg.json",
+ "smoke": true,
+ "pdk": "gf180",
+ "tier": "b",
+ "sets": [
+  0
+ ],
+ "options": {
+  "heldout_nfev": 400,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "n_targets": 3,
+ "n_folds": 3,
+ "M_bias": {
+  "summary": {
+   "n": 3,
+   "n_failed": 0,
+   "all_device_mean": 0.011998156153728276,
+   "valid_only_mean": 0.011998156153728276,
+   "median": 0.012170431170762436,
+   "combined": 0.012066234316552186
+  },
+  "vs_C0_refit": {
+   "n": 3,
+   "n_used": 3,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 1.0011401476347743,
+   "resample_unit": "cluster (3)",
+   "ci_low": 0.9976631139858047,
+   "ci_high": 1.0074333164723037,
+   "n_boot": 10000
+  },
+  "passes_R4_rule": false,
+  "ci_high_lt_1": false,
+  "per_device": {
+   "gf180_nmos_L0p3_W0p3#s0": 0.011553568485398479,
+   "gf180_nmos_L0p4_W5#s0": 0.012170431170762436,
+   "gf180_pmos_L0p3_W0p7#s0": 0.012270468805023917
+  }
+ },
+ "C0_refit": {
+  "summary": {
+   "n": 3,
+   "n_failed": 0,
+   "all_device_mean": 0.01198368788825297,
+   "valid_only_mean": 0.01198368788825297,
+   "median": 0.012179931519429015,
+   "combined": 0.01203274879604698
+  },
+  "per_device": {
+   "gf180_nmos_L0p3_W0p3#s0": 0.011580631100252214,
+   "gf180_nmos_L0p4_W5#s0": 0.012190501045077672,
+   "gf180_pmos_L0p3_W0p7#s0": 0.012179931519429015
+  }
+ },
+ "C0_start": {
+  "summary": {
+   "n": 3,
+   "n_failed": 0,
+   "all_device_mean": 0.012006886744020333,
+   "valid_only_mean": 0.012006886744020333,
+   "median": 0.012197958119731398,
+   "combined": 0.012054654587948098
+  }
+ },
+ "records": "out/research/explore/I3_2/followup/smoke_f2_gf180_b/records",
+ "timing": {
+  "collect_s": 9.4,
+  "collect_n": 3,
+  "train_s": 1.5,
+  "train_n_seed_tasks": 3,
+  "heldout_refit_s": 26.0,
+  "heldout_refit_n": 6
+ },
+ "runtime_s": 37.0
+}

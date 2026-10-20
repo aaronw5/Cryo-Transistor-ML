@@ -1,0 +1,340 @@
+{
+ "prereg": "out/research/explore/I3_2/followup_prereg.json",
+ "amendment": "out/research/explore/I3_2/followup_prereg_amendment_2026-10-20.json",
+ "zero_floor_A": 1e-20,
+ "smoke": true,
+ "tags": [
+  "nmos_L0p15_W1p6",
+  "pmos_L2_W5"
+ ],
+ "binaries": {
+  "ng41": "/Users/anrunw/cryo-ng41/arm64/bin/ngspice",
+  "ng46": "/opt/homebrew/bin/ngspice",
+  "ng41_version": "ngspice-41 : Circuit level simulation program",
+  "ng46_version": "ngspice-46 : Circuit level simulation program"
+ },
+ "osdi_in_ngspice41": false,
+ "osdi_note": "ngspice-41 arm64 configured without OSDI; SPICE-native runs use ngspice-46 (prereg setup_facts)",
+ "tolerances": {
+  "F1.0_g": 1e-09,
+  "F1.1_rel": 0.001,
+  "F1.1_rrms": 0.0001,
+  "F1.1_stored": 1e-09,
+  "F1.2_rel": 0.001,
+  "F1.2_rrms": 0.0001,
+  "F1.3_dev": 0.0002,
+  "F1.3_mean": 0.0001
+ },
+ "export": {
+  "full": {
+   "va": "out/research/explore/I3_2/followup/smoke_f1/va/m_bias_full.va",
+   "va_osdi": "out/research/explore/I3_2/followup/smoke_f1/va/m_bias_full_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/smoke_f1/osdi/m_bias_full.osdi",
+   "sha256_va_osdi": "d8c01440bb93c3a9b52f8e5676b87f24a37808e24c45f35f36b71c0231238998",
+   "compile_warnings": 1,
+   "max_abs_g_diff_va_text_vs_python": 1.6046081130483003e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ],
+   "export_text_equals_stored_file": true
+  },
+  "fold_nmos_L0p15_W1p6": {
+   "va": "out/research/explore/I3_2/followup/smoke_f1/va/m_bias_fold_nmos_L0p15_W1p6.va",
+   "va_osdi": "out/research/explore/I3_2/followup/smoke_f1/va/m_bias_fold_nmos_L0p15_W1p6_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/smoke_f1/osdi/m_bias_fold_nmos_L0p15_W1p6.osdi",
+   "sha256_va_osdi": "6f6c15ddad9658ea47bf36ea9284b439156fede7a8de4520ec3912d2d07a7934",
+   "compile_warnings": 1,
+   "max_abs_g_diff_va_text_vs_python": 5.261949209689476e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  },
+  "fold_pmos_L2_W5": {
+   "va": "out/research/explore/I3_2/followup/smoke_f1/va/m_bias_fold_pmos_L2_W5.va",
+   "va_osdi": "out/research/explore/I3_2/followup/smoke_f1/va/m_bias_fold_pmos_L2_W5_osdi.va",
+   "osdi": "out/research/explore/I3_2/followup/smoke_f1/osdi/m_bias_fold_pmos_L2_W5.osdi",
+   "sha256_va_osdi": "c8ecad88952cab3ef3a9f4773951da3a046422117ec938ec3c208f0fab0e5c36",
+   "compile_warnings": 1,
+   "max_abs_g_diff_va_text_vs_python": 5.221112431286201e-11,
+   "changed_lines_vs_export": [
+    "    V(sense) <+ 0.0;",
+    "    V(sense) <+ RS * I(sense);",
+    "  parameter real RS = 0.0;   // ohm; sense branch V = RS * I (0: zero-volt source)"
+   ]
+  }
+ },
+ "aggregates": {
+  "native_ng46": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.03942256500386767,
+   "valid_only_mean": 0.03942256500386767,
+   "median": 0.03942256500386767,
+   "combined": 0.03942256500386767
+  },
+  "stored_M_bias": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.03941576910737014,
+   "valid_only_mean": 0.03941576910737014,
+   "median": 0.03941576910737014,
+   "combined": 0.03941576910737014
+  },
+  "python_ng46": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.03941576910737014,
+   "valid_only_mean": 0.03941576910737014,
+   "median": 0.03941576910737014,
+   "combined": 0.03941576910737014
+  },
+  "c0_card_ng41": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.04945255027205907,
+   "valid_only_mean": 0.04945255027205907,
+   "median": 0.04945255027205907,
+   "combined": 0.04945255027205907
+  },
+  "c0_card_ng46": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.04945255027205907,
+   "valid_only_mean": 0.04945255027205907,
+   "median": 0.04945255027205907,
+   "combined": 0.04945255027205907
+  },
+  "published_ng41": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.1250688156844515,
+   "valid_only_mean": 0.1250688156844515,
+   "median": 0.1250688156844515,
+   "combined": 0.1250688156844515
+  },
+  "mbias_card_uncorrected_ng41": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.050035858018541136,
+   "valid_only_mean": 0.050035858018541136,
+   "median": 0.050035858018541136,
+   "combined": 0.050035858018541136
+  }
+ },
+ "checks": {
+  "F1.0_export_text": {
+   "max_abs_g_diff": 5.261949209689476e-11,
+   "all_compiled": true,
+   "fail": false
+  },
+  "F1.1_simulator_reproduction": {
+   "max_rel_scored": 0.0,
+   "max_rel_scored_literal": 0.0,
+   "max_rel_all_ge_1e-12A": 0.0,
+   "max_abs_delta_rrms": 0.0,
+   "max_stored_check": 0.0,
+   "fail": false,
+   "fail_literal": false,
+   "stored_values_reproduced": true
+  },
+  "F1.2_va_implementation": {
+   "max_rel_fold_scored": 0.0009654510271534924,
+   "max_rel_full_scored": 0.0009996545232148402,
+   "max_rel_fold_scored_literal": 29033049244.668404,
+   "max_rel_full_scored_literal": 177336826080.09134,
+   "max_abs_delta_rrms": 9.662027495652148e-06,
+   "n_devices_with_convergence_messages": 0,
+   "n_devices_with_convergence_messages_tight_runs": 0,
+   "n_nonfinite": 0,
+   "fail": false,
+   "fail_literal": true
+  },
+  "F1.3_end_to_end": {
+   "max_abs_delta_device": 9.662027495652148e-06,
+   "abs_delta_all_device_mean": 6.795896497532872e-06,
+   "fail": false
+  },
+  "tight_tolerance_diagnostic": {
+   "options": "reltol=1e-9 abstol=1e-18",
+   "max_rel_native_vs_python_scored": 1.037736193666871e-08,
+   "max_abs_delta_rrms": 1.1481900846765924e-10
+  }
+ },
+ "per_device": {
+  "nmos_L0p15_W1p6": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.05946531667751279,
+     "rrms_ng46": 0.05946531667751279,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.019346215556613325,
+     "rrms_ng46": 0.019346215556613325,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.01933822186294346,
+     "rrms_ng46": 0.01933822186294346,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.020334085844609457,
+     "rrms_ng46": 0.020334085844609457,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng46": 0.0235222685100635,
+    "rrms_stored": 0.02351260648256785,
+    "rrms_python_ng41": 0.02351260648256785,
+    "rrms_python_ng46": 0.02351260648256785,
+    "delta_native_vs_stored": 9.662027495652148e-06,
+    "delta_native_vs_python_ng46": 9.662027495652148e-06,
+    "max_rel_native_vs_python_ng46_scored": 0.000902606184852249,
+    "max_rel_native_vs_python_ng46_scored_literal": 0.01744977785425898,
+    "max_rel_native_vs_python_ng46_all_ge_1e-12A": 0.0018090673234970264,
+    "max_rel_native_vs_python_ng41_scored": 0.000902606184852249,
+    "max_rel_full_native_vs_python_ng46_scored": 0.0009492717771950618,
+    "max_rel_full_native_vs_python_ng46_scored_literal": 0.005626532882254298,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": 1.037736193666871e-08,
+     "abs_delta_rrms": 4.591257929398296e-12,
+     "rrms_native_tight": 0.023512606477976615,
+     "max_rel_uncorrected_tight_vs_default_scored": 1.0000000000000504
+    },
+    "max_rel_full_native_vs_python_ng46_all_ge_1e-12A": 0.0018078571316757991,
+    "convergence_messages": {},
+    "n_nonfinite_native": 0,
+    "n_nonfinite_native_tight": 0
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.05946531667751279,
+    "published_ng46": 0.05946531667751279,
+    "start_ng41": 0.019346215556613325,
+    "start_ng46": 0.019346215556613325,
+    "c0_ng41": 0.01933822186294346,
+    "c0_ng46": 0.01933822186294346,
+    "mbias_ng41": 0.020334085844609457,
+    "mbias_ng46": 0.020334085844609457,
+    "native_fold_ng46": 0.0235222685100635,
+    "native_full_ng46": 0.019937008088071813,
+    "mbias_ng46_tight": 0.020334085844609353,
+    "native_fold_ng46_tight": 0.023512606477976615,
+    "py_fold_ng46_tight": 0.023512606482567873,
+    "py_fold_ng41": 0.02351260648256785,
+    "py_fold_ng46": 0.02351260648256785,
+    "py_full_ng46": 0.019932613856102954
+   },
+   "runtime_s": 0.7
+  },
+  "pmos_L2_W5": {
+   "reproduction": {
+    "published": {
+     "rrms_ng41": 0.1906723146913902,
+     "rrms_ng46": 0.1906723146913902,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "start": {
+     "rrms_ng41": 0.07957727425256603,
+     "rrms_ng46": 0.07957727425256603,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "c0": {
+     "rrms_ng41": 0.07956687868117468,
+     "rrms_ng46": 0.07956687868117468,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    },
+    "mbias": {
+     "rrms_ng41": 0.07973763019247282,
+     "rrms_ng46": 0.07973763019247282,
+     "abs_delta_rrms": 0.0,
+     "max_rel_scored": 0.0,
+     "max_rel_scored_literal": 0.0,
+     "max_rel_all_ge_1e-12A": 0.0
+    }
+   },
+   "native": {
+    "rrms_native_ng46": 0.055322861497671835,
+    "rrms_stored": 0.05531893173217242,
+    "rrms_python_ng41": 0.05531893173217242,
+    "rrms_python_ng46": 0.05531893173217242,
+    "delta_native_vs_stored": 3.9297654994135955e-06,
+    "delta_native_vs_python_ng46": 3.9297654994135955e-06,
+    "max_rel_native_vs_python_ng46_scored": 0.0009654510271534924,
+    "max_rel_native_vs_python_ng46_scored_literal": 29033049244.668404,
+    "max_rel_native_vs_python_ng46_all_ge_1e-12A": 0.011442341560179887,
+    "max_rel_native_vs_python_ng41_scored": 0.0009654510271534924,
+    "max_rel_full_native_vs_python_ng46_scored": 0.0009996545232148402,
+    "max_rel_full_native_vs_python_ng46_scored_literal": 177336826080.09134,
+    "tight_tolerance_diagnostic": {
+     "options": "reltol=1e-9 abstol=1e-18",
+     "max_rel_native_vs_python_scored": 7.569914547023177e-09,
+     "abs_delta_rrms": 1.1481900846765924e-10,
+     "rrms_native_tight": 0.05531893101888667,
+     "max_rel_uncorrected_tight_vs_default_scored": 0.0005818481296837832
+    },
+    "max_rel_full_native_vs_python_ng46_all_ge_1e-12A": 0.009549570429564466,
+    "convergence_messages": {},
+    "n_nonfinite_native": 0,
+    "n_nonfinite_native_tight": 0
+   },
+   "stored_check": {
+    "c0_ng41_vs_stored_C0_refit": 0.0,
+    "mbias_python_ng41_vs_stored_M_bias": 0.0,
+    "published_ng41_vs_reference_released": 0.0
+   },
+   "rrms": {
+    "published_ng41": 0.1906723146913902,
+    "published_ng46": 0.1906723146913902,
+    "start_ng41": 0.07957727425256603,
+    "start_ng46": 0.07957727425256603,
+    "c0_ng41": 0.07956687868117468,
+    "c0_ng46": 0.07956687868117468,
+    "mbias_ng41": 0.07973763019247282,
+    "mbias_ng46": 0.07973763019247282,
+    "native_fold_ng46": 0.055322861497671835,
+    "native_full_ng46": 0.049766590277255295,
+    "mbias_ng46_tight": 0.07973762894875422,
+    "native_fold_ng46_tight": 0.05531893101888667,
+    "py_fold_ng46_tight": 0.05531893090406766,
+    "py_fold_ng41": 0.05531893173217242,
+    "py_fold_ng46": 0.05531893173217242,
+    "py_full_ng46": 0.04976345324587268
+   },
+   "runtime_s": 0.7
+  }
+ },
+ "runtime_s": 8.4
+}

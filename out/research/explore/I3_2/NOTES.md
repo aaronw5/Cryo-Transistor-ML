@@ -59,3 +59,58 @@ I3_2_decide | .venv/bin/python scripts/research/explore/i3_2_bias.py --mode deci
 Wall-time estimate (from smoke timings and the I2-1 full runs): real about 6 min (125 seed
 tasks, 48 refits), GF180 about 30-40 min (160 seed tasks of about 50-70 s, 192 refits),
 IHP about 35-45 min; total about 75-90 min.
+
+## Follow-up analyses F1 and F2 (2026-10-20)
+
+Pre-registration `followup_prereg.json` (commit 4ae726a) and amendment
+`followup_prereg_amendment_2026-10-20.json` (commit 4f4e7ef). They do not change the I3-2 decision.
+Code: `src/cryoml/explore/i3_2_followup.py`, `scripts/research/explore/i3_2_followup.py`
+(modes f1, f1_plot, f2_real, f2_pdk2, f2_summary), `tests/test_i3_2_followup.py` (9 cases).
+
+Setup facts (before any follow-up run):
+
+- ngspice-41 arm64 (`~/cryo-ng41/arm64/bin/ngspice`) was configured without OSDI
+  (`OSDI_WANTED_FALSE=''` in config.log; `pre_osdi` prints "osdi: no such command available").
+  F1 runs the corrected netlist on Homebrew ngspice-46 and first compares ngspice-46 with ngspice-41
+  on the uncorrected cards.
+- OpenVAF-Reloaded v24.0.2mob compiles the exported text (1.3 s; warning: `pmos` is a reserved
+  keyword). With the exported line `V(sense) <+ 0.0;` the compiled module passes no current through
+  the sense branch in ngspice-46 (OpenVAF collapses d and di; the netlist does not). F1 uses
+  `V(sense) <+ RS * I(sense);` with model parameter `RS = 0.0` (one line changed, one declaration
+  added; network lines unchanged). The I3-2 exporter `to_verilog_a_bias` is not changed, so the stored
+  I3-2 artifacts stay as they are; a deployable export needs the RS form.
+- Netlist: `Xm1 ndi ng 0 0 <sky130 subckt> ...`, `NCORR nd ng 0 ndi i32corr`,
+  `.model i32corr i3_2_bias_corr pmos=<0|1> VDD=1.85 RS=0`, `pre_osdi` in the control block; sources,
+  sweeps and read-back are those of `cryoml.spice_pdk`.
+
+Smoke F1 (nmos_L0p15_W1p6, pmos_L2_W5; `followup/smoke_f1`; code check only):
+ngspice-46 vs ngspice-41 on the published, starting, C0_refit and M_bias refit cards: max relative
+current difference 0.0, RRMS difference 0.0. ngspice-41 reproduces the stored C0_refit, M_bias (Python
+correction) and released-card RRMS with difference 0.0. SPICE-native vs Python on ngspice-46, scored
+points with |I| >= 1e-20 A: max relative difference 9.65e-4 (fold models), 1.0e-3 (full model);
+|delta RRMS| <= 9.7e-6; SPICE-native minus stored M_bias RRMS +3.9e-6 and +9.7e-6; no convergence
+messages, no non-finite currents. With `reltol=1e-9 abstol=1e-18` the difference is 1.0e-8 and the RRMS
+difference 1.1e-10, so the default-tolerance difference is the ngspice Newton tolerance (reltol 1e-3).
+The pre-registered literal statistic (|I| > 0) is 2.9e10 because of Vds = 0 points where both currents
+are numerical zeros (1e-84 to 1e-31 A); the amendment excludes |I| < 1e-20 A and keeps the literal
+value in the output. The corrected node d and the BSIM4 drain di are joined by a zero-volt source
+(RS = 0) and both terminal voltages are forced by VG and VD, so the BSIM4 instance sees the same bias as
+without the correction; the observed differences are of the size of the solver tolerance.
+
+Smoke F2 (first seed only, 200 steps; code check only): f2_real 1 fold with a_seeds_5_9, b_depth1,
+c_train_round1_cards (round-1 card records reproduce the stored round-1 RRMS, max difference 0.0;
+13 s); f2_pdk2 GF180 and IHP tier b on 3 targets of set 0 (37 s and 59 s).
+
+Queue (appended to out/research/queue.txt after the I3_1 jobs):
+
+```
+I3_2_F1 | .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f1 --workers 4
+I3_2_F2_real | .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f2_real --workers 6
+I3_2_F2_gf180_b | .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f2_pdk2 --pdk gf180 --workers 6
+I3_2_F2_ihp_b | .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f2_pdk2 --pdk ihp --workers 6
+I3_2_F2_summary | .venv/bin/python scripts/research/explore/i3_2_followup.py --mode f2_summary
+```
+
+Wall-time estimate: F1 about 2-5 min (12 devices x 14 NGSpice runs, 13 compilations); F2_real about
+20-25 min (420 seed tasks, 84 refits, 12 round-1 collections); F2 tier b about 20-25 min per PDK (96
+starting-card fits, 80 seed tasks of about 55 s, 96 refits); total about 65-80 min.

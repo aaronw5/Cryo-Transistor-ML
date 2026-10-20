@@ -1,0 +1,267 @@
+{
+ "prereg": "out/research/explore/I3_2/followup_prereg.json",
+ "smoke": true,
+ "options": {
+  "heldout_nfev": 400,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "n_folds": 1,
+ "variants": {
+  "a_seeds_5_9": {
+   "summary": {
+    "n": 1,
+    "n_failed": 0,
+    "all_device_mean": 0.026009418736912714,
+    "valid_only_mean": 0.026009418736912714,
+    "median": 0.026009418736912714,
+    "combined": NaN
+   },
+   "vs_C0_refit": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.3449746787088437,
+    "resample_unit": "device",
+    "ci_low": 1.3449746787088437,
+    "ci_high": 1.3449746787088437,
+    "n_boot": 10000
+   },
+   "vs_I3_2_M_bias": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.1061903645687259,
+    "resample_unit": "device",
+    "ci_low": 1.1061903645687259,
+    "ci_high": 1.1061903645687259,
+    "n_boot": 10000
+   },
+   "fails": true,
+   "all_device_mean_le_R2_threshold": true,
+   "network": [
+    3,
+    16,
+    16,
+    1
+   ],
+   "hyper": {
+    "seeds": [
+     5
+    ],
+    "steps": 200
+   },
+   "train_cards": "start",
+   "per_device": {
+    "nmos_L0p15_W1p6": 0.026009418736912714
+   }
+  },
+  "b_depth1": {
+   "summary": {
+    "n": 1,
+    "n_failed": 0,
+    "all_device_mean": 0.024866905200861846,
+    "valid_only_mean": 0.024866905200861846,
+    "median": 0.024866905200861846,
+    "combined": NaN
+   },
+   "vs_C0_refit": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.285894089803191,
+    "resample_unit": "device",
+    "ci_low": 1.285894089803191,
+    "ci_high": 1.285894089803191,
+    "n_boot": 10000
+   },
+   "vs_I3_2_M_bias": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.0575988340254012,
+    "resample_unit": "device",
+    "ci_low": 1.0575988340254012,
+    "ci_high": 1.0575988340254012,
+    "n_boot": 10000
+   },
+   "fails": true,
+   "all_device_mean_le_R2_threshold": true,
+   "network": [
+    3,
+    16,
+    1
+   ],
+   "hyper": {
+    "layers": 1,
+    "seeds": [
+     0
+    ],
+    "steps": 200
+   },
+   "train_cards": "start",
+   "per_device": {
+    "nmos_L0p15_W1p6": 0.024866905200861846
+   }
+  },
+  "c_train_round1_cards": {
+   "summary": {
+    "n": 1,
+    "n_failed": 0,
+    "all_device_mean": 0.038749509457149625,
+    "valid_only_mean": 0.038749509457149625,
+    "median": 0.038749509457149625,
+    "combined": NaN
+   },
+   "vs_C0_refit": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 2.0037783065982255,
+    "resample_unit": "device",
+    "ci_low": 2.0037783065982255,
+    "ci_high": 2.0037783065982255,
+    "n_boot": 10000
+   },
+   "vs_I3_2_M_bias": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.648031216185171,
+    "resample_unit": "device",
+    "ci_low": 1.648031216185171,
+    "ci_high": 1.648031216185171,
+    "n_boot": 10000
+   },
+   "fails": true,
+   "all_device_mean_le_R2_threshold": true,
+   "network": [
+    3,
+    16,
+    16,
+    1
+   ],
+   "hyper": {
+    "seeds": [
+     0
+    ],
+    "steps": 200
+   },
+   "train_cards": "round1",
+   "per_device": {
+    "nmos_L0p15_W1p6": 0.038749509457149625
+   }
+  }
+ },
+ "reference": {
+  "I3_2_M_bias": {
+   "summary": {
+    "n": 1,
+    "n_failed": 0,
+    "all_device_mean": 0.02351260648256785,
+    "valid_only_mean": 0.02351260648256785,
+    "median": 0.02351260648256785,
+    "combined": NaN
+   },
+   "vs_C0_refit": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.215861864095348,
+    "resample_unit": "device",
+    "ci_low": 1.215861864095348,
+    "ci_high": 1.215861864095348,
+    "n_boot": 10000
+   }
+  },
+  "C0_refit": {
+   "summary": {
+    "n": 1,
+    "n_failed": 0,
+    "all_device_mean": 0.01933822186294346,
+    "valid_only_mean": 0.01933822186294346,
+    "median": 0.01933822186294346,
+    "combined": NaN
+   }
+  }
+ },
+ "round1_card_check": {
+  "nmos_L0p15_W1p6": {
+   "rrms_record": 0.03060779437345646,
+   "rrms_summary": 0.03060779437345646
+  },
+  "nmos_L0p25_W1p6": {
+   "rrms_record": 0.01906402600054558,
+   "rrms_summary": 0.01906402600054558
+  },
+  "nmos_L100_W100": {
+   "rrms_record": 0.11160614214079725,
+   "rrms_summary": 0.11160614214079725
+  },
+  "nmos_L1_W3": {
+   "rrms_record": 0.05831625943168852,
+   "rrms_summary": 0.05831625943168852
+  },
+  "nmos_L20_W0p64": {
+   "rrms_record": 0.05793069525841309,
+   "rrms_summary": 0.05793069525841309
+  },
+  "pmos_L0p35_W0p55": {
+   "rrms_record": 0.4470496009845387,
+   "rrms_summary": 0.4470496009845387
+  },
+  "pmos_L0p35_W5": {
+   "rrms_record": 0.11521382730298486,
+   "rrms_summary": 0.11521382730298486
+  },
+  "pmos_L0p5_W0p42": {
+   "rrms_record": 0.1643854719627891,
+   "rrms_summary": 0.1643854719627891
+  },
+  "pmos_L2_W5": {
+   "rrms_record": 0.09722680162733024,
+   "rrms_summary": 0.09722680162733024
+  },
+  "pmos_L4_W7": {
+   "rrms_record": 0.10257740797421093,
+   "rrms_summary": 0.10257740797421093
+  },
+  "pmos_L8_W1p6": {
+   "rrms_record": 0.1424533071850074,
+   "rrms_summary": 0.1424533071850074
+  },
+  "pmos_L8_W5": {
+   "rrms_record": 0.13322642537904583,
+   "rrms_summary": 0.13322642537904583
+  }
+ },
+ "control_source": "out/research/explore/I2_1/real_dev/results.json per_device.C0_refit",
+ "timing": {
+  "train_s": 2.1,
+  "train_n_seed_tasks": 3,
+  "heldout_refit_s": 10.7,
+  "heldout_refit_n": 3
+ },
+ "runtime_s": 13.3
+}
