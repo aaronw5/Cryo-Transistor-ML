@@ -1,0 +1,79 @@
+{
+ "seed": 20261020,
+ "DEV": [
+  "hv_nmos_W0p3_L0p5",
+  "hv_nmos_W0p3_L10",
+  "hv_nmos_W0p6_L1p2",
+  "hv_nmos_W10_L0p5",
+  "hv_pmos_W0p3_L10",
+  "hv_pmos_W0p6_L0p5",
+  "hv_pmos_W10_L0p35",
+  "hv_pmos_W2_L1p2",
+  "lv_nmos_W0p15_L0p18",
+  "lv_nmos_W0p15_L10",
+  "lv_nmos_W0p3_L0p13",
+  "lv_nmos_W0p3_L10",
+  "lv_nmos_W10_L10",
+  "lv_pmos_W0p15_L0p18",
+  "lv_pmos_W0p15_L10",
+  "lv_pmos_W0p3_L0p13",
+  "lv_pmos_W0p3_L10",
+  "lv_pmos_W10_L10"
+ ],
+ "TEST": [
+  "hv_nmos_W10_L10",
+  "hv_nmos_W2_L3",
+  "hv_pmos_W0p3_L0p35",
+  "hv_pmos_W10_L10",
+  "lv_nmos_W0p15_L0p13",
+  "lv_nmos_W10_L0p13",
+  "lv_nmos_W10_L0p18",
+  "lv_pmos_W0p15_L0p13",
+  "lv_pmos_W10_L0p13",
+  "lv_pmos_W10_L0p18"
+ ],
+ "n_dev": 18,
+ "n_test": 10,
+ "rule": "LV: the 8 LV geometries are shared by nMOS and pMOS; 3 geometries (both\npolarities) go to TEST.  HV: nMOS and pMOS geometries differ; 2 of 6 per\npolarity go to TEST.  ``numpy.random.default_rng(seed)``, draws in the\norder LV geometries, HV nMOS, HV pMOS (sorted tags).",
+ "DEV_by_class": {
+  "lv": [
+   "lv_nmos_W0p15_L0p18",
+   "lv_nmos_W0p15_L10",
+   "lv_nmos_W0p3_L0p13",
+   "lv_nmos_W0p3_L10",
+   "lv_nmos_W10_L10",
+   "lv_pmos_W0p15_L0p18",
+   "lv_pmos_W0p15_L10",
+   "lv_pmos_W0p3_L0p13",
+   "lv_pmos_W0p3_L10",
+   "lv_pmos_W10_L10"
+  ],
+  "hv": [
+   "hv_nmos_W0p3_L0p5",
+   "hv_nmos_W0p3_L10",
+   "hv_nmos_W0p6_L1p2",
+   "hv_nmos_W10_L0p5",
+   "hv_pmos_W0p3_L10",
+   "hv_pmos_W0p6_L0p5",
+   "hv_pmos_W10_L0p35",
+   "hv_pmos_W2_L1p2"
+  ]
+ },
+ "TEST_by_class": {
+  "lv": [
+   "lv_nmos_W0p15_L0p13",
+   "lv_nmos_W10_L0p13",
+   "lv_nmos_W10_L0p18",
+   "lv_pmos_W0p15_L0p13",
+   "lv_pmos_W10_L0p13",
+   "lv_pmos_W10_L0p18"
+  ],
+  "hv": [
+   "hv_nmos_W10_L10",
+   "hv_nmos_W2_L3",
+   "hv_pmos_W0p3_L0p35",
+   "hv_pmos_W10_L10"
+  ]
+ },
+ "written": "2026-10-20, before any fit; TEST DUTs are not loaded by the fitting modes"
+}

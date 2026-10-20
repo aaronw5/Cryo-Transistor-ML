@@ -872,3 +872,38 @@ figures `out/research/explore/I3_2/followup/f1_iv_*.png` are committed and label
 Site: new claims `i4-1` (in progress, "supported against baselines (development set)") and `i4-2` (verified,
 diagnostic); claim `i3-2` follow-up section updated with F1b/F1c and the exporter fix, the ngspice-46 caveat
 replaced; Exploration status block updated. Site rebuilt, not published.
+
+## I5-1: I3-2 bias-only correction on IHP SG13G2 measured MOSFETs (2026-10-20 07:55)
+
+Pre-registration `out/research/explore/I5_1/prereg.json` (committed alone before any card fit, 9267a90).
+Data: IHP-Open-PDK `ihp-sg13g2/libs.doc/meas/MOS` (commit 5e6d592e, Apache-2.0, IC-CAP MDM text, read as
+text under `python -I`): 28 DUTs (LV 8 nMOS + 8 pMOS on the same 8 W/L; HV 6 + 6), 233/300/343/398 K,
+dc_idvg (3 Vd x 5 or 7 Vb), dc_idvd and dc_idvd_vth (Vb = 0 and Vbmin). Dataset
+`out/research/explore/I5_1/data/ihp_meas.npz` (not committed) and `manifest.json` (committed).
+Fitted curves: the 11 Vb = 0 curves per DUT and temperature (idvg@d0..d2, idvd@g0..g4, idvd@t0..t2, keys by
+position). Inclusion: pdk2 target-frozen rule (trim at the first |I| > 1e-10 A; include iff trimmed mean |I| >
+3e-7 A Id-Vd / 2e-7 A Id-Vg): 946 of 1232 curves, 3 to 10 per DUT and temperature. Quantization: up to 6
+significant digits, smallest nonzero |id| 2e-14 A; largest |id| 0.061 of the 0.1 A drain compliance; off-current
+floor 2e-14 to 6.3e-12 A.
+Simulator: ngspice-46 + psp103.osdi, PDK .model block as a top-level card (LV and HV), header AD/AS/PD/PS, bulk
+source, header temperature; matches the PDK subcircuit through cornerMOS{lv,hv}.lib mos_tt within 4.4e-8
+relative on all 28 x 4 x 11 curves. Stock-card RRMS (no fit), all-device mean DEV / TEST / all 28:
+233 K 0.348 / 0.117 / 0.265; 300 K 0.190 / 0.119 / 0.165; 343 K 0.153 / 0.127 / 0.144; 398 K 0.135 / 0.140 /
+0.137. HV nMOS W10/L0.5 is 1.60 at 300 K (near-threshold Id-Vd curves). I-V check plots of 6 DEV DUTs:
+`out/research/explore/I5_1/stock/figs/`.
+Split (seed 20261020; LV by geometry, both polarities; HV 2 of 6 per polarity): DEV 18 (LV 10, HV 8),
+TEST 10, `out/research/explore/I5_1/split.json`; the fitting modes read only DEV.
+Cards: 12-parameter pdk2 IHP wide set; box VFBO/DPHIBO/DPHIBL stock +/- 0.2 V, others log |v|/2..2|v| (HV pMOS
+CTL = 0: [0, 0.05]); starting cards = polish from stock, max_nfev 3000, irls 3. Arms per temperature (LODO over
+DEV, training within class, VDD 1.2 V LV / 3.3 V HV): C0_refit, M_bias (I3-2 recipe unchanged), T1_inloop, B1
+(screened PSP extras), B2, B3_d3, B5; X300 cross-temperature arm (300 K fold g applied at 233/343/398 K).
+Rule at 300 K over 18 DEV DUTs: R1 CI upper of GMR(M_bias, C0_refit) < 1; R2 M_bias mean <= T1_inloop mean +
+0.005; R3 0 failed -> "replicated"; baselines B1, B2, B3_d3 beaten if CI upper of GMR(M_bias, X) < 1 ->
+"supported against baselines".
+Smoke (300 K, start max_nfev 100, 2 folds, 1 seed, 200 steps; not used for any conclusion): start 0.190 ->
+0.042 (300 K DEV); folds lv_nmos_W0p15_L0p18 / hv_nmos_W0p3_L0p5: C0_refit 0.0313 / 0.0181, M_bias 0.0337 /
+0.0221, T1_inloop 0.0314 / 0.0525, B1 0.0171 / 0.0121, B2 0.0200 / 0.0105, B3_d3 0.0341 / 0.0217, B5 0.0105 /
+0.0228; 70 s. Cross and decide smoke ran. Simulation 0.03 s per card.
+Estimated wall time: start 18 min, screen 1 min, lodo 4 x 10 min, cross 3 min, decide/figs 1 min (about 65 min).
+Queue: `I5_1_start`, `I5_1_screen`, `I5_1_lodo_300`, `I5_1_lodo_233`, `I5_1_lodo_343`, `I5_1_lodo_398`,
+`I5_1_cross`, `I5_1_decide`, `I5_1_figs`.
