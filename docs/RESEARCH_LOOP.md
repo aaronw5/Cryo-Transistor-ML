@@ -1365,3 +1365,25 @@ median log ratio; 0.4 s, `examples/examples.json`); RRMS reproduced with relativ
 pre-registered): family x stratum rows, B3_d3 subset columns, the S3 OLS reference point, g maps, I-V figures.
 Site: new claim `i8-1` (in progress; headline "P_a correct, P_b supported (NIST sky130 4 K DEV, prospective)") in the
 Exploration tab, status item and decision table. Site rebuilt, not published.
+
+## I9-2 pre-registration draft, code and smoke (2026-10-21 01:10): function-class ablation for the shared bias-only correction
+
+Draft `out/research/explore/I9_2/prereg_draft.json` / `.md` (not in force; `--mode run` and `lc` refuse until
+`prereg.json` is committed). Question: does the held-out gain of g in I = I_card x exp(g) depend on the function class,
+and does a class with fewer trained values than M_bias (1765 over 5 members) match or beat it? Classes: const (2), lin
+(6), poly2-poly5 (12 / 20 / 30 / 42), gam (8 cubic B-splines per input, rank-1 interaction, 66), mlp8 / mlp16 (=
+M_bias) / mlp32 / mlp64 (5 seeds; 565 / 1765 / 6085 / 22405), mlp16_s1 (member 0 of the stored M_bias, 353), gp (I4-1
+B4). Protocol of the stored runs (folds, starting-card records, E1 loss, Adam 3e-3, 2000 steps, L2 1e-4, held-out refit
+max_nfev 400 irls 2 with g frozen, strict paper RRMS) through each dataset driver's refit function. 12 datasets:
+primary pool sky130 77 K, NIST 4 K, TU Delft 4.13 K, IHP measured 300 K; secondary GF180 / IHP tier c, other
+temperatures, tier b null control. Stored rows reused (C0_refit, M_bias, T1_inloop, B3_d2 / B3_d3 / B4, F2 widths 8 /
+32). Rule: pooled equal-weight GMR(X, M_bias) over the primary pool, stratified device bootstrap, Bonferroni over 12
+contrasts, margin 1.03; Q1 class-dependent if some class beats or is worse; Q2 smallest non-inferior class with fewer
+trained values, point GMR <= 1.05 on every primary dataset, no extra failures. Learning curve (secondary): best two
+classes by pooled GMR vs C0_refit, n_train 2 / 4 / 8 / all, 3 polarity-stratified subsets, TU Delft 4.13 K and NIST.
+Code: `src/cryoml/explore/i9_2_classes.py`, `scripts/research/explore/i9_2_classes.py` (modes plan, smoke, run, decide,
+lc), `tests/test_i9_2_classes.py` (19 tests). Plan (`plan.json`, no simulation): every dataset's records, folds and
+stored rows load; stored rows finite on all held-out devices. Compute estimate: 70 CPU-h for all 12 datasets (about
+13.7 h wall on 6 workers), primary pool 19 CPU-h (3.8 h); mlp32 + mlp64 5-seed training is about 45 of the 70 CPU-h;
+learning curve about 1.2 h. Smoke (sky130 77 K, 2 held-out devices, 200 steps, 2 seeds, GP 300 points, refit nfev 60;
+30 s; code check only). Not queued.
