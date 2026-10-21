@@ -318,3 +318,20 @@ class TestLearningCurve(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestDriverMerge(unittest.TestCase):
+    """merge_members accepts only multi-seed MLP members (validity bug 2026-10-21:
+    two held TU Delft devices in one fold queued the poly3 fold twice)."""
+
+    def test_poly_members_refused(self):
+        root = Path(__file__).resolve().parents[1]
+        for p in (root / "scripts" / "research", root / "scripts" / "research" / "explore"):
+            sys.path.insert(0, str(p))
+        import importlib
+        drv = importlib.import_module("i9_2_classes")
+        from cryoml.explore.i4_1_baselines import PolyCorrection
+        mu, sd = np.zeros(2), np.ones(2)
+        a = PolyCorrection("poly3", mu, sd, degree=3, coef=np.zeros((2, 10)))
+        with self.assertRaises(RuntimeError):
+            drv.merge_members([a, a])

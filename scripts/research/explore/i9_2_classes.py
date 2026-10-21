@@ -258,6 +258,8 @@ def merge_members(parts: list):
     """Merge 1-member MLP corrections of one (class, fold) in seed order."""
     from cryoml.explore.i3_2_bias import BiasCorrection
     first = parts[0]
+    if not all(isinstance(p, BiasCorrection) for p in parts):
+        raise RuntimeError("merge_members: only multi-seed MLP members can be merged")
     for p in parts[1:]:
         if not (np.array_equal(p.mu, first.mu) and np.array_equal(p.sd, first.sd)):
             raise RuntimeError("members do not share feature scaling")
@@ -344,8 +346,9 @@ def run_validity(args) -> int:
             for t in held:
                 f = data["fold"][t]
                 base = f"{name}|poly3|{f}"
-                recs_of[base] = [data["by_tag"][x] for x in data["train"][f]]
-                tasks += train_tasks_for("poly3", base, recs_of[base], ov)
+                if base not in recs_of:  # held devices can share a fold (TU Delft groups)
+                    recs_of[base] = [data["by_tag"][x] for x in data["train"][f]]
+                    tasks += train_tasks_for("poly3", base, recs_of[base], ov)
                 refit_specs.append((name, base, data["by_tag"][t], devs[t]))
             folds = data["folds"][:1] if smoke else data["folds"]
             for label in stored_paths(name)["models"]:
