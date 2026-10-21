@@ -589,11 +589,15 @@ def run_decide(args, guard, interim: bool) -> int:
                      "vs_C0_refit": gmr({"nist_rt": (ser, rt["rows"][CONTROL])}),
                      "vs_mlp16": gmr({"nist_rt": (ser, rt["rows"]["mlp16"])})}
     sec["nist_rt_I9_1"] = rt_out
+    sec["nist_rt_limitation"] = ("menu restricted to {none, poly3, mlp16}: no stored lin / gam / mlp8 rows; "
+                                 "no new NIST room-temperature class runs in I10-2 (amendment A1)")
+    a1 = amendment_c1(series, rows, clusters, a_adj)
     result = {"prereg": str(PREREG.relative_to(ROOT)), "guard": guard, "complete": complete,
               "missing": missing, "primary_datasets": list(PRIMARY), "menu": list(MENU),
               "alpha_adjusted": a_adj, "margin": MARGIN, "tie": TIE, "validity": validity,
               "selections": sel, "primary": prim, "ci95": ci95, "post_hoc_references": refs,
-              "secondary": sec, "selector_scores": info, "S3": s3info,
+              "secondary": sec, "amendment_A1_secondary_C1": a1, "amendment_guard": AMEND_GUARD,
+              "selector_scores": info, "S3": s3info,
               "runtime_s": round(time.time() - t0, 1)}
     if complete:
         result["rule"] = overall_decision(prim["labels"], prim["vs_C0_refit"], prim["vs_S_gate"])
@@ -606,6 +610,50 @@ def run_decide(args, guard, interim: bool) -> int:
         write_md(result)
     summary(result)
     return 0
+
+
+AMEND = OUT / "prereg_amendment_A1.json"
+AMEND_GUARD: dict = {}
+C1_VARIANTS = {   # amendment A1: secondary C1 reports (the primary rule is unchanged)
+    "primary_cluster_bonferroni": {"tudelft_clusters": True, "alpha": "bonferroni"},
+    "a_device_bootstrap_bonferroni": {"tudelft_clusters": False, "alpha": "bonferroni"},
+    "b_cluster_95": {"tudelft_clusters": True, "alpha": 0.05},
+    "ab_device_bootstrap_95": {"tudelft_clusters": False, "alpha": 0.05},
+}
+
+
+def require_amendment() -> dict:
+    """Amendment A1 committed, unmodified (decide refuses otherwise)."""
+    rel = str(AMEND.relative_to(ROOT))
+    tracked = subprocess.run(["git", "-C", str(ROOT), "ls-files", "--error-unmatch", rel],
+                             capture_output=True).returncode == 0
+    clean = subprocess.run(["git", "-C", str(ROOT), "diff", "--quiet", "HEAD", "--", rel]).returncode == 0
+    if not (AMEND.exists() and tracked and clean):
+        raise SystemExit(f"{rel} is not committed: amendment A1 is not in force")
+    sha = subprocess.run(["git", "-C", str(ROOT), "log", "-1", "--format=%H", "--", rel],
+                         capture_output=True, text=True).stdout.strip()
+    return {"amendment": rel, "commit": sha}
+
+
+def amendment_c1(series: dict, rows: dict, clusters: dict, a_adj: float) -> dict:
+    """A1 (secondary): C1 per selector and for fixed mlp16 under the primary
+    CI and the variants (a) TU Delft device bootstrap, (b) 95% per-dataset CIs,
+    (a+b).  The primary label and rule are not changed."""
+    names = sorted(next(iter(series.values())))
+    subjects = dict(series)
+    subjects["fixed_mlp16"] = {n: rows[n][REFERENCE] for n in names}
+    out = {}
+    for v, spec in C1_VARIANTS.items():
+        alpha = a_adj if spec["alpha"] == "bonferroni" else spec["alpha"]
+        cl = clusters if spec["tudelft_clusters"] else None
+        out[v] = {}
+        for s, ser in subjects.items():
+            per = gmr({n: (ser[n], rows[n][CONTROL]) for n in names}, cl, alpha)["per_dataset"]
+            fail = [n for n, d in per.items() if not (np.isfinite(d["ci_high"]) and d["ci_high"] <= MARGIN)]
+            out[v][s] = {"C1": not fail, "failing_datasets": fail, "alpha": alpha,
+                         "per_dataset": {n: {k: d[k] for k in ("ratio", "ci_low", "ci_high")}
+                                         for n, d in per.items()}}
+    return out
 
 
 def summary(r: dict) -> None:
@@ -621,7 +669,16 @@ def summary(r: dict) -> None:
         print(f"         per dataset vs C0: {per}")
         print(f"         counts {r['secondary']['selection_counts'][s]}")
     if "rule" in r:
-        print("rule", json.dumps(r["rule"]))
+        print("PRIMARY (in-force rule) rule", json.dumps(r["rule"]))
+    a1 = r.get("amendment_A1_secondary_C1")
+    if a1:
+        print("SECONDARY (amendment A1, does not change the primary label or rule): C1 per variant")
+        for v, d in a1.items():
+            print(f"  {v}: " + "; ".join(f"{s} C1 {'pass' if x['C1'] else 'fail ' + ','.join(x['failing_datasets'])}"
+                                       for s, x in d.items()))
+            tud = {s: x["per_dataset"].get("tudelft_4K") for s, x in d.items()}
+            print("    tudelft_4K: " + "; ".join(f"{s} {t['ratio']:.3f}[{t['ci_low']:.3f},{t['ci_high']:.3f}]"
+                                                 for s, t in tud.items() if t))
 
 
 def write_md(r: dict) -> None:
@@ -641,7 +698,16 @@ def write_md(r: dict) -> None:
     for s in r["selections"]:
         lines.append(f"| {s} | " + " | ".join(f(p["vs_C0_refit"][s]["per_dataset"][n])
                                              for n in r["primary_datasets"]) + " |")
-    lines += ["", f"Rule: {json.dumps(r.get('rule'))}", ""]
+    lines += ["", f"Primary rule (in force): {json.dumps(r.get('rule'))}", ""]
+    a1 = r.get("amendment_A1_secondary_C1") or {}
+    if a1:
+        subj = list(next(iter(a1.values())))
+        lines += ["Secondary (amendment A1; the primary label and rule are unchanged): C1 per variant", "",
+                  "| variant | " + " | ".join(subj) + " |", "|---" * (len(subj) + 1) + "|"]
+        for v, d in a1.items():
+            lines.append(f"| {v} | " + " | ".join(
+                "pass" if d[s]["C1"] else "fail (" + ", ".join(d[s]["failing_datasets"]) + ")" for s in subj) + " |")
+        lines.append("")
     (OUT / "decision.md").write_text("\n".join(lines) + "\n")
 
 
@@ -694,6 +760,7 @@ def main() -> int:
         if not args.dataset:
             raise SystemExit("--dataset required")
         return run_refit(args, args.dataset, guard, False)
+    AMEND_GUARD.update(require_amendment())
     return run_decide(args, guard, interim=(args.mode == "stored"))
 
 
