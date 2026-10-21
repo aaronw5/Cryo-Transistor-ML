@@ -1,0 +1,85 @@
+{
+ "iteration": "I11-2",
+ "dataset": "IHP SG13G2 measured DEV (18 DUTs)",
+ "smoke": true,
+ "guards": {
+  "smoke": true
+ },
+ "what": "training-only statistics per held-out temperature, computed from the starting-card records of the training folds before any I11-2 held-out refit",
+ "definitions": {
+  "S1_loto": "I7-1 S1 with the shared bin function estimated without the scored record's temperature and unit, over the M_bias_pool training records; fold mean",
+  "S3_arm": "mean ln(RRMS corrected / RRMS start) of post-hoc g (1 seed, 500 steps) on inner leave-one-temperature-out x 2 unit-part folds of the training records",
+  "prediction": "gain iff S3 < 0; I7-1 frozen rule y = 0.007619 - 0.485184 S1, gain iff y < 0; scored against the sign of the mean over DUTs of ln(arm / C0_refit) at T"
+ },
+ "per_temperature": {
+  "233": {
+   "stratum": "extrapolation",
+   "S1_loto": -0.22999742275857937,
+   "I7_1_rule_y": 0.11921006956369858,
+   "S3_M_bias_T": 0.033274292887929664,
+   "S3_M_bias_pool": 0.06637280267521972,
+   "predicted": {
+    "M_bias_T_vs_C0_refit (S3)": "no gain",
+    "M_bias_pool_vs_C0_refit (S3)": "no gain",
+    "M_bias_pool_vs_C0_refit (I7-1 rule on S1_loto)": "no gain"
+   }
+  },
+  "343": {
+   "stratum": "interpolation",
+   "S1_loto": -0.3414244557898093,
+   "I7_1_rule_y": 0.17327268315792282,
+   "S3_M_bias_T": 0.03973508277715677,
+   "S3_M_bias_pool": 0.07227072058828592,
+   "predicted": {
+    "M_bias_T_vs_C0_refit (S3)": "no gain",
+    "M_bias_pool_vs_C0_refit (S3)": "no gain",
+    "M_bias_pool_vs_C0_refit (I7-1 rule on S1_loto)": "no gain"
+   }
+  }
+ },
+ "per_fold": {
+  "lv_nmos_W0p15_L0p18|233": {
+   "S1_loto": -0.3890033402183197,
+   "n_train": 27,
+   "S3_M_bias_T": 0.022834678899914113,
+   "S3_M_bias_T_n_nan": 0,
+   "S3_M_bias_pool": 0.09089161918631809,
+   "S3_M_bias_pool_n_nan": 0
+  },
+  "hv_nmos_W0p3_L0p5|233": {
+   "S1_loto": -0.07099150529883902,
+   "n_train": 21,
+   "S3_M_bias_T": 0.043713906875945216,
+   "S3_M_bias_T_n_nan": 0,
+   "S3_M_bias_pool": 0.041853986164121365,
+   "S3_M_bias_pool_n_nan": 0
+  },
+  "lv_nmos_W0p15_L0p18|343": {
+   "S1_loto": -0.5598660675679499,
+   "n_train": 27,
+   "S3_M_bias_T": 0.02618940416142188,
+   "S3_M_bias_T_n_nan": 0,
+   "S3_M_bias_pool": 0.08868772334124729,
+   "S3_M_bias_pool_n_nan": 0
+  },
+  "hv_nmos_W0p3_L0p5|343": {
+   "S1_loto": -0.1229828440116687,
+   "n_train": 21,
+   "S3_M_bias_T": 0.05328076139289166,
+   "S3_M_bias_T_n_nan": 0,
+   "S3_M_bias_pool": 0.05585371783532454,
+   "S3_M_bias_pool_n_nan": 0
+  }
+ },
+ "S3_hyper": {
+  "seeds": [
+   0
+  ],
+  "steps": 50
+ },
+ "timing": {
+  "s1_s": 0.7,
+  "total_s": 3.6,
+  "n_s3_fits": 48
+ }
+}

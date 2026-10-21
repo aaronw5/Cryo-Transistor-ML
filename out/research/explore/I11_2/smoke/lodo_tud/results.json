@@ -1,0 +1,178 @@
+{
+ "name": "lodo_tud",
+ "smoke": true,
+ "guards": {
+  "smoke": true
+ },
+ "options": {
+  "heldout_nfev": 60,
+  "heldout_irls": 1,
+  "diff_step": 0.01
+ },
+ "hyper_overrides": {
+  "seeds": [
+   0
+  ],
+  "steps": 200
+ },
+ "arms": [
+  "M_bias_X",
+  "M_bias_in"
+ ],
+ "groups": [
+  "t40_nmos_W0p12_L0p04",
+  "t40_pmos_W1_L0p04"
+ ],
+ "held_out": [
+  "t40_nmos_W0p12_L0p04_d152",
+  "t40_pmos_W1_L0p04_d392"
+ ],
+ "timing": {
+  "train_s": 17.1,
+  "refit_s": 15.9,
+  "n_refits": 8,
+  "n_trained": 2
+ },
+ "n_sim_timeout": 0,
+ "runtime_s": 33.6,
+ "per_record": {
+  "M_bias_X": {
+   "t40_nmos_W0p12_L0p04_d152|4": 0.02682863931269715,
+   "t40_pmos_W1_L0p04_d392|4": 0.04106750599082424,
+   "t40_nmos_W0p12_L0p04_d152|295": 0.04486987328708923,
+   "t40_pmos_W1_L0p04_d392|295": 0.043030770963307104
+  },
+  "M_bias_in": {
+   "t40_nmos_W0p12_L0p04_d152|4": 0.025411557084319684,
+   "t40_pmos_W1_L0p04_d392|4": 0.03395280378287078,
+   "t40_nmos_W0p12_L0p04_d152|295": 0.03176287260716657,
+   "t40_pmos_W1_L0p04_d392|295": 0.012722897605098525
+  }
+ },
+ "rows": {
+  "M_bias_X": {
+   "t40_nmos_W0p12_L0p04_d152|4": {
+    "label": "M_bias_X",
+    "tag": "t40_nmos_W0p12_L0p04_d152",
+    "T_K": 4,
+    "rrms": 0.02682863931269715,
+    "failed": [],
+    "rrms_start": 0.029225510991761187,
+    "n_sim": 42,
+    "history": [
+     0.029225510991761187,
+     0.02682863931269715
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 4.3
+   },
+   "t40_pmos_W1_L0p04_d392|4": {
+    "label": "M_bias_X",
+    "tag": "t40_pmos_W1_L0p04_d392",
+    "T_K": 4,
+    "rrms": 0.04106750599082424,
+    "failed": [],
+    "rrms_start": 0.04113713353145905,
+    "n_sim": 43,
+    "history": [
+     0.04113713353145905,
+     0.04106750599082424
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 1.9
+   },
+   "t40_nmos_W0p12_L0p04_d152|295": {
+    "label": "M_bias_X",
+    "tag": "t40_nmos_W0p12_L0p04_d152",
+    "T_K": 295,
+    "rrms": 0.04486987328708923,
+    "failed": [],
+    "rrms_start": 0.10741695355784726,
+    "n_sim": 79,
+    "history": [
+     0.10741695355784726,
+     0.04486987328708923
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 3.51
+   },
+   "t40_pmos_W1_L0p04_d392|295": {
+    "label": "M_bias_X",
+    "tag": "t40_pmos_W1_L0p04_d392",
+    "T_K": 295,
+    "rrms": 0.043030770963307104,
+    "failed": [],
+    "rrms_start": 0.051978298902683885,
+    "n_sim": 81,
+    "history": [
+     0.051978298902683885,
+     0.043030770963307104
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 6.05
+   }
+  },
+  "M_bias_in": {
+   "t40_nmos_W0p12_L0p04_d152|4": {
+    "label": "M_bias_in",
+    "tag": "t40_nmos_W0p12_L0p04_d152",
+    "T_K": 4,
+    "rrms": 0.025411557084319684,
+    "failed": [],
+    "rrms_start": 0.02670622201800511,
+    "n_sim": 42,
+    "history": [
+     0.02670622201800511,
+     0.025411557084319684
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 4.19
+   },
+   "t40_pmos_W1_L0p04_d392|4": {
+    "label": "M_bias_in",
+    "tag": "t40_pmos_W1_L0p04_d392",
+    "T_K": 4,
+    "rrms": 0.03395280378287078,
+    "failed": [],
+    "rrms_start": 0.03758230945692237,
+    "n_sim": 81,
+    "history": [
+     0.03758230945692237,
+     0.03395280378287078
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 3.36
+   },
+   "t40_nmos_W0p12_L0p04_d152|295": {
+    "label": "M_bias_in",
+    "tag": "t40_nmos_W0p12_L0p04_d152",
+    "T_K": 295,
+    "rrms": 0.03176287260716657,
+    "failed": [],
+    "rrms_start": 0.03332214048163372,
+    "n_sim": 42,
+    "history": [
+     0.03332214048163372,
+     0.03176287260716657
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 1.76
+   },
+   "t40_pmos_W1_L0p04_d392|295": {
+    "label": "M_bias_in",
+    "tag": "t40_pmos_W1_L0p04_d392",
+    "T_K": 295,
+    "rrms": 0.012722897605098525,
+    "failed": [],
+    "rrms_start": 0.012871513411487252,
+    "n_sim": 43,
+    "history": [
+     0.012871513411487252,
+     0.012722897605098525
+    ],
+    "n_sim_timeout": 0,
+    "runtime_s": 4.26
+   }
+  }
+ }
+}
