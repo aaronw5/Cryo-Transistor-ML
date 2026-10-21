@@ -62,7 +62,7 @@ def correction_from_json(row: dict) -> Correction:
 
 def fit_bias(arm: str, train: list[DeviceRec], hyper: dict | None = None,
              cols: tuple | None = None, threads: int = 1,
-             verbose: bool = False) -> BiasCorrection:
+             verbose: bool = False, trace: list | None = None) -> BiasCorrection:
     """Train an ``M_bias``-type MLP ensemble on ``train``.
 
     Same recipe as ``e1_correction.fit_arm('M')`` (standardization with the
@@ -106,6 +106,8 @@ def fit_bias(arm: str, train: list[DeviceRec], hyper: dict | None = None,
             opt.step()
             if verbose and step % 500 == 0:
                 print(f"  {arm} seed {seed} step {step} loss {float(value):.5f}", flush=True)
+            if trace is not None and (step + 1) % 250 == 0:   # objective before this step's update
+                trace.append((int(seed), step + 1, float(value)))
         nets.append([(m.weight.detach().numpy().T.copy(), m.bias.detach().numpy().copy())
                      for m in mods])
     return BiasCorrection(arm, mu, sd, nets=nets, cols=cols)

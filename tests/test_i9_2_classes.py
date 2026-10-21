@@ -16,9 +16,10 @@ from cryoml.explore.e1_correction import (Correction, CurveRec, DeviceRec,  # no
                                           _loss_fn, make_batch, raw_features)
 from cryoml.explore.i3_2_bias import fit_bias, paired_ratio  # noqa: E402
 from cryoml.explore.i9_2_classes import (  # noqa: E402
-    CLASS_SPECS, CONTRASTS, REFERENCE, GAMCorrection, bonferroni_alpha, bspline_basis,
-    correction_from_json_i9, decide, ensemble_member, fit_class, fit_gam, label_class,
-    n_params, pooled_ratio, select_lc_classes, training_subsets)
+    CLASS_SPECS, CONTRASTS, REFERENCE, REPLICATE, GAMCorrection, LegendreCorrection,
+    bonferroni_alpha, bspline_basis, correction_from_json_i9, decide, ensemble_member,
+    fit_class, fit_gam, label_class, lc_classes, legendre_1d, legendre_features, n_params,
+    n_params_member, pooled_ratio, select_lc_classes, training_loss, training_subsets)
 
 VDD = 1.85
 GRID = np.linspace(0.05, VDD, 30)
@@ -61,14 +62,50 @@ class TestRegistry(unittest.TestCase):
     def test_param_counts(self):
         want = {"const": 2, "lin": 6, "poly2": 12, "poly3": 20, "poly4": 30, "poly5": 42,
                 "gam": 66, "mlp8": 565, "mlp16": 1765, "mlp16_s1": 353, "mlp32": 6085,
-                "mlp64": 22405, "gp": 2006}
+                "gp": 2006, "mlp16_rep": 1765}
         self.assertEqual({c: n_params(c) for c in CLASS_SPECS}, want)
+        self.assertEqual(n_params_member("mlp16"), 353)
+        self.assertEqual(n_params_member("mlp8"), 113)
+        self.assertEqual(n_params_member("poly5"), 42)
 
     def test_contrasts(self):
         self.assertEqual(REFERENCE, "mlp16")
-        self.assertEqual(len(CONTRASTS), 12)
+        self.assertEqual(REPLICATE, "mlp16_rep")
+        self.assertEqual(len(CONTRASTS), 11)
         self.assertNotIn(REFERENCE, CONTRASTS)
-        self.assertAlmostEqual(bonferroni_alpha(), 0.05 / 12)
+        self.assertNotIn(REPLICATE, CONTRASTS)
+        self.assertNotIn("mlp64", CLASS_SPECS)
+        self.assertEqual(CLASS_SPECS[REPLICATE]["seeds"], (5, 6, 7, 8, 9))
+        self.assertAlmostEqual(bonferroni_alpha(), 0.05 / 11)
+
+
+class TestLegendre(unittest.TestCase):
+    def test_polynomials(self):
+        x = np.linspace(-1, 1, 7)
+        p = legendre_1d(x, 5)
+        np.testing.assert_allclose(p[2], (3 * x ** 2 - 1) / 2, atol=1e-14)
+        np.testing.assert_allclose(p[5], (63 * x ** 5 - 70 * x ** 3 + 15 * x) / 8, atol=1e-14)
+        # orthogonality on [-1, 1] (Gauss-Legendre quadrature)
+        g, w = np.polynomial.legendre.leggauss(10)
+        q = legendre_1d(g, 5)
+        gram = np.array([[np.sum(w * a * b) for b in q] for a in q])
+        np.testing.assert_allclose(gram, np.diag(2.0 / (2 * np.arange(6) + 1)), atol=1e-13)
+
+    def test_features_and_fit(self):
+        f = legendre_features(np.array([0.3]), np.array([-0.5]), 4)
+        self.assertEqual(f.shape, (1, 15))
+        self.assertAlmostEqual(f[0, 0], 1.0)
+        recs = toy_devices(4)
+        for name in ("poly4", "poly5"):
+            corr = fit_class(name, recs, {"steps": 150})
+            self.assertIsInstance(corr, LegendreCorrection)
+            self.assertEqual(corr.coef.size, n_params(name))
+            self.assertLess(mean_loss(corr, recs), mean_loss(Correction("C0"), recs))
+            self.assertAlmostEqual(training_loss(corr, recs), mean_loss(corr, recs), places=12)
+            back = correction_from_json_i9(corr.to_json())
+            self.assertIsInstance(back, LegendreCorrection)
+            batch = make_batch(recs)
+            np.testing.assert_array_equal(back.g(batch.phi), corr.g(batch.phi))
 
 
 class TestSpline(unittest.TestCase):
@@ -132,7 +169,7 @@ class TestFitClass(unittest.TestCase):
         self.assertNotAlmostEqual(g[batch.phi[:, 0] == 0][0], g[batch.phi[:, 0] == 1][0])
 
     def test_lin_and_poly_degrees(self):
-        for name in ("lin", "poly4", "poly5"):
+        for name in ("const", "lin", "poly2", "poly3"):
             corr = fit_class(name, self.recs, {"steps": 100})
             self.assertEqual(corr.degree, CLASS_SPECS[name]["degree"])
             self.assertEqual(corr.coef.size, n_params(name))
@@ -156,6 +193,18 @@ class TestFitClass(unittest.TestCase):
         np.testing.assert_array_equal(mem.g(batch.phi), one.g(batch.phi))
         self.assertEqual(mem.arm, "mlp16_s1")
         self.assertEqual(len(mem.nets), 1)
+
+    def test_trace_does_not_change_fit(self):
+        for name, ov in (("poly3", {"steps": 500}), ("poly4", {"steps": 500}),
+                         ("gam", {"steps": 500}), ("mlp8", {"steps": 500, "seeds": (0, 1)})):
+            tr = []
+            a = fit_class(name, self.recs, ov, trace=tr)
+            b = fit_class(name, self.recs, ov)
+            batch = make_batch(self.recs)
+            np.testing.assert_array_equal(a.g(batch.phi), b.g(batch.phi))
+            n_mem = len(ov.get("seeds", (0,)))
+            self.assertEqual(len(tr), 2 * n_mem)
+            self.assertEqual([t[1] for t in tr[:2]], [250, 500])
 
     def test_gp_reduced(self):
         corr = fit_class("gp", self.recs, {"gp_total": 120, "gp_maxiter": 15})
@@ -226,6 +275,13 @@ class TestStatistics(unittest.TestCase):
         self.assertEqual(out2["Q2_smallest_matching_class"], "none")
         eq = decide({"poly3": cmp(1.0, 0.99, 1.01)}, {})
         self.assertEqual(eq["Q1"], "no class dependence detected")
+        rep = {"ratio": 1.0, "ci_low": 0.95, "ci_high": 1.10}
+        out3 = decide(pooled, {}, replicate=rep)
+        self.assertEqual(out3["labels"]["lin"], "worse")
+        self.assertIn("lin", out3["notes"])             # 1.08 inside [0.95, 1.10]
+        self.assertNotIn("const", out3["notes"])        # 1.2 outside
+        self.assertNotIn("poly3", out3["notes"])        # not beats / worse
+        self.assertEqual(out3["n_params_per_member"]["mlp32"], 1217)
 
 
 class TestLearningCurve(unittest.TestCase):
@@ -254,6 +310,10 @@ class TestLearningCurve(unittest.TestCase):
         self.assertEqual(out, ["poly3", "mlp16"])
         out = select_lc_classes({"mlp16": v(0.80), "poly3": v(0.83), "gam": v(0.81)})
         self.assertEqual(out, ["mlp16", "gam"])
+        self.assertEqual(lc_classes({"mlp16": v(0.80), "poly3": v(0.83), "gam": v(0.81)}),
+                         ["mlp16", "gam"])
+        self.assertEqual(lc_classes({"mlp16": v(0.85), "poly3": v(0.80), "gam": v(0.81),
+                                     "mlp16_rep": v(0.70)}), ["mlp16", "poly3", "gam"])
 
 
 if __name__ == "__main__":

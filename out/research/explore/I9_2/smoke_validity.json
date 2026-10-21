@@ -1,0 +1,160 @@
+{
+ "guard": null,
+ "smoke": true,
+ "options": {
+  "heldout_nfev": 10,
+  "heldout_irls": 1,
+  "diff_step": 0.01
+ },
+ "overrides": {
+  "steps": 50
+ },
+ "tolerance": 1e-09,
+ "datasets": {
+  "sky130_77K": {
+   "V1_rerun_rrms": {
+    "nmos_L0p15_W1p6": 0.01879638434724853
+   },
+   "V1_stored_rrms": {
+    "nmos_L0p15_W1p6": 0.018350415119706972
+   },
+   "V1_abs_diff": {
+    "nmos_L0p15_W1p6": 0.00044596922754155943
+   },
+   "V1_max_abs_diff": 0.00044596922754155943,
+   "V1_max_abs_coef_diff_vs_stored_model": {
+    "nmos_L0p15_W1p6": 0.018179567033814154
+   },
+   "V1_pass": false,
+   "stored_rows_finite_of_heldout": {
+    "C0_refit": "12/12",
+    "mlp16": "12/12",
+    "T1_inloop": "12/12",
+    "poly2": "12/12",
+    "poly3": "12/12",
+    "gp": "12/12",
+    "mlp8": "12/12",
+    "mlp32": "12/12",
+    "mlp16_rep": "12/12"
+   },
+   "stored_training_loss": {
+    "mlp16|nmos_L0p15_W1p6": 0.08488907285527933,
+    "poly2|nmos_L0p15_W1p6": 0.11050985747860297,
+    "poly3|nmos_L0p15_W1p6": 0.102819853622635,
+    "gp|nmos_L0p15_W1p6": 0.13503876441975168,
+    "mlp8|nmos_L0p15_W1p6": 0.08497987383142504,
+    "mlp32|nmos_L0p15_W1p6": 0.0841233100510405,
+    "mlp16_rep|nmos_L0p15_W1p6": 0.08450763358774836
+   }
+  },
+  "nist_4K": {
+   "V1_rerun_rrms": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.0182188325880073
+   },
+   "V1_stored_rrms": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.017739854769693007
+   },
+   "V1_abs_diff": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.0004789778183142933
+   },
+   "V1_max_abs_diff": 0.0004789778183142933,
+   "V1_max_abs_coef_diff_vs_stored_model": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.056387722196421776
+   },
+   "V1_pass": false,
+   "stored_rows_finite_of_heldout": {
+    "C0_refit": "53/53",
+    "mlp16": "53/53",
+    "T1_inloop": "53/53",
+    "poly3": "53/53"
+   },
+   "stored_training_loss": {
+    "mlp16|nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.033985762394541284,
+    "poly3|nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.0341900498210748
+   }
+  },
+  "tudelft_4K": {
+   "V1_rerun_rrms": {
+    "t40_nmos_W0p12_L0p04_d152": 0.0215447251807352
+   },
+   "V1_stored_rrms": {
+    "t40_nmos_W0p12_L0p04_d152": 0.020708564107268852
+   },
+   "V1_abs_diff": {
+    "t40_nmos_W0p12_L0p04_d152": 0.000836161073466346
+   },
+   "V1_max_abs_diff": 0.000836161073466346,
+   "V1_max_abs_coef_diff_vs_stored_model": {
+    "t40_nmos_W0p12_L0p04": 0.011536522795490613
+   },
+   "V1_pass": false,
+   "stored_rows_finite_of_heldout": {
+    "C0_refit": "45/45",
+    "mlp16": "45/45",
+    "T1_inloop": "45/45",
+    "poly3": "45/45"
+   },
+   "stored_training_loss": {
+    "mlp16|t40_nmos_W0p12_L0p04": 0.046155807837235135,
+    "poly3|t40_nmos_W0p12_L0p04": 0.04805437297350672
+   }
+  },
+  "ihp_meas_300K": {
+   "V1_rerun_rrms": {
+    "hv_nmos_W0p3_L0p5": 0.018338453168111817
+   },
+   "V1_stored_rrms": {
+    "hv_nmos_W0p3_L0p5": 0.01816409574898267
+   },
+   "V1_abs_diff": {
+    "hv_nmos_W0p3_L0p5": 0.00017435741912914804
+   },
+   "V1_max_abs_diff": 0.00017435741912914804,
+   "V1_max_abs_coef_diff_vs_stored_model": {
+    "hv_nmos_W0p3_L0p5": 0.00033546935751334263
+   },
+   "V1_pass": false,
+   "stored_rows_finite_of_heldout": {
+    "C0_refit": "18/18",
+    "mlp16": "18/18",
+    "T1_inloop": "18/18",
+    "poly3": "18/18"
+   },
+   "stored_training_loss": {
+    "mlp16|hv_nmos_W0p3_L0p5": 0.0161661032973782,
+    "poly3|hv_nmos_W0p3_L0p5": 0.016669309494134543
+   }
+  }
+ },
+ "train": {
+  "tasks": {
+   "sky130_77K|poly3|nmos_L0p15_W1p6": {
+    "seconds": 0.516,
+    "n_points": 15183,
+    "trace": []
+   },
+   "nist_4K|poly3|nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+    "seconds": 0.53,
+    "n_points": 25385,
+    "trace": []
+   },
+   "tudelft_4K|poly3|t40_nmos_W0p12_L0p04": {
+    "seconds": 0.318,
+    "n_points": 94451,
+    "trace": []
+   },
+   "ihp_meas_300K|poly3|hv_nmos_W0p3_L0p5": {
+    "seconds": 0.021,
+    "n_points": 2746,
+    "trace": []
+   }
+  },
+  "final_training_loss": {
+   "sky130_77K|poly3|nmos_L0p15_W1p6": 0.1029784300982009,
+   "nist_4K|poly3|nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.03515660013135669,
+   "tudelft_4K|poly3|t40_nmos_W0p12_L0p04": 0.04815846063612924,
+   "ihp_meas_300K|poly3|hv_nmos_W0p3_L0p5": 0.016718700773729545
+  }
+ },
+ "runtime_s": 7.5
+}

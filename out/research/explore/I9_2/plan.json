@@ -1,8 +1,22 @@
 {
+ "per_point_step_member_s": {
+  "mlp64": 1.3838405643190546e-06,
+  "mlp32": 6.414214190312998e-07,
+  "const": 3.419484475194971e-08,
+  "lin": 4.316503373904717e-08,
+  "poly2": 5.7313036998578315e-08,
+  "poly3": 7.590942415104037e-08,
+  "poly4": 8.45266977842993e-08,
+  "poly5": 6.440643509064512e-08,
+  "gam": 1.2132722394900865e-07,
+  "mlp8": 1.965019733490294e-07,
+  "mlp16": 3.280563387407431e-07,
+  "mlp16_rep": 3.280563387407431e-07
+ },
+ "gp_train_s_per_fold": 30.0,
+ "workers": 6,
  "datasets": {
   "sky130_77K": {
-   "kind": "sky130",
-   "pool": "primary",
    "n_records": 12,
    "n_finite": 12,
    "excluded": [],
@@ -13,51 +27,47 @@
     "max": 15670,
     "mean": 15290.9
    },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "12/12",
-    "mlp16": "12/12",
-    "T1_inloop": "12/12",
-    "poly2": "12/12",
-    "poly3": "12/12",
-    "gp": "12/12",
-    "mlp8": "12/12",
-    "mlp32": "12/12"
-   },
+   "stored_classes": [
+    "gp",
+    "mlp16",
+    "mlp16_rep",
+    "mlp32",
+    "mlp8",
+    "poly2",
+    "poly3"
+   ],
    "new_classes_trained": [
     "const",
     "lin",
     "poly4",
     "poly5",
-    "gam",
-    "mlp64"
+    "gam"
    ],
    "classes_from_stored_M_bias": [
     "mlp16_s1"
    ],
-   "n_new_refits": 86,
+   "n_new_refits": 72,
    "refit_timing": {
     "corrected_refit_s": 13.56,
     "gp_refit_s": 41.35
    },
-   "refit_cpu_s": 1166.2,
-   "train_cpu_s": 2666.8,
-   "train_cpu_s_per_class": {
-    "const": 12.5,
-    "lin": 15.8,
-    "poly4": 31.0,
-    "poly5": 23.6,
-    "gam": 44.5,
-    "mlp64": 2539.2
+   "refit_cpu_h": 0.27,
+   "train_cpu_h": 0.04,
+   "train_cpu_h_by_class": {
+    "const": 0.0,
+    "lin": 0.0,
+    "poly4": 0.01,
+    "poly5": 0.01,
+    "gam": 0.01
    },
+   "loss_eval_cpu_s": 72.0,
    "estimate": {
-    "cpu_s": 3833.0,
-    "cpu_h": 1.06,
-    "wall_min": 12.5
+    "cpu_s": 1103.9,
+    "cpu_h": 0.31,
+    "wall_min": 3.6
    }
   },
   "nist_4K": {
-   "kind": "nist",
-   "pool": "primary",
    "n_records": 57,
    "n_finite": 53,
    "excluded": [
@@ -73,12 +83,10 @@
     "max": 25829,
     "mean": 25486.9
    },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "53/53",
-    "mlp16": "53/53",
-    "T1_inloop": "53/53",
-    "poly3": "53/53"
-   },
+   "stored_classes": [
+    "mlp16",
+    "poly3"
+   ],
    "new_classes_trained": [
     "const",
     "lin",
@@ -88,41 +96,37 @@
     "gam",
     "mlp8",
     "mlp32",
-    "mlp64",
     "gp"
    ],
    "classes_from_stored_M_bias": [
     "mlp16_s1"
    ],
-   "n_new_refits": 585,
+   "n_new_refits": 530,
    "refit_timing": {
     "corrected_refit_s": 8.48,
-    "gp_refit_s": null
+    "gp_refit_s": 38.48
    },
-   "refit_cpu_s": 6550.8,
-   "train_cpu_s": 32695.6,
-   "train_cpu_s_per_class": {
-    "const": 92.4,
-    "lin": 116.6,
-    "poly2": 154.8,
-    "poly4": 228.4,
-    "poly5": 174.0,
-    "gam": 327.8,
-    "mlp8": 2654.4,
-    "mlp32": 8664.3,
-    "mlp64": 18693.0,
-    "gp": 1590.0
+   "refit_cpu_h": 1.69,
+   "train_cpu_h": 3.89,
+   "train_cpu_h_by_class": {
+    "const": 0.03,
+    "lin": 0.03,
+    "poly2": 0.04,
+    "poly4": 0.06,
+    "poly5": 0.05,
+    "gam": 0.09,
+    "mlp8": 0.74,
+    "mlp32": 2.41,
+    "gp": 0.44
    },
+   "loss_eval_cpu_s": 291.5,
    "estimate": {
-    "cpu_s": 39246.4,
-    "cpu_h": 10.9,
-    "wall_min": 128.3
+    "cpu_s": 20087.1,
+    "cpu_h": 5.58,
+    "wall_min": 65.6
    }
   },
   "tudelft_4K": {
-   "kind": "tudelft",
-   "T": 4,
-   "pool": "primary",
    "n_records": 45,
    "n_finite": 45,
    "excluded": [],
@@ -133,12 +137,10 @@
     "max": 109628,
     "mean": 98339.1
    },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "45/45",
-    "mlp16": "45/45",
-    "T1_inloop": "45/45",
-    "poly3": "45/45"
-   },
+   "stored_classes": [
+    "mlp16",
+    "poly3"
+   ],
    "new_classes_trained": [
     "const",
     "lin",
@@ -148,41 +150,37 @@
     "gam",
     "mlp8",
     "mlp32",
-    "mlp64",
     "gp"
    ],
    "classes_from_stored_M_bias": [
     "mlp16_s1"
    ],
-   "n_new_refits": 497,
+   "n_new_refits": 450,
    "refit_timing": {
     "corrected_refit_s": 10.1,
-    "gp_refit_s": null
+    "gp_refit_s": 40.1
    },
-   "refit_cpu_s": 6369.7,
-   "train_cpu_s": 16061.5,
-   "train_cpu_s_per_class": {
-    "const": 47.1,
-    "lin": 59.4,
-    "poly2": 78.9,
-    "poly4": 116.4,
-    "poly5": 88.7,
-    "gam": 167.0,
-    "mlp8": 1352.7,
-    "mlp32": 4415.4,
-    "mlp64": 9526.0,
-    "gp": 210.0
+   "refit_cpu_h": 1.64,
+   "train_cpu_h": 1.82,
+   "train_cpu_h_by_class": {
+    "const": 0.01,
+    "lin": 0.02,
+    "poly2": 0.02,
+    "poly4": 0.03,
+    "poly5": 0.02,
+    "gam": 0.05,
+    "mlp8": 0.38,
+    "mlp32": 1.23,
+    "gp": 0.06
    },
+   "loss_eval_cpu_s": 38.5,
    "estimate": {
-    "cpu_s": 22431.2,
-    "cpu_h": 6.23,
-    "wall_min": 73.3
+    "cpu_s": 12430.5,
+    "cpu_h": 3.45,
+    "wall_min": 40.6
    }
   },
   "ihp_meas_300K": {
-   "kind": "ihp_meas",
-   "T": 300,
-   "pool": "primary",
    "n_records": 18,
    "n_finite": 18,
    "excluded": [],
@@ -193,12 +191,10 @@
     "max": 2891,
     "mean": 2250.2
    },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "18/18",
-    "mlp16": "18/18",
-    "T1_inloop": "18/18",
-    "poly3": "18/18"
-   },
+   "stored_classes": [
+    "mlp16",
+    "poly3"
+   ],
    "new_classes_trained": [
     "const",
     "lin",
@@ -208,556 +204,87 @@
     "gam",
     "mlp8",
     "mlp32",
-    "mlp64",
     "gp"
    ],
    "classes_from_stored_M_bias": [
     "mlp16_s1"
    ],
-   "n_new_refits": 200,
+   "n_new_refits": 180,
    "refit_timing": {
     "corrected_refit_s": 10.12,
-    "gp_refit_s": null
+    "gp_refit_s": 40.12
    },
-   "refit_cpu_s": 2564.0,
-   "train_cpu_s": 1472.7,
-   "train_cpu_s_per_class": {
-    "const": 2.8,
-    "lin": 3.5,
-    "poly2": 4.6,
-    "poly4": 6.8,
-    "poly5": 5.2,
-    "gam": 9.8,
-    "mlp8": 79.6,
-    "mlp32": 259.8,
-    "mlp64": 560.5,
-    "gp": 540.0
+   "refit_cpu_h": 0.66,
+   "train_cpu_h": 0.23,
+   "train_cpu_h_by_class": {
+    "const": 0.0,
+    "lin": 0.0,
+    "poly2": 0.0,
+    "poly4": 0.0,
+    "poly5": 0.0,
+    "gam": 0.0,
+    "mlp8": 0.02,
+    "mlp32": 0.07,
+    "gp": 0.13
    },
+   "loss_eval_cpu_s": 99.0,
    "estimate": {
-    "cpu_s": 4036.7,
-    "cpu_h": 1.12,
-    "wall_min": 13.2
-   }
-  },
-  "gf180_c": {
-   "kind": "pdk2",
-   "pdk": "gf180",
-   "tier": "c",
-   "pool": "simulated",
-   "n_records": 48,
-   "n_finite": 48,
-   "excluded": [],
-   "n_folds": 16,
-   "n_heldout": 48,
-   "train_points_per_fold": {
-    "min": 78217,
-    "max": 80214,
-    "mean": 78870.9
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "48/48",
-    "mlp16": "48/48",
-    "T1_inloop": "48/48",
-    "poly2": "48/48",
-    "poly3": "48/48",
-    "gp": "48/48"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 434,
-   "refit_timing": {
-    "corrected_refit_s": 11.45,
-    "gp_refit_s": 43.11
-   },
-   "refit_cpu_s": 4969.3,
-   "train_cpu_s": 28914.6,
-   "train_cpu_s_per_class": {
-    "const": 86.3,
-    "lin": 108.9,
-    "poly4": 213.3,
-    "poly5": 162.6,
-    "gam": 306.2,
-    "mlp8": 2479.7,
-    "mlp32": 8094.3,
-    "mlp64": 17463.2
-   },
-   "estimate": {
-    "cpu_s": 33883.9,
-    "cpu_h": 9.41,
-    "wall_min": 110.7
-   }
-  },
-  "ihp_c": {
-   "kind": "pdk2",
-   "pdk": "ihp",
-   "tier": "c",
-   "pool": "simulated",
-   "n_records": 48,
-   "n_finite": 48,
-   "excluded": [],
-   "n_folds": 16,
-   "n_heldout": 48,
-   "train_points_per_fold": {
-    "min": 79654,
-    "max": 81877,
-    "mean": 80426.2
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "48/48",
-    "mlp16": "48/48",
-    "T1_inloop": "48/48",
-    "poly2": "48/48",
-    "poly3": "48/48",
-    "gp": "48/48"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 434,
-   "refit_timing": {
-    "corrected_refit_s": 14.97,
-    "gp_refit_s": 41.89
-   },
-   "refit_cpu_s": 6497.0,
-   "train_cpu_s": 29484.8,
-   "train_cpu_s_per_class": {
-    "const": 88.0,
-    "lin": 111.1,
-    "poly4": 217.5,
-    "poly5": 165.8,
-    "gam": 312.3,
-    "mlp8": 2528.6,
-    "mlp32": 8253.9,
-    "mlp64": 17807.5
-   },
-   "estimate": {
-    "cpu_s": 35981.7,
-    "cpu_h": 9.99,
-    "wall_min": 117.6
-   }
-  },
-  "tudelft_295K": {
-   "kind": "tudelft",
-   "T": 295,
-   "pool": "other_temperature",
-   "n_records": 45,
-   "n_finite": 45,
-   "excluded": [],
-   "n_folds": 7,
-   "n_heldout": 45,
-   "train_points_per_fold": {
-    "min": 94010,
-    "max": 109329,
-    "mean": 98086.3
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "45/45",
-    "mlp16": "45/45",
-    "T1_inloop": "45/45",
-    "poly3": "45/45"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly2",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64",
-    "gp"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 497,
-   "refit_timing": {
-    "corrected_refit_s": 10.95,
-    "gp_refit_s": null
-   },
-   "refit_cpu_s": 6792.1,
-   "train_cpu_s": 16020.8,
-   "train_cpu_s_per_class": {
-    "const": 47.0,
-    "lin": 59.3,
-    "poly2": 78.7,
-    "poly4": 116.1,
-    "poly5": 88.4,
-    "gam": 166.6,
-    "mlp8": 1349.2,
-    "mlp32": 4404.0,
-    "mlp64": 9501.5,
-    "gp": 210.0
-   },
-   "estimate": {
-    "cpu_s": 22812.9,
-    "cpu_h": 6.34,
-    "wall_min": 74.6
-   }
-  },
-  "ihp_meas_233K": {
-   "kind": "ihp_meas",
-   "T": 233,
-   "pool": "other_temperature",
-   "n_records": 18,
-   "n_finite": 18,
-   "excluded": [],
-   "n_folds": 18,
-   "n_heldout": 18,
-   "train_points_per_fold": {
-    "min": 1762,
-    "max": 2877,
-    "mean": 2251.5
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "18/18",
-    "mlp16": "18/18",
-    "T1_inloop": "18/18",
-    "poly3": "18/18"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly2",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64",
-    "gp"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 200,
-   "refit_timing": {
-    "corrected_refit_s": 9.92,
-    "gp_refit_s": null
-   },
-   "refit_cpu_s": 2524.0,
-   "train_cpu_s": 1473.2,
-   "train_cpu_s_per_class": {
-    "const": 2.8,
-    "lin": 3.5,
-    "poly2": 4.6,
-    "poly4": 6.9,
-    "poly5": 5.2,
-    "gam": 9.8,
-    "mlp8": 79.6,
-    "mlp32": 259.9,
-    "mlp64": 560.8,
-    "gp": 540.0
-   },
-   "estimate": {
-    "cpu_s": 3997.2,
-    "cpu_h": 1.11,
-    "wall_min": 13.1
-   }
-  },
-  "ihp_meas_343K": {
-   "kind": "ihp_meas",
-   "T": 343,
-   "pool": "other_temperature",
-   "n_records": 18,
-   "n_finite": 18,
-   "excluded": [],
-   "n_folds": 18,
-   "n_heldout": 18,
-   "train_points_per_fold": {
-    "min": 1818,
-    "max": 2930,
-    "mean": 2273.3
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "18/18",
-    "mlp16": "18/18",
-    "T1_inloop": "18/18",
-    "poly3": "18/18"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly2",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64",
-    "gp"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 200,
-   "refit_timing": {
-    "corrected_refit_s": 10.19,
-    "gp_refit_s": null
-   },
-   "refit_cpu_s": 2578.0,
-   "train_cpu_s": 1482.3,
-   "train_cpu_s_per_class": {
-    "const": 2.8,
-    "lin": 3.5,
-    "poly2": 4.7,
-    "poly4": 6.9,
-    "poly5": 5.3,
-    "gam": 9.9,
-    "mlp8": 80.4,
-    "mlp32": 262.5,
-    "mlp64": 566.3,
-    "gp": 540.0
-   },
-   "estimate": {
-    "cpu_s": 4060.3,
-    "cpu_h": 1.13,
-    "wall_min": 13.3
-   }
-  },
-  "ihp_meas_398K": {
-   "kind": "ihp_meas",
-   "T": 398,
-   "pool": "other_temperature",
-   "n_records": 18,
-   "n_finite": 18,
-   "excluded": [],
-   "n_folds": 18,
-   "n_heldout": 18,
-   "train_points_per_fold": {
-    "min": 1800,
-    "max": 2983,
-    "mean": 2288.1
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "18/18",
-    "mlp16": "18/18",
-    "T1_inloop": "18/18",
-    "poly3": "18/18"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly2",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64",
-    "gp"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 200,
-   "refit_timing": {
-    "corrected_refit_s": 9.87,
-    "gp_refit_s": null
-   },
-   "refit_cpu_s": 2514.0,
-   "train_cpu_s": 1488.4,
-   "train_cpu_s_per_class": {
-    "const": 2.8,
-    "lin": 3.6,
-    "poly2": 4.7,
-    "poly4": 7.0,
-    "poly5": 5.3,
-    "gam": 10.0,
-    "mlp8": 80.9,
-    "mlp32": 264.2,
-    "mlp64": 569.9,
-    "gp": 540.0
-   },
-   "estimate": {
-    "cpu_s": 4002.4,
-    "cpu_h": 1.11,
-    "wall_min": 13.1
-   }
-  },
-  "gf180_b": {
-   "kind": "pdk2",
-   "pdk": "gf180",
-   "tier": "b",
-   "pool": "null_control",
-   "n_records": 48,
-   "n_finite": 48,
-   "excluded": [],
-   "n_folds": 16,
-   "n_heldout": 48,
-   "train_points_per_fold": {
-    "min": 77435,
-    "max": 79379,
-    "mean": 78097.5
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "48/48",
-    "mlp16": "48/48"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly2",
-    "poly3",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64",
-    "gp"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 578,
-   "refit_timing": {
-    "corrected_refit_s": 11.45,
-    "gp_refit_s": null
-   },
-   "refit_cpu_s": 8058.1,
-   "train_cpu_s": 29444.0,
-   "train_cpu_s_per_class": {
-    "const": 85.5,
-    "lin": 107.9,
-    "poly2": 143.2,
-    "poly3": 189.7,
-    "poly4": 211.2,
-    "poly5": 161.0,
-    "gam": 303.2,
-    "mlp8": 2455.4,
-    "mlp32": 8014.9,
-    "mlp64": 17291.9,
-    "gp": 480.0
-   },
-   "estimate": {
-    "cpu_s": 37502.1,
-    "cpu_h": 10.42,
-    "wall_min": 122.6
-   }
-  },
-  "ihp_b": {
-   "kind": "pdk2",
-   "pdk": "ihp",
-   "tier": "b",
-   "pool": "null_control",
-   "n_records": 48,
-   "n_finite": 48,
-   "excluded": [],
-   "n_folds": 16,
-   "n_heldout": 48,
-   "train_points_per_fold": {
-    "min": 79630,
-    "max": 81739,
-    "mean": 80399.1
-   },
-   "stored_rows_finite_of_heldout": {
-    "C0_refit": "48/48",
-    "mlp16": "48/48"
-   },
-   "new_classes_trained": [
-    "const",
-    "lin",
-    "poly2",
-    "poly3",
-    "poly4",
-    "poly5",
-    "gam",
-    "mlp8",
-    "mlp32",
-    "mlp64",
-    "gp"
-   ],
-   "classes_from_stored_M_bias": [
-    "mlp16_s1"
-   ],
-   "n_new_refits": 578,
-   "refit_timing": {
-    "corrected_refit_s": 14.97,
-    "gp_refit_s": null
-   },
-   "refit_cpu_s": 10092.7,
-   "train_cpu_s": 30297.5,
-   "train_cpu_s_per_class": {
-    "const": 88.0,
-    "lin": 111.1,
-    "poly2": 147.5,
-    "poly3": 195.3,
-    "poly4": 217.5,
-    "poly5": 165.7,
-    "gam": 312.1,
-    "mlp8": 2527.8,
-    "mlp32": 8251.1,
-    "mlp64": 17801.5,
-    "gp": 480.0
-   },
-   "estimate": {
-    "cpu_s": 40390.2,
-    "cpu_h": 11.22,
-    "wall_min": 132.0
+    "cpu_s": 3206.9,
+    "cpu_h": 0.89,
+    "wall_min": 10.5
    }
   }
  },
- "per_point_step_s": {
-  "mlp64": 1.3838405643190546e-06,
-  "mlp32": 6.414214190312998e-07,
-  "const": 3.419484475194971e-08,
-  "lin": 4.316503373904717e-08,
-  "poly2": 5.7313036998578315e-08,
-  "poly3": 7.590942415104037e-08,
-  "poly4": 8.45266977842993e-08,
-  "poly5": 6.440643509064512e-08,
-  "gam": 1.2132722394900865e-07,
-  "mlp8": 1.965019733490294e-07,
-  "mlp16": 3.280563387407431e-07
- },
- "gp_train_s_per_fold": 30.0,
- "workers": 6,
- "total": {
-  "cpu_s": 252178.0,
-  "cpu_h": 70.05,
-  "wall_min": 824.1
- },
- "learning_curve": {
-  "tudelft_4K": {
-   "refits": 810,
-   "trainings_per_class": 63,
-   "estimate_refits_only": {
-    "cpu_s": 8181.0,
-    "cpu_h": 2.27,
-    "wall_min": 26.7
-   }
+ "jobs": {
+  "validity": {
+   "cpu_s": 247.4,
+   "cpu_h": 0.07,
+   "wall_min": 0.8
   },
-  "nist_4K": {
-   "refits": 954,
-   "trainings_per_class": 477,
-   "estimate_refits_only": {
-    "cpu_s": 8089.9,
-    "cpu_h": 2.25,
-    "wall_min": 26.4
+  "replicate": {
+   "cpu_s": 7908.6,
+   "cpu_h": 2.2,
+   "wall_min": 25.8
+  },
+  "run_all_4": {
+   "cpu_s": 36828.4,
+   "cpu_h": 10.23,
+   "wall_min": 120.4
+  },
+  "learning_curve": {
+   "tudelft_4K": {
+    "refits_per_class": 405,
+    "trainings_per_class": 63,
+    "low_cheap_classes": {
+     "cpu_s": 15072.2,
+     "cpu_h": 4.19,
+     "wall_min": 49.3
+    },
+    "high_mlp32_gp": {
+     "cpu_s": 33887.0,
+     "cpu_h": 9.41,
+     "wall_min": 110.7
+    }
+   },
+   "nist_4K": {
+    "refits_per_class": 477,
+    "trainings_per_class": 477,
+    "low_cheap_classes": {
+     "cpu_s": 16045.4,
+     "cpu_h": 4.46,
+     "wall_min": 52.4
+    },
+    "high_mlp32_gp": {
+     "cpu_s": 46847.0,
+     "cpu_h": 13.01,
+     "wall_min": 153.1
+    }
    }
   }
+ },
+ "total_without_lc": {
+  "cpu_s": 44984.5,
+  "cpu_h": 12.5,
+  "wall_min": 147.0
  }
 }

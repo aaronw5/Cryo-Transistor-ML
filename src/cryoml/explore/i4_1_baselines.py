@@ -285,7 +285,7 @@ class PolyCorrection(Correction):
 
 
 def fit_poly(arm: str, degree: int, train: list[DeviceRec], hyper: dict | None = None,
-             threads: int = 1) -> PolyCorrection:
+             threads: int = 1, trace: list | None = None) -> PolyCorrection:
     """E1 loss (mean paper per-device RRMS of I_sim * exp(g)) + l2 * sum of
     squared non-constant coefficients; Adam, zero initialization, float64."""
     import torch
@@ -301,12 +301,14 @@ def fit_poly(arm: str, degree: int, train: list[DeviceRec], hyper: dict | None =
     p = torch.tensor(batch.phi[:, 0], dtype=torch.float64)
     coef = torch.zeros((2, f.shape[1]), dtype=torch.float64, requires_grad=True)
     opt = torch.optim.Adam([coef], lr=hp["lr"])
-    for _ in range(hp["steps"]):
+    for step in range(hp["steps"]):
         opt.zero_grad()
         h = (1.0 - p) * (f @ coef[0]) + p * (f @ coef[1])
         value = loss(OUT_SCALE * torch.tanh(h)) + hp["l2"] * (coef[:, 1:] ** 2).sum()
         value.backward()
         opt.step()
+        if trace is not None and (step + 1) % 250 == 0:   # objective before this step's update
+            trace.append((0, step + 1, float(value)))
     return PolyCorrection(arm, mu, sd, degree=degree, coef=coef.detach().numpy().copy())
 
 

@@ -8,16 +8,21 @@ RRMS).  Pre-registration draft: ``out/research/explore/I9_2/prereg_draft.json``.
 
 Classes (``CLASS_SPECS``):
 
-* ``const``, ``lin``, ``poly2`` .. ``poly5``: ``g = tanh(P_pol(u, v))`` with a
-  polynomial of total degree 0 .. 5 in the standardized u, v, one coefficient
-  vector per polarity (``i4_1_baselines.fit_poly``; ``poly2`` / ``poly3`` are
-  the I4-1 baselines B3_d2 / B3_d3).
+* ``const``, ``lin``, ``poly2``, ``poly3``: ``g = tanh(P_pol(u, v))`` with a
+  monomial polynomial of total degree 0 .. 3 in the standardized u, v, one
+  coefficient vector per polarity (``i4_1_baselines.fit_poly``; ``poly2`` /
+  ``poly3`` are the I4-1 baselines B3_d2 / B3_d3).
+* ``poly4``, ``poly5``: the same with the Legendre product basis
+  P_i(u) P_j(v), i + j <= degree, on the standardized inputs
+  (``LegendreCorrection``, ``fit_legendre``).
 * ``gam``: additive spline with a low-rank interaction, per polarity,
   ``g = tanh(c + B(u) a + B(v) b + sum_r (B(u) p_r)(B(v) q_r))`` with a cubic
   B-spline basis ``B`` (``GAMCorrection``, ``fit_gam``).
-* ``mlp8``, ``mlp16``, ``mlp32``, ``mlp64``: the I3-2 ``M_bias`` recipe
-  (3-w-w-1 tanh MLP, 5 seeds, mean of members) with width w
-  (``i3_2_bias.fit_bias``); ``mlp16`` is ``M_bias``.
+* ``mlp8``, ``mlp16``, ``mlp32``: the I3-2 ``M_bias`` recipe (3-w-w-1 tanh
+  MLP, 5 seeds, mean of members) with width w (``i3_2_bias.fit_bias``);
+  ``mlp16`` is ``M_bias``.
+* ``mlp16_rep``: ``M_bias`` with seeds 5-9 (reference replicate; seed-noise
+  reference, not a contrast).
 * ``mlp16_s1``: ``M_bias`` with seed 0 only (member 0 of the stored ensemble,
   ``ensemble_member``).
 * ``gp``: GP posterior mean of the log residual (I4-1 B4, ``fit_gp``).
@@ -51,18 +56,19 @@ CLASS_SPECS: dict[str, dict] = {
     "lin": {"kind": "poly", "degree": 1},
     "poly2": {"kind": "poly", "degree": 2},
     "poly3": {"kind": "poly", "degree": 3},
-    "poly4": {"kind": "poly", "degree": 4},
-    "poly5": {"kind": "poly", "degree": 5},
+    "poly4": {"kind": "legendre", "degree": 4},
+    "poly5": {"kind": "legendre", "degree": 5},
     "gam": {"kind": "gam", "n_basis": GAM_BASIS, "rank": GAM_RANK},
     "mlp8": {"kind": "mlp", "hidden": 8, "seeds": SEEDS5},
     "mlp16": {"kind": "mlp", "hidden": 16, "seeds": SEEDS5},
     "mlp16_s1": {"kind": "mlp", "hidden": 16, "seeds": (0,)},
     "mlp32": {"kind": "mlp", "hidden": 32, "seeds": SEEDS5},
-    "mlp64": {"kind": "mlp", "hidden": 64, "seeds": SEEDS5},
     "gp": {"kind": "gp", "total": GP_TOTAL},
+    "mlp16_rep": {"kind": "mlp", "hidden": 16, "seeds": (5, 6, 7, 8, 9)},
 }
 REFERENCE = "mlp16"                       # = stored I3-2 M_bias
-CONTRASTS = tuple(c for c in CLASS_SPECS if c != REFERENCE)   # 12 primary contrasts
+REPLICATE = "mlp16_rep"                   # M_bias recipe, seeds 5-9
+CONTRASTS = tuple(c for c in CLASS_SPECS if c not in (REFERENCE, REPLICATE))   # 11 contrasts
 
 
 def n_params(name: str) -> int:
@@ -70,7 +76,7 @@ def n_params(name: str) -> int:
     intercepts included; GP: the alpha vector plus the 6 hyperparameters,
     the stored training inputs not counted)."""
     s = CLASS_SPECS[name]
-    if s["kind"] == "poly":
+    if s["kind"] in ("poly", "legendre"):
         d = s["degree"]
         return 2 * (d + 1) * (d + 2) // 2
     if s["kind"] == "gam":
@@ -83,6 +89,97 @@ def n_params(name: str) -> int:
     if s["kind"] == "gp":
         return s["total"] + 6
     raise KeyError(name)
+
+
+def n_params_member(name: str) -> int:
+    """Trained values of one ensemble member (= ``n_params`` for
+    single-function classes)."""
+    s = CLASS_SPECS[name]
+    return n_params(name) // len(s["seeds"]) if s["kind"] == "mlp" else n_params(name)
+
+
+# ---------------------------------------------------------------------------
+# Legendre polynomial class (poly4, poly5)
+# ---------------------------------------------------------------------------
+def legendre_1d(x: np.ndarray, n: int) -> list:
+    """[P_0(x), ..., P_n(x)] by the Bonnet recurrence (numpy or torch input)."""
+    out = [x * 0 + 1.0, x]
+    for k in range(1, n):
+        out.append(((2 * k + 1) * x * out[k] - k * out[k - 1]) / (k + 1))
+    return out[:n + 1]
+
+
+def legendre_features(u: np.ndarray, v: np.ndarray, degree: int) -> np.ndarray:
+    """Columns P_i(u) P_j(v) for (i, j) in ``poly_exponents(degree)`` order."""
+    from .i4_1_baselines import poly_exponents
+    pu, pv = legendre_1d(np.asarray(u, float), degree), legendre_1d(np.asarray(v, float), degree)
+    return np.column_stack([pu[i] * pv[j] for i, j in poly_exponents(degree)])
+
+
+@dataclass
+class LegendreCorrection(Correction):
+    """g = OUT_SCALE * tanh(sum_ij c_pol,ij P_i(u') P_j(v')); u', v' the
+    training-standardized |Vgs|/VDD, |Vds|/VDD; coef[0] nMOS, coef[1] pMOS."""
+    degree: int = 4
+    coef: np.ndarray | None = None
+
+    def g(self, phi, group_tag=None, group_kind=None):
+        phi = np.asarray(phi, float)
+        u = (phi[:, 1] - self.mu[0]) / self.sd[0]
+        v = (phi[:, 2] - self.mu[1]) / self.sd[1]
+        f = legendre_features(u, v, self.degree)
+        p = phi[:, 0]
+        return OUT_SCALE * np.tanh((1.0 - p) * (f @ self.coef[0]) + p * (f @ self.coef[1]))
+
+    def to_json(self) -> dict:
+        from .i4_1_baselines import poly_exponents
+        return {"arm": self.arm, "kind": "legendre", "degree": self.degree,
+                "mu": self.mu.tolist(), "sd": self.sd.tolist(), "coef": self.coef.tolist(),
+                "out_scale": OUT_SCALE, "exponents": poly_exponents(self.degree),
+                "basis": "P_i(u') P_j(v'), Legendre, standardized inputs"}
+
+    @classmethod
+    def from_json(cls, row: dict) -> "LegendreCorrection":
+        return cls(row["arm"], np.asarray(row["mu"], float), np.asarray(row["sd"], float),
+                   degree=int(row["degree"]), coef=np.asarray(row["coef"], float))
+
+
+def fit_legendre(arm: str, degree: int, train: list[DeviceRec], hyper: dict | None = None,
+                 threads: int = 1, trace: list | None = None) -> LegendreCorrection:
+    """``i4_1_baselines.fit_poly`` with the Legendre product basis: E1 loss +
+    l2 * sum of squared non-constant coefficients; Adam, zero init, float64."""
+    import torch
+    torch.set_num_threads(threads)
+    hp = {**HYPER_COMMON, **(hyper or {})}
+    batch = make_batch(train)
+    loss = _loss_fn(batch)
+    x = batch.phi[:, [1, 2]]
+    mu, sd = x.mean(axis=0), x.std(axis=0)
+    sd = np.where(sd > 1e-12, sd, 1.0)
+    f = torch.tensor(legendre_features((x[:, 0] - mu[0]) / sd[0], (x[:, 1] - mu[1]) / sd[1],
+                                       degree), dtype=torch.float64)
+    p = torch.tensor(batch.phi[:, 0], dtype=torch.float64)
+    coef = torch.zeros((2, f.shape[1]), dtype=torch.float64, requires_grad=True)
+    opt = torch.optim.Adam([coef], lr=hp["lr"])
+    for step in range(hp["steps"]):
+        opt.zero_grad()
+        h = (1.0 - p) * (f @ coef[0]) + p * (f @ coef[1])
+        value = loss(OUT_SCALE * torch.tanh(h)) + hp["l2"] * (coef[:, 1:] ** 2).sum()
+        value.backward()
+        opt.step()
+        if trace is not None and (step + 1) % 250 == 0:
+            trace.append((0, step + 1, float(value)))
+    return LegendreCorrection(arm, mu, sd, degree=degree, coef=coef.detach().numpy().copy())
+
+
+def training_loss(corr: Correction, train: list[DeviceRec]) -> float:
+    """E1 loss (no penalty) of ``corr`` on ``train``: mean over devices of the
+    paper per-device RRMS of I_sim x exp(g) at the included trimmed points."""
+    import torch
+    batch = make_batch(train)
+    g = np.zeros(len(batch.phi)) if corr.arm == "C0" else corr.g(batch.phi)
+    with torch.no_grad():
+        return float(_loss_fn(batch)(torch.tensor(g, dtype=torch.float64)))
 
 
 # ---------------------------------------------------------------------------
@@ -171,7 +268,7 @@ class GAMCorrection(Correction):
 
 def fit_gam(arm: str, train: list[DeviceRec], hyper: dict | None = None,
             n_basis: int = GAM_BASIS, rank: int = GAM_RANK, seed: int = 0,
-            threads: int = 1) -> GAMCorrection:
+            threads: int = 1, trace: list | None = None) -> GAMCorrection:
     """E1 loss + l2 * (|a|^2 + |b|^2 + |p|^2 + |q|^2) (c not penalized);
     Adam, float64; c, a, b, q start at 0, p at N(0, 0.1^2) (``torch``
     generator seeded with ``seed``) so the bilinear term has a gradient."""
@@ -201,12 +298,14 @@ def fit_gam(arm: str, train: list[DeviceRec], hyper: dict | None = None,
             hs.append(c[k] + bu @ a[k] + bv @ b[k] + inter)
         return (1.0 - pol) * hs[0] + pol * hs[1]
 
-    for _ in range(hp["steps"]):
+    for step in range(hp["steps"]):
         opt.zero_grad()
         pen = (a ** 2).sum() + (b ** 2).sum() + (p ** 2).sum() + (q ** 2).sum()
         value = loss(OUT_SCALE * torch.tanh(h_of())) + hp["l2"] * pen
         value.backward()
         opt.step()
+        if trace is not None and (step + 1) % 250 == 0:
+            trace.append((0, step + 1, float(value)))
     with torch.no_grad():
         final = float(loss(OUT_SCALE * torch.tanh(h_of())))
     d = lambda t: t.detach().numpy().copy()
@@ -218,7 +317,7 @@ def fit_gam(arm: str, train: list[DeviceRec], hyper: dict | None = None,
 # Fitting dispatch, ensemble members, JSON
 # ---------------------------------------------------------------------------
 def fit_class(name: str, train: list[DeviceRec], overrides: dict | None = None,
-              threads: int = 1) -> Correction:
+              threads: int = 1, trace: list | None = None) -> Correction:
     """Train class ``name`` on ``train`` with the pre-registered settings;
     ``overrides`` (smoke only): ``steps``, ``seeds``, ``gp_total``,
     ``gp_maxiter``."""
@@ -227,15 +326,17 @@ def fit_class(name: str, train: list[DeviceRec], overrides: dict | None = None,
     hyper = {k: ov[k] for k in ("steps",) if k in ov}
     if s["kind"] == "poly":
         from .i4_1_baselines import fit_poly
-        return fit_poly(name, s["degree"], train, hyper=hyper, threads=threads)
+        return fit_poly(name, s["degree"], train, hyper=hyper, threads=threads, trace=trace)
+    if s["kind"] == "legendre":
+        return fit_legendre(name, s["degree"], train, hyper=hyper, threads=threads, trace=trace)
     if s["kind"] == "gam":
         return fit_gam(name, train, hyper=hyper, n_basis=s["n_basis"], rank=s["rank"],
-                       threads=threads)
+                       threads=threads, trace=trace)
     if s["kind"] == "mlp":
         from .i3_2_bias import fit_bias
         seeds = tuple(ov.get("seeds", s["seeds"])) if len(s["seeds"]) > 1 else s["seeds"]
         corr = fit_bias("M_bias", train, hyper={**hyper, "hidden": s["hidden"], "seeds": seeds},
-                        threads=threads)
+                        threads=threads, trace=trace)
         corr.arm = name
         return corr
     if s["kind"] == "gp":
@@ -258,6 +359,8 @@ def ensemble_member(corr, k: int, arm: str | None = None):
 def correction_from_json_i9(row: dict) -> Correction:
     if row.get("kind") == "gam":
         return GAMCorrection.from_json(row)
+    if row.get("kind") == "legendre":
+        return LegendreCorrection.from_json(row)
     from .i4_1_baselines import correction_from_json_any
     return correction_from_json_any(row)
 
@@ -345,7 +448,7 @@ def label_class(cmp: dict, margin: float = MARGIN) -> str:
 
 
 def decide(pooled: dict, failures: dict, margin: float = MARGIN,
-           per_dataset_max: float = PER_DATASET_MAX) -> dict:
+           per_dataset_max: float = PER_DATASET_MAX, replicate: dict | None = None) -> dict:
     """Pre-registered rule.
 
     ``pooled``: {class: pooled_ratio(X, M_bias) at the Bonferroni level}
@@ -358,7 +461,12 @@ def decide(pooled: dict, failures: dict, margin: float = MARGIN,
     'non-inferior', with point GMR(X, M_bias) <= per_dataset_max on every
     primary dataset and no more failed devices than M_bias on any dataset;
     the answer is the candidate with the fewest parameters (ties: lower
-    pooled GMR), 'none' if there is no candidate."""
+    pooled GMR), 'none' if there is no candidate.
+
+    ``replicate``: pooled GMR(mlp16_rep, mlp16) at the same level.  A class
+    labelled 'beats' or 'worse' whose pooled GMR lies inside the
+    replicate's CI gets the note 'within the seed-noise range of the
+    reference' (label unchanged)."""
     labels = {c: label_class(v, margin) for c, v in pooled.items()}
     if any(lab in ("beats", "worse") for lab in labels.values()):
         q1 = "class-dependent"
@@ -379,11 +487,19 @@ def decide(pooled: dict, failures: dict, margin: float = MARGIN,
         cands.append(c)
     cands.sort(key=lambda c: (n_params(c), pooled[c]["ratio"]))
     q2 = cands[0] if cands else "none"
-    return {"labels": labels, "Q1": q1, "Q2_smallest_matching_class": q2,
+    notes = {}
+    if replicate is not None:
+        for c, v in pooled.items():
+            if labels[c] in ("beats", "worse") and \
+                    replicate["ci_low"] <= v["ratio"] <= replicate["ci_high"]:
+                notes[c] = "within the seed-noise range of the reference"
+    return {"labels": labels, "notes": notes, "Q1": q1, "Q2_smallest_matching_class": q2,
             "Q2_candidates": cands,
             "Q2_beats_with_fewer_parameters": bool(cands and labels[q2] == "beats"),
             "margin": margin, "per_dataset_max": per_dataset_max,
-            "n_params": {c: n_params(c) for c in pooled}}
+            "n_params": {c: n_params(c) for c in pooled},
+            "n_params_per_member": {c: n_params_member(c) for c in pooled},
+            "replicate": replicate}
 
 
 def bonferroni_alpha(n_contrasts: int = len(CONTRASTS), alpha: float = ALPHA) -> float:
@@ -424,6 +540,13 @@ def training_subsets(pool: dict, n: int, reps: int = LC_REPS, key: tuple = ()) -
                 pick += list(rng.choice(fams[f], size=want[f], replace=False))
         out.append(sorted(pick))
     return out
+
+
+def lc_classes(pooled_vs_c0: dict, k: int = 2, tol: float = LC_TIE) -> list[str]:
+    """Learning-curve classes: mlp16 plus the ``k`` best classes
+    (``select_lc_classes``; the replicate is not a candidate); 2 or 3 classes."""
+    best = select_lc_classes({c: v for c, v in pooled_vs_c0.items() if c != REPLICATE}, k, tol)
+    return [REFERENCE] + [c for c in best if c != REFERENCE]
 
 
 def select_lc_classes(pooled_vs_c0: dict, k: int = 2, tol: float = LC_TIE) -> list[str]:

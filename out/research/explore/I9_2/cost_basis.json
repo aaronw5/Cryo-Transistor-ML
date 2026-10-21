@@ -1,0 +1,17 @@
+{
+ "what": "seconds per training point per Adam step per ensemble member, median over the 2 smoke folds; measured in the first I9-2 smoke (commit a96ba07, sky130 77 K training sets, 200 steps, 4 workers, machine otherwise idle). poly4 / poly5 were monomial fits there; the Legendre fits do the same arithmetic per step.",
+ "source_commit": "a96ba07",
+ "per_point_step_member_s": {
+  "mlp64": 1.3838405643190546e-06,
+  "mlp32": 6.414214190312998e-07,
+  "const": 3.419484475194971e-08,
+  "lin": 4.316503373904717e-08,
+  "poly2": 5.7313036998578315e-08,
+  "poly3": 7.590942415104037e-08,
+  "poly4": 8.45266977842993e-08,
+  "poly5": 6.440643509064512e-08,
+  "gam": 1.2132722394900865e-07,
+  "mlp8": 1.965019733490294e-07,
+  "mlp16": 3.280563387407431e-07
+ }
+}
