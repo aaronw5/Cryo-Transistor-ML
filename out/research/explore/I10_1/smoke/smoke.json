@@ -1,0 +1,893 @@
+{
+ "id": "I10_1_smoke",
+ "note": "not used for any decision",
+ "simulator": "/Users/anrunw/cryo-ng41/arm64/bin/ngspice",
+ "card_checks_dev": [
+  {
+   "device": "etest_nfet_g5v0d10v5_W25_L25_m8050p3",
+   "bin": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "max_abs_full_vs_official_A": 0.0
+  },
+  {
+   "device": "etest_pfet_g5v0d10v5_W0p42_L20_m8364p4",
+   "bin": 80,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 2.751088371e-18,
+   "max_abs_full_vs_official_A": 2.751088371e-33
+  }
+ ],
+ "core_card_checks_synthetic": {
+  "nfet_01v8": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 59,
+   "covered": true,
+   "n_bins": 180,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.22
+  },
+  "nfet_01v8_lvt": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 52,
+   "covered": true,
+   "n_bins": 88,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.22
+  },
+  "pfet_01v8": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 68,
+   "covered": true,
+   "n_bins": 108,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.23
+  },
+  "pfet_01v8_lvt": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 30,
+   "covered": true,
+   "n_bins": 48,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.55
+  },
+  "pfet_01v8_hvt": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 77,
+   "covered": true,
+   "n_bins": 198,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 7.17
+  }
+ },
+ "stock_scan": {
+  "n_devices": 77,
+  "nonfinite": {
+   "deck_30C": [
+    "etest_nfet_g5v0d10v5_W0p42_L0p35_m8063p4",
+    "etest_nfet_g5v0d10v5_W0p75_L0p35_m8063p5",
+    "etest_nfet_g5v0d10v5_W1_L0p35_m8063p6",
+    "etest_nfet_g5v0d10v5_W1p5_L0p35_m8063p7",
+    "etest_nfet_g5v0d10v5_W20_L0p35_m8063p11",
+    "etest_nfet_g5v0d10v5_W5_L0p35_m8063p9",
+    "etest_nfet_g5v0d10v5_W7_L0p35_m8063p10",
+    "etest_pfet_g5v0d10v5_W1_L0p4_m8054p6",
+    "etest_pfet_g5v0d10v5_W3_L0p35_m8064p8",
+    "etest_pfet_g5v0d10v5_W5_L0p3_m8064p3"
+   ],
+   "deck_4K": [
+    "etest_nfet_g5v0d10v5_W0p42_L0p35_m8063p4",
+    "etest_nfet_g5v0d10v5_W0p75_L0p35_m8063p5",
+    "etest_nfet_g5v0d10v5_W1_L0p35_m8063p6",
+    "etest_nfet_g5v0d10v5_W1p5_L0p35_m8063p7",
+    "etest_nfet_g5v0d10v5_W20_L0p35_m8063p11",
+    "etest_nfet_g5v0d10v5_W5_L0p35_m8063p9",
+    "etest_nfet_g5v0d10v5_W7_L0p35_m8063p10",
+    "etest_pfet_g5v0d10v5_W1_L0p4_m8054p6",
+    "etest_pfet_g5v0d10v5_W3_L0p35_m8064p8",
+    "etest_pfet_g5v0d10v5_W5_L0p3_m8064p3"
+   ]
+  },
+  "seconds_median": {
+   "deck_30C": 0.025,
+   "deck_4K": 0.025
+  },
+  "seconds_max": {
+   "deck_30C": 0.737,
+   "deck_4K": 0.73
+  },
+  "devices": {
+   "etest_nfet_g5v0d10v5_W0p42_L0p35_m8063p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.737
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.702
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L0p45_m8043p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L0p4_m8053p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.064
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L0p5_m8050p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L0p5_m8050p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L20_m8050p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.023
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L20_m8363p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L25_m8050p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p42_L8_m8389p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p75_L0p35_m8063p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.68
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.676
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p75_L0p45_m8043p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_nfet_g5v0d10v5_W0p75_L0p4_m8053p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1_L0p35_m8063p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.707
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.726
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1_L0p45_m8043p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.036
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.039
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1_L0p4_m8053p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1_L1_m8363p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1_L2_m8363p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1_L4_m8363p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1p5_L0p35_m8063p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.708
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.73
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1p5_L0p45_m8043p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W1p5_L0p4_m8053p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.032
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.032
+    }
+   },
+   "etest_nfet_g5v0d10v5_W20_L0p35_m8063p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.731
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.688
+    }
+   },
+   "etest_nfet_g5v0d10v5_W20_L0p45_m8043p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W20_L0p4_m8053p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W20_L0p5_m8363p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W25_L0p5_m8050p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W25_L0p5_m8050p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W25_L25_m8050p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.023
+    }
+   },
+   "etest_nfet_g5v0d10v5_W25_L8_m8050p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_nfet_g5v0d10v5_W3_L0p45_m8043p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_nfet_g5v0d10v5_W3_L0p4_m8053p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_nfet_g5v0d10v5_W3_L0p5_m8389p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_nfet_g5v0d10v5_W5_L0p35_m8063p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.703
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.721
+    }
+   },
+   "etest_nfet_g5v0d10v5_W5_L0p45_m8043p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_nfet_g5v0d10v5_W5_L0p45_m8053p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W5_L0p4_m8053p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_nfet_g5v0d10v5_W5_L0p5_m8043p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W7_L0p35_m8063p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.712
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 9,
+     "seconds": 0.695
+    }
+   },
+   "etest_nfet_g5v0d10v5_W7_L0p45_m8043p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_nfet_g5v0d10v5_W7_L0p4_m8053p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_nfet_g5v0d10v5_W7_L0p5_m8389p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W7_L8_m8050p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_nfet_g5v0d10v5_W7_L8_m8389p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W0p42_L0p45_m8044p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.066
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W0p42_L0p4_m8054p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W0p42_L0p5_m8395p12": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W0p42_L20_m8364p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W0p42_L8_m8395p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W0p75_L0p45_m8044p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    }
+   },
+   "etest_pfet_g5v0d10v5_W0p75_L0p4_m8054p5": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1_L0p45_m8044p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1_L0p4_m8054p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 1,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 1,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1_L1_m8364p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1_L2_m8364p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.023
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1_L4_m8364p12": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.065
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1p5_L0p35_m8064p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1p5_L0p45_m8044p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W1p5_L0p4_m8054p7": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W20_L0p35_m8064p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W20_L0p45_m8044p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W20_L0p4_m8054p11": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W20_L0p5_m8364p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.023
+    }
+   },
+   "etest_pfet_g5v0d10v5_W3_L0p35_m8064p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 1,
+     "seconds": 0.022
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 1,
+     "seconds": 0.023
+    }
+   },
+   "etest_pfet_g5v0d10v5_W3_L0p45_m8044p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W3_L0p4_m8054p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W3_L0p5_m8395p4": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.024
+    }
+   },
+   "etest_pfet_g5v0d10v5_W5_L0p35_m8064p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W5_L0p3_m8064p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 8,
+     "seconds": 0.666
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 8,
+     "seconds": 0.605
+    }
+   },
+   "etest_pfet_g5v0d10v5_W5_L0p45_m8044p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_pfet_g5v0d10v5_W5_L0p45_m8054p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_pfet_g5v0d10v5_W5_L0p4_m8054p9": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    }
+   },
+   "etest_pfet_g5v0d10v5_W5_L0p5_m8044p3": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.025
+    }
+   },
+   "etest_pfet_g5v0d10v5_W7_L0p35_m8064p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_pfet_g5v0d10v5_W7_L0p45_m8044p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.026
+    }
+   },
+   "etest_pfet_g5v0d10v5_W7_L0p4_m8054p10": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.027
+    }
+   },
+   "etest_pfet_g5v0d10v5_W7_L0p5_m8395p8": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.035
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.035
+    }
+   },
+   "etest_pfet_g5v0d10v5_W7_L8_m8395p6": {
+    "deck_30C": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.029
+    },
+    "deck_4K": {
+     "n_nonfinite_curves": 0,
+     "seconds": 0.032
+    }
+   }
+  }
+ },
+ "runtime_s": 53.6
+}

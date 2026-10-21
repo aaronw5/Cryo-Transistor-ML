@@ -1,0 +1,314 @@
+{
+ "id": "I10_1_smoke_runs",
+ "note": "reduced settings (start nfev 100, irls 1; M_bias 1 seed, 200 steps); 6 NIST DEV devices (manifest smoke_devices) and 7 TU Delft DEV devices (lowest device number per group); 2 workers; code checks only, not used for any decision",
+ "card_checks_dev": [
+  {
+   "device": "etest_nfet_g5v0d10v5_W25_L25_m8050p3",
+   "bin": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "max_abs_full_vs_official_A": 0.0
+  },
+  {
+   "device": "etest_pfet_g5v0d10v5_W0p42_L20_m8364p4",
+   "bin": 80,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 2.751088371e-18,
+   "max_abs_full_vs_official_A": 2.751088371e-33
+  }
+ ],
+ "core_card_checks_synthetic": {
+  "nfet_01v8": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 59,
+   "covered": true,
+   "n_bins": 180,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.22
+  },
+  "nfet_01v8_lvt": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 52,
+   "covered": true,
+   "n_bins": 88,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.22
+  },
+  "pfet_01v8": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 68,
+   "covered": true,
+   "n_bins": 108,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.23
+  },
+  "pfet_01v8_lvt": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 30,
+   "covered": true,
+   "n_bins": 48,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 6.55
+  },
+  "pfet_01v8_hvt": {
+   "W_um": 1.0,
+   "L_um": 0.5,
+   "bin": 77,
+   "covered": true,
+   "n_bins": 198,
+   "lines_not_parsed": 0,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 0.0,
+   "finite": true,
+   "seconds": 7.17
+  }
+ },
+ "stock_scan": {
+  "n_devices": 77,
+  "nonfinite": {
+   "deck_30C": [
+    "etest_nfet_g5v0d10v5_W0p42_L0p35_m8063p4",
+    "etest_nfet_g5v0d10v5_W0p75_L0p35_m8063p5",
+    "etest_nfet_g5v0d10v5_W1_L0p35_m8063p6",
+    "etest_nfet_g5v0d10v5_W1p5_L0p35_m8063p7",
+    "etest_nfet_g5v0d10v5_W20_L0p35_m8063p11",
+    "etest_nfet_g5v0d10v5_W5_L0p35_m8063p9",
+    "etest_nfet_g5v0d10v5_W7_L0p35_m8063p10",
+    "etest_pfet_g5v0d10v5_W1_L0p4_m8054p6",
+    "etest_pfet_g5v0d10v5_W3_L0p35_m8064p8",
+    "etest_pfet_g5v0d10v5_W5_L0p3_m8064p3"
+   ],
+   "deck_4K": [
+    "etest_nfet_g5v0d10v5_W0p42_L0p35_m8063p4",
+    "etest_nfet_g5v0d10v5_W0p75_L0p35_m8063p5",
+    "etest_nfet_g5v0d10v5_W1_L0p35_m8063p6",
+    "etest_nfet_g5v0d10v5_W1p5_L0p35_m8063p7",
+    "etest_nfet_g5v0d10v5_W20_L0p35_m8063p11",
+    "etest_nfet_g5v0d10v5_W5_L0p35_m8063p9",
+    "etest_nfet_g5v0d10v5_W7_L0p35_m8063p10",
+    "etest_pfet_g5v0d10v5_W1_L0p4_m8054p6",
+    "etest_pfet_g5v0d10v5_W3_L0p35_m8064p8",
+    "etest_pfet_g5v0d10v5_W5_L0p3_m8064p3"
+   ]
+  },
+  "seconds_median": {
+   "deck_30C": 0.025,
+   "deck_4K": 0.025
+  },
+  "seconds_max": {
+   "deck_30C": 0.737,
+   "deck_4K": 0.73
+  }
+ },
+ "stock_scan_note": "run before decision D10 (77 devices); the 10 devices with non-finite stock-card curves were then excluded in the data mode",
+ "start_nist": {
+  "runtime_s": 21.2,
+  "fits": {
+   "C0_RT": {
+    "non_finite_records": [],
+    "n_sim_timeout": 0,
+    "rrms_mean": 0.16866524122202678
+   },
+   "C4_ind": {
+    "non_finite_records": [],
+    "n_sim_timeout": 0,
+    "rrms_mean": 0.7306033368410242
+   },
+   "C4": {
+    "non_finite_records": [],
+    "n_sim_timeout": 0,
+    "rrms_mean": 0.6819090161144249
+   },
+   "C4_deck": {
+    "non_finite_records": [],
+    "n_sim_timeout": 0,
+    "rrms_mean": 6.656482278050934
+   }
+  }
+ },
+ "lodo_nist": {
+  "runtime_s": 4.7,
+  "timing": {
+   "sim_s": 2.1,
+   "sim_n": 90,
+   "bias_s": 2.4,
+   "bias_n": 6
+  },
+  "n_sim_timeout": 0,
+  "valid_only_mean": {
+   "A0": 7.468502103930933,
+   "A0_rtdeck": 0.7761367200566308,
+   "A1": 0.7561012754086164,
+   "A1_L": 0.7561012754086164,
+   "A3": 0.7561012754086164,
+   "V_mean": 0.7561012754086164,
+   "V_sub7": 0.7579245581653157,
+   "V_ind": 0.7822570261217502,
+   "V_deck": 6.850478086793122,
+   "R_pop": 0.7401345027453541,
+   "R_stock4k": 7.374013621622086,
+   "R_stock_rtdeck": 0.7645034146131645,
+   "A2": 0.6155460582978415,
+   "R_oracle": 0.6819090161144249
+  },
+  "n_failed": {
+   "A0": 0,
+   "A0_rtdeck": 0,
+   "A1": 0,
+   "A1_L": 0,
+   "A3": 0,
+   "V_mean": 0,
+   "V_sub7": 0,
+   "V_ind": 0,
+   "V_deck": 0,
+   "R_pop": 0,
+   "R_stock4k": 0,
+   "R_stock_rtdeck": 0,
+   "A2": 0,
+   "R_oracle": 0
+  },
+  "contrasts_bonferroni": {
+   "K1": {
+    "ratio": 0.17351289157879377,
+    "ci_low": 0.05632064917698774,
+    "ci_high": 0.38723652744956966,
+    "n_used": 6
+   },
+   "K2": {
+    "ratio": 0.9593749957261891,
+    "ci_low": 0.8949735534884337,
+    "ci_high": 0.992235250061515,
+    "n_used": 6
+   },
+   "K3": {
+    "ratio": 0.9934454041587688,
+    "ci_low": 0.9722900299090764,
+    "ci_high": 1.0297180869034428,
+    "n_used": 6
+   },
+   "K4": {
+    "ratio": 0.8301670626011549,
+    "ci_low": 0.4969443201877834,
+    "ci_high": 1.2063348848938704,
+    "n_used": 6
+   },
+   "K5": {
+    "ratio": 1.0,
+    "ci_low": 1.0,
+    "ci_high": 1.0,
+    "n_used": 6
+   }
+  }
+ },
+ "start_tud": {
+  "runtime_s": 15.4,
+  "fits": {
+   "C4": {
+    "non_finite_records": [],
+    "n_sim_timeout": 0,
+    "rrms_mean": 0.30043061367628493
+   }
+  },
+  "stored_card_check": {
+   "295K_max_rel_diff": 0.0,
+   "4K_max_rel_diff": 0.0
+  }
+ },
+ "lodo_tud": {
+  "runtime_s": 10.9,
+  "timing": {
+   "sim_s": 4.8,
+   "sim_n": 104,
+   "bias_s": 5.3,
+   "bias_n": 7
+  },
+  "n_sim_timeout": 0,
+  "valid_only_mean": {
+   "A0": 0.6794228132169274,
+   "A0_rtdeck": 0.35704023226023945,
+   "A1": 0.3948182181428613,
+   "A1_L": 0.4676582148552388,
+   "A3": 0.40614397987288,
+   "V_mean": 0.4209227745000953,
+   "V_sub7": 0.34905728636298533,
+   "V_i6": 2.8918309324733626,
+   "R_pop": 4.827588628579839,
+   "R_stock4k": 3.905789190424191,
+   "R_stock_rtdeck": 3.4167309141996802,
+   "A2": 0.26902091348332263,
+   "R_oracle": 0.30043061367628493
+  },
+  "n_failed": {
+   "A0": 0,
+   "A0_rtdeck": 0,
+   "A1": 0,
+   "A1_L": 0,
+   "A3": 0,
+   "V_mean": 0,
+   "V_sub7": 0,
+   "V_i6": 2,
+   "R_pop": 0,
+   "R_stock4k": 0,
+   "R_stock_rtdeck": 0,
+   "A2": 0,
+   "R_oracle": 0
+  },
+  "contrasts_bonferroni": {
+   "K1": {
+    "ratio": 0.5483235256733678,
+    "ci_low": 0.2596164322834886,
+    "ci_high": 1.3822815345374109,
+    "n_used": 7
+   },
+   "K2": {
+    "ratio": 1.0788272426849077,
+    "ci_low": 0.8235548256083584,
+    "ci_high": 1.8968638262973787,
+    "n_used": 7
+   },
+   "K3": {
+    "ratio": 0.1725943557969522,
+    "ci_low": 0.05562156521038875,
+    "ci_high": 0.467017585748643,
+    "n_used": 7
+   },
+   "K4": {
+    "ratio": 0.5623476429151107,
+    "ci_low": 0.4049548920188024,
+    "ci_high": 0.7661196802907182,
+    "n_used": 7
+   },
+   "K5": {
+    "ratio": 1.0208586200632643,
+    "ci_low": 0.9488921021526917,
+    "ci_high": 1.141888059873461,
+    "n_used": 7
+   }
+  }
+ },
+ "decide": {
+  "outcome": "partly supported",
+  "test_primary_arm": "A1",
+  "test_configuration_variant": null,
+  "test_confirmatory_contrasts": [
+   "K1",
+   "K2"
+  ]
+ }
+}
