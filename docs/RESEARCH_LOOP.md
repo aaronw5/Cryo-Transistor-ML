@@ -1487,3 +1487,51 @@ Delft devices that share one fold queued the (dataset, poly3, fold) training tas
 combined the two results as if they were MLP seed members. Fix a864f77: each (dataset, poly3, fold) is trained once;
 merge_members refuses non-MLP members; unit test added. No I9-2 result was produced before the fix. The jobs were
 requeued unchanged at 03:35 (I9_2_validity rc=0, 31 s).
+
+## I9-2 outcome (2026-10-21 08:50): function-class ablation for the shared bias-only correction, primary pool
+
+Pre-registration `out/research/explore/I9_2/prereg.json` / `.md` in force from 02c6996 (code dea00cc). The jobs failed
+once at 03:14 on a validity bug and were requeued unchanged at 03:35 after fix a864f77 (see "I9-2 validity failure and
+requeue" above; no I9-2 result existed before the fix). Queue after the requeue: I9_2_validity 31 s, run sky130 77 K
+186 s, NIST 4 K 3282 s, TU Delft 4.13 K 2330 s, IHP 300 K 492 s, replicate 1429 s, decide 1 s, lc TU Delft 2923 s,
+lc NIST 3701 s, figs 2 s (3.99 h; 129 min without the learning curve against the 147 min estimate). Outputs
+`out/research/explore/I9_2/{validity, decision}.json`, `{sky130_77K, nist_4K, tudelft_4K, ihp_meas_300K, replicate,
+lc_tudelft_4K, lc_nist_4K}/{results, cards, corrections}.json` (09f60c9 and the report commit).
+Validity: V1 poly3 rerun max |RRMS - stored| 0 (and coefficient difference 0) on all 4 datasets; V2 failed devices 4 on
+NIST 4 K in every class (non-finite starting records), gp 2 more on TU Delft 4.13 K (t40_nmos_W0p12_L0p04_d152,
+t40_nmos_W1_L0p04_d199: every Id-Vd curve non-finite after the gp-corrected refit), all other classes 0; V3 0 simulator
+timeouts in the run refits; V4 stored rows equal the source files (checked in the report).
+Labels (pooled GMR(X, mlp16), Bonferroni CI at 1 - 0.05/11, margin 1.03): const 1.095 [0.981, 1.198] inconclusive; lin
+1.065 [0.948, 1.169] inconclusive; poly2 1.103 [1.041, 1.169] worse; poly3 1.086 [1.029, 1.150] worse; poly4 1.060
+[1.001, 1.131] worse; poly5 1.062 [0.978, 1.154] inconclusive; gam 0.970 [0.922, 1.030] inconclusive; mlp16_s1 0.999
+[0.982, 1.015] equivalent; mlp8 0.986 [0.966, 1.006] non-inferior; gp 1.483 [1.319, 1.684] worse; mlp32 1.003 [0.987,
+1.019] equivalent. Replicate mlp16_rep (seeds 5-9) 0.997 [0.982, 1.013]; no replicate note applies.
+Q1: class-dependent. Q2: candidates mlp16_s1, mlp8; smallest matching class mlp16_s1 (353 trained values); no class
+beats mlp16 with fewer parameters. gam is not a candidate (CI upper 1.030; IHP 300 K point GMR 1.211 > 1.05).
+Per dataset (95%, descriptive): NIST 4 K GMR vs mlp16 poly4 0.911, poly5 0.857, gam 0.831 (fractions of the mlp16 log
+gain 1.43 / 1.72 / 1.86); IHP 300 K GMR vs C0_refit above 1 for every class with more than 6 trained values (poly2
+1.201 ... poly5 1.816, gam 1.471, mlp16 1.214), const 1.000, lin 0.983; GMR vs mlp16 const 0.824, lin 0.809.
+Pooled vs C0_refit (95%): gam 0.889 [0.819, 0.973], mlp8 0.904, mlp16 0.917 [0.859, 0.986], poly3 0.996, gp 1.367.
+Learning-curve classes from decision.json: mlp16, gam, mlp8.
+S4 margin sensitivity: labels at 1.02 equal those at 1.03; at 1.05 gam non-inferior, mlp8 equivalent; Q2 mlp16_s1 at
+every margin. S3 cluster bootstrap (TU Delft groups): poly4 CI [0.9996, 1.134] includes 1 (label from it, post hoc:
+inconclusive); the other labels are unchanged. S7: gam has the lowest mean final training loss on all 4 datasets; gp
+mean training loss 1.27 (NIST) and 3.91 (TU Delft) against 0.028-0.063 for the other classes.
+Q3 learning curve (GMR(X, C0_refit) at n = 2 / 4 / 8 / all training devices per fold): TU Delft mlp16 1.004 / 0.966 /
+0.933 / 0.939, gam 1.017 / 0.984 / 0.915 / 0.874, mlp8 1.005 / 0.963 / 0.926 / 0.919; NIST mlp16 0.947 / 0.846 / 0.825
+/ 0.806, gam 0.912 / 0.769 / 0.717 / 0.670, mlp8 0.936 / 0.838 / 0.814 / 0.797.
+Report batch `out/research/report/2026-10-21_i9_2/` (`scripts/research/plot_explore_i9_2.py`; recomputes every pooled
+and per-dataset GMR, labels, Q1, Q2, margin-sensitivity labels, gain fractions, training-loss means and learning-curve
+summaries from the per-device rows and checks them against decision.json and the lc results): table 01 decision,
+figure 02 forest plot, figure 03 per-dataset heatmaps, table 04 per dataset, figure 05 capacity curve, figure 06
+training loss vs held-out, figure 07 learning curves, table 08 learning curve, figure 09 gain fraction, figure 10
+replicate, table 11 margin sensitivity and cluster bootstrap, table 12 validity and compute, figures 13-14 example I-V.
+Example curves: `scripts/research/explore/i9_2_examples.py` re-simulates the stored C0_refit, mlp16, poly5 and gam
+held-out cards of the NIST 4 K devices with the lowest (pfet_01v8_lvt_W1_L4_m29p2, -0.588) and highest
+(nfet_01v8_lvt_W1_L8_m23p1, +0.195) ln(poly5 / mlp16) (0.4 s, `examples/examples.json`); RRMS reproduced with relative
+difference 0.
+Post hoc (not pre-registered): labels from the cluster-bootstrap CI, the training-loss vs held-out pairing, the
+learning-curve class-vs-class values, the I-V figures.
+Site: new claim `i9-2` (verified; headline "Q1 class-dependent; Q2 smallest matching class mlp16_s1 (353 values); no
+class beats M_bias with fewer parameters") in the Exploration tab, status item and decision table. Site rebuilt, not
+published.

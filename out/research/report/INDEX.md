@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-21 · i9_2
+
+Folder: [2026-10-21_i9_2/](2026-10-21_i9_2/) · [tables.md](2026-10-21_i9_2/tables.md) · [README.md](2026-10-21_i9_2/README.md)
+
+- I9-2 function-class ablation of g (4 measured datasets, pooled equal weight, Bonferroni over 11 contrasts): Q1 class-dependent; mlp16_s1 equivalent 0.999, mlp32 equivalent 1.003, mlp8 non-inferior 0.986; poly2 / poly3 / poly4 / gp worse (1.103 / 1.086 / 1.060 / 1.483); const, lin, poly5, gam inconclusive.
+- Q2 smallest matching class mlp16_s1 (353 values); no class beats mlp16 with fewer parameters. Replicate 0.997 [0.982, 1.013].
+- Per dataset: NIST 4 K poly4 / poly5 / gam below mlp16; IHP 300 K every flexible class above C0_refit. Learning curve: gam gains more than mlp16 with more devices on both datasets.
+
+Figures and tables: [01_table_i9_2_decision.png](2026-10-21_i9_2/01_table_i9_2_decision.png) · [02_i9_2_forest.png](2026-10-21_i9_2/02_i9_2_forest.png) · [03_i9_2_heatmap.png](2026-10-21_i9_2/03_i9_2_heatmap.png) · [04_table_i9_2_per_dataset.png](2026-10-21_i9_2/04_table_i9_2_per_dataset.png) · [05_i9_2_capacity.png](2026-10-21_i9_2/05_i9_2_capacity.png) · [06_i9_2_train_vs_heldout.png](2026-10-21_i9_2/06_i9_2_train_vs_heldout.png) · [07_i9_2_learning_curve.png](2026-10-21_i9_2/07_i9_2_learning_curve.png) · [08_table_i9_2_learning_curve.png](2026-10-21_i9_2/08_table_i9_2_learning_curve.png) · [09_i9_2_gain_fraction.png](2026-10-21_i9_2/09_i9_2_gain_fraction.png) · [10_i9_2_replicate.png](2026-10-21_i9_2/10_i9_2_replicate.png) · [11_table_i9_2_margin_sensitivity.png](2026-10-21_i9_2/11_table_i9_2_margin_sensitivity.png) · [12_table_i9_2_validity.png](2026-10-21_i9_2/12_table_i9_2_validity.png) · [13_i9_2_iv_pfet_01v8_lvt_W1_L4_m29p2.png](2026-10-21_i9_2/13_i9_2_iv_pfet_01v8_lvt_W1_L4_m29p2.png) · [14_i9_2_iv_nfet_01v8_lvt_W1_L8_m23p1.png](2026-10-21_i9_2/14_i9_2_iv_nfet_01v8_lvt_W1_L8_m23p1.png)
+
 ## 2026-10-21 · i9_1
 
 Folder: [2026-10-21_i9_1/](2026-10-21_i9_1/) · [tables.md](2026-10-21_i9_1/tables.md) · [README.md](2026-10-21_i9_1/README.md)

@@ -308,10 +308,24 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 9 in progress (2026-10-21): I9-1 NIST sky130 4 K regular-Vt DEV with the room-temperature card, P_a correct and P_b supported; I9-2 function-class ablation running. Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 9 in progress (2026-10-21): I9-1 NIST sky130 4 K regular-Vt DEV with the room-temperature card, P_a correct and P_b supported; I9-2 function-class ablation of the shared correction on 4 measured datasets: Q1 class-dependent, Q2 smallest matching class mlp16_s1, no class beats M_bias with fewer parameters. Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
+     },
+     {
+      "text": "I9-2 (function-class ablation of g, 4 measured datasets, pooled equal weight, Bonferroni over 11 contrasts): Q1 class-dependent; mlp16_s1 equivalent 0.999, mlp32 equivalent 1.003, mlp8 non-inferior 0.986; poly2 1.103, poly3 1.086, poly4 1.060, gp 1.483 worse; const, lin, poly5, gam (0.970) inconclusive. Replicate (seeds 5-9) 0.997 [0.982, 1.013]. Q2 mlp16_s1 (353 values); no class beats M_bias with fewer parameters. NIST 4 K: poly4 / poly5 / gam below M_bias; IHP 300 K: every class with more than 6 values above C0_refit. Learning curve: gam gains more than mlp16 as training devices increase (NIST 0.912 -> 0.670 vs 0.947 -> 0.806).",
+      "source": [
+       "out/research/explore/I9_2/decision.json"
+      ],
+      "claim": "i9-2",
+      "queue_match": "^I9_2_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i9_2",
+      "table": "I9-2 function-class ablation",
+      "caption": "I9-2 pre-registered labels, Q1 and Q2 per class"
      },
      {
       "text": "I9-1 (prospective, NIST sky130 4 K, nfet_01v8 / pfet_01v8, 87 DEV devices, open sky130 room-temperature tt card, deck 30 C; 0 failures): P_a correct (S1_lodo 0.295, inside the I7-1 calibration range; frozen rule predicted y -0.135, observed -0.227); P_b supported, GMR(M_bias, C0_refit) 0.797 [0.748, 0.859], 77/87; P_c correct (S3 -0.071). nMOS 0.697, pMOS 0.941 [0.842, 1.085] (pMOS S3 sign wrong). M_bias vs B3_d3 0.955 [0.926, 0.985] (B3_d3 80% of the log gain). Transfer arm M_bias_lvt vs C0_refit 0.887, vs M_bias 1.112.",
@@ -5295,6 +5309,182 @@
     "scripts/research/explore/i9_1_examples.py",
     "scripts/research/plot_explore_i9_1.py",
     "commits 5246240 (draft), 007759b (prereg), e937ca2 (prediction), c813f6f (start outputs)"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
+   "id": "i9-2",
+   "tab": "explore",
+   "statement": "I9-2: across 11 function classes for the shared bias-only correction g on four measured datasets (sky130 77 K, NIST 4 K, TU Delft 4.13 K, IHP 300 K), the held-out RRMS depends on the class (poly2, poly3, poly4 and gp are worse than the 5-seed MLP M_bias at the Bonferroni level); single-seed mlp16, mlp32 and mlp8 match M_bias, and no class with fewer trained values has a lower held-out RRMS.",
+   "status": "verified",
+   "headline": {
+    "value": "Q1 class-dependent; Q2 smallest matching class mlp16_s1 (353 values); no class beats M_bias with fewer parameters",
+    "convention": "pooled GMR(X, mlp16) = exp(mean over 4 datasets of the per-dataset mean ln(RRMS_X / RRMS_mlp16)), held-out strict paper RRMS after the held-out card refit with g frozen; Bonferroni CI at level 1 - 0.05/11; margin 1.03; per-dataset limit 1.05"
+   },
+   "numbers": [
+    {
+     "label": "labels (pooled GMR(X, mlp16), Bonferroni CI)",
+     "value": "mlp16_s1 0.999 [0.982, 1.015] equivalent; mlp32 1.003 [0.987, 1.019] equivalent; mlp8 0.986 [0.966, 1.006] non-inferior; gam 0.970 [0.922, 1.030] inconclusive; poly5 1.062 [0.978, 1.154] inconclusive; const 1.095 [0.981, 1.198] and lin 1.065 [0.948, 1.169] inconclusive; poly2 1.103 [1.041, 1.169], poly3 1.086 [1.029, 1.150], poly4 1.060 [1.001, 1.131], gp 1.483 [1.319, 1.684] worse",
+     "convention": "11 contrasts, equal dataset weight, 20000 stratified device resamples",
+     "source": "out/research/explore/I9_2/decision.json"
+    },
+    {
+     "label": "replicate mlp16_rep (seeds 5-9) vs mlp16",
+     "value": "0.997 [0.982, 1.013] (Bonferroni), 0.997 [0.986, 1.008] (95%); no 'beats' / 'worse' class lies inside this interval",
+     "convention": "seed-noise reference (D3)",
+     "source": "out/research/explore/I9_2/decision.json"
+    },
+    {
+     "label": "Q2",
+     "value": "candidates mlp16_s1 (353 values), mlp8 (565); answer mlp16_s1; no candidate is labelled 'beats'. gam (66 values) is excluded: CI upper 1.030 > 1.03 and IHP 300 K point GMR 1.211 > 1.05",
+     "convention": "fewer trained values than mlp16 (1765, total over members)",
+     "source": "out/research/explore/I9_2/decision.json"
+    },
+    {
+     "label": "per dataset vs mlp16 (95%)",
+     "value": "NIST 4 K: poly4 0.911, poly5 0.857, gam 0.831 (CI upper < 1); IHP 300 K: poly4 1.247, poly5 1.496, gam 1.211 (CI lower > 1), const 0.824, lin 0.809; sky130 77 K: gam 0.946; TU Delft 4.13 K: gam 0.931, mlp8 0.979",
+     "convention": "device bootstrap, descriptive (S2)",
+     "source": "out/research/explore/I9_2/decision.json"
+    },
+    {
+     "label": "pooled vs C0_refit (95%)",
+     "value": "gam 0.889 [0.819, 0.973], mlp8 0.904 [0.850, 0.966], mlp16_rep 0.914, mlp16_s1 0.916, mlp16 0.917 [0.859, 0.986], mlp32 0.919, poly4 0.972, poly5 0.973, lin 0.976, poly3 0.996, const 1.004, poly2 1.011, gp 1.367 [1.245, 1.505]; IHP 300 K: every class with more than 6 values above 1 (1.198-1.816)",
+     "convention": "capacity curve (pre-registered)",
+     "source": "out/research/explore/I9_2/decision.json"
+    },
+    {
+     "label": "learning curve (Q3), GMR(X, C0_refit) at n = 2 / 4 / 8 / all training devices",
+     "value": "TU Delft 4.13 K: mlp16 1.004 / 0.966 / 0.933 / 0.939, gam 1.017 / 0.984 / 0.915 / 0.874, mlp8 1.005 / 0.963 / 0.926 / 0.919; NIST 4 K: mlp16 0.947 / 0.846 / 0.825 / 0.806, gam 0.912 / 0.769 / 0.717 / 0.670, mlp8 0.936 / 0.838 / 0.814 / 0.797",
+     "convention": "3 polarity-stratified subsets per fold and n; descriptive",
+     "source": "out/research/explore/I9_2/lc_nist_4K/results.json"
+    }
+   ],
+   "what": [
+    "Function-class ablation of the I3-2 shared bias-only correction: I = I_card x exp(g), g a function of (is_pmos, |Vgs|/VDD, |Vds|/VDD), trained per fold on the starting-card records of the training devices with the E1 loss, held-out card refit with g frozen in the loop (max_nfev 400, irls 2), strict paper RRMS.",
+    "Classes (trained values, total / per member): const 2, lin 6, poly2 12, poly3 20 (monomial, = I4-1 B3_d2 / B3_d3), poly4 30, poly5 42 (Legendre product basis), gam 66 (8 cubic B-splines per input, rank-1 interaction), mlp8 565 / 113, mlp16_s1 353 (member 0 of M_bias), mlp32 6085 / 1217, gp 2006 (I4-1 B4); reference mlp16 = M_bias 1765 / 353 (5 seeds); replicate mlp16_rep (seeds 5-9).",
+    "Primary pool (D1): sky130 77 K (12 devices, LODO, 43-parameter card), NIST 4 K (57, 53 scored, LODO, 77 K card), TU Delft 4.13 K (45, leave-one-group-out, 7 groups, CMOSedu BSIM4 card), IHP measured 300 K (18, LODO within LV / HV, PSP 103 on ngspice-46 + OSDI). Stored rows reused unchanged (C0_refit, mlp16, poly3 everywhere; poly2, gp, mlp8, mlp32, mlp16_rep on sky130).",
+    "Pre-registered (in force from 02c6996, before any I9-2 held-out result): labels from the Bonferroni CI of the pooled GMR(X, mlp16) ('beats' upper < 1, 'worse' lower > 1, 'equivalent' CI in [1/1.03, 1.03], 'non-inferior' upper <= 1.03); Q1 class-dependent iff some class is 'beats' or 'worse'; Q2 the smallest class with fewer values than mlp16, label 'beats' / 'equivalent' / 'non-inferior', point GMR <= 1.05 on every dataset and no extra failures; secondaries S2-S7 and the learning curve Q3 (mlp16 plus the two classes with the lowest pooled GMR vs C0_refit: gam, mlp8)."
+   ],
+   "did": [
+    "Order: draft (a96ba07) -> code (dea00cc) -> pre-registration in force (02c6996) -> I9_2_validity failed at 03:14 (duplicate poly3 fold task on TU Delft merged as MLP members; no I9-2 result produced) -> fix a864f77 -> requeue at 03:35 -> I9_2_validity (31 s; V1 poly3 rerun max |RRMS - stored| 0 on all 4 datasets) -> run sky130 77 K (186 s), NIST 4 K (3282 s), TU Delft 4.13 K (2330 s), IHP 300 K (492 s) -> replicate (1429 s) -> decide (1 s) -> learning curve TU Delft (2923 s), NIST (3701 s) -> figs (2 s). Outputs committed in 09f60c9 and with this report.",
+    "Report `scripts/research/plot_explore_i9_2.py` (batch 2026-10-21_i9_2) checks that the stored rows used equal the source files (V4), recomputes every pooled and per-dataset GMR (vs mlp16 at Bonferroni and 95%, vs C0_refit, cluster bootstrap, replicate), the labels, Q1, Q2, the margin-sensitivity labels, the gain fractions, the mean training losses and the learning-curve summaries from the per-device rows, and compares them with decision.json and the lc results. Example I-V: `scripts/research/explore/i9_2_examples.py` re-simulates the stored C0_refit, mlp16, poly5 and gam held-out cards of the 2 NIST devices with the lowest and highest ln(poly5 / mlp16) (0.4 s); RRMS reproduced with relative difference 0."
+   ],
+   "result": {
+    "text": [
+     "Q1 class-dependent: poly2 (1.103), poly3 (1.086), poly4 (1.060) and gp (1.483) are 'worse' than mlp16 at the Bonferroni level; const, lin, poly5 and gam are inconclusive; mlp16_s1 (0.999) and mlp32 (1.003) are equivalent and mlp8 (0.986) non-inferior. The replicate with new seeds gives 0.997 [0.982, 1.013], so the MLP widths and the single seed lie within the seed-noise interval of the reference.",
+     "Q2: the smallest matching class is mlp16_s1 (353 trained values, one seed of M_bias); no class has fewer values and a lower held-out RRMS. gam has the lowest pooled point GMR (0.970) but fails the margin (CI upper 1.030) and the per-dataset limit (IHP 300 K 1.211).",
+     "The class ranking differs by dataset. On NIST 4 K poly4, poly5 and gam are below mlp16 (0.911, 0.857, 0.831) and keep 143%, 172% and 186% of the mlp16 log gain over C0_refit. On IHP 300 K every class with more than 6 trained values is above C0_refit (1.198-1.816), and const and lin are below mlp16 (0.824, 0.809).",
+     "Margin sensitivity: at 1.02 the labels are unchanged; at 1.05 gam becomes non-inferior and mlp8 equivalent; Q2 is mlp16_s1 at every margin. With TU Delft groups resampled as clusters, poly4's CI lower bound is 0.9996 (label 'inconclusive' instead of 'worse'); the other labels are unchanged.",
+     "Training loss (S7): gam has the lowest mean final training loss on all four datasets, and its held-out GMR vs C0_refit is the lowest on sky130, NIST and TU Delft and among the highest on IHP 300 K (1.471). gp has mean training losses 1.27 (NIST) and 3.91 (TU Delft) against 0.028-0.063 for the other classes, and 2 TU Delft devices fail after the gp-corrected refit.",
+     "Learning curve (Q3, descriptive): on NIST 4 K all three classes improve from n = 2 to all devices and gam improves most (0.912 -> 0.670; mlp16 0.947 -> 0.806). On TU Delft 4.13 K mlp16 is at 0.933 with 8 devices and 0.939 with all devices, while gam continues from 0.915 to 0.874.",
+     "Post hoc (not pre-registered): the labels from the cluster-bootstrap CI, the training-loss vs held-out pairing, the learning-curve class-vs-class values and the example I-V figures."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "01_table_i9_2_decision.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "02_i9_2_forest.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "03_i9_2_heatmap.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "04_table_i9_2_per_dataset.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "05_i9_2_capacity.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "06_i9_2_train_vs_heldout.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "07_i9_2_learning_curve.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "08_table_i9_2_learning_curve.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "09_i9_2_gain_fraction.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "10_i9_2_replicate.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "11_table_i9_2_margin_sensitivity.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "12_table_i9_2_validity.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "13_i9_2_iv_pfet_01v8_lvt_W1_L4_m29p2.png"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "file": "14_i9_2_iv_nfet_01v8_lvt_W1_L8_m23p1.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-21_i9_2",
+      "table": "I9-2 function-class ablation",
+      "caption": "Pre-registered labels, Q1 and Q2"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "table": "I9-2 per dataset",
+      "caption": "Mean held-out RRMS | GMR vs C0_refit | GMR vs mlp16 per dataset"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "table": "I9-2 learning curve",
+      "caption": "Learning curve (Q3)"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "table": "I9-2 margin sensitivity",
+      "caption": "Margin sensitivity (S4) and cluster bootstrap (S3)"
+     },
+     {
+      "batch": "2026-10-21_i9_2",
+      "table": "I9-2 validity checks",
+      "caption": "Validity V1-V4, deviation and compute"
+     }
+    ]
+   },
+   "caveats": [
+    "All four datasets are development sets; no TEST split was loaded. The pooled statistic gives each dataset equal weight (D9), so sky130 77 K (12 devices) counts as much as NIST 4 K (53).",
+    "The class effect changes sign between datasets (NIST 4 K vs IHP 300 K), so the pooled labels average opposing per-dataset results.",
+    "poly4's 'worse' label depends on the resampling unit: the cluster-bootstrap CI includes 1.",
+    "NIST 4 K scores 53 of 57 devices in every class (4 non-finite starting records); gp has 2 additional failed devices on TU Delft 4.13 K.",
+    "The I9_2 jobs failed once at 03:14 on a validity bug and were requeued unchanged after fix a864f77; no I9-2 result existed before the fix."
+   ],
+   "sources": [
+    "out/research/explore/I9_2/prereg.json",
+    "out/research/explore/I9_2/prereg.md",
+    "out/research/explore/I9_2/validity.json",
+    "out/research/explore/I9_2/decision.json",
+    "out/research/explore/I9_2/{sky130_77K, nist_4K, tudelft_4K, ihp_meas_300K, replicate}/results.json",
+    "out/research/explore/I9_2/lc_{tudelft_4K, nist_4K}/results.json",
+    "out/research/explore/I9_2/examples/examples.json",
+    "src/cryoml/explore/i9_2_classes.py",
+    "scripts/research/explore/i9_2_classes.py",
+    "scripts/research/explore/i9_2_examples.py",
+    "scripts/research/plot_explore_i9_2.py",
+    "commits a96ba07 (draft), dea00cc (code), 02c6996 (prereg), a864f77 (validity fix), 09f60c9 (outputs)"
    ],
    "updated": "2026-10-21"
   },
