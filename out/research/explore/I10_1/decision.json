@@ -1,0 +1,977 @@
+{
+ "id": "I10_1_decision",
+ "smoke": false,
+ "guard": {
+  "path": "out/research/explore/I10_1/prereg.json",
+  "exists": true,
+  "tracked": true,
+  "unmodified": true,
+  "commit": "17c96a17c356949297b9e5db67be2a5dec487207",
+  "ancestor_of_head": true,
+  "commit_date": "2026-10-21T09:55:52-04:00",
+  "ok": true,
+  "in_force": true
+ },
+ "prereg": "out/research/explore/I10_1/prereg.json",
+ "bonferroni_level": 0.99,
+ "datasets": {
+  "nist": {
+   "validity": {
+    "V1": true,
+    "n_finite_start": 66,
+    "n": 67,
+    "V2": false,
+    "failed": {
+     "A0": 0,
+     "A0_rtdeck": 0,
+     "A1": 8,
+     "A2": 8,
+     "A3": 8,
+     "R_pop": 12
+    },
+    "paired": {
+     "K1": 58,
+     "K2": 58,
+     "K3": 51,
+     "K4": 58,
+     "K5": 55
+    },
+    "V4_timeouts_lodo": 0,
+    "V4_timeouts_start": {
+     "C0_RT": 0,
+     "C4_ind": 0,
+     "C4": 0,
+     "C4_deck": 0
+    }
+   },
+   "valid": false,
+   "labels": {
+    "K1": "lower",
+    "K2": "inconclusive",
+    "K3": "inconclusive",
+    "K4": "lower",
+    "K5": "inconclusive"
+   },
+   "contrasts": {
+    "K1": {
+     "method": "A1",
+     "control": "A0",
+     "bonferroni": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 1,
+      "wins": 55,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.2993845332365035,
+      "resample_unit": "device",
+      "ci_low": 0.21090471366712635,
+      "ci_high": 0.41209365581679414,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 1,
+      "wins": 55,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 0.2993845332365035,
+      "resample_unit": "device",
+      "ci_low": 0.23039485621834854,
+      "ci_high": 0.3848178464744263,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 1,
+      "wins": 55,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.2993845332365035,
+      "resample_unit": "cluster (52)",
+      "ci_low": 0.2098314717152631,
+      "ci_high": 0.4115237823009773,
+      "n_boot": 10000
+     }
+    },
+    "K2": {
+     "method": "A1",
+     "control": "A0_rtdeck",
+     "bonferroni": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 1,
+      "wins": 32,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8705152308983654,
+      "resample_unit": "device",
+      "ci_low": 0.7299681183372695,
+      "ci_high": 1.0525554409334543,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 1,
+      "wins": 32,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 0.8705152308983654,
+      "resample_unit": "device",
+      "ci_low": 0.7593110922113814,
+      "ci_high": 1.0019938980564103,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 1,
+      "wins": 32,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8705152308983654,
+      "resample_unit": "cluster (52)",
+      "ci_low": 0.727032602365905,
+      "ci_high": 1.055238316059306,
+      "n_boot": 10000
+     }
+    },
+    "K3": {
+     "method": "A1",
+     "control": "R_pop",
+     "bonferroni": {
+      "n": 67,
+      "n_used": 51,
+      "n_method_failed": 9,
+      "n_control_failed": 13,
+      "wins": 23,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.9504105940512348,
+      "resample_unit": "device",
+      "ci_low": 0.8235303067338665,
+      "ci_high": 1.082432495866304,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 67,
+      "n_used": 51,
+      "n_method_failed": 9,
+      "n_control_failed": 13,
+      "wins": 23,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 0.9504105940512348,
+      "resample_unit": "device",
+      "ci_low": 0.8556020047550811,
+      "ci_high": 1.0504446269431738,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 67,
+      "n_used": 51,
+      "n_method_failed": 9,
+      "n_control_failed": 13,
+      "wins": 23,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.9504105940512348,
+      "resample_unit": "cluster (45)",
+      "ci_low": 0.8226485174079924,
+      "ci_high": 1.0863494922428445,
+      "n_boot": 10000
+     }
+    },
+    "K4": {
+     "method": "A2",
+     "control": "A1",
+     "bonferroni": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 9,
+      "wins": 50,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8191468270228752,
+      "resample_unit": "device",
+      "ci_low": 0.7453796838514684,
+      "ci_high": 0.8895700293171406,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 9,
+      "wins": 50,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 0.8191468270228752,
+      "resample_unit": "device",
+      "ci_low": 0.7645777109126007,
+      "ci_high": 0.8734558888452647,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 67,
+      "n_used": 58,
+      "n_method_failed": 9,
+      "n_control_failed": 9,
+      "wins": 50,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8191468270228752,
+      "resample_unit": "cluster (52)",
+      "ci_low": 0.743474056361293,
+      "ci_high": 0.8950005594203863,
+      "n_boot": 10000
+     }
+    },
+    "K5": {
+     "method": "A3",
+     "control": "A1",
+     "bonferroni": {
+      "n": 67,
+      "n_used": 55,
+      "n_method_failed": 9,
+      "n_control_failed": 9,
+      "wins": 21,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.143440780691191,
+      "resample_unit": "device",
+      "ci_low": 0.8866344973053382,
+      "ci_high": 1.4682924068146481,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 67,
+      "n_used": 55,
+      "n_method_failed": 9,
+      "n_control_failed": 9,
+      "wins": 21,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 1.143440780691191,
+      "resample_unit": "device",
+      "ci_low": 0.9415488180216179,
+      "ci_high": 1.3788976001342683,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 67,
+      "n_used": 55,
+      "n_method_failed": 9,
+      "n_control_failed": 9,
+      "wins": 21,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.143440780691191,
+      "resample_unit": "cluster (49)",
+      "ci_low": 0.872808497233472,
+      "ci_high": 1.4893092454048762,
+      "n_boot": 10000
+     }
+    }
+   },
+   "per_family": {
+    "nmos": {
+     "K1": {
+      "n": 36,
+      "n_used": 30,
+      "n_method_failed": 6,
+      "n_control_failed": 0,
+      "wins": 29,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.20821381905575204,
+      "resample_unit": "device",
+      "ci_low": 0.12005709134867139,
+      "ci_high": 0.33943274865999506,
+      "n_boot": 10000
+     },
+     "K2": {
+      "n": 36,
+      "n_used": 30,
+      "n_method_failed": 6,
+      "n_control_failed": 0,
+      "wins": 24,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.628099562616123,
+      "resample_unit": "device",
+      "ci_low": 0.5220375429320151,
+      "ci_high": 0.749212209871838,
+      "n_boot": 10000
+     },
+     "K3": {
+      "n": 36,
+      "n_used": 29,
+      "n_method_failed": 6,
+      "n_control_failed": 4,
+      "wins": 10,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.055692572401691,
+      "resample_unit": "device",
+      "ci_low": 0.9074834573452963,
+      "ci_high": 1.2149316533230519,
+      "n_boot": 10000
+     },
+     "K4": {
+      "n": 36,
+      "n_used": 30,
+      "n_method_failed": 6,
+      "n_control_failed": 6,
+      "wins": 30,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.7819574643088955,
+      "resample_unit": "device",
+      "ci_low": 0.6886560033902225,
+      "ci_high": 0.87856651351862,
+      "n_boot": 10000
+     },
+     "K5": {
+      "n": 36,
+      "n_used": 28,
+      "n_method_failed": 6,
+      "n_control_failed": 6,
+      "wins": 12,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.1772462570135833,
+      "resample_unit": "device",
+      "ci_low": 0.7606502501528778,
+      "ci_high": 1.799610307456351,
+      "n_boot": 10000
+     }
+    },
+    "pmos": {
+     "K1": {
+      "n": 31,
+      "n_used": 28,
+      "n_method_failed": 3,
+      "n_control_failed": 1,
+      "wins": 26,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.44178897216261953,
+      "resample_unit": "device",
+      "ci_low": 0.321518159027637,
+      "ci_high": 0.5968189980461167,
+      "n_boot": 10000
+     },
+     "K2": {
+      "n": 31,
+      "n_used": 28,
+      "n_method_failed": 3,
+      "n_control_failed": 1,
+      "wins": 8,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.2349492367417787,
+      "resample_unit": "device",
+      "ci_low": 0.9950075715498262,
+      "ci_high": 1.563547816239035,
+      "n_boot": 10000
+     },
+     "K3": {
+      "n": 31,
+      "n_used": 22,
+      "n_method_failed": 3,
+      "n_control_failed": 9,
+      "wins": 13,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8274993188044162,
+      "resample_unit": "device",
+      "ci_low": 0.6557754299668772,
+      "ci_high": 1.0188536522370988,
+      "n_boot": 10000
+     },
+     "K4": {
+      "n": 31,
+      "n_used": 28,
+      "n_method_failed": 3,
+      "n_control_failed": 3,
+      "wins": 20,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8609574875168176,
+      "resample_unit": "device",
+      "ci_low": 0.7612861366144066,
+      "ci_high": 0.9660667625149726,
+      "n_boot": 10000
+     },
+     "K5": {
+      "n": 31,
+      "n_used": 27,
+      "n_method_failed": 3,
+      "n_control_failed": 3,
+      "wins": 9,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.1094082286004254,
+      "resample_unit": "device",
+      "ci_low": 0.8511529433395371,
+      "ci_high": 1.3745992477185422,
+      "n_boot": 10000
+     }
+    }
+   },
+   "gap_fraction_toward_oracle": {
+    "gap_fraction_A1": 0.3542680264712963,
+    "gap_fraction_A2": 0.41286841053519335,
+    "gap_fraction_A3": 0.30324848264430937
+   },
+   "variant_choice": {
+    "adopted": null,
+    "rule": "adopt the variant with the lowest GMR(V, A1) among those whose 95% device-bootstrap CI upper bound is < 1; none: the primary configuration",
+    "gmr": {
+     "V_ind": {
+      "ratio": 1.4503074859374356,
+      "ci_low": 1.1421899997578404,
+      "ci_high": 1.9544868327258702,
+      "n_used": 53
+     },
+     "V_mean": {
+      "ratio": 1.569590891331335,
+      "ci_low": 1.3339658921727597,
+      "ci_high": 1.853542739844817,
+      "n_used": 53
+     },
+     "V_sub7": {
+      "ratio": 1.1129051690236134,
+      "ci_low": 1.0180499222088655,
+      "ci_high": 1.2229275143866105,
+      "n_used": 58
+     },
+     "V_deck": {
+      "ratio": 2.243113736551639,
+      "ci_low": 1.5637493394525643,
+      "ci_high": 3.266748021369651,
+      "n_used": 46
+     }
+    }
+   },
+   "means_valid_only": {
+    "A0": 4.023023034230021,
+    "A0_rtdeck": 0.4596385259446132,
+    "A1": 0.41142148297616177,
+    "A1_L": 0.40101436928416184,
+    "A3": 0.4680153737311446,
+    "V_mean": 0.6345224881140653,
+    "V_sub7": 0.43766207253494893,
+    "V_ind": 1.1732070193043558,
+    "V_deck": 3.9825556565395135,
+    "R_pop": 0.3805755143172156,
+    "R_stock4k": 3.521694334388608,
+    "R_stock_rtdeck": 0.4917404325341738,
+    "A2": 0.379253644564498,
+    "R_oracle": 0.06612470560997193
+   },
+   "lodo_guard": {
+    "path": "out/research/explore/I10_1/prereg.json",
+    "exists": true,
+    "tracked": true,
+    "unmodified": true,
+    "commit": "17c96a17c356949297b9e5db67be2a5dec487207",
+    "ancestor_of_head": true,
+    "commit_date": "2026-10-21T09:55:52-04:00",
+    "ok": true,
+    "in_force": true
+   }
+  },
+  "tud": {
+   "validity": {
+    "V1": true,
+    "n_finite_start": 45,
+    "n": 45,
+    "V2": true,
+    "failed": {
+     "A0": 0,
+     "A0_rtdeck": 0,
+     "A1": 0,
+     "A2": 0,
+     "A3": 2,
+     "R_pop": 0
+    },
+    "paired": {
+     "K1": 45,
+     "K2": 45,
+     "K3": 45,
+     "K4": 45,
+     "K5": 43
+    },
+    "V4_timeouts_lodo": 0,
+    "V4_timeouts_start": {
+     "C4": 0
+    }
+   },
+   "valid": true,
+   "labels": {
+    "K1": "inconclusive",
+    "K2": "higher",
+    "K3": "lower",
+    "K4": "lower",
+    "K5": "higher"
+   },
+   "contrasts": {
+    "K1": {
+     "method": "A1",
+     "control": "A0",
+     "bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 37,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.3592678476726774,
+      "resample_unit": "device",
+      "ci_low": 0.6194475608469376,
+      "ci_high": 3.5091097636065194,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 37,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 1.3592678476726774,
+      "resample_unit": "device",
+      "ci_low": 0.7340202174057576,
+      "ci_high": 2.729652506861001,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 37,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.3592678476726774,
+      "resample_unit": "cluster (7)",
+      "ci_low": 0.288198180576835,
+      "ci_high": 21.470372200512465,
+      "n_boot": 10000
+     }
+    },
+    "K2": {
+     "method": "A1",
+     "control": "A0_rtdeck",
+     "bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 23,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 2.417738503237157,
+      "resample_unit": "device",
+      "ci_low": 1.1820414160878856,
+      "ci_high": 5.597268931954672,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 23,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 2.417738503237157,
+      "resample_unit": "device",
+      "ci_low": 1.3750004873402086,
+      "ci_high": 4.5552000800261565,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 23,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 2.417738503237157,
+      "resample_unit": "cluster (7)",
+      "ci_low": 0.6320388486897022,
+      "ci_high": 28.647208601987,
+      "n_boot": 10000
+     }
+    },
+    "K3": {
+     "method": "A1",
+     "control": "R_pop",
+     "bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 41,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.29696112686666537,
+      "resample_unit": "device",
+      "ci_low": 0.20910506295261114,
+      "ci_high": 0.4180636050509543,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 41,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 0.29696112686666537,
+      "resample_unit": "device",
+      "ci_low": 0.2265302004411831,
+      "ci_high": 0.38824326509091395,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 41,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.29696112686666537,
+      "resample_unit": "cluster (7)",
+      "ci_low": 0.10960435473640451,
+      "ci_high": 0.693217063449422,
+      "n_boot": 10000
+     }
+    },
+    "K4": {
+     "method": "A2",
+     "control": "A1",
+     "bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 40,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8383147359130574,
+      "resample_unit": "device",
+      "ci_low": 0.7613541785353963,
+      "ci_high": 0.9386062431511981,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 40,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 0.8383147359130574,
+      "resample_unit": "device",
+      "ci_low": 0.778979162172829,
+      "ci_high": 0.9084803179021567,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 40,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8383147359130574,
+      "resample_unit": "cluster (7)",
+      "ci_low": 0.7165859849934151,
+      "ci_high": 1.0347128579995213,
+      "n_boot": 10000
+     }
+    },
+    "K5": {
+     "method": "A3",
+     "control": "A1",
+     "bonferroni": {
+      "n": 45,
+      "n_used": 43,
+      "n_method_failed": 2,
+      "n_control_failed": 0,
+      "wins": 11,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.722244180618697,
+      "resample_unit": "device",
+      "ci_low": 1.2493925674948012,
+      "ci_high": 2.309209682567552,
+      "n_boot": 10000
+     },
+     "level95": {
+      "n": 45,
+      "n_used": 43,
+      "n_method_failed": 2,
+      "n_control_failed": 0,
+      "wins": 11,
+      "ties": 0,
+      "level": 0.95,
+      "ratio": 1.722244180618697,
+      "resample_unit": "device",
+      "ci_low": 1.3504847546405763,
+      "ci_high": 2.1698808389623228,
+      "n_boot": 10000
+     },
+     "cluster_bonferroni": {
+      "n": 45,
+      "n_used": 43,
+      "n_method_failed": 2,
+      "n_control_failed": 0,
+      "wins": 11,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.722244180618697,
+      "resample_unit": "cluster (7)",
+      "ci_low": 1.047968574382258,
+      "ci_high": 2.6221201012135333,
+      "n_boot": 10000
+     }
+    }
+   },
+   "per_family": {
+    "nmos": {
+     "K1": {
+      "n": 29,
+      "n_used": 29,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 29,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.4359488321843136,
+      "resample_unit": "device",
+      "ci_low": 0.3243619107768331,
+      "ci_high": 0.5641320033532753,
+      "n_boot": 10000
+     },
+     "K2": {
+      "n": 29,
+      "n_used": 29,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 15,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.0624531267728237,
+      "resample_unit": "device",
+      "ci_low": 0.7790334353080971,
+      "ci_high": 1.4436799625426144,
+      "n_boot": 10000
+     },
+     "K3": {
+      "n": 29,
+      "n_used": 29,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 29,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.1795356151361053,
+      "resample_unit": "device",
+      "ci_low": 0.12816965091738886,
+      "ci_high": 0.2549666592520517,
+      "n_boot": 10000
+     },
+     "K4": {
+      "n": 29,
+      "n_used": 29,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 24,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8172252535222949,
+      "resample_unit": "device",
+      "ci_low": 0.7058352888484343,
+      "ci_high": 0.9707408747339064,
+      "n_boot": 10000
+     },
+     "K5": {
+      "n": 29,
+      "n_used": 27,
+      "n_method_failed": 2,
+      "n_control_failed": 0,
+      "wins": 4,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.973290189632751,
+      "resample_unit": "device",
+      "ci_low": 1.2196453741262927,
+      "ci_high": 3.0148165412439574,
+      "n_boot": 10000
+     }
+    },
+    "pmos": {
+     "K1": {
+      "n": 16,
+      "n_used": 16,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 10.676860272862289,
+      "resample_unit": "device",
+      "ci_low": 2.0095882666950553,
+      "ci_high": 56.832620609455056,
+      "n_boot": 10000
+     },
+     "K2": {
+      "n": 16,
+      "n_used": 16,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 10.731298055138957,
+      "resample_unit": "device",
+      "ci_low": 1.9392736173697895,
+      "ci_high": 59.31215901895781,
+      "n_boot": 10000
+     },
+     "K3": {
+      "n": 16,
+      "n_used": 16,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 12,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.7392981921528868,
+      "resample_unit": "device",
+      "ci_low": 0.5776353166334599,
+      "ci_high": 0.9533886684853713,
+      "n_boot": 10000
+     },
+     "K4": {
+      "n": 16,
+      "n_used": 16,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 16,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 0.8779362792490346,
+      "resample_unit": "device",
+      "ci_low": 0.8612503771761855,
+      "ci_high": 0.8984000900542607,
+      "n_boot": 10000
+     },
+     "K5": {
+      "n": 16,
+      "n_used": 16,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ties": 0,
+      "level": 0.99,
+      "ratio": 1.3688940521910957,
+      "resample_unit": "device",
+      "ci_low": 1.030620232334829,
+      "ci_high": 1.8509796837546393,
+      "n_boot": 10000
+     }
+    }
+   },
+   "gap_fraction_toward_oracle": {
+    "gap_fraction_A1": -0.11699425469914963,
+    "gap_fraction_A2": -0.049773023297624196,
+    "gap_fraction_A3": -0.34907172910144585
+   },
+   "variant_choice": {
+    "adopted": null,
+    "rule": "adopt the variant with the lowest GMR(V, A1) among those whose 95% device-bootstrap CI upper bound is < 1; none: the primary configuration",
+    "gmr": {
+     "V_mean": {
+      "ratio": 1.0152382588280553,
+      "ci_low": 0.9505607410860997,
+      "ci_high": 1.0864533631207265,
+      "n_used": 45
+     },
+     "V_sub7": {
+      "ratio": 1.5321128003022877,
+      "ci_low": 1.2982192984471532,
+      "ci_high": 1.8365350796225992,
+      "n_used": 36
+     },
+     "V_i6": {
+      "ratio": 0.6309190552418188,
+      "ci_low": 0.3719709836602961,
+      "ci_high": 1.0109335565006399,
+      "n_used": 38
+     }
+    }
+   },
+   "means_valid_only": {
+    "A0": 0.747145234438159,
+    "A0_rtdeck": 0.4066677661388475,
+    "A1": 6.471230158278347,
+    "A1_L": 6.972263066103757,
+    "A3": 6.813684779696058,
+    "V_mean": 4.798456630376852,
+    "V_sub7": 0.6332057284122123,
+    "V_i6": 0.7341919909402079,
+    "R_pop": 7.640100042849715,
+    "R_stock4k": 5.105288900258031,
+    "R_stock_rtdeck": 4.498917117769652,
+    "A2": 5.5203122350143845,
+    "R_oracle": 0.06357456041430007
+   },
+   "lodo_guard": {
+    "path": "out/research/explore/I10_1/prereg.json",
+    "exists": true,
+    "tracked": true,
+    "unmodified": true,
+    "commit": "17c96a17c356949297b9e5db67be2a5dec487207",
+    "ancestor_of_head": true,
+    "commit_date": "2026-10-21T09:55:52-04:00",
+    "ok": true,
+    "in_force": true
+   }
+  }
+ },
+ "outcome": "invalid",
+ "action": "stop: validity check failed; fix and re-register",
+ "test_confirmatory_contrasts": [],
+ "test_primary_arm": null,
+ "test_configuration_variant": null,
+ "tud_direction_agrees": {
+  "K1": false,
+  "K2": false,
+  "K3": true,
+  "K4": true,
+  "K5": true
+ }
+}

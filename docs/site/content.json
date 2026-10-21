@@ -3,7 +3,7 @@
   "site": "title, eyebrow, run_header, conventions[], devices[] (order for per_device tables)",
   "tabs[]": "id (deep link #id), kind (paper | log | questions), label, title, subtitle, state (active | merged | archived), merged_into (tab id when merged), may_merge_into (tab id, shown as a notice), state_date, state_note, status {question, answer[], next[], updated}, sections[] {id, title, position (before_claims | after_claims), blocks[]}. Questions tab: open[] {question, context, source}, decided[] {question, decision, context, recorded, source}.",
   "status items": "string, or {text, source[], claim (claim id for a details link), queue_match (regex over queue labels; appends running/queued/done counts)}, or a block (object with type, e.g. batch_table) rendered inside the list",
-  "claims[]": "id, tab, statement (one sentence), status (verified | in_progress | refuted | planned), headline {value, convention}, numbers[] {label, value, convention, source}, what[] (blocks), did[] (strings or blocks), result {text[], figures[] {batch, file, caption?}, tables[] (batch_table refs {batch, table, rows?, columns?} or inline tables), blocks[]}, caveats[], sources[], updated. A claim renders in its tab; when a tab is merged its claims render in merged_into.",
+  "claims[]": "id, tab, statement (one sentence), status (verified | in_progress | refuted | planned | invalid), headline {value, convention}, numbers[] {label, value, convention, source}, what[] (blocks), did[] (strings or blocks), result {text[], figures[] {batch, file, caption?}, tables[] (batch_table refs {batch, table, rows?, columns?} or inline tables), blocks[]}, caveats[], sources[], updated. A claim renders in its tab; when a tab is merged its claims render in merged_into.",
   "blocks": "string | {type: text|code|list|figure|table|batch_table|per_device|queue|timeline|nodes|facts, ...}. batch_table: {batch, table (heading prefix in tables.md), rows (first-cells prefixes joined by ' | '), columns (subset)}. per_device: {columns [{label, file, path with {device}}], caption, notes, mean_row}. queue: {match (regex)}.",
   "inline markup": "`code`, **bold**, [label](href); #tab or #claim-<id> links switch tabs"
  },
@@ -308,10 +308,25 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 9 in progress (2026-10-21): I9-1 NIST sky130 4 K regular-Vt DEV with the room-temperature card, P_a correct and P_b supported; I9-2 function-class ablation of the shared correction on 4 measured datasets: Q1 class-dependent, Q2 smallest matching class mlp16_s1, no class beats M_bias with fewer parameters. Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 10 in progress (2026-10-21): I10-1 room-temperature -> 4 K prediction on NIST g5v0d10v5 DEV, invalid run (V2: shifted cards fail BSIM4 parameter checks), stopped by rule; I10-2 class selection for the shared correction, jobs running. Iteration 9 in progress (2026-10-21): I9-1 NIST sky130 4 K regular-Vt DEV with the room-temperature card, P_a correct and P_b supported; I9-2 function-class ablation of the shared correction on 4 measured datasets: Q1 class-dependent, Q2 smallest matching class mlp16_s1, no class beats M_bias with fewer parameters. Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
+     },
+     {
+      "text": "I10-1 (NIST ETest g5v0d10v5, 67 DEV devices; TU Delft 45 replication): invalid run, stopped by rule. V2 failed: A1 / A2 / A3 8 failed each (11.9% > 10%), R_pop 12; K3 51/67 paired. Cause (post hoc): the shifted cards fail BSIM4 checks of size-dependent values (Lpeb < -Leff on bin-stretched nMOS L 0.40-0.45 um; Pclm <= 0). Descriptive: A1 0.411, A0_rtdeck 0.460, R_pop 0.381, R_oracle 0.066; K2 and K3 inconclusive; TU Delft K2 higher. Recommendation: stop without re-registration; TEST stays locked.",
+      "source": [
+       "out/research/explore/I10_1/decision.json",
+       "out/research/explore/I10_1/diagnosis/diagnosis.json"
+      ],
+      "claim": "i10-1",
+      "queue_match": "^I10_1_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i10_1",
+      "table": "I10-1 decision and validity",
+      "caption": "I10-1 outcome, validity and descriptive K1-K5"
      },
      {
       "text": "I9-2 (function-class ablation of g, 4 measured datasets, pooled equal weight, Bonferroni over 11 contrasts): Q1 class-dependent; mlp16_s1 equivalent 0.999, mlp32 equivalent 1.003, mlp8 non-inferior 0.986; poly2 1.103, poly3 1.086, poly4 1.060, gp 1.483 worse; const, lin, poly5, gam (0.970) inconclusive. Replicate (seeds 5-9) 0.997 [0.982, 1.013]. Q2 mlp16_s1 (353 values); no class beats M_bias with fewer parameters. NIST 4 K: poly4 / poly5 / gam below M_bias; IHP 300 K: every class with more than 6 values above C0_refit. Learning curve: gam gains more than mlp16 as training devices increase (NIST 0.912 -> 0.670 vs 0.947 -> 0.806).",
@@ -5485,6 +5500,155 @@
     "scripts/research/explore/i9_2_examples.py",
     "scripts/research/plot_explore_i9_2.py",
     "commits a96ba07 (draft), dea00cc (code), 02c6996 (prereg), a864f77 (validity fix), 09f60c9 (outputs)"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
+   "id": "i10-1",
+   "tab": "explore",
+   "statement": "I10-1: the pre-registered test of predicting a device's 4 K I-V from its room-temperature data (NIST ETest g5v0d10v5, 67 DEV devices) is invalid: validity V2 failed because the shifted cards of A1, A2, A3 (8 devices each) and R_pop (12) stop ngspice at BSIM4 parameter checks (Lpeb < -Leff, Pclm <= 0), so the run stopped by its rule and no label is a decision.",
+   "status": "invalid",
+   "headline": {
+    "value": "invalid run (V2: A1 / A2 / A3 8 failed each = 11.9%, R_pop 12; K3 51/67 paired); stopped by rule, TEST stays locked",
+    "convention": "strict paper RRMS on the held-out device's 4 K Vb = 0 curves, measured-only inclusion; paired GMR, device bootstrap, 99% (Bonferroni over K1-K5) CI; all NIST values descriptive"
+   },
+   "numbers": [
+    {
+     "label": "validity",
+     "value": "V1 66/67; V2 failed A0 0, A0_rtdeck 0, A1 8, A2 8, A3 8, R_pop 12 (limit 6.7 = 10% of 67); paired K1 58, K2 58, K3 51, K4 58, K5 55 (limit 54); V3 holds; V4 0 timeouts",
+     "convention": "pre-registered validity conditions",
+     "source": "out/research/explore/I10_1/decision.json"
+    },
+    {
+     "label": "failure cause (post hoc)",
+     "value": "A1 (= A2) 6 Lpeb < -Leff (nMOS L 0.40-0.45 um, bin-stretched) + 2 Pclm <= 0 (pMOS); A3 6 + 2; R_pop 12 Pclm <= 0; A1-rule device: C0_RT Pclm <= 0. Analytic check from the bin coefficients predicts every primary-arm failure; V_sub7 (no PCLM / LPEB) 0 failures",
+     "convention": "29 ngspice .op runs (0.9 s) + analytic BSIM4 binning check",
+     "source": "out/research/explore/I10_1/diagnosis/diagnosis.json"
+    },
+    {
+     "label": "mean RRMS, NIST (finite devices, descriptive)",
+     "value": "A0 4.023, A0_rtdeck 0.460, A1 0.411, A2 0.379, A3 0.468, R_pop 0.381, R_oracle 0.066",
+     "convention": "device sets differ between arms",
+     "source": "out/research/explore/I10_1/lodo_nist/results.json"
+    },
+    {
+     "label": "K1-K5, NIST (descriptive)",
+     "value": "K1 GMR(A1, A0) 0.299 [0.211, 0.412] lower; K2 GMR(A1, A0_rtdeck) 0.871 [0.730, 1.053] inconclusive; K3 GMR(A1, R_pop) 0.950 [0.824, 1.082] inconclusive; K4 GMR(A2, A1) 0.819 [0.745, 0.890] lower; K5 GMR(A3, A1) 1.143 [0.887, 1.468] inconclusive",
+     "convention": "99% device-bootstrap CI, failed devices dropped pairwise",
+     "source": "out/research/explore/I10_1/decision.json"
+    },
+    {
+     "label": "gap fraction toward R_oracle (NIST, descriptive)",
+     "value": "A1 0.35, A2 0.41, A3 0.30",
+     "convention": "ln GMR(arm, A0) / ln GMR(R_oracle, A0)",
+     "source": "out/research/explore/I10_1/decision.json"
+    },
+    {
+     "label": "TU Delft replication (valid)",
+     "value": "K1 1.359 inconclusive; K2 2.418 [1.182, 5.597] higher; K3 0.297 lower; K4 0.838 lower; K5 1.722 higher; mean RRMS A0_rtdeck 0.407, A1 6.471, R_oracle 0.064",
+     "convention": "45 devices, 7 geometry groups; changes no label",
+     "source": "out/research/explore/I10_1/lodo_tud/results.json"
+    }
+   ],
+   "what": [
+    "Question: can a device's 4 K I-V be predicted without any of its 4 K data, from its room-temperature (RT) data and what training devices with both temperatures teach? DEV (decides): NIST ETest nfet_g5v0d10v5 (36) / pfet_g5v0d10v5 (31), 4 K files paired with the google sky130 raw-data RT files, 61 geometry groups, 37 devices bin-stretched; open_pdks sky130 tt card, single bin, 43-parameter I8-1 box, deck 30 C. Replication: TU Delft 40 nm I6-1 DEV, 45 devices. TEST (25 ETest 1.8 V core devices) locked.",
+    "Cards: C0_RT (RT fit) and C4 (4 K fit at the RT deck, warm start from C0_RT). Arms (leave-one-geometry-out, within type): A0 C0_RT at the 4 K deck; A0_rtdeck C0_RT at the RT deck; A1 C0_RT + median training shift of (C4 - C0_RT) in local box coordinates, clipped to the box; A2 A1 x exp(g) (M_bias on nested out-of-fold A1 records); A3 A1 + ridge term; R_pop median training C4 coordinates; R_oracle own C4 (uses 4 K data).",
+    "Pre-registered (in force from 17c96a1): K1 GMR(A1, A0) primary, K2 GMR(A1, A0_rtdeck), K3 GMR(A1, R_pop), K4 GMR(A2, A1), K5 GMR(A3, A1), Bonferroni level 0.99; validity V1 (>= 90% finite starts), V2 (A0, A0_rtdeck, A1, A2, A3, R_pop each <= 10% failed and every K >= 80% paired); invalid -> 'stop: fix and re-register'."
+   ],
+   "did": [
+    "Queue: I10_1_start_nist 2335 s, start_tud 751 s, lodo_nist 2100 s, lodo_tud 488 s, decide 0 s (94.6 min; estimate 75-95 min). Decision: outcome 'invalid', action 'stop: fix and re-register'.",
+    "Diagnosis (post hoc, `scripts/research/explore/i10_1_diagnose.py`): one ngspice .op per failed A1 / A3 / R_pop record and for the excluded C0_RT record (29 runs, 0.9 s), and an analytic check of the size-dependent PCLM and LPEB (P0 + lP/Leff + wP/Weff + pP/(Leff Weff), binunit 2) for every stored card.",
+    "Report `scripts/research/plot_explore_i10_1.py` (batch 2026-10-21_i10_1) recomputes the aggregates, validity counts, K1-K5 GMR and CIs (all, nMOS, pMOS; device and cluster), labels and gap fractions from the per-device scores for NIST and TU Delft and checks them against results.json and decision.json. Example I-V: `scripts/research/explore/i10_1_examples.py` re-simulates the stored A0_rtdeck, A1, A2 and R_oracle cards of the nMOS and pMOS devices nearest the type median ln(A1 / A0_rtdeck) (0.6 s); RRMS reproduced with relative difference 0."
+   ],
+   "result": {
+    "text": [
+     "Invalid run. V2 fails on two conditions: A1, A2, A3 each failed on 8 of 67 devices (11.9% > 10%) and R_pop on 12 (17.9%); K3 has 51/67 = 76% paired (< 80%). V1 holds (66/67). The pre-registered action is 'stop: fix and re-register'; the TEST devices stay locked.",
+     "Diagnosis: every failed record stops ngspice at a BSIM4 parameter check of a size-dependent value. A1 (and A2, which uses the A1 card): 6 nMOS devices with L 0.40-0.45 um (bin-stretched, bin L min 0.5 um) have Lpeb < -Leff; 2 pMOS devices have Pclm <= 0. A3: 6 Lpeb, 2 Pclm. R_pop: 12 Pclm <= 0. The A1-rule device (pfet W0.42 L8) has Pclm <= 0 on its C0_RT card. Cause class: the shift moves parameters outside BSIM4's valid range (not a code bug). The box bounds the base value P0, not the effective value; at C0_RT the failing nMOS devices already sit at Lpeb/Leff -0.82 to -1.00 and the failing pMOS at Pclm 0.10-0.53. The analytic check predicts every failure of A1, A3, R_pop, A1_L, V_ind and C0_RT; V_sub7 (no PCLM / LPEB) has 0 failures.",
+     "Descriptive NIST values (not decisions): A1 mean 0.411 lies between A0_rtdeck (0.460) and R_pop (0.381) and far above R_oracle (0.066); K2 0.871 [0.730, 1.053] and K3 0.950 [0.824, 1.082] are inconclusive; K1 0.299 is lower because A0 (BSIM4 temperature equations at -269.15 C) has mean RRMS 4.02. A2 is below A1 (K4 0.819). Gap fraction toward R_oracle: A1 0.35, A2 0.41.",
+     "TU Delft replication (valid): K2 higher (A1 above A0_rtdeck, 2.418), K3 lower, K4 lower (0.838), K5 higher; 8 pMOS devices of one geometry group (each pMOS fold trains on the other group only) have A1 RRMS 28.7-46.8. Direction agrees with NIST on K3, K4, K5.",
+     "Outcome recommendation (RESEARCH_LOOP 'I10-1 outcome'): stop I10-1 without re-registration. A re-registration with a pre-specified projection of the effective PCLM / LPEB would cost about 40 min (lodo NIST with the stored start fits, one C0_RT refit, decide) to 95 min (full rerun) on 6 workers; on the 58 devices already scored K2 and K3 are inconclusive, the DEV values are no longer unseen, and on TU Delft A1 is above A0_rtdeck."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "01_table_i10_1_decision.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "02_table_i10_1_arms.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "03_i10_1_forest_K1_K5.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "04_table_i10_1_family.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "05_i10_1_tud_replication.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "06_table_i10_1_tud_replication.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "07_i10_1_gap_to_oracle.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "08_table_i10_1_failures.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "09_i10_1_bsim4_check_margins.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "10_i10_1_iv_nfet_W20_L0p5_m8363p5.png"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "file": "11_i10_1_iv_pfet_W1_L2_m8364p10.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-21_i10_1",
+      "table": "I10-1 decision and validity",
+      "caption": "Outcome, validity V1-V4 and descriptive K1-K5"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "table": "I10-1 failure diagnosis",
+      "caption": "Failed NIST records and the BSIM4 check that stops ngspice"
+     },
+     {
+      "batch": "2026-10-21_i10_1",
+      "table": "I10-1 TU Delft replication",
+      "caption": "TU Delft replication next to NIST"
+     }
+    ]
+   },
+   "caveats": [
+    "The run is invalid; every NIST label and GMR is descriptive. Means are over finite devices and the device sets differ between arms.",
+    "The failure diagnosis was done after the decision and is not pre-registered.",
+    "The RT data and the 4 K data are from different measurement campaigns; die identity is not documented. A0 at -269.15 C uses BSIM4 temperature equations outside their calibrated range; on TU Delft A0 changes kT/q only."
+   ],
+   "sources": [
+    "out/research/explore/I10_1/prereg.json",
+    "out/research/explore/I10_1/prereg.md",
+    "out/research/explore/I10_1/decision.json",
+    "out/research/explore/I10_1/lodo_nist/results.json",
+    "out/research/explore/I10_1/lodo_tud/results.json",
+    "out/research/explore/I10_1/diagnosis/diagnosis.json",
+    "out/research/explore/I10_1/examples/examples.json",
+    "scripts/research/explore/i10_1_rt4k.py",
+    "scripts/research/explore/i10_1_diagnose.py",
+    "scripts/research/plot_explore_i10_1.py",
+    "docs/RESEARCH_LOOP.md"
    ],
    "updated": "2026-10-21"
   },

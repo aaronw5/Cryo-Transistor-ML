@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-21 · i10_1
+
+Folder: [2026-10-21_i10_1/](2026-10-21_i10_1/) · [tables.md](2026-10-21_i10_1/tables.md) · [README.md](2026-10-21_i10_1/README.md)
+
+- I10-1 RT -> 4 K (NIST g5v0d10v5 DEV, 67 devices): INVALID, stopped by rule. V2 failed A1 / A2 / A3 8 each, R_pop 12 (limit 6.7); K3 paired 51 < 54.
+- Cause: shifted cards fail BSIM4 checks of the size-dependent values (A1 6 Lpeb < -Leff on bin-stretched nMOS L 0.40-0.45 um, 2 Pclm <= 0; R_pop 12 Pclm <= 0); predicted analytically for every primary-arm failure.
+- Descriptive: mean A1 0.411, A0_rtdeck 0.460, R_pop 0.381, R_oracle 0.066; K2 0.871 [0.730, 1.053], K3 0.950 [0.824, 1.082] inconclusive. TU Delft (valid): K2 higher, K3 lower.
+
+Figures and tables: [01_table_i10_1_decision.png](2026-10-21_i10_1/01_table_i10_1_decision.png) · [02_table_i10_1_arms.png](2026-10-21_i10_1/02_table_i10_1_arms.png) · [03_i10_1_forest_K1_K5.png](2026-10-21_i10_1/03_i10_1_forest_K1_K5.png) · [04_table_i10_1_family.png](2026-10-21_i10_1/04_table_i10_1_family.png) · [05_i10_1_tud_replication.png](2026-10-21_i10_1/05_i10_1_tud_replication.png) · [06_table_i10_1_tud_replication.png](2026-10-21_i10_1/06_table_i10_1_tud_replication.png) · [07_i10_1_gap_to_oracle.png](2026-10-21_i10_1/07_i10_1_gap_to_oracle.png) · [08_table_i10_1_failures.png](2026-10-21_i10_1/08_table_i10_1_failures.png) · [09_i10_1_bsim4_check_margins.png](2026-10-21_i10_1/09_i10_1_bsim4_check_margins.png) · [10_i10_1_iv_nfet_W20_L0p5_m8363p5.png](2026-10-21_i10_1/10_i10_1_iv_nfet_W20_L0p5_m8363p5.png) · [11_i10_1_iv_pfet_W1_L2_m8364p10.png](2026-10-21_i10_1/11_i10_1_iv_pfet_W1_L2_m8364p10.png)
+
 ## 2026-10-21 · i9_2
 
 Folder: [2026-10-21_i9_2/](2026-10-21_i9_2/) · [tables.md](2026-10-21_i9_2/tables.md) · [README.md](2026-10-21_i9_2/README.md)

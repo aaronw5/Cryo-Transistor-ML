@@ -24,7 +24,7 @@ Content model (see ``_schema`` in content.json):
   and sections render in ``merged_into``; its id stays a deep-link alias.
   Archived tabs render after the active ones with a notice.
 * claim: ``id``, ``tab``, ``statement``, ``status`` (verified | in_progress |
-  refuted | planned), ``headline`` {value, convention}, ``numbers``, ``what``,
+  refuted | planned | invalid), ``headline`` {value, convention}, ``numbers``, ``what``,
   ``did``, ``result`` {text, figures, tables, blocks}, ``caveats``,
   ``sources``, ``updated``.  Rendered as ``<details>`` with id
   ``claim-<id>``.
@@ -56,6 +56,7 @@ STATUS_LABEL = {
     "in_progress": "in progress",
     "refuted": "refuted",
     "planned": "planned",
+    "invalid": "invalid run (stopped by rule)",
 }
 
 
@@ -927,7 +928,7 @@ details.claim[open] > summary::after { content: "−"; }
   padding: 1px 7px; border: 1px solid currentColor; white-space: nowrap; justify-self: start; }
 .chip-verified, .chip-done, .chip-decided { color: var(--ok); background: var(--ok-bg); }
 .chip-in-progress, .chip-in_progress, .chip-running { color: var(--warn); background: var(--warn-bg); }
-.chip-refuted, .chip-failed { color: var(--bad); background: var(--bad-bg); }
+.chip-refuted, .chip-failed, .chip-invalid { color: var(--bad); background: var(--bad-bg); }
 .chip-planned, .chip-queued, .chip-open, .chip-built, .chip-smoke { color: var(--idle); background: var(--idle-bg); }
 .cbody { padding: 4px 0 20px 0; display: grid; gap: 16px; min-width: 0; }
 @media (min-width: 720px) { .cbody { padding-left: calc(6.6rem + 14px); } }

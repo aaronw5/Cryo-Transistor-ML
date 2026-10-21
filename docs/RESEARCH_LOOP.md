@@ -1628,3 +1628,75 @@ mlp16 on the datasets I9-2 did not cover (IHP 233 / 343 / 398 K, TU Delft 295 K,
 a frozen multi-class selector and will be pre-registered separately. Queue: the I10-1 jobs were inserted ahead of the
 I10-2 refits (order after I10_2_inner: I10_1_start_nist, I10_1_start_tud, I10_1_lodo_nist, I10_1_lodo_tud, I10_1_decide,
 then I10_2_refit x 4, I10_2_decide); one job at a time.
+
+## I10-1 outcome (2026-10-21 12:50): 4 K I-V from room-temperature data, invalid run (stopped by rule)
+
+Queue: I10_1_start_nist 2335 s, I10_1_start_tud 751 s, I10_1_lodo_nist 2100 s, I10_1_lodo_tud 488 s, I10_1_decide 0 s
+(94.6 min; estimate 75-95 min). Outputs `out/research/explore/I10_1/{decision.json, start_nist, start_tud, lodo_nist,
+lodo_tud}` (record .npz files and `work/` nested records gitignored).
+Decision (`decision.json`): outcome "invalid", action "stop: fix and re-register". NIST DEV: V1 holds (66/67; A1 rule
+excluded etest_pfet_g5v0d10v5_W0p42_L8_m8395p10, non-finite C0_RT). V2 fails: failed A0 0, A0_rtdeck 0, A1 8, A2 8, A3
+8, R_pop 12 (limit 10% of 67 = 6.7; A1 / A2 / A3 11.9%, R_pop 17.9%); paired K1 58, K2 58, K3 51, K4 58, K5 55 (limit 54;
+K3 76%). V3 holds (guard ok in start, lodo, decide), V4 0 timeouts. TEST stays locked; no TEST arm or variant.
+TU Delft replication: valid (V1 45/45; A3 2 failed, others 0).
+
+Diagnosis (post hoc; `scripts/research/explore/i10_1_diagnose.py`, `diagnosis/diagnosis.json`; one ngspice .op per
+failed A1 / A3 / R_pop record and for the excluded C0_RT record, 29 runs, 0.9 s; analytic check of every stored card).
+Every failed record stops ngspice at a BSIM4 parameter check of a size-dependent value; no other error.
+- A1 (A2 uses the A1 card; the A2 failures are the same 8 devices): 6 "Lpeb < -Leff" (nfet W 0.75 / 1 / 3 / 20 at L 0.4
+  and W 0.75 / 20 at L 0.45; bin-stretched, bin L min 0.5 um) and 2 "Pclm <= 0" (pfet W0.42 L20, in bin; pfet W0.75
+  L0.4, stretched).
+- A3: 6 Lpeb (nMOS L 0.40-0.45 um), 2 Pclm (pMOS). R_pop: 12 Pclm <= 0 (4 nMOS, 8 pMOS). C0_RT of the A1-rule device:
+  Pclm <= 0 (a non-included RT curve was non-finite, so the RT fit did not see it).
+- Mechanism: the I8-1 box bounds the base parameter P0 (log scale, sign kept); the bin's l / w / p terms give the
+  effective value P = P0 + lP/Leff + wP/Weff + pP/(Leff Weff) (binunit 2). At C0_RT the failing nMOS devices already
+  have Lpeb/Leff -0.82 to -1.00 and the failing pMOS devices Pclm 0.10-0.53; the training median shift of the base
+  value (or the R_pop coordinates) moves the effective value past the limit. This is the mechanism of the 10 devices
+  with L 0.30-0.40 um excluded before the pre-registration (D10), at L 0.40-0.45 um.
+- The analytic check (no simulation) predicts every failure of A1 8/8, A3 8/8, R_pop 12/12, A1_L 10/10, V_ind 13/13 and
+  C0_RT 1/1; 6 more R_pop cards sit at Lpeb = -Leff (relative 5e-11, finite because the check is strict). V_sub7 (7
+  parameters, no PCLM / LPEB) has 0 failures. V_mean has 1 and V_deck 12 failures not explained by these two checks
+  (variants only; not diagnosed).
+- Class: (b) the shift moves parameters outside BSIM4's valid range; not a code bug (the validity counts, contrasts and
+  labels recompute from the per-device scores). Fixable by a pre-specifiable projection: after every shift (A1, A1_L,
+  A3, R_pop, variants, nested A1 records) and inside the start polish, clamp P0 of PCLM and LPEB (and the other BSIM4
+  fatal checks evaluated the same way, e.g. LPE0, DROUT) so that the effective value keeps a fixed margin (for example
+  Pclm_eff >= 0.01, Lpeb_eff >= -0.9 Leff); computed from the card text, no simulation.
+
+Descriptive NIST values (not decisions): mean RRMS over finite devices A0 4.023, A0_rtdeck 0.460, A1 0.411, A2 0.379, A3
+0.468, R_pop 0.381, R_oracle 0.066 (medians A0_rtdeck 0.330, A1 0.301, R_oracle 0.031). K1 0.299 [0.211, 0.412] lower,
+K2 0.871 [0.730, 1.053] inconclusive, K3 0.950 [0.824, 1.082] inconclusive, K4 0.819 [0.745, 0.890] lower, K5 1.143
+[0.887, 1.468] inconclusive (99% CI). Per family K2: nMOS 0.628, pMOS 1.235. Gap fraction toward R_oracle A1 0.35, A2
+0.41, A3 0.30. Variants vs A1: V_ind 1.450, V_mean 1.570, V_sub7 1.113, V_deck 2.243 (none adopted).
+TU Delft (valid): K1 1.359 inconclusive, K2 2.418 [1.182, 5.597] higher, K3 0.297 lower, K4 0.838 lower, K5 1.722
+higher; mean RRMS A0_rtdeck 0.407, A1 6.471, R_oracle 0.064. TU Delft pMOS has 2 geometry groups, so each pMOS fold
+trains on the other group only; the 8 pfet W1 L0.04 devices have A1 RRMS 28.7-46.8. Direction agrees with NIST on K3,
+K4, K5.
+
+Cost of a re-registered run (estimate, not run): projection code and unit tests; compute on 6 workers about 40 min
+(lodo NIST 35 min with the stored start fits, refit of the one C0_RT card, decide; TU Delft unchanged) or about 95 min
+for a full rerun of start and lodo on both datasets (the measured 94.6 min).
+What a re-registered run can change: it adds the 8 A1 failures (15 for K3) to 58 (51) paired devices. With the observed
+spread (SD of ln ratio 0.553 for K2, 0.381 for K3; normal approximation) K2 becomes "lower" only if the added devices
+have GMR(A1, A0_rtdeck) below about 0.64, and K3 only if GMR(A1, R_pop) on the added devices is below about 0.70. The
+added devices are bin-stretched short-L devices whose projected cards sit at the check limits. K1 rests on A0, whose
+mean RRMS is 4.02 (BSIM4 temperature equations at -269.15 C); K1 "lower" does not separate A1 from A0_rtdeck.
+
+Recommendation: stop I10-1; do not re-register. Reasons: (1) on the 58 scored NIST devices A1 (0.411) is close to
+A0_rtdeck (0.460) and R_pop (0.381), K2 and K3 are inconclusive, and A1 closes 35% of the log gap to R_oracle (0.066);
+(2) on the valid TU Delft replication A1 is above A0_rtdeck (K2 2.418, higher); (3) the NIST DEV values are now seen, so
+a re-registered DEV run is not blind; the best expected outcome is "partly supported" with K1 alone, whose control is
+A0. Kept from I10-1: the BSIM4 effective-parameter check, which any later card-shift method needs before its
+pre-registration, and K4 (A2 below A1 on both datasets, 0.819 / 0.838), consistent with the I8-1 / I9-1 M_bias results.
+The TEST devices stay locked.
+
+Report batch `out/research/report/2026-10-21_i10_1/` (`scripts/research/plot_explore_i10_1.py`; recomputes aggregates,
+validity counts, K1-K5 GMR and CIs per family and cluster, labels and gap fractions for NIST and TU Delft and checks them
+against results.json and decision.json): table 01 decision and validity, table 02 arms, figure 03 forest K1-K5
+(descriptive), table 04 per family, figure 05 and table 06 TU Delft replication, figure 07 per-device RRMS and gap to
+oracle, table 08 failure diagnosis, figure 09 effective Lpeb / Pclm, figures 10-11 example I-V
+(`scripts/research/explore/i10_1_examples.py`: stored A0_rtdeck, A1, A2, R_oracle cards of
+etest_nfet_g5v0d10v5_W20_L0p5_m8363p5 and etest_pfet_g5v0d10v5_W1_L2_m8364p10, nearest the type median ln(A1 /
+A0_rtdeck); 0.6 s; RRMS reproduced with relative difference 0).
+Site: new claim `i10-1` (status "invalid run (stopped by rule)", a new status value in build_site.py) in the Exploration
+tab, status item and decision table. Site rebuilt, not published.
