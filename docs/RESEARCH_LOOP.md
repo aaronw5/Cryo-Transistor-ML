@@ -1614,3 +1614,17 @@ start 21 s (NIST) / 15 s (TU Delft), lodo 5 s / 11 s.
 Queue (inserted ahead of the I10-2 refit jobs, after the running I10_2_inner): I10_1_start_nist (268 fits, about 30-40
 min), I10_1_start_tud (45 fits, about 9 min), I10_1_lodo_nist (61 folds x 5 M_bias seeds, about 25-35 min),
 I10_1_lodo_tud (about 7-8 min), I10_1_decide; total about 75-95 min.
+
+### I10-2 amendment A1 (2026-10-21 10:15)
+
+Amendment `out/research/explore/I10_2/prereg_amendment_A1.json` in force from 7a93dfc (committed alone; code 9cb5c9e),
+before I10_2_decide and before any S_loss / S_refit outer score was computed or read (known before: the interim S_gate /
+S_cv results and the sky130 S_loss selections in the inner log). Secondary report of C1 under (a) the TU Delft device
+bootstrap, (b) 95% per-dataset CIs, (a+b), for the 4 selectors and fixed mlp16; the primary rule and labels are
+unchanged; decide prints both, labelled, and refuses without the committed amendment. Reason: the 7-group TU Delft cluster
+bootstrap at 1 - 0.05/11 gives CIs too wide for C1 to pass for most selectors. Limitation: no new NIST room-temperature
+class runs in I10-2 (menu there stays {none, poly3, mlp16}). TEST planning (December): DEV runs of lin / gam / mlp8 /
+mlp16 on the datasets I9-2 did not cover (IHP 233 / 343 / 398 K, TU Delft 295 K, NIST TEST counterparts) are needed for
+a frozen multi-class selector and will be pre-registered separately. Queue: the I10-1 jobs were inserted ahead of the
+I10-2 refits (order after I10_2_inner: I10_1_start_nist, I10_1_start_tud, I10_1_lodo_nist, I10_1_lodo_tud, I10_1_decide,
+then I10_2_refit x 4, I10_2_decide); one job at a time.
