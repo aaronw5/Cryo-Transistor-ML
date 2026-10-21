@@ -1,0 +1,134 @@
+{
+ "id": "I11-1",
+ "status": "in force",
+ "date": "2026-10-21",
+ "title": "43-parameter card + shared bias-only correction (M_bias) as a compact-model add-on in ngspice-41 + OSDI, sky130 77 K, 18 devices",
+ "started_by": "user default choice (no reply by 17:00)",
+ "data": "sky130 77 K, all 18 devices (REAL_TEST opened by user decision 2026-10-21)",
+ "correction": {
+  "source": "out/research/explore/I3_2/all18/corrections.json full|M_bias",
+  "verilog_a": "out/research/explore/I3_2/all18/m_bias_sky130_all18_full.va",
+  "vdd_norm": 1.85,
+  "sense": "V(sense) <+ RS * I(sense), RS = 0"
+ },
+ "tools": {
+  "openvaf": "23.5.0 ~/cryo-ng41/openvaf/bin/openvaf --target aarch64-apple-darwin",
+  "ngspice": "~/cryo-ng41/arm64-osdi/bin/ngspice (ngspice-41 OSDI build)"
+ },
+ "card": {
+  "name": "M_full",
+  "definition": "43-parameter card refit from direct43_r3_fd with the full-data g frozen in the loop",
+  "refit": {
+   "heldout_nfev": 400,
+   "heldout_irls": 2,
+   "diff_step": 0.01
+  },
+  "rrms_note": "in-sample; LODO M_bias all-device 0.0732 for reference"
+ },
+ "tolerances": {
+  "default": "",
+  "r4": "reltol=1e-4",
+  "tight": "reltol=1e-9 abstol=1e-18 vntol=1e-12"
+ },
+ "q1": {
+  "grid_vgs": "0..1.85 step 0.025 (pMOS negative)",
+  "grid_vds": "-1.85..1.85 step 0.025",
+  "i_floor_A": 1e-09,
+  "statistic": "max |I_elem - I_py| / |I_py|",
+  "swap": "drain/source exchanged instance, forward operation, |I| > 1 nA",
+  "vds0": "max |I_elem(Vds=0)|"
+ },
+ "q2": {
+  "gm_sets_abs_vds": [
+   0.05,
+   0.925,
+   1.85
+  ],
+  "gds_sets_abs_vgs": [
+   0.6,
+   0.9,
+   1.2,
+   1.5,
+   1.85
+  ],
+  "ac_freq_Hz": 1000000.0,
+  "y_floor_S": 1e-09,
+  "im_floor_S": 1e-15,
+  "dg_step_V": 1e-05,
+  "strong_inversion": "|Vgs| >= V_T + 0.2 V, V_T at |I| = 1e-7 W_eff/L, |Vds| = 0.05 V, card only",
+  "negative_threshold_S": 1e-12,
+  "dense_step_V": 0.001,
+  "sign_rule": "curve level: element curve negative in mask while card-only curve is not"
+ },
+ "q3": {
+  "vdd": 1.8,
+  "tolerance": "default",
+  "arms": [
+   "published",
+   "C0_refit",
+   "M_card",
+   "M_full"
+  ],
+  "circuits": {
+   "inv_A_vtc": [
+    "nmos_L0p15_W1p6",
+    "pmos_L0p35_W1p6"
+   ],
+   "inv_B_vtc": [
+    "nmos_L1_W1p6",
+    "pmos_L2_W5"
+   ],
+   "ro5_A": {
+    "pair": "inv_A",
+    "tstep": 1e-12,
+    "tstop": 1e-08,
+    "t_from": 3e-09
+   },
+   "ro5_B": {
+    "pair": "inv_B",
+    "tstep": 5e-12,
+    "tstop": 5e-08,
+    "t_from": 1.5e-08
+   },
+   "mirror_n": {
+    "device": "nmos_L1_W1p6",
+    "iref": 1e-05
+   },
+   "mirror_p": {
+    "device": "pmos_L2_W5",
+    "iref": 1e-05
+   }
+  },
+  "timeout_s": 120,
+  "ro_min_periods": 5
+ },
+ "q4": {
+  "repeats": 3,
+  "statistic": "median wall time ratio element / card only"
+ },
+ "decision": {
+  "core": {
+   "q1_tight_max": "<= 1e-5",
+   "q1_bad": "== 0",
+   "q1_vds0_max_A": "<= 1e-12",
+   "q2_ac_max": "<= 1e-3",
+   "q2_gm_curves_introduced": "== 0",
+   "q3_fail_with_element_only": "== 0"
+  },
+  "restrictions": {
+   "q1_default_max": "> 1e-3",
+   "swap_asym_max": "> 1e-3",
+   "cap_dd_ratio_maxdev_from_1": "> 1e-3",
+   "q2_gds_curves_introduced": ">= 1",
+   "runtime_ratio_max": "> 2"
+  },
+  "outcome": {
+   "not deployable": "any core check fails",
+   "deployable with restrictions": "core pass, >= 1 restriction",
+   "deployable (simulator-level)": "core pass, no restriction"
+  },
+  "threshold_note": "q1 tight threshold 1e-5 set after the 2-device smoke (max 2.5e-6); smoke not used for decisions"
+ },
+ "smoke": "runs/smoke (nmos_L1_W1p6, pmos_L2_W5, refit max_nfev 20)",
+ "no_measured_circuit_data": "Q3/Q4 are simulator-level consistency, convergence and runtime checks, not accuracy claims"
+}
