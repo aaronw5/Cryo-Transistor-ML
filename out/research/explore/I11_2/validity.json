@@ -1,0 +1,117 @@
+{
+ "what": "V1 stored C0_refit rows reproduced; V5 stored fold corrections reproduced",
+ "V1_c0_refit_rel_diff": {
+  "hv_nmos_W0p3_L0p5|233": 0.0,
+  "lv_pmos_W0p3_L10|398": 0.0,
+  "lv_nmos_W0p15_L0p18|300": 0.0,
+  "hv_pmos_W10_L0p35|343": 0.0,
+  "t40_nmos_W0p12_L0p04_d152|4": 0.0,
+  "t40_pmos_W1_L1_d335|295": 0.0
+ },
+ "V1_ok": true,
+ "V5_correction_max_rel_diff": {
+  "tud|t40_nmos_W0p12_L0p04": 0.0,
+  "ihp|lv_nmos_W0p15_L0p18": 0.0,
+  "ihp|hv_pmos_W10_L0p35": 0.0
+ },
+ "V5_ok": true,
+ "rows": [
+  {
+   "label": "C0_refit",
+   "tag": "hv_nmos_W0p3_L0p5",
+   "T_K": 233,
+   "rrms": 0.024426223942850222,
+   "failed": [],
+   "rrms_start": 0.030675226501903075,
+   "n_sim": 318,
+   "history": [
+    0.030675226501903075,
+    0.024779012840545428,
+    0.024426223942850222
+   ],
+   "n_sim_timeout": 0,
+   "runtime_s": 11.5
+  },
+  {
+   "label": "C0_refit",
+   "tag": "lv_pmos_W0p3_L10",
+   "T_K": 398,
+   "rrms": 0.0022455388567136927,
+   "failed": [],
+   "rrms_start": 0.0022494922358568753,
+   "n_sim": 344,
+   "history": [
+    0.0022494922358568753,
+    0.002248436490946641,
+    0.0022455388567136927
+   ],
+   "n_sim_timeout": 0,
+   "runtime_s": 11.76
+  },
+  {
+   "label": "C0_refit",
+   "tag": "lv_nmos_W0p15_L0p18",
+   "T_K": 300,
+   "rrms": 0.031698832847109545,
+   "failed": [],
+   "rrms_start": 0.03184304364190166,
+   "n_sim": 396,
+   "history": [
+    0.03184304364190166,
+    0.031761358080684754,
+    0.031698832847109545
+   ],
+   "n_sim_timeout": 0,
+   "runtime_s": 13.44
+  },
+  {
+   "label": "C0_refit",
+   "tag": "hv_pmos_W10_L0p35",
+   "T_K": 343,
+   "rrms": 0.023889751531115576,
+   "failed": [],
+   "rrms_start": 0.03183256180238081,
+   "n_sim": 240,
+   "history": [
+    0.03183256180238081,
+    0.023894676646933656,
+    0.023889751531115576
+   ],
+   "n_sim_timeout": 0,
+   "runtime_s": 8.79
+  },
+  {
+   "label": "C0_refit",
+   "tag": "t40_nmos_W0p12_L0p04_d152",
+   "T_K": 4,
+   "rrms": 0.030519721883603336,
+   "failed": [],
+   "rrms_start": 0.031856441363106766,
+   "n_sim": 162,
+   "history": [
+    0.031856441363106766,
+    0.03184910262284623,
+    0.030519721883603336
+   ],
+   "n_sim_timeout": 0,
+   "runtime_s": 19.4
+  },
+  {
+   "label": "C0_refit",
+   "tag": "t40_pmos_W1_L1_d335",
+   "T_K": 295,
+   "rrms": 0.00785629003176117,
+   "failed": [],
+   "rrms_start": 0.008631074363470407,
+   "n_sim": 204,
+   "history": [
+    0.008631074363470407,
+    0.008603151404787264,
+    0.00785629003176117
+   ],
+   "n_sim_timeout": 0,
+   "runtime_s": 9.09
+  }
+ ],
+ "runtime_s": 108.6
+}
