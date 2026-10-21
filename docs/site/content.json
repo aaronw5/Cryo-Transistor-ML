@@ -308,9 +308,37 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 9 in progress (2026-10-21): I9-1 NIST sky130 4 K regular-Vt DEV with the room-temperature card, P_a correct and P_b supported; I9-2 function-class ablation running. Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
+      ]
+     },
+     {
+      "text": "I9-1 (prospective, NIST sky130 4 K, nfet_01v8 / pfet_01v8, 87 DEV devices, open sky130 room-temperature tt card, deck 30 C; 0 failures): P_a correct (S1_lodo 0.295, inside the I7-1 calibration range; frozen rule predicted y -0.135, observed -0.227); P_b supported, GMR(M_bias, C0_refit) 0.797 [0.748, 0.859], 77/87; P_c correct (S3 -0.071). nMOS 0.697, pMOS 0.941 [0.842, 1.085] (pMOS S3 sign wrong). M_bias vs B3_d3 0.955 [0.926, 0.985] (B3_d3 80% of the log gain). Transfer arm M_bias_lvt vs C0_refit 0.887, vs M_bias 1.112.",
+      "source": [
+       "out/research/explore/I9_1/decision.json"
+      ],
+      "claim": "i9-1",
+      "queue_match": "^I9_1_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i9_1",
+      "table": "I9-1 NIST sky130 4 K DEV room-temperature card prospective test",
+      "caption": "I9-1 pre-registered P_a, P_b, P_c, secondaries S_B3 / S_transfer and validity",
+      "rows": [
+       "P_a (decides)",
+       "P_a calibration",
+       "P_a magnitude",
+       "P_b (decides)",
+       "P_c (secondary",
+       "S_B3",
+       "S_transfer",
+       "validity V1",
+       "validity V2",
+       "validity V3",
+       "validity V4",
+       "per family"
       ]
      },
      {
@@ -5118,6 +5146,155 @@
     "scripts/research/explore/i8_1_examples.py",
     "scripts/research/plot_explore_i8_1.py",
     "commits d022c32 (prereg), 0c184f8 (prediction), 5ba2f8e (amendment A1), 4db5a7b (prediction_v2)"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
+   "id": "i9-1",
+   "tab": "explore",
+   "statement": "I9-1: on 87 DEV transistors of the NIST mds2-2997 sky130 4 K data (MPW-5 tile, nfet_01v8 / pfet_01v8, open sky130 room-temperature tt card, deck at 30 C), the frozen I7-1 S1_lodo rule predicted a held-out gain of the I3-2 bias-only correction (predicted y -0.135) before any held-out refit; the observed y is -0.227 (P_a correct) and GMR(M_bias, C0_refit) is 0.797 [0.748, 0.859] (P_b supported).",
+   "status": "verified",
+   "headline": {
+    "value": "P_a correct, P_b supported (NIST sky130 4 K regular-Vt DEV, room-temperature card, prospective)",
+    "convention": "y = ln GMR(M_bias, C0_refit) over the 87 DEV devices (strict paper RRMS after the held-out card refit, leave-one-device-out); device-bootstrap 95% CI; 0 failed devices in every arm"
+   },
+   "numbers": [
+    {
+     "label": "P_a (frozen I7-1 rule, prediction.json e937ca2)",
+     "value": "S1_lodo_D 0.29484 (inside the I7-1 calibration range [-0.379, 0.504]) -> predicted y -0.1354 (gain); observed y_D -0.2266; |error| 0.0911 (rule in-sample residual RMS 0.0751): correct",
+     "convention": "one dataset, one binary outcome",
+     "source": "out/research/explore/I9_1/decision.json"
+    },
+    {
+     "label": "P_b: GMR(M_bias, C0_refit)",
+     "value": "0.797 [0.748, 0.859], 77/87 wins; R2 M_bias 0.04554 vs T1_inloop 0.05310 (+0.005); R3 0 failures: supported",
+     "convention": "means over the 87 DEV devices",
+     "source": "out/research/explore/I9_1/decision.json"
+    },
+    {
+     "label": "P_c (S3, prediction.json e937ca2)",
+     "value": "S3_D -0.0710 -> gain; correct",
+     "convention": "secondary, prospective",
+     "source": "out/research/explore/I9_1/prediction.json"
+    },
+    {
+     "label": "per family",
+     "value": "nMOS y -0.361, GMR 0.697 [0.672, 0.724] 47/48 (rule and S3 sign correct); pMOS y -0.061, GMR 0.941 [0.842, 1.085] 30/39 (rule sign correct, predicted y -0.082; S3_pmos +0.037 predicted no gain: wrong)",
+     "convention": "pre-registered secondary; GMR(M_bias, C0_refit), device-bootstrap CI",
+     "source": "out/research/report/2026-10-21_i9_1/tables.md"
+    },
+    {
+     "label": "S_B3 and baselines (reported)",
+     "value": "M_bias vs B3_d3 0.955 [0.926, 0.985] 55/87 (M_bias lower); B3_d3 vs C0_refit 0.835 [0.782, 0.900] (80% of M_bias's log gain; nMOS 72%, pMOS 134%); M_bias vs B1 0.780 [0.732, 0.839], vs B2 0.804 [0.755, 0.866]; B1 vs C0_refit 1.023, B2 vs C0_refit 0.991",
+     "convention": "paired GMR, 87 devices; not in P_a, P_b or validity",
+     "source": "out/research/explore/I9_1/baselines/results.json"
+    },
+    {
+     "label": "S_transfer: M_bias_lvt (trained once on 53 I8-1 lvt DEV records)",
+     "value": "vs C0_refit 0.887 [0.828, 0.962] 79/87; vs M_bias 1.112 [1.071, 1.156] 29/87 (nMOS 1.220, pMOS 0.993)",
+     "convention": "pre-registered secondary; does not bear on P_b",
+     "source": "out/research/explore/I9_1/decision.json"
+    },
+    {
+     "label": "comparators",
+     "value": "M_bias vs T1_inloop 0.815 [0.782, 0.851]; T1_inloop vs C0_refit 0.978 [0.941, 1.029]; C0_refit vs C0 0.968; stock card mean RRMS 1.627, starting cards 0.0576",
+     "convention": "paired GMR, 87 devices",
+     "source": "out/research/explore/I9_1/lodo/results.json"
+    }
+   ],
+   "what": [
+    "Second prospective test of the I7-1 frozen S1_lodo rule and the I3-2 bias-only correction on the NIST mds2-2997 sky130 MPW-5 tile measured at 4 K, on families not used in I8-1: nfet_01v8 (48 DEV) and pfet_01v8 (39 DEV); Vb = 0 curves (Id-Vg at |Vd| 0.1 and 1.8 V, Id-Vd at |Vg| 0-1.8 V in 0.3 V steps), measured-only inclusion. 6 pMOS with fewer than 2 included curves excluded before the split (decision Q2). DEV / TEST split by (L, W) blocks (seed 20261022); TEST (58 devices) not opened.",
+    "Card: no 77 K card exists for these types; the starting point is the open sky130 room-temperature tt card (open_pdks a918dc7; nfet_01v8 180 bins, pfet_01v8 108 bins, tnom 30 C), with each '+' line rewritten to one assignment per line so a fitted parameter keeps its l / w / p binning terms, and a per-run card holding only the device's bin. All 87 DEV devices lie inside a bin (native selection, no forced bins). Deck at 30 C (the cards' tnom), mult = m = 1, ngspice-41 arm64. Starting card per device: polish from the stock card on the 43-parameter box (max_nfev 3000, irls 3).",
+    "Arms (leave-one-device-out): C0 (starting card, no refit); C0_refit (held-out refit, max_nfev 400, irls 2); M_bias (primary; I3-2 recipe: I = I_card x exp(g), g = tanh(MLP 3-16-16-1 of (is_pmos, |Vgs|/VDD, |Vds|/VDD)), 5 seeds, trained on the 86 other DEV starting records, held-out refit with g in the loop); T1_inloop (per-curve gain, non-deployable); M_bias_lvt (secondary transfer arm: the M_bias recipe trained once on the 53 finite I8-1 lvt DEV starting records, 77 K card); baselines B1 (wider BSIM4 set), B2 (Rext + self-heating), B3_d3 (cubic polynomial g, 20 coefficients).",
+    "Pre-registered (in force from 007759b, before any full-setting fit): P_a sign of y_D from the frozen I7-1 rule y = 0.007619 - 0.485184 S1_lodo_D, with a note on whether S1_lodo_D lies in the I7-1 calibration range (Q6); P_b CI upper of GMR(M_bias, C0_refit) < 1 with R2 (M_bias mean <= T1_inloop mean + 0.005) and R3 (0 M_bias failures); P_c (secondary) gain iff S3_D < 0; secondaries S_B3 and S_transfer; validity V1-V4 (V2 minimum 70 paired devices)."
+   ],
+   "did": [
+    "Order of operations: ingest, inventory, split, smoke and draft (5246240) -> pre-registration in force (007759b, committed alone) -> I9_1_start (472 s; 0 non-finite records, 0 ngspice timeouts; c813f6f) -> I9_1_stats (4352 s; full S3 pair design) -> prediction.json committed alone (e937ca2) -> I9_1_lodo (2435 s; guard checked the prereg and prediction commits) -> I9_1_baselines (509 s) -> I9_1_decide (4 s).",
+    "Report `scripts/research/plot_explore_i9_1.py` (batch 2026-10-21_i9_1) recomputes the per-device scores across files, all aggregates and stored paired ratios (all, covered, nMOS, pMOS), y_D, the per-family y, P_a / P_b / P_c, validity, gates, the transfer and baseline comparisons, and the S1 / S3 dataset and per-family values from the per-fold values, and checks them against the stored files. Example I-V curves: `scripts/research/explore/i9_1_examples.py` re-simulates the stored stock, C0, C0_refit and M_bias cards of 3 devices (nMOS and pMOS nearest the family median log ratio, and the device with the largest log ratio; 0.5 s); RRMS reproduced with relative difference 0."
+   ],
+   "result": {
+    "text": [
+     "P_a correct: S1_lodo_D 0.295 lies inside the I7-1 calibration range; predicted y -0.135 (gain), observed -0.227. The magnitude error 0.091 is larger than the rule's in-sample residual RMS (0.075). P_c correct: S3_D -0.071 (gain). P_b supported: GMR(M_bias, C0_refit) 0.797 [0.748, 0.859], 77/87 devices with a lower RRMS. Valid run: V1 87/87, V2 0 / 0 failed, 87 paired, V3 prospective, V4 0 timeouts.",
+     "Per family (secondary): nMOS GMR 0.697 [0.672, 0.724], 47/48; pMOS GMR 0.941 [0.842, 1.085], 30/39, with a CI that contains 1. The frozen rule predicts the sign for both families; S3 predicts the nMOS sign and gives the wrong sign for pMOS (S3_pmos +0.037, observed y -0.061).",
+     "10 of 87 devices have M_bias above C0_refit; the 6 largest log ratios are pMOS with L >= 4 um and C0_refit RRMS 0.004-0.023 (all-device median 0.036); the largest is pfet_01v8_W3_L20_m17p7 (+1.71; C0_refit 0.0041, M_bias 0.0229).",
+     "M_bias is ahead of T1_inloop (0.815), B1 (0.780) and B2 (0.804). S_B3: M_bias vs B3_d3 0.955 [0.926, 0.985], CI upper < 1 (in I8-1 the CI upper was 1.000); B3_d3 gives 80% of the M_bias log gain over all devices, 72% on nMOS and 134% on pMOS (on pMOS M_bias vs B3_d3 is 1.021).",
+     "S_transfer: M_bias_lvt, trained once on the I8-1 lvt records with the 77 K card, lowers held-out error relative to C0_refit (0.887 [0.828, 0.962]) and is above M_bias (1.112 [1.071, 1.156]); on pMOS it equals M_bias (0.993), on nMOS it is above it (1.220).",
+     "Post hoc (not pre-registered): per-family B3_d3 and M_bias_lvt columns, the per-device panel vs C0_refit RRMS, the S3 OLS reference point, the fold-level panels, the g maps and the example I-V figures."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "01_table_i9_1_decision.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "02_i9_1_scatter_S1_lodo_S3.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "03_i9_1_per_device_log_ratio.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "04_table_i9_1_arms.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "05_i9_1_gmr_forest.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "06_table_i9_1_family.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "07_i9_1_S1_S3_per_family.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "08_i9_1_transfer_M_bias_lvt.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "09_i9_1_g_map.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "10_table_i9_1_vs_i8_1.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "11_i9_1_iv_nfet_01v8_W0p84_L0p15_m5p6.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "12_i9_1_iv_pfet_01v8_W1p26_L0p15_m15p2.png"
+     },
+     {
+      "batch": "2026-10-21_i9_1",
+      "file": "13_i9_1_iv_pfet_01v8_W3_L20_m17p7.png"
+     }
+    ]
+   },
+   "caveats": [
+    "One dataset gives one binary P_a outcome; the magnitude error (0.091) exceeds the rule's in-sample residual RMS (0.075).",
+    "The deck runs at 30 C for 4 K data; the stock card's smallest subthreshold swing is 81-135 mV/decade on the smoke devices against a measured 6-46 mV/decade, and the stock card mean RRMS is 1.627 before the starting fit.",
+    "The pMOS family gain has a CI that contains 1, and long-channel pMOS (L >= 4 um) account for the 6 largest per-device losses.",
+    "I8-1 and I9-1 come from the same MPW-5 tile and measurement campaign."
+   ],
+   "sources": [
+    "out/research/explore/I9_1/prereg.json",
+    "out/research/explore/I9_1/prereg.md",
+    "out/research/explore/I9_1/prediction.json",
+    "out/research/explore/I9_1/decision.json",
+    "out/research/explore/I9_1/lodo/results.json",
+    "out/research/explore/I9_1/baselines/results.json",
+    "out/research/explore/I9_1/examples/examples.json",
+    "src/cryoml/explore/i9_1_nist_rt.py",
+    "scripts/research/explore/i9_1_nist_rt.py",
+    "scripts/research/explore/i9_1_examples.py",
+    "scripts/research/plot_explore_i9_1.py",
+    "commits 5246240 (draft), 007759b (prereg), e937ca2 (prediction), c813f6f (start outputs)"
    ],
    "updated": "2026-10-21"
   },

@@ -1439,3 +1439,51 @@ Compute estimate (`plan.json`, 6 workers): validity 1 min; run jobs sky130 4 min
 min (10.2 CPU-h); replicate 26 min (2.2 CPU-h); learning curve 1.7-4.4 h wall depending on the selected classes
 (8.7-22.4 CPU-h). Queue (after the I9-1 jobs): I9_2_validity, I9_2_run_{sky130_77K, nist_4K, tudelft_4K,
 ihp_meas_300K}, I9_2_replicate, I9_2_decide, I9_2_lc_tudelft_4K, I9_2_lc_nist_4K, I9_2_figs.
+
+## I9-1 outcome (2026-10-21 03:45): NIST mds2-2997 sky130 4 K, nfet_01v8 / pfet_01v8, room-temperature card, prospective
+
+Pre-registration `out/research/explore/I9_1/prereg.json` / `.md` in force from 007759b (committed alone before any
+full-setting fit; decisions Q1 deck 30 C, Q2 6 low-current pMOS excluded before the split, Q3 full S3 pair design, Q4
+M_bias_lvt secondary, Q5 V2 minimum 70 paired devices, Q6 calibration-range note with P_a). Queue: I9_1_start 472 s
+(87 DEV starting cards; 0 non-finite records, 0 ngspice timeouts; stock mean RRMS 1.627 -> start 0.0576; c813f6f),
+I9_1_stats 4352 s, I9_1_commit_prediction -> e937ca2, I9_1_lodo 2435 s (guard: prereg 007759b in force, prediction
+e937ca2 tracked, unmodified, ancestors of HEAD), I9_1_baselines 509 s, I9_1_decide 4 s. Outputs
+`out/research/explore/I9_1/{lodo, baselines}/{results, cards, corrections}.json`, `decision.json`.
+Validity: V1 87/87 finite starts; V2 failed C0_refit 0, M_bias 0, 87 paired; V3 prospective; V4 0 timeouts, 0 dropped.
+P_a (frozen I7-1 rule on S1_lodo_D 0.29484, inside the I7-1 calibration range [-0.379, 0.504]): predicted y -0.1354
+(gain), observed y_D -0.2266: correct; |error| 0.0911 (frozen rule in-sample residual RMS 0.0751). P_c (S3_D -0.0710,
+gain): correct. P_b: GMR(M_bias, C0_refit) 0.797 [0.748, 0.859], 77/87; R2 M_bias mean 0.04554 vs T1_inloop 0.05310 +
+0.005; R3 0 M_bias failures: supported.
+Per family (secondary): nMOS y -0.361, GMR 0.697 [0.672, 0.724] 47/48, rule and S3 signs correct; pMOS y -0.061, GMR
+0.941 [0.842, 1.085] 30/39, rule sign correct (predicted y -0.082), S3 sign wrong (S3_pmos +0.037 predicted no gain).
+Gates G and G1 choose M_bias. 10/87 devices have M_bias above C0_refit; the 6 largest log ratios are pMOS with L >= 4 um
+and C0_refit RRMS 0.004-0.023 (largest pfet_01v8_W3_L20_m17p7, +1.71).
+Comparators: M_bias vs T1_inloop 0.815 [0.782, 0.851]; T1_inloop vs C0_refit 0.978 [0.941, 1.029]; C0_refit vs C0
+0.968. Baselines (reported): M_bias vs B1 0.780 [0.732, 0.839], vs B2 0.804 [0.755, 0.866]; B1 vs C0_refit 1.023, B2 vs
+C0_refit 0.991. S_B3: M_bias vs B3_d3 0.955 [0.926, 0.985] 55/87, CI upper < 1 (I8-1: 0.981 [0.961, 1.000]); B3_d3 vs
+C0_refit 0.835 [0.782, 0.900], 80% of the M_bias log gain (nMOS 72%, pMOS 134%; pMOS M_bias vs B3_d3 1.021).
+S_transfer: M_bias_lvt (M_bias recipe trained once on the 53 finite I8-1 lvt DEV starting records, 77 K card) vs
+C0_refit 0.887 [0.828, 0.962] 79/87; vs M_bias 1.112 [1.071, 1.156] 29/87 (nMOS 1.220, pMOS 0.993).
+Fold level (computed in the report): Spearman(S1_lodo_f, y_f) +0.231, Spearman(S3_f, y_f) -0.604 over 87 folds.
+Report batch `out/research/report/2026-10-21_i9_1/` (`scripts/research/plot_explore_i9_1.py`; recomputes and checks
+every stored aggregate, paired ratio, y, P_a / P_b / P_c, validity, gates, the transfer and baseline comparisons and
+the S1 / S3 dataset and per-family values): table 01 decision, figure 02 I7-1 S1_lodo / S3 scatter with the I8-1 and
+I9-1 points, figure 03 per-device log ratio vs L, W and C0_refit RRMS, table 04 arms, figure 05 GMR forest plot, table
+06 per family, figure 07 S1_lodo / S3 per family and fold level, figure 08 transfer arm, figure 09 mean g maps (I9-1
+M_bias, I9-1 B3_d3, M_bias_lvt), table 10 I8-1 vs I9-1, figures 11-13 example I-V. Example curves:
+`scripts/research/explore/i9_1_examples.py` re-simulates the stored stock, C0, C0_refit and M_bias cards of 3 devices
+(nMOS and pMOS nearest the family median log ratio, and the device with the largest log ratio; 0.5 s,
+`examples/examples.json`); RRMS reproduced with relative difference 0 (stock card RRMS equal to start/summary.json).
+Post hoc (not pre-registered): per-family B3_d3 and M_bias_lvt columns, the per-device panel vs C0_refit RRMS, the S3
+OLS reference point, fold-level panels, g maps, I-V figures.
+Site: new claim `i9-1` (verified; headline "P_a correct, P_b supported (NIST sky130 4 K regular-Vt DEV,
+room-temperature card, prospective)") in the Exploration tab, status item and decision table. Site rebuilt, not
+published.
+
+### I9-2 validity failure and requeue (2026-10-21 03:14-03:35)
+
+The I9_2 jobs failed at 03:14 (I9_2_validity rc=1; the later I9_2 jobs exited rc=1 in 0-1 s). Cause: two held-out TU
+Delft devices that share one fold queued the (dataset, poly3, fold) training task twice, and the merge step then
+combined the two results as if they were MLP seed members. Fix a864f77: each (dataset, poly3, fold) is trained once;
+merge_members refuses non-MLP members; unit test added. No I9-2 result was produced before the fix. The jobs were
+requeued unchanged at 03:35 (I9_2_validity rc=0, 31 s).

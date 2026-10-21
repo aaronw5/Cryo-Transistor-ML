@@ -1,6 +1,32 @@
 [
  {
   "date": "2026-10-21",
+  "topic": "i9_1",
+  "folder": "2026-10-21_i9_1",
+  "pngs": [
+   "01_table_i9_1_decision.png",
+   "02_i9_1_scatter_S1_lodo_S3.png",
+   "03_i9_1_per_device_log_ratio.png",
+   "04_table_i9_1_arms.png",
+   "05_i9_1_gmr_forest.png",
+   "06_table_i9_1_family.png",
+   "07_i9_1_S1_S3_per_family.png",
+   "08_i9_1_transfer_M_bias_lvt.png",
+   "09_i9_1_g_map.png",
+   "10_table_i9_1_vs_i8_1.png",
+   "11_i9_1_iv_nfet_01v8_W0p84_L0p15_m5p6.png",
+   "12_i9_1_iv_pfet_01v8_W1p26_L0p15_m15p2.png",
+   "13_i9_1_iv_pfet_01v8_W3_L20_m17p7.png"
+  ],
+  "summary": [
+   "I9-1 NIST sky130 4 K regular-Vt DEV, room-temperature card (prospective, 87 devices, 0 failures): P_a correct (S1_lodo 0.295 inside the calibration range; predicted y -0.135, observed -0.227); P_b supported, GMR(M_bias, C0_refit) 0.797 [0.748, 0.859], 77/87; P_c correct (S3 -0.071).",
+   "nMOS 0.697 (rule and S3 correct), pMOS 0.941 [0.842, 1.085] (rule correct, S3 wrong). M_bias vs B3_d3 0.955 [0.926, 0.985] (80% of the log gain from B3_d3).",
+   "Transfer M_bias_lvt vs C0_refit 0.887, vs M_bias 1.112. M_bias vs B1 0.780, B2 0.804, T1_inloop 0.815."
+  ],
+  "generated": "2026-10-21T03:43:54"
+ },
+ {
+  "date": "2026-10-21",
   "topic": "i8_1",
   "folder": "2026-10-21_i8_1",
   "pngs": [
