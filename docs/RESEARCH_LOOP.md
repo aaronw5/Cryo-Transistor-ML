@@ -1387,3 +1387,35 @@ stored rows load; stored rows finite on all held-out devices. Compute estimate: 
 13.7 h wall on 6 workers), primary pool 19 CPU-h (3.8 h); mlp32 + mlp64 5-seed training is about 45 of the 70 CPU-h;
 learning curve about 1.2 h. Smoke (sky130 77 K, 2 held-out devices, 200 steps, 2 seeds, GP 300 points, refit nfev 60;
 30 s; code check only). Not queued.
+
+## I9-1 ingest, split, smoke and pre-registration draft (2026-10-21 01:05): NIST mds2-2997 sky130 4 K, nfet_01v8 / pfet_01v8
+
+Second prospective real-data test on the NIST MPW-5 tile, families not used in I8-1: nfet_01v8 (nthin, 80 devices,
+W 0.36-7 um, L 0.15-20 um) and pfet_01v8 (pthin, 71 devices with files). No 77 K card exists for these types; the
+starting cards are the open sky130 room-temperature tt cards of the Volare open_pdks build already on disk
+(a918dc7; nfet_01v8 tt.pm3 180 bins, pfet_01v8 tt.corner + tt.pm3 108 bins, tnom 30 C; sha256 in
+`out/research/explore/I9_1/cards.json`; no download).
+Code: `src/cryoml/explore/i9_1_nist_rt.py` (card text: one assignment per `+` line so a written parameter keeps
+its l / w / p binning terms; per-run card with the device's bin only; native bin via eta0-sentinel readback; deck,
+showmod readback, `MeasProblemRT`), `scripts/research/explore/i9_1_nist_rt.py` (modes cards, data, split, smoke,
+start, stats, commit_prediction, lodo, baselines, decide; I8-1 pipeline with amendment A1 built in; lodo and
+baselines refuse to start while prereg.json has status DRAFT), `tests/test_i9_1_nist_rt.py` (6 cases).
+Bin coverage: all 151 geometries inside a bin of the full cards (no forced bins). Card checks on 5 DEV devices: the
+single-bin card equals the full rewritten card (difference 0) and the unmodified open_pdks `sky130.lib.spice` tt
+library (<= 1.7e-34 A).
+Inclusion (measured-only rule): nMOS 6 curves per device; pMOS 0-6. Draft decision D12 excludes the 6 pMOS with
+fewer than 2 included curves (L 8-20 um). Split (I8-1 procedure, seed 20261022): DEV 87 (nMOS 48, pMOS 39), TEST 58
+(32, 26). TEST not opened.
+Smoke (`smoke/smoke.json`, `smoke_runs.json`; not used for any decision): stock-card scan of the 87 DEV devices at
+30 C, 0 non-finite curves, 0 fatal lines, median 0.025 s per simulation, so no failed-start device exists for the
+smoke; reduced-setting runs of start, stats, lodo (with the transfer arm M_bias_lvt trained on the I8-1 DEV
+records), baselines and decide on 5 DEV devices: 0 failures, 0 timeouts. Deck-temperature records (not scored): 27 C
+changes stock currents by 0.0-0.8% at |Vg| = |Vd| = 1.8 V; 4.2 K with the card's temperature equations raises that
+current x 1.4-12.8 and moves the threshold (current at |Vg| = 0.9 V 0-37% of the 30 C value); 4.2 K with the
+temperature coefficients and their binning terms at 0 gives x 0.94-0.99. Smallest subthreshold swing: measured
+6-46 mV/decade, stock card at 30 C 81-135 mV/decade.
+Pre-registration draft (`prereg.json`, `prereg.md`, status DRAFT): P_a, P_b, P_c as I8-1; pre-registered
+secondaries S_B3 = GMR(M_bias, B3_d3) with CI, S_transfer = arm M_bias_lvt; V2 minimum 70 paired devices. Open
+questions: deck temperature 30 C (tnom) vs 27 C, the D12 exclusion, S3 cost, the transfer arm, V2 threshold, P_a
+outside the I7-1 calibration range (S1_lodo -0.379 to 0.504). Compute estimate about 2.3 h wall on 6 workers (S3
+about 75 min). Not queued.

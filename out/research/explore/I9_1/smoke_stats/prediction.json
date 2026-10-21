@@ -1,0 +1,156 @@
+{
+ "id": "I9_1_prediction",
+ "smoke": true,
+ "prereg": "out/research/explore/I9_1/prereg.json",
+ "excluded_records": [],
+ "n_records": 5,
+ "written": "2026-10-21 00:57:35",
+ "git_head_at_run": "4bff420ec98b97a51ef22fbdfc5d5f2bd6bb94cc",
+ "records_sha256": {
+  ".json": "922a29a372a8da74784bf7e232c81e0ec27f0438657cf95df2a8a5df6e3a3770",
+  ".npz": "f03d1d1875cacdfb6a99bf664cc74124d9a455829e0a90300aa7f1cdb797f2c5"
+ },
+ "frozen_rule": {
+  "form": "predicted y_D = a + b * S1_lodo_D; predicted sign of ln GMR(M_bias, C0_refit) = sign(a + b * S1_lodo_D); predicted gain iff a + b * S1_lodo_D < 0",
+  "a": 0.007619219249052826,
+  "b": -0.4851839492908733,
+  "zero_crossing_S1_lodo": 0.015703774331753538,
+  "fit": "OLS over the 11 stored datasets (dataset level), retro/results.json",
+  "n": 11,
+  "r2": 0.7847489919030067,
+  "slope_sign_note": "b < 0: higher S1_lodo predicts a lower log ratio (more gain)"
+ },
+ "n_folds": 5,
+ "dataset": {
+  "S1_lodo": -0.08108791888201419,
+  "S1_pooled": 0.6796738393729664,
+  "S2": 0.1271677186480673,
+  "S3": -0.1160151672317868,
+  "predicted_y": 0.046961775972006445
+ },
+ "P_a": {
+  "predicted_sign": "no gain",
+  "rule": "gain iff a + b S1_lodo_D < 0",
+  "predicted_y": 0.046961775972006445
+ },
+ "P_c": {
+  "predicted_sign": "gain",
+  "rule": "gain iff S3_D < 0"
+ },
+ "per_family_secondary": {
+  "nmos": {
+   "n_folds": 2,
+   "S1_lodo": 0.0,
+   "S3": 0.3788150797498592,
+   "predicted_y_rule": 0.007619219249052826,
+   "P_a_predicted_sign": "no gain",
+   "P_c_predicted_sign": "no gain"
+  },
+  "pmos": {
+   "n_folds": 3,
+   "S1_lodo": -0.6607567092832003,
+   "S3": -0.24255709064133468,
+   "predicted_y_rule": 0.32820776897951737,
+   "P_a_predicted_sign": "no gain",
+   "P_c_predicted_sign": "gain"
+  }
+ },
+ "gates": {
+  "G": "M_bias",
+  "G1": "C0_refit"
+ },
+ "S3_hyper": {
+  "seeds": [
+   0
+  ],
+  "steps": 50
+ },
+ "per_fold": {
+  "nfet_01v8_W0p36_L0p15_m1p1": {
+   "S1_lodo": 0.15527842958153548,
+   "S1_pooled": 0.6440021425274407,
+   "S2": -0.2169155416328865,
+   "n_train": 4,
+   "n_train_pmos": 3,
+   "S1_lodo_family": 0.0,
+   "S3": -0.30943519793352753,
+   "S3_family": 0.3973348705413785,
+   "S3_inner": {
+    "nfet_01v8_W7_L0p5_m10p3": 0.3973348705413785,
+    "pfet_01v8_W0p55_L8_m12p8": -1.1689198993741774,
+    "pfet_01v8_W3_L0p5_m17p2": 0.3935929715958122,
+    "pfet_01v8_W3_L20_m17p7": -0.8597487344971234
+   }
+  },
+  "nfet_01v8_W7_L0p5_m10p3": {
+   "S1_lodo": 0.15704591655719236,
+   "S1_pooled": 0.6404204545405313,
+   "S2": -0.2169155416328865,
+   "n_train": 4,
+   "n_train_pmos": 3,
+   "S1_lodo_family": 0.0,
+   "S3": -0.3248597487243523,
+   "S3_family": 0.3602952889583399,
+   "S3_inner": {
+    "nfet_01v8_W0p36_L0p15_m1p1": 0.3602952889583399,
+    "pfet_01v8_W0p55_L8_m12p8": -1.1791471892591545,
+    "pfet_01v8_W3_L0p5_m17p2": 0.3860541159397745,
+    "pfet_01v8_W3_L20_m17p7": -0.8666412105363691
+   }
+  },
+  "pfet_01v8_W0p55_L8_m12p8": {
+   "S1_lodo": -0.8467565036044089,
+   "S1_pooled": 0.5444278925624786,
+   "S2": 0.0722700745298257,
+   "n_train": 4,
+   "n_train_pmos": 2,
+   "S1_lodo_family": -1.5588618889182353,
+   "S3": 0.13624187933912857,
+   "S3_family": 0.11195061092835537,
+   "S3_inner": {
+    "nfet_01v8_W0p36_L0p15_m1p1": 0.13773001958251133,
+    "nfet_01v8_W7_L0p5_m10p3": 0.18333627591729226,
+    "pfet_01v8_W3_L0p5_m17p2": 0.19626065783441607,
+    "pfet_01v8_W3_L20_m17p7": 0.02764056402229466
+   }
+  },
+  "pfet_01v8_W3_L0p5_m17p2": {
+   "S1_lodo": 0.9151360454554014,
+   "S1_pooled": 0.9655337255774499,
+   "S2": 0.9643412994759193,
+   "n_train": 4,
+   "n_train_pmos": 2,
+   "S1_lodo_family": 0.9298943839378554,
+   "S3": -0.2872124914179749,
+   "S3_family": -0.9955647579472138,
+   "S3_inner": {
+    "nfet_01v8_W0p36_L0p15_m1p1": 0.42104047950844786,
+    "nfet_01v8_W7_L0p5_m10p3": 0.4212390707140803,
+    "pfet_01v8_W0p55_L8_m12p8": -1.1995705483202908,
+    "pfet_01v8_W3_L20_m17p7": -0.7915589675741369
+   }
+  },
+  "pfet_01v8_W3_L20_m17p7": {
+   "S1_lodo": -0.7861434823997913,
+   "S1_pooled": 0.6039849816569318,
+   "S2": 0.03305830250036457,
+   "n_train": 4,
+   "n_train_pmos": 2,
+   "S1_lodo_family": -1.3533026228692209,
+   "S3": 0.20518972257779214,
+   "S3_family": 0.15594287509485436,
+   "S3_inner": {
+    "nfet_01v8_W0p36_L0p15_m1p1": 0.23992012856316924,
+    "nfet_01v8_W7_L0p5_m10p3": 0.2689530115582907,
+    "pfet_01v8_W0p55_L8_m12p8": 0.07274597288242128,
+    "pfet_01v8_W3_L0p5_m17p2": 0.23913977730728744
+   }
+  }
+ },
+ "timing": {
+  "s1_s": 0.01,
+  "s3_s": 1.2,
+  "n_s3_fits": 10
+ },
+ "note": "computed from the starting-card records only (A1: finite records); no refit card or held-out score read"
+}

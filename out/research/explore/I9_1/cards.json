@@ -1,0 +1,85 @@
+{
+ "id": "I9_1_cards",
+ "open_pdks_commit": "a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b",
+ "provenance": "Volare build of open_pdks for sky130 (volare enable --pdk sky130 a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b, PDK_ROOT=data/raw/pdk; already on disk, used by the canonical setup for the mismatch corners). Model files from google/skywater-pdk-libs-sky130_fd_pr as packaged by open_pdks; no download in I9-1",
+ "files": {
+  "nmos_pm3": {
+   "path": "data/raw/pdk/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__nfet_01v8__tt.pm3.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__nfet_01v8__tt.pm3.spice",
+   "bytes": 1137294,
+   "sha256": "459eca963a134574cf7c842ad6d3814e7e0752bfb5de8e581c2f483534b5ad06"
+  },
+  "pmos_pm3": {
+   "path": "data/raw/pdk/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__pfet_01v8__tt.pm3.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__pfet_01v8__tt.pm3.spice",
+   "bytes": 809553,
+   "sha256": "c943246ce012ea3db2777e3f4633ddccdfee7c8f1bf4dca79af9f7ff17b3d51f"
+  },
+  "pmos_corner": {
+   "path": "data/raw/pdk/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__pfet_01v8__tt.corner.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__pfet_01v8__tt.corner.spice",
+   "bytes": 796,
+   "sha256": "641d251a08bf9ddcfc67ba4bd4698ae1978d09447eb6ebf90055fdf3d21917ab"
+  },
+  "nmos_mismatch": {
+   "path": "data/raw/pdk/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__nfet_01v8__mismatch.corner.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__nfet_01v8__mismatch.corner.spice",
+   "bytes": 962,
+   "sha256": "24a3b29d7d7f26f99098811c31eb5497950a3aed520ab83768a96f35467fe818"
+  },
+  "pmos_mismatch": {
+   "path": "data/raw/pdk/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__pfet_01v8__mismatch.corner.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.ref/sky130_fd_pr/spice/sky130_fd_pr__pfet_01v8__mismatch.corner.spice",
+   "bytes": 1322,
+   "sha256": "f4d560668712678ea60641de923fce7691e64acda951949f840986837c31741a"
+  },
+  "lod": {
+   "path": "data/raw/pdk/sky130A/libs.tech/ngspice/parameters/lod.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.tech/ngspice/parameters/lod.spice",
+   "bytes": 3597,
+   "sha256": "6200b50c14eebb68d8009ca68e452d4c045e2d25d7438ee417c155883527fd7c"
+  },
+  "official_lib": {
+   "path": "data/raw/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.tech/ngspice/sky130.lib.spice",
+   "bytes": 6349,
+   "sha256": "5efa041a988893c1a3580d0ecd57870ea3146b27741c7d42b56baaa336b9549e"
+  },
+  "official_tt": {
+   "path": "data/raw/pdk/sky130A/libs.tech/ngspice/corners/tt.spice",
+   "resolved": "/Users/anrunw/Documents/cryo-ml/data/raw/pdk/volare/sky130/versions/a918dc7c8e474a99b68c85eb3546b4ed91fe9e7b/sky130A/libs.tech/ngspice/corners/tt.spice",
+   "bytes": 2676,
+   "sha256": "961b2e4f381bb8a6306a16840afacd8772b400b42cd4dee6c284d58e03983d9d"
+  }
+ },
+ "cards": {
+  "nmos": {
+   "subckt": "sky130_fd_pr__nfet_01v8",
+   "n_bins": 180,
+   "lines_not_parsed": 0,
+   "L_um": [
+    0.15,
+    100.0
+   ],
+   "W_um": [
+    0.36,
+    100.0
+   ]
+  },
+  "pmos": {
+   "subckt": "sky130_fd_pr__pfet_01v8",
+   "n_bins": 108,
+   "lines_not_parsed": 0,
+   "L_um": [
+    0.15,
+    100.0
+   ],
+   "W_um": [
+    0.42,
+    100.0
+   ]
+  }
+ },
+ "tnom_C": 30.0,
+ "handling": "open_pdks tt: nfet_01v8 tt.pm3 included directly (corners/tt.spice), pfet_01v8 tt.corner (.param block + tt.pm3); every '+' line of a bin block rewritten with one assignment per line; per simulation the card holds the subckt with the m-instance forced to one bin and that bin's block only; library adds parameters/lod.spice and the mismatch corner, mc_mm_switch = mc_pr_switch = 0"
+}

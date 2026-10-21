@@ -1,0 +1,261 @@
+{
+ "id": "I9_1_decision",
+ "smoke": true,
+ "prereg": "out/research/explore/I9_1/prereg.json",
+ "prediction_commit": null,
+ "checks": {
+  "S1_abs_diff": 0.0,
+  "excluded_equal": true
+ },
+ "excluded_start_failures": [],
+ "dropped_timeouts_V4": [],
+ "validity": {
+  "V1": true,
+  "V2": true,
+  "V3_prospective": false,
+  "V4_n_timeout_start": 0,
+  "V4_dropped": [],
+  "valid": true,
+  "n_failed": {
+   "C0_refit": 0,
+   "M_bias": 0
+  },
+  "n_paired": 5
+ },
+ "P_a": {
+  "predicted": "no gain",
+  "observed": "gain",
+  "correct": false,
+  "y_D": -0.8649711924921298,
+  "predicted_y": 0.046961775972006445,
+  "abs_error_y": 0.9119329684641363,
+  "stated": true,
+  "prospective": false
+ },
+ "P_b": {
+  "label": "supported",
+  "R1": true,
+  "R2": true,
+  "R3": true,
+  "gmr": {
+   "n": 5,
+   "n_used": 5,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 4,
+   "ties": 0,
+   "ratio": 0.42106368224794843,
+   "resample_unit": "device",
+   "ci_low": 0.2786068509957085,
+   "ci_high": 0.7740486414303192,
+   "n_boot": 10000
+  },
+  "means_valid_only": {
+   "C0_refit": 0.9537218679712172,
+   "M_bias": 0.3828865630246519,
+   "T1_inloop": 0.41487693951051047,
+   "M_bias_lvt": 0.9532957277368291,
+   "C0": 1.0600390204116974
+  }
+ },
+ "P_c": {
+  "predicted": "gain",
+  "observed": "gain",
+  "correct": true,
+  "S3_D": -0.1160151672317868,
+  "stated": true,
+  "prospective": false
+ },
+ "secondary": {
+  "M_bias_vs_B3_d3": {
+   "GMR_M_bias_vs_B3_d3": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 3,
+    "ties": 0,
+    "ratio": 1.12276939001122,
+    "resample_unit": "device",
+    "ci_low": 0.8345207021146696,
+    "ci_high": 1.5326762734499133,
+    "n_boot": 10000
+   },
+   "reading": "CI contains 1",
+   "log_gain_fraction_B3_d3": 1.1338753289675338
+  },
+  "transfer_M_bias_lvt": {
+   "M_bias_lvt_vs_C0_refit": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 3,
+    "ties": 0,
+    "ratio": 0.9978633574899155,
+    "resample_unit": "device",
+    "ci_low": 0.9941685869416631,
+    "ci_high": 1.0023815066010542,
+    "n_boot": 10000,
+    "reading": "CI contains 1"
+   },
+   "M_bias_lvt_vs_M_bias": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 2.369863276173772,
+    "resample_unit": "device",
+    "ci_low": 1.2896537588551409,
+    "ci_high": 3.5918019822230605,
+    "n_boot": 10000,
+    "reading": "A higher"
+   }
+  },
+  "covered_subset": "all scored devices covered",
+  "per_family": {
+   "nmos": {
+    "y": -1.0802379384264276,
+    "n": 2,
+    "observed": "gain",
+    "rule_correct": false,
+    "S3_correct": false
+   },
+   "pmos": {
+    "y": -0.7214600285359314,
+    "n": 3,
+    "observed": "gain",
+    "rule_correct": false,
+    "S3_correct": true
+   }
+  },
+  "gates": {
+   "G": {
+    "choice": "M_bias",
+    "gmr_vs_C0_refit": 0.42106368224794843,
+    "gmr_vs_M_bias": 1.0,
+    "chose_lower": true
+   },
+   "G1": {
+    "choice": "C0_refit",
+    "gmr_vs_C0_refit": 1.0,
+    "gmr_vs_M_bias": 2.3749376689560653,
+    "chose_lower": false
+   }
+  },
+  "baselines": {
+   "M_bias_vs_B1": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 4,
+    "ties": 0,
+    "ratio": 0.6437661230037958,
+    "resample_unit": "device",
+    "ci_low": 0.40082020683964065,
+    "ci_high": 1.0339668860386189,
+    "n_boot": 10000
+   },
+   "M_bias_vs_B2": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 4,
+    "ties": 0,
+    "ratio": 0.7987532196108941,
+    "resample_unit": "device",
+    "ci_low": 0.4903442769088643,
+    "ci_high": 1.2781599242041157,
+    "n_boot": 10000
+   },
+   "M_bias_vs_B3_d3": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 3,
+    "ties": 0,
+    "ratio": 1.12276939001122,
+    "resample_unit": "device",
+    "ci_low": 0.8345207021146696,
+    "ci_high": 1.5326762734499133,
+    "n_boot": 10000
+   },
+   "B1_vs_C0_refit": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 4,
+    "ties": 0,
+    "ratio": 0.6540631251039997,
+    "resample_unit": "device",
+    "ci_low": 0.4201757804077854,
+    "ci_high": 0.9917195790844197,
+    "n_boot": 10000
+   },
+   "B2_vs_C0_refit": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 4,
+    "ties": 0,
+    "ratio": 0.5271511549625629,
+    "resample_unit": "device",
+    "ci_low": 0.37068413910756026,
+    "ci_high": 0.7749501324743227,
+    "n_boot": 10000
+   },
+   "B3_d3_vs_C0_refit": {
+    "n": 5,
+    "n_used": 5,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 4,
+    "ties": 0,
+    "ratio": 0.37502240976104706,
+    "resample_unit": "device",
+    "ci_low": 0.2173979801473181,
+    "ci_high": 0.7632212851293552,
+    "n_boot": 10000
+   }
+  },
+  "bins_stretch": {
+   "nfet_01v8_W0p36_L0p15_m1p1": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_W7_L0p5_m10p3": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_W0p55_L8_m12p8": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_W3_L0p5_m17p2": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_W3_L20_m17p7": [
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "rule": {
+  "form": "predicted y_D = a + b * S1_lodo_D; predicted sign of ln GMR(M_bias, C0_refit) = sign(a + b * S1_lodo_D); predicted gain iff a + b * S1_lodo_D < 0",
+  "a": 0.007619219249052826,
+  "b": -0.4851839492908733,
+  "zero_crossing_S1_lodo": 0.015703774331753538,
+  "fit": "OLS over the 11 stored datasets (dataset level), retro/results.json",
+  "n": 11,
+  "r2": 0.7847489919030067,
+  "slope_sign_note": "b < 0: higher S1_lodo predicts a lower log ratio (more gain)"
+ }
+}

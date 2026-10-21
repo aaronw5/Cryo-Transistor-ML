@@ -1,0 +1,529 @@
+{
+ "id": "I9_1_smoke_runs",
+ "written": "2026-10-21",
+ "statement": "code and deck check before the pre-registration is in force; 5 DEV devices; reduced settings (start max_nfev 100 irls 1; held-out max_nfev 60 irls 1; M_bias / M_bias_lvt 1 seed 200 steps; T1 / B3_d3 200 steps; S3 1 seed 50 steps); no smoke value is used for any decision and no RRMS comparison between arms is reported here",
+ "devices": [
+  "nfet_01v8_W0p36_L0p15_m1p1",
+  "nfet_01v8_W7_L0p5_m10p3",
+  "pfet_01v8_W0p55_L8_m12p8",
+  "pfet_01v8_W3_L0p5_m17p2",
+  "pfet_01v8_W3_L20_m17p7"
+ ],
+ "device_choice": "per family the median-(L, W) DEV device (all geometries are bin-covered), the nMOS DEV device with the smallest (L, W), the pMOS DEV device with the largest (L, W), and the DEV device with the fewest included curves; no DEV device had a non-finite stock-card curve, so no failed-start device exists to include",
+ "bins": {
+  "nfet_01v8_W0p36_L0p15_m1p1": {
+   "bin": 179,
+   "covered": true,
+   "candidates": [
+    179
+   ],
+   "stretch_L": 1.0,
+   "stretch_W": 1.0,
+   "stock_readback_vs_card_max_rel_diff": 1.4647451916446251e-05,
+   "absent_in_bin_text": [
+    "vfb"
+   ]
+  },
+  "nfet_01v8_W7_L0p5_m10p3": {
+   "bin": 5,
+   "covered": true,
+   "candidates": [
+    5,
+    6,
+    14,
+    15
+   ],
+   "stretch_L": 1.0,
+   "stretch_W": 1.0,
+   "stock_readback_vs_card_max_rel_diff": 0.00019049021854220126,
+   "absent_in_bin_text": [
+    "vfb"
+   ]
+  },
+  "pfet_01v8_W0p55_L8_m12p8": {
+   "bin": 91,
+   "covered": true,
+   "candidates": [
+    91,
+    92,
+    100,
+    101
+   ],
+   "stretch_L": 1.0,
+   "stretch_W": 1.0,
+   "stock_readback_vs_card_max_rel_diff": 9.345676751898364e-05,
+   "absent_in_bin_text": [
+    "vfb"
+   ]
+  },
+  "pfet_01v8_W3_L0p5_m17p2": {
+   "bin": 23,
+   "covered": true,
+   "candidates": [
+    23,
+    24,
+    32,
+    33
+   ],
+   "stretch_L": 1.0,
+   "stretch_W": 1.0,
+   "stock_readback_vs_card_max_rel_diff": 0.00029848360375717966,
+   "absent_in_bin_text": [
+    "vfb"
+   ]
+  },
+  "pfet_01v8_W3_L20_m17p7": {
+   "bin": 18,
+   "covered": true,
+   "candidates": [
+    18,
+    19,
+    27,
+    28
+   ],
+   "stretch_L": 1.0,
+   "stretch_W": 1.0,
+   "stock_readback_vs_card_max_rel_diff": 0.00041112715459556287,
+   "absent_in_bin_text": [
+    "vfb"
+   ]
+  }
+ },
+ "card_checks": [
+  {
+   "device": "nfet_01v8_W0p36_L0p15_m1p1",
+   "bin": 179,
+   "covered": true,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 1.702448699999995e-19,
+   "max_abs_full_vs_official_A": 1.7024486999999951e-34,
+   "official_seconds": 6.65
+  },
+  {
+   "device": "nfet_01v8_W7_L0p5_m10p3",
+   "bin": 5,
+   "covered": true,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 1.000000003921128e-34,
+   "max_abs_full_vs_official_A": 1.000000003921128e-49,
+   "official_seconds": 6.63
+  },
+  {
+   "device": "pfet_01v8_W0p55_L8_m12p8",
+   "bin": 91,
+   "covered": true,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 2.000000004507825e-27,
+   "max_abs_full_vs_official_A": 2.0000000045078254e-42,
+   "official_seconds": 6.64
+  },
+  {
+   "device": "pfet_01v8_W3_L0p5_m17p2",
+   "bin": 23,
+   "covered": true,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 8.000000014610162e-25,
+   "max_abs_full_vs_official_A": 8.000000014610163e-40,
+   "official_seconds": 6.39
+  },
+  {
+   "device": "pfet_01v8_W3_L20_m17p7",
+   "bin": 18,
+   "covered": true,
+   "max_rel_forced_vs_full": 0.0,
+   "max_rel_full_vs_official": 1.2023400000000699e-26,
+   "max_abs_full_vs_official_A": 1.20234000000007e-41,
+   "official_seconds": 6.34
+  }
+ ],
+ "stock_scan": {
+  "deck_temp_C": 30.0,
+  "n_devices": 87,
+  "failed": [],
+  "n_with_fatal_lines": 0,
+  "seconds_per_sim_median": 0.025,
+  "seconds_per_sim_max": 0.116,
+  "wall_s": 0.7
+ },
+ "deck_temperature_records": {
+  "nfet_01v8_W0p36_L0p15_m1p1": {
+   "27C": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 1.004,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.993,
+    "sim_min_abs_A_idvg": [
+     1.04466761e-13,
+     1.84866273e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     80.71548615929277,
+     84.47649464295998
+    ]
+   },
+   "4.2K": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 1.417,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.0,
+    "sim_min_abs_A_idvg": [
+     1.00022043e-13,
+     1.80014984e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     null,
+     null
+    ]
+   },
+   "4.2K_tc0": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 0.986,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.92,
+    "sim_min_abs_A_idvg": [
+     1.00022043e-13,
+     1.80014984e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     null,
+     null
+    ]
+   },
+   "tnom_30C": {
+    "sim_min_swing_mV_dec": [
+     81.435283248599,
+     85.30589654669187
+    ],
+    "meas_min_swing_mV_dec": [
+     12.761294833278662,
+     5.626429020594162
+    ]
+   }
+  },
+  "nfet_01v8_W7_L0p5_m10p3": {
+   "27C": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 1.008,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.999,
+    "sim_min_abs_A_idvg": [
+     5.70003421e-13,
+     2.5161771e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     86.27024901368335,
+     86.7231869692073
+    ]
+   },
+   "4.2K": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 2.181,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.374,
+    "sim_min_abs_A_idvg": [
+     9.96903021e-14,
+     1.79261846e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     null,
+     null
+    ]
+   },
+   "4.2K_tc0": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 0.975,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.884,
+    "sim_min_abs_A_idvg": [
+     9.96903021e-14,
+     1.79261846e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     null,
+     null
+    ]
+   },
+   "tnom_30C": {
+    "sim_min_swing_mV_dec": [
+     87.11966993128276,
+     87.58302317866995
+    ],
+    "meas_min_swing_mV_dec": [
+     10.97871504827576,
+     10.845564446638647
+    ]
+   }
+  },
+  "pfet_01v8_W0p55_L8_m12p8": {
+   "27C": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 1.0,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.905,
+    "sim_min_abs_A_idvg": [
+     1.0058424e-13,
+     1.94865479e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     134.30296390645847,
+     134.72808652355837
+    ]
+   },
+   "4.2K": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 12.768,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.0,
+    "sim_min_abs_A_idvg": [
+     9.99788815e-14,
+     1.79999983e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     7.596031819985614,
+     8.873889297414193
+    ]
+   },
+   "4.2K_tc0": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 0.945,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.0,
+    "sim_min_abs_A_idvg": [
+     9.99788815e-14,
+     1.79999983e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     17.832713565412494,
+     19.319934061331963
+    ]
+   },
+   "tnom_30C": {
+    "sim_min_swing_mV_dec": [
+     134.2142269804645,
+     134.57767885881336
+    ],
+    "meas_min_swing_mV_dec": [
+     43.9290741479104,
+     46.301439707792035
+    ]
+   }
+  },
+  "pfet_01v8_W3_L0p5_m17p2": {
+   "27C": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 0.997,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.899,
+    "sim_min_abs_A_idvg": [
+     1.01828089e-13,
+     2.04352633e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     81.37498476554991,
+     82.13277476199283
+    ]
+   },
+   "4.2K": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 1.952,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.0,
+    "sim_min_abs_A_idvg": [
+     9.99617668e-14,
+     1.79544899e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     null,
+     null
+    ]
+   },
+   "4.2K_tc0": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 0.948,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.0,
+    "sim_min_abs_A_idvg": [
+     9.99617668e-14,
+     1.79544899e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     10.913800357126428,
+     7.707241978203977
+    ]
+   },
+   "tnom_30C": {
+    "sim_min_swing_mV_dec": [
+     82.61276729424878,
+     82.51957600755212
+    ],
+    "meas_min_swing_mV_dec": [
+     31.32845711313328,
+     38.20486650943663
+    ]
+   }
+  },
+  "pfet_01v8_W3_L20_m17p7": {
+   "27C": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 0.998,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.902,
+    "sim_min_abs_A_idvg": [
+     1.01828089e-13,
+     1.80234003e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     110.21604402541183,
+     109.20841703143218
+    ]
+   },
+   "4.2K": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 2.759,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.001,
+    "sim_min_abs_A_idvg": [
+     9.99617668e-14,
+     1.79544899e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     7.664613329821853,
+     8.026185537159767
+    ]
+   },
+   "4.2K_tc0": {
+    "n_nonfinite_curves": 0,
+    "fatal_lines": [],
+    "ratio_to_30C_at_Vg_Vd_max": 0.938,
+    "ratio_to_30C_idvd_g3_at_Vd_max": 0.001,
+    "sim_min_abs_A_idvg": [
+     9.99617668e-14,
+     1.79544899e-12
+    ],
+    "sim_min_swing_mV_dec": [
+     17.806037991642384,
+     18.17454848672325
+    ]
+   },
+   "tnom_30C": {
+    "sim_min_swing_mV_dec": [
+     109.19668709369267,
+     110.67268526843723
+    ],
+    "meas_min_swing_mV_dec": [
+     40.42328260151707,
+     40.15140134734681
+    ]
+   }
+  }
+ },
+ "deck_temperature_note": "4.2K: the card's temperature equations evaluated at 4.2 K; 4.2K_tc0: same with kt1, kt1l, kt2, ute, ua1, ub1, uc1, at, prt and their l / w / p binning terms set to 0 (I6-1 style; the first smoke version zeroed only the base names and stopped with 'Vsat at current temperature is not positive' on nfet_01v8_W7_L0p5_m10p3 from the binned at terms). Swing: smallest dVg / dlog10|I| over 1e-10 to 1e-7 A (NaN when fewer than 2 points lie there). Not scored",
+ "start": {
+  "runtime_s": 1.4,
+  "n_sim_per_fit": [
+   41,
+   42,
+   44,
+   42,
+   42
+  ],
+  "s_per_fit": [
+   0.8,
+   0.8,
+   0.8,
+   0.8,
+   0.8
+  ],
+  "timeouts": 0,
+  "non_finite_records": []
+ },
+ "stats": {
+  "s1_s": 0.01,
+  "s3_s": 1.2,
+  "n_s3_fits": 10,
+  "excluded_records": []
+ },
+ "lodo": {
+  "timing": {
+   "train_s": 2.7,
+   "train_n": 11,
+   "refit_s": 7.6,
+   "refit_n": 20
+  },
+  "runtime_s": 10.5,
+  "failed": {
+   "C0_refit": 0,
+   "M_bias": 0,
+   "T1_inloop": 0,
+   "M_bias_lvt": 0,
+   "C0": 0
+  },
+  "prediction_guard_ok": false,
+  "timeouts": 0,
+  "M_bias_lvt_training": {
+   "training_records": "out/research/explore/I8_1/start/records",
+   "records_sha256": {
+    ".json": "368cc3f8da517ec428390eef580cf0ae218fc728bf4f4bb0935e8e47282574da",
+    ".npz": "eeb05306000c4a0932c99cc191dcad2ce5ff929a88079b46f8c89b6811591814"
+   },
+   "n_training_records": 53
+  }
+ },
+ "baselines": {
+  "timing": {
+   "train_s": 1.1,
+   "train_n": 5,
+   "screen_s": 2.9,
+   "refit_s": 6.5,
+   "refit_n": 15
+  },
+  "runtime_s": 10.7,
+  "b1_selected": [
+   "a1",
+   "alpha1",
+   "cdsc",
+   "dvt0w",
+   "dvtp0",
+   "fprout",
+   "minv",
+   "pdiblc1",
+   "pdits",
+   "phin",
+   "pvag",
+   "rdswmin",
+   "ud",
+   "up",
+   "voffl"
+  ],
+  "failed": {
+   "B1": 0,
+   "B2": 0,
+   "B3_d3": 0,
+   "C0": 0,
+   "C0_refit": 0,
+   "M_bias": 0
+  },
+  "timeouts": 0
+ },
+ "decide": {
+  "validity": {
+   "V1": true,
+   "V2": true,
+   "V3_prospective": false,
+   "V4_n_timeout_start": 0,
+   "V4_dropped": [],
+   "valid": true,
+   "n_failed": {
+    "C0_refit": 0,
+    "M_bias": 0
+   },
+   "n_paired": 5
+  },
+  "checks": {
+   "S1_abs_diff": 0.0,
+   "excluded_equal": true
+  }
+ },
+ "a1_code_check": "no start failure occurred in the smoke; the A1 exclusion in the I9-1 driver (s1_rows, workers holding finite records only) is covered by tests/test_i9_1_nist_rt.py DriverA1 with a NaN record",
+ "guard_checks": "lodo and baselines with --smoke report the guard (smoke prediction untracked: ok false) and continue; without --smoke they exit unless prereg.json is committed with a status not starting with DRAFT and prediction.json is committed in an ancestor of HEAD"
+}
