@@ -1700,3 +1700,56 @@ etest_nfet_g5v0d10v5_W20_L0p5_m8363p5 and etest_pfet_g5v0d10v5_W1_L2_m8364p10, n
 A0_rtdeck); 0.6 s; RRMS reproduced with relative difference 0).
 Site: new claim `i10-1` (status "invalid run (stopped by rule)", a new status value in build_site.py) in the Exploration
 tab, status item and decision table. Site rebuilt, not published.
+
+## I10-2 outcome (2026-10-21 14:45): class selection for the shared bias-only correction, stop (pre-registered rule)
+
+Queue: I10_2_inner 2372 s (sky130 77 K 453 s, NIST 4 K 995 s, TU Delft 4.13 K 810 s, IHP 300 K 114 s), I10_2_refit
+sky130 77 K 1384 s, IHP 300 K 1147 s, TU Delft 4.13 K 2017 s, NIST 4 K 3372 s, I10_2_decide 2 s (the I10-1 jobs ran
+between the inner job and the refits). Outputs `out/research/explore/I10_2/{decision.json, decision.md,
+inner/<dataset>/{results, corrections}.json, refit/<dataset>/results.json}`. Pre-registration in force from 55c4cfc;
+amendment A1 in force from 7a93dfc (decide refused without it; guard commits recorded in decision.json).
+Validity: V_rows pass on all 4 datasets; V_fold max |lin coefficient - stored I9-2 lin fold model| 0 on all 4
+datasets; V_s3 S3 fold keys equal the I9-2 folds; 0 failed inner refits of 4948 (no class blocked in any fold).
+Primary (in-force rule): decision "stop", frozen selector none, supported none. Pooled GMR (Bonferroni CI, level 1 -
+0.05/11) vs C0_refit / vs mlp16 / vs S_gate:
+- S_loss 0.838 [0.778, 0.900] / 0.914 [0.827, 0.992] / 0.938 [0.917, 0.958]; partly supported (C2 holds; C1 fails on
+  TU Delft 0.993 [0.871, 1.089]).
+- S_refit 0.834 [0.776, 0.897] / 0.910 [0.828, 0.979] / 0.934 [0.912, 0.959]; partly supported (C1 fails on TU Delft
+  0.976 [0.877, 1.089] and IHP 300 K 1.020 [0.994, 1.092]).
+- S_gate 0.893 [0.836, 0.951] / 0.974 [0.885, 1.049]; not supported (C1 fails on TU Delft 1.027 [0.911, 1.144]; C2
+  fails).
+- S_cv 0.814 [0.742, 0.888] / 0.888 [0.797, 0.964] / 0.912 [0.865, 0.948]; partly supported (C1 fails on TU Delft 0.939
+  [0.736, 1.164]); not strictly nested (D9).
+Per dataset vs C0_refit: sky130 77 K S_loss 0.741, S_refit and S_cv 0.727, S_gate 0.769; NIST 4 K S_loss, S_refit, S_cv
+0.670, S_gate 0.806; IHP 300 K S_loss and S_gate 1.000 (none in every fold), S_cv 0.962 [0.891, 1.009].
+Selections (outer folds): sky130 S_loss gam 10 / mlp8 2, S_refit and S_cv gam 12, S_gate mlp16 12; NIST S_loss, S_refit,
+S_cv gam 53, S_gate mlp16 53; TU Delft (7 groups) S_loss none 2 / gam 2 / mlp8 3, S_refit lin 3 / gam 3 / mlp8 1, S_cv lin
+1 / gam 6, S_gate none 2 / mlp16 5; IHP (18) S_loss and S_gate none 18, S_refit none 9 / lin 9, S_cv none 8 / lin 10. No
+selector picks mlp16 except S_gate, whose menu is {none, mlp16}.
+S_loss vs S_refit: same class in 75/90 outer folds (sky130 10/12, NIST 53/53, TU Delft 3/7, IHP 9/18); S_refit vs S_cv
+82/90. New compute: S_loss 3.89 CPU-h (2128 inner trainings), S_refit 17.04 CPU-h (plus 4948 inner refits, 13.15 CPU-h;
+plan 3.73 + 13.15); S_gate and S_cv 0 (stored values). On these 4 datasets the refit-based score changes the pooled GMR
+from 0.838 to 0.834 at 4.4 times the compute.
+Secondary (amendment A1; the primary label and rule are unchanged), C1 per variant: primary cluster Bonferroni, (a)
+TU Delft device bootstrap Bonferroni and (b) cluster 95%: every selector and fixed mlp16 fail (TU Delft; S_refit and
+fixed mlp16 also IHP). (a+b) device bootstrap 95%: S_cv passes (TU Delft 0.939 [0.862, 1.016], IHP 0.962 [0.914,
+1.001]); S_loss fails on TU Delft (upper 1.037), S_refit on IHP (1.021), S_gate on TU Delft (1.071), fixed mlp16 on IHP
+(1.214 [1.008, 1.539]). Fixed mlp16 fails C1 under every variant.
+Other secondaries (95%, descriptive): tie sensitivity (TIE 0 / 0.01 / 0.02) pooled vs C0_refit S_loss 0.841 / 0.834 /
+0.842, S_refit 0.832 / 0.834 / 0.832, S_cv 0.814 / 0.824 / 0.824; S_cv full 13-option menu 0.822 (TU Delft picks poly5
+once); I8-2 dataset-level gate 0.873; TU Delft device bootstrap pooled S_loss 0.838 [0.784, 0.898]; NIST room
+temperature (I9-1; menu none / poly3 / mlp16): S_gate and S_cv mlp16 87/87, 0.797 [0.749, 0.859]. Post hoc: oracle class
+gam pooled, per dataset gam / gam / gam / lin; GMR vs the per-dataset oracle S_cv 1.013 [0.984, 1.052], S_refit 1.038,
+S_loss 1.042, S_gate 1.111; fixed gam vs C0_refit 0.889 [0.808, 0.982].
+Consequence (pre-registered): selection of the class from training data is not supported on DEV; the deployed rule stays
+the I8-2 gate between C0_refit and M_bias; no class selector goes to TEST, and the DEV runs of lin / gam / mlp8 / mlp16
+on the datasets I9-2 did not cover are not needed for I10-2.
+Report batch `out/research/report/2026-10-21_i10_2/` (`scripts/research/plot_explore_i10_2.py`; recomputes the S_loss /
+S_refit fold scores from the per-device inner log ratios and the selections from the scores, the S_gate / S_cv
+selections from the stored S3_f and I9-2 rows, and every primary and secondary GMR, label, the rule, the A1 variants,
+counts, agreement, tie sensitivity, NIST room temperature and oracle references from the per-device rows; all equal to
+decision.json): table 01 primary result, figure 02 forest vs C0_refit per dataset, figure 03 pooled contrasts, figure
+04 selections per fold and counts, figure 05 S_loss vs S_refit agreement and cost, table 06 compute, table 07 amendment
+A1 secondary C1, table 08 secondary analyses.
+Site: new claim `i10-2` (status "refuted"; headline "stop (pre-registered rule): no selector supported") in the
+Exploration tab, status item and primary table. Site rebuilt, not published.

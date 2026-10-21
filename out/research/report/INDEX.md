@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-21 · i10_2
+
+Folder: [2026-10-21_i10_2/](2026-10-21_i10_2/) · [tables.md](2026-10-21_i10_2/tables.md) · [README.md](2026-10-21_i10_2/README.md)
+
+- I10-2 class selection for g from training data (menu none / lin / gam / mlp8 / mlp16, 4 datasets, 11 Bonferroni contrasts): PRIMARY rule 'stop', no selector supported. S_loss / S_refit / S_cv partly supported (C2 holds; vs mlp16 0.914 / 0.910 / 0.888); S_gate not supported (0.974 [0.885, 1.049]).
+- C1 fails on TU Delft 4.13 K for every selector (S_loss 0.993 [0.871, 1.089], 7-cluster bootstrap); S_refit also on IHP 300 K (1.020). gam selected on sky130 and NIST by S_loss / S_refit / S_cv.
+- Secondary A1: under the TU Delft device bootstrap at 95% S_cv passes C1; fixed mlp16 fails C1 under every variant. S_loss vs S_refit same pick 75/90 folds; S_refit cost 17.0 CPU-h vs S_loss 3.9.
+
+Figures and tables: [01_table_i10_2_decision.png](2026-10-21_i10_2/01_table_i10_2_decision.png) · [02_i10_2_forest_vs_C0_refit.png](2026-10-21_i10_2/02_i10_2_forest_vs_C0_refit.png) · [03_i10_2_pooled_contrasts.png](2026-10-21_i10_2/03_i10_2_pooled_contrasts.png) · [04_i10_2_selections.png](2026-10-21_i10_2/04_i10_2_selections.png) · [05_i10_2_loss_vs_refit_agreement.png](2026-10-21_i10_2/05_i10_2_loss_vs_refit_agreement.png) · [06_table_i10_2_cost.png](2026-10-21_i10_2/06_table_i10_2_cost.png) · [07_table_i10_2_A1_secondary.png](2026-10-21_i10_2/07_table_i10_2_A1_secondary.png) · [08_table_i10_2_secondary.png](2026-10-21_i10_2/08_table_i10_2_secondary.png)
+
 ## 2026-10-21 · i10_1
 
 Folder: [2026-10-21_i10_1/](2026-10-21_i10_1/) · [tables.md](2026-10-21_i10_1/tables.md) · [README.md](2026-10-21_i10_1/README.md)

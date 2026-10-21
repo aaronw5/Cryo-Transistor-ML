@@ -308,10 +308,24 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 10 in progress (2026-10-21): I10-1 room-temperature -> 4 K prediction on NIST g5v0d10v5 DEV, invalid run (V2: shifted cards fail BSIM4 parameter checks), stopped by rule; I10-2 class selection for the shared correction, jobs running. Iteration 9 in progress (2026-10-21): I9-1 NIST sky130 4 K regular-Vt DEV with the room-temperature card, P_a correct and P_b supported; I9-2 function-class ablation of the shared correction on 4 measured datasets: Q1 class-dependent, Q2 smallest matching class mlp16_s1, no class beats M_bias with fewer parameters. Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 10 in progress (2026-10-21): I10-1 room-temperature -> 4 K prediction on NIST g5v0d10v5 DEV, invalid run (V2: shifted cards fail BSIM4 parameter checks), stopped by rule; I10-2 class selection for the shared correction from training data, rule output stop (no selector meets C1 and C2). Iteration 9 in progress (2026-10-21): I9-1 NIST sky130 4 K regular-Vt DEV with the room-temperature card, P_a correct and P_b supported; I9-2 function-class ablation of the shared correction on 4 measured datasets: Q1 class-dependent, Q2 smallest matching class mlp16_s1, no class beats M_bias with fewer parameters. Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
+     },
+     {
+      "text": "I10-2 (class selection for g per outer fold from training data; menu none / lin / gam / mlp8 / mlp16; sky130 77 K, NIST 4 K, TU Delft 4.13 K, IHP 300 K): pre-registered rule output stop, no selector supported. S_loss 0.838, S_refit 0.834, S_cv 0.814 pooled vs C0_refit, partly supported (C2 holds: vs mlp16 0.914 / 0.910 / 0.888; C1 fails on TU Delft, S_refit also on IHP 1.020); S_gate 0.893 not supported (vs mlp16 upper 1.049). gam selected on sky130 and NIST. Secondary A1: S_cv passes C1 with the TU Delft device bootstrap at 95%; fixed mlp16 fails C1 under every variant. The deployed rule stays the I8-2 gate.",
+      "source": [
+       "out/research/explore/I10_2/decision.json"
+      ],
+      "claim": "i10-2",
+      "queue_match": "^I10_2_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i10_2",
+      "table": "I10-2 PRIMARY RESULT",
+      "caption": "I10-2 primary result per selector and the rule output"
      },
      {
       "text": "I10-1 (NIST ETest g5v0d10v5, 67 DEV devices; TU Delft 45 replication): invalid run, stopped by rule. V2 failed: A1 / A2 / A3 8 failed each (11.9% > 10%), R_pop 12; K3 51/67 paired. Cause (post hoc): the shifted cards fail BSIM4 checks of size-dependent values (Lpeb < -Leff on bin-stretched nMOS L 0.40-0.45 um; Pclm <= 0). Descriptive: A1 0.411, A0_rtdeck 0.460, R_pop 0.381, R_oracle 0.066; K2 and K3 inconclusive; TU Delft K2 higher. Recommendation: stop without re-registration; TEST stays locked.",
@@ -5648,6 +5662,140 @@
     "scripts/research/explore/i10_1_rt4k.py",
     "scripts/research/explore/i10_1_diagnose.py",
     "scripts/research/plot_explore_i10_1.py",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
+   "id": "i10-2",
+   "tab": "explore",
+   "statement": "I10-2: selecting the class of the shared bias-only correction g (none, lin, gam, mlp8, mlp16) per outer fold from training data only is not supported on DEV under the pre-registered rule: no selector meets both C1 (not worse than C0_refit on every dataset) and C2 (non-inferior to M_bias pooled), so the rule output is stop and the deployed rule stays the I8-2 gate.",
+   "status": "refuted",
+   "headline": {
+    "value": "stop (pre-registered rule): no selector supported; S_loss, S_refit, S_cv partly supported (C2 holds, C1 fails on TU Delft 4.13 K); S_gate not supported",
+    "convention": "held-out score = stored I9-2 row of the class selected in the device's outer fold (strict paper RRMS after the held-out card refit with g frozen); pooled GMR with equal dataset weight; Bonferroni CI at level 1 - 0.05/11; TU Delft 7-cluster bootstrap; margin 1.03"
+   },
+   "numbers": [
+    {
+     "label": "pooled GMR vs C0_refit / vs mlp16 / vs S_gate (Bonferroni CI)",
+     "value": "S_loss 0.838 [0.778, 0.900] / 0.914 [0.827, 0.992] / 0.938 [0.917, 0.958]; S_refit 0.834 [0.776, 0.897] / 0.910 [0.828, 0.979] / 0.934 [0.912, 0.959]; S_gate 0.893 [0.836, 0.951] / 0.974 [0.885, 1.049] / -; S_cv 0.814 [0.742, 0.888] / 0.888 [0.797, 0.964] / 0.912 [0.865, 0.948]",
+     "convention": "11 primary contrasts; S_cv is not strictly nested",
+     "source": "out/research/explore/I10_2/decision.json"
+    },
+    {
+     "label": "C1 per dataset (GMR(S, C0_refit), Bonferroni CI)",
+     "value": "TU Delft 4.13 K: S_loss 0.993 [0.871, 1.089], S_refit 0.976 [0.877, 1.089], S_gate 1.027 [0.911, 1.144], S_cv 0.939 [0.736, 1.164] (all fail); IHP 300 K: S_refit 1.020 [0.994, 1.092] (fails), S_loss and S_gate 1.000 (none in every fold), S_cv 0.962 [0.891, 1.009]; sky130 77 K and NIST 4 K: every selector below 1",
+     "convention": "C1: every per-dataset upper bound <= 1.03",
+     "source": "out/research/explore/I10_2/decision.json"
+    },
+    {
+     "label": "selections (outer folds)",
+     "value": "sky130 77 K: S_loss gam 10 / mlp8 2, S_refit and S_cv gam 12, S_gate mlp16 12; NIST 4 K: S_loss, S_refit, S_cv gam 53, S_gate mlp16 53; TU Delft 4.13 K (7 groups): S_loss none 2 / gam 2 / mlp8 3, S_refit lin 3 / gam 3 / mlp8 1, S_cv lin 1 / gam 6, S_gate none 2 / mlp16 5; IHP 300 K (18): S_loss and S_gate none 18, S_refit none 9 / lin 9, S_cv none 8 / lin 10",
+     "convention": "per outer fold from that fold's training devices",
+     "source": "out/research/explore/I10_2/decision.json"
+    },
+    {
+     "label": "S_loss vs S_refit",
+     "value": "same class in 75/90 outer folds (sky130 10/12, NIST 53/53, TU Delft 3/7, IHP 9/18); new compute S_loss 3.89 CPU-h (inner training), S_refit 17.04 CPU-h (+13.15 CPU-h inner refits, 4948 refits, 0 failed); S_gate and S_cv 0 (stored values)",
+     "convention": "1 torch thread per task; 6 workers",
+     "source": "out/research/explore/I10_2/refit/nist_4K/results.json"
+    },
+    {
+     "label": "SECONDARY (amendment A1): C1 variants",
+     "value": "TU Delft device bootstrap at 95%: S_cv passes C1; S_loss fails (TU Delft upper 1.037), S_refit fails (IHP upper 1.021), S_gate fails (TU Delft 1.071). Fixed mlp16 (M_bias in every fold) fails C1 under every variant (IHP 300 K 1.214). Does not change the primary labels or the rule",
+     "convention": "amendment A1 in force from 7a93dfc, before I10_2_decide",
+     "source": "out/research/explore/I10_2/decision.json"
+    },
+    {
+     "label": "secondary and post hoc",
+     "value": "fixed gam vs C0_refit pooled 0.889 (95%); post hoc per-dataset oracle class gam / gam / gam / lin; S_cv vs per-dataset oracle 1.013 [0.984, 1.052], S_loss 1.042, S_refit 1.038, S_gate 1.111; S_cv full 13-option menu 0.822; I8-2 dataset-level gate 0.873; NIST room temperature (menu none / poly3 / mlp16): S_gate and S_cv mlp16 87/87, 0.797",
+     "convention": "95%, descriptive; oracle uses held-out outcomes",
+     "source": "out/research/explore/I10_2/decision.json"
+    }
+   ],
+   "what": [
+    "Question: can the class of the shared bias-only correction g (I = I_card x exp(g)), including no correction (none = C0_refit), be selected per dataset from training data only, so that the selected method is not worse than C0_refit on any dataset and close to M_bias? Retrospective DEV analysis on the stored I9-2 folds of sky130 77 K (12 folds), NIST 4 K (53), TU Delft 4.13 K (7 geometry groups), IHP measured 300 K (18); the menu, datasets and I9-2 rows were seen before the pre-registration.",
+    "Selectors (each outer fold, training devices only): S_loss = mean inner held-out ln(RRMS corrected / RRMS start) without refit (inner MLP seed 0); S_refit = inner held-out cards refit with g frozen, log ratio vs the stored C0_refit (NIST: one inner fold of 4); S_gate = mlp16 iff the stored fold-level S3_f < 0, else none; S_cv = stored I9-2 rows of the training devices (not strictly nested). Argmin, tie 0.005 -> fewer trained values.",
+    "Pre-registered (in force from 55c4cfc): C1 per-dataset upper Bonferroni CI of GMR(S, C0_refit) <= 1.03 on all 4 datasets; C2 pooled upper CI of GMR(S, mlp16) <= 1.03; supported = C1 and C2; overall 'stop' if no selector is supported. Amendment A1 (7a93dfc): secondary C1 report under the TU Delft device bootstrap and at 95%, also for fixed mlp16."
+   ],
+   "did": [
+    "Queue: I10_2_inner 2372 s (4 datasets; V_fold lin retrain = stored I9-2 lin fold model, difference 0), I10_2_refit sky130 77 K 1384 s, IHP 300 K 1147 s, TU Delft 4.13 K 2017 s, NIST 4 K 3372 s (4948 inner refits, 0 failed), I10_2_decide 2 s. Interim stored-row selectors (S_gate, S_cv) committed in b05acc4 before the inner jobs finished.",
+    "Report `scripts/research/plot_explore_i10_2.py` (batch 2026-10-21_i10_2) recomputes the S_loss / S_refit fold scores from the per-device inner log ratios and the selections from the scores, the S_gate / S_cv selections from the stored S3_f and I9-2 rows, and every primary and secondary GMR, label, the rule, the A1 C1 variants, counts, agreement, tie sensitivity and oracle references from the per-device rows, and checks them against decision.json."
+   ],
+   "result": {
+    "text": [
+     "Primary (in-force rule): stop. No selector is supported. S_loss, S_refit and S_cv are partly supported: C2 holds (pooled GMR vs mlp16 0.914, 0.910, 0.888; upper bounds below 1) and C1 fails. S_gate is not supported (C1 fails, C2 upper 1.049). The deployed rule stays the I8-2 gate between C0_refit and M_bias; no class selector goes to TEST.",
+     "C1 fails on TU Delft 4.13 K for every selector: the 7-group cluster bootstrap at the Bonferroni level gives upper bounds 1.089-1.164. S_refit also fails on IHP 300 K (1.020 [0.994, 1.092]; lin in 9 of 18 folds). On sky130 77 K and NIST 4 K S_loss, S_refit and S_cv select gam in 63-65 of 65 folds and reach GMR 0.727-0.741 and 0.670 against C0_refit.",
+     "S_loss and S_refit select the same class in 75 of 90 outer folds; they differ on TU Delft (3/7) and IHP (9/18). S_refit costs 17.04 CPU-h of new compute, S_loss 3.89 CPU-h; S_refit has pooled GMR 0.834 against 0.838 for S_loss.",
+     "Secondary (amendment A1; the primary label and rule are unchanged): with the TU Delft device bootstrap at 95% S_cv passes C1 on every dataset; S_loss (TU Delft upper 1.037), S_refit (IHP 1.021) and S_gate fail. Fixed mlp16 fails C1 under every variant (IHP 300 K 1.214)."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "01_table_i10_2_decision.png"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "02_i10_2_forest_vs_C0_refit.png"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "03_i10_2_pooled_contrasts.png"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "04_i10_2_selections.png"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "05_i10_2_loss_vs_refit_agreement.png"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "06_table_i10_2_cost.png"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "07_table_i10_2_A1_secondary.png"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "file": "08_table_i10_2_secondary.png"
+     }
+    ],
+    "tables": [
+     {
+      "batch": "2026-10-21_i10_2",
+      "table": "I10-2 PRIMARY RESULT",
+      "caption": "Primary result per selector and the rule output"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "table": "I10-2 SECONDARY (amendment A1)",
+      "caption": "Secondary C1 report (amendment A1); does not change the primary result"
+     },
+     {
+      "batch": "2026-10-21_i10_2",
+      "table": "I10-2 compute per selector",
+      "caption": "New compute per selector and dataset"
+     }
+    ]
+   },
+   "caveats": [
+    "Retrospective DEV analysis: the class menu, the datasets, the I9-2 rows and the S3 values were seen before the pre-registration. The prospective test was planned for the December TEST stage; under the rule output 'stop' no class selector goes to TEST.",
+    "S_cv is not strictly nested (the stored rows of training devices come from g models trained with fold f's starting records). The oracle references use held-out outcomes and cannot be deployed.",
+    "TU Delft 4.13 K has 7 geometry groups; the primary per-dataset CI there is a 7-cluster bootstrap at level 1 - 0.05/11, so C1 on TU Delft has low power (amendment A1 reports the device bootstrap and 95% variants as secondary)."
+   ],
+   "sources": [
+    "out/research/explore/I10_2/prereg.json",
+    "out/research/explore/I10_2/prereg.md",
+    "out/research/explore/I10_2/prereg_amendment_A1.json",
+    "out/research/explore/I10_2/decision.json",
+    "out/research/explore/I10_2/inner/sky130_77K/results.json",
+    "out/research/explore/I10_2/refit/sky130_77K/results.json",
+    "scripts/research/explore/i10_2_select.py",
+    "src/cryoml/explore/i10_2_select.py",
+    "scripts/research/plot_explore_i10_2.py",
     "docs/RESEARCH_LOOP.md"
    ],
    "updated": "2026-10-21"
