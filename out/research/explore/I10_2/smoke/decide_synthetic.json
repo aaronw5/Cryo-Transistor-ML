@@ -1,0 +1,6749 @@
+{
+ "prereg": "out/research/explore/I10_2/prereg.json",
+ "guard": null,
+ "complete": true,
+ "missing": [],
+ "primary_datasets": [
+  "sky130_77K",
+  "nist_4K",
+  "tudelft_4K",
+  "ihp_meas_300K"
+ ],
+ "menu": [
+  "none",
+  "lin",
+  "gam",
+  "mlp8",
+  "mlp16"
+ ],
+ "alpha_adjusted": 0.004545454545454546,
+ "margin": 1.03,
+ "tie": 0.005,
+ "validity": {
+  "sky130_77K": {
+   "missing_rows": {},
+   "missing_fold_models": {},
+   "excluded_records_nan_in_every_class": true,
+   "pass": true
+  },
+  "nist_4K": {
+   "missing_rows": {},
+   "missing_fold_models": {},
+   "excluded_records_nan_in_every_class": true,
+   "pass": true
+  },
+  "tudelft_4K": {
+   "missing_rows": {},
+   "missing_fold_models": {},
+   "excluded_records_nan_in_every_class": true,
+   "pass": true
+  },
+  "ihp_meas_300K": {
+   "missing_rows": {},
+   "missing_fold_models": {},
+   "excluded_records_nan_in_every_class": true,
+   "pass": true
+  },
+  "V_s3": "S3 fold keys equal the I9-2 folds on every dataset"
+ },
+ "selections": {
+  "S_loss": {
+   "sky130_77K": {
+    "nmos_L0p15_W1p6": "gam",
+    "nmos_L0p25_W1p6": "gam",
+    "nmos_L100_W100": "mlp16",
+    "nmos_L1_W3": "gam",
+    "nmos_L20_W0p64": "mlp8",
+    "pmos_L0p35_W0p55": "none",
+    "pmos_L0p35_W5": "gam",
+    "pmos_L0p5_W0p42": "lin",
+    "pmos_L2_W5": "none",
+    "pmos_L4_W7": "mlp8",
+    "pmos_L8_W1p6": "gam",
+    "pmos_L8_W5": "none"
+   },
+   "nist_4K": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": "mlp16",
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": "mlp16",
+    "nfet_01v8_lvt_W0p55_L1_m20p8": "mlp16",
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": "mlp16",
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": "none",
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": "mlp16",
+    "nfet_01v8_lvt_W0p64_L1_m21p6": "mlp16",
+    "nfet_01v8_lvt_W1_L0p15_m22p2": "lin",
+    "nfet_01v8_lvt_W1_L0p18_m22p3": "none",
+    "nfet_01v8_lvt_W1_L1_m22p6": "none",
+    "nfet_01v8_lvt_W1_L4_m22p8": "mlp8",
+    "nfet_01v8_lvt_W1_L8_m23p1": "mlp16",
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": "mlp8",
+    "nfet_01v8_lvt_W1p65_L1_m23p6": "mlp8",
+    "nfet_01v8_lvt_W1p65_L2_m23p7": "mlp8",
+    "nfet_01v8_lvt_W1p65_L8_m23p8": "none",
+    "nfet_01v8_lvt_W3_L0p18_m24p2": "mlp16",
+    "nfet_01v8_lvt_W3_L0p25_m24p3": "mlp16",
+    "nfet_01v8_lvt_W3_L0p5_m24p4": "none",
+    "nfet_01v8_lvt_W3_L2_m24p6": "mlp16",
+    "nfet_01v8_lvt_W3_L8_m24p8": "mlp16",
+    "nfet_01v8_lvt_W5_L0p25_m25p4": "lin",
+    "nfet_01v8_lvt_W5_L0p5_m25p5": "gam",
+    "nfet_01v8_lvt_W5_L1_m25p6": "mlp16",
+    "nfet_01v8_lvt_W5_L2_m25p7": "mlp16",
+    "nfet_01v8_lvt_W5_L4_m25p8": "none",
+    "nfet_01v8_lvt_W5_L8_m26p1": "mlp8",
+    "nfet_01v8_lvt_W7_L0p25_m26p4": "gam",
+    "nfet_01v8_lvt_W7_L8_m26p8": "lin",
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": "mlp16",
+    "pfet_01v8_lvt_W0p42_L20_m27p7": "mlp8",
+    "pfet_01v8_lvt_W0p42_L4_m27p5": "gam",
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": "mlp16",
+    "pfet_01v8_lvt_W0p55_L1_m28p2": "gam",
+    "pfet_01v8_lvt_W0p55_L2_m28p3": "mlp16",
+    "pfet_01v8_lvt_W0p55_L4_m28p4": "none",
+    "pfet_01v8_lvt_W0p55_L8_m28p5": "mlp16",
+    "pfet_01v8_lvt_W1_L0p35_m28p6": "mlp16",
+    "pfet_01v8_lvt_W1_L20_m29p4": "gam",
+    "pfet_01v8_lvt_W1_L2_m29p1": "gam",
+    "pfet_01v8_lvt_W1_L4_m29p2": "lin",
+    "pfet_01v8_lvt_W3_L0p35_m29p5": "lin",
+    "pfet_01v8_lvt_W3_L1_m29p6": "lin",
+    "pfet_01v8_lvt_W3_L1p5_m29p7": "mlp8",
+    "pfet_01v8_lvt_W3_L2_m29p8": "lin",
+    "pfet_01v8_lvt_W3_L4_m30p1": "mlp16",
+    "pfet_01v8_lvt_W5_L0p35_m30p3": "lin",
+    "pfet_01v8_lvt_W5_L1_m30p5": "gam",
+    "pfet_01v8_lvt_W5_L1p5_m30p6": "lin",
+    "pfet_01v8_lvt_W5_L4_m30p8": "mlp8",
+    "pfet_01v8_lvt_W7_L0p35_m31p2": "lin",
+    "pfet_01v8_lvt_W7_L1p5_m31p5": "mlp16",
+    "pfet_01v8_lvt_W7_L8_m31p7": "mlp8"
+   },
+   "tudelft_4K": {
+    "t40_nmos_W0p12_L0p04": "gam",
+    "t40_nmos_W0p12_L0p05": "gam",
+    "t40_nmos_W0p36_L0p04": "mlp16",
+    "t40_nmos_W1_L0p04": "gam",
+    "t40_nmos_W1_L1": "mlp8",
+    "t40_pmos_W1_L0p04": "none",
+    "t40_pmos_W1_L1": "gam"
+   },
+   "ihp_meas_300K": {
+    "hv_nmos_W0p3_L0p5": "gam",
+    "hv_nmos_W0p3_L10": "gam",
+    "hv_nmos_W0p6_L1p2": "lin",
+    "hv_nmos_W10_L0p5": "mlp16",
+    "hv_pmos_W0p3_L10": "lin",
+    "hv_pmos_W0p6_L0p5": "lin",
+    "hv_pmos_W10_L0p35": "mlp16",
+    "hv_pmos_W2_L1p2": "none",
+    "lv_nmos_W0p15_L0p18": "gam",
+    "lv_nmos_W0p15_L10": "lin",
+    "lv_nmos_W0p3_L0p13": "none",
+    "lv_nmos_W0p3_L10": "mlp8",
+    "lv_nmos_W10_L10": "mlp16",
+    "lv_pmos_W0p15_L0p18": "mlp8",
+    "lv_pmos_W0p15_L10": "lin",
+    "lv_pmos_W0p3_L0p13": "gam",
+    "lv_pmos_W0p3_L10": "mlp16",
+    "lv_pmos_W10_L10": "lin"
+   }
+  },
+  "S_refit": {
+   "sky130_77K": {
+    "nmos_L0p15_W1p6": "mlp8",
+    "nmos_L0p25_W1p6": "mlp16",
+    "nmos_L100_W100": "none",
+    "nmos_L1_W3": "none",
+    "nmos_L20_W0p64": "gam",
+    "pmos_L0p35_W0p55": "gam",
+    "pmos_L0p35_W5": "mlp8",
+    "pmos_L0p5_W0p42": "lin",
+    "pmos_L2_W5": "none",
+    "pmos_L4_W7": "lin",
+    "pmos_L8_W1p6": "gam",
+    "pmos_L8_W5": "lin"
+   },
+   "nist_4K": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": "none",
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": "mlp16",
+    "nfet_01v8_lvt_W0p55_L1_m20p8": "mlp8",
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": "lin",
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": "none",
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": "mlp8",
+    "nfet_01v8_lvt_W0p64_L1_m21p6": "lin",
+    "nfet_01v8_lvt_W1_L0p15_m22p2": "mlp16",
+    "nfet_01v8_lvt_W1_L0p18_m22p3": "lin",
+    "nfet_01v8_lvt_W1_L1_m22p6": "mlp8",
+    "nfet_01v8_lvt_W1_L4_m22p8": "none",
+    "nfet_01v8_lvt_W1_L8_m23p1": "gam",
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": "none",
+    "nfet_01v8_lvt_W1p65_L1_m23p6": "mlp8",
+    "nfet_01v8_lvt_W1p65_L2_m23p7": "none",
+    "nfet_01v8_lvt_W1p65_L8_m23p8": "mlp8",
+    "nfet_01v8_lvt_W3_L0p18_m24p2": "mlp8",
+    "nfet_01v8_lvt_W3_L0p25_m24p3": "gam",
+    "nfet_01v8_lvt_W3_L0p5_m24p4": "mlp8",
+    "nfet_01v8_lvt_W3_L2_m24p6": "gam",
+    "nfet_01v8_lvt_W3_L8_m24p8": "mlp16",
+    "nfet_01v8_lvt_W5_L0p25_m25p4": "mlp8",
+    "nfet_01v8_lvt_W5_L0p5_m25p5": "mlp16",
+    "nfet_01v8_lvt_W5_L1_m25p6": "none",
+    "nfet_01v8_lvt_W5_L2_m25p7": "none",
+    "nfet_01v8_lvt_W5_L4_m25p8": "mlp8",
+    "nfet_01v8_lvt_W5_L8_m26p1": "mlp8",
+    "nfet_01v8_lvt_W7_L0p25_m26p4": "mlp8",
+    "nfet_01v8_lvt_W7_L8_m26p8": "mlp16",
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": "lin",
+    "pfet_01v8_lvt_W0p42_L20_m27p7": "mlp16",
+    "pfet_01v8_lvt_W0p42_L4_m27p5": "gam",
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": "none",
+    "pfet_01v8_lvt_W0p55_L1_m28p2": "lin",
+    "pfet_01v8_lvt_W0p55_L2_m28p3": "mlp8",
+    "pfet_01v8_lvt_W0p55_L4_m28p4": "mlp8",
+    "pfet_01v8_lvt_W0p55_L8_m28p5": "mlp16",
+    "pfet_01v8_lvt_W1_L0p35_m28p6": "mlp16",
+    "pfet_01v8_lvt_W1_L20_m29p4": "mlp8",
+    "pfet_01v8_lvt_W1_L2_m29p1": "lin",
+    "pfet_01v8_lvt_W1_L4_m29p2": "gam",
+    "pfet_01v8_lvt_W3_L0p35_m29p5": "gam",
+    "pfet_01v8_lvt_W3_L1_m29p6": "lin",
+    "pfet_01v8_lvt_W3_L1p5_m29p7": "mlp16",
+    "pfet_01v8_lvt_W3_L2_m29p8": "mlp16",
+    "pfet_01v8_lvt_W3_L4_m30p1": "gam",
+    "pfet_01v8_lvt_W5_L0p35_m30p3": "lin",
+    "pfet_01v8_lvt_W5_L1_m30p5": "gam",
+    "pfet_01v8_lvt_W5_L1p5_m30p6": "gam",
+    "pfet_01v8_lvt_W5_L4_m30p8": "mlp8",
+    "pfet_01v8_lvt_W7_L0p35_m31p2": "mlp16",
+    "pfet_01v8_lvt_W7_L1p5_m31p5": "none",
+    "pfet_01v8_lvt_W7_L8_m31p7": "none"
+   },
+   "tudelft_4K": {
+    "t40_nmos_W0p12_L0p04": "mlp8",
+    "t40_nmos_W0p12_L0p05": "mlp16",
+    "t40_nmos_W0p36_L0p04": "none",
+    "t40_nmos_W1_L0p04": "none",
+    "t40_nmos_W1_L1": "gam",
+    "t40_pmos_W1_L0p04": "gam",
+    "t40_pmos_W1_L1": "mlp8"
+   },
+   "ihp_meas_300K": {
+    "hv_nmos_W0p3_L0p5": "mlp16",
+    "hv_nmos_W0p3_L10": "lin",
+    "hv_nmos_W0p6_L1p2": "lin",
+    "hv_nmos_W10_L0p5": "gam",
+    "hv_pmos_W0p3_L10": "mlp16",
+    "hv_pmos_W0p6_L0p5": "none",
+    "hv_pmos_W10_L0p35": "lin",
+    "hv_pmos_W2_L1p2": "gam",
+    "lv_nmos_W0p15_L0p18": "lin",
+    "lv_nmos_W0p15_L10": "gam",
+    "lv_nmos_W0p3_L0p13": "lin",
+    "lv_nmos_W0p3_L10": "none",
+    "lv_nmos_W10_L10": "none",
+    "lv_pmos_W0p15_L0p18": "none",
+    "lv_pmos_W0p15_L10": "mlp8",
+    "lv_pmos_W0p3_L0p13": "mlp16",
+    "lv_pmos_W0p3_L10": "mlp16",
+    "lv_pmos_W10_L10": "mlp8"
+   }
+  },
+  "S_gate": {
+   "sky130_77K": {
+    "nmos_L0p15_W1p6": "mlp16",
+    "nmos_L0p25_W1p6": "mlp16",
+    "nmos_L100_W100": "mlp16",
+    "nmos_L1_W3": "mlp16",
+    "nmos_L20_W0p64": "mlp16",
+    "pmos_L0p35_W0p55": "mlp16",
+    "pmos_L0p35_W5": "mlp16",
+    "pmos_L0p5_W0p42": "mlp16",
+    "pmos_L2_W5": "mlp16",
+    "pmos_L4_W7": "mlp16",
+    "pmos_L8_W1p6": "mlp16",
+    "pmos_L8_W5": "mlp16"
+   },
+   "nist_4K": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": "mlp16",
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": "mlp16",
+    "nfet_01v8_lvt_W0p55_L1_m20p8": "mlp16",
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": "mlp16",
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": "mlp16",
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": "mlp16",
+    "nfet_01v8_lvt_W0p64_L1_m21p6": "mlp16",
+    "nfet_01v8_lvt_W1_L0p15_m22p2": "mlp16",
+    "nfet_01v8_lvt_W1_L0p18_m22p3": "mlp16",
+    "nfet_01v8_lvt_W1_L1_m22p6": "mlp16",
+    "nfet_01v8_lvt_W1_L4_m22p8": "mlp16",
+    "nfet_01v8_lvt_W1_L8_m23p1": "mlp16",
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": "mlp16",
+    "nfet_01v8_lvt_W1p65_L1_m23p6": "mlp16",
+    "nfet_01v8_lvt_W1p65_L2_m23p7": "mlp16",
+    "nfet_01v8_lvt_W1p65_L8_m23p8": "mlp16",
+    "nfet_01v8_lvt_W3_L0p18_m24p2": "mlp16",
+    "nfet_01v8_lvt_W3_L0p25_m24p3": "mlp16",
+    "nfet_01v8_lvt_W3_L0p5_m24p4": "mlp16",
+    "nfet_01v8_lvt_W3_L2_m24p6": "mlp16",
+    "nfet_01v8_lvt_W3_L8_m24p8": "mlp16",
+    "nfet_01v8_lvt_W5_L0p25_m25p4": "mlp16",
+    "nfet_01v8_lvt_W5_L0p5_m25p5": "mlp16",
+    "nfet_01v8_lvt_W5_L1_m25p6": "mlp16",
+    "nfet_01v8_lvt_W5_L2_m25p7": "mlp16",
+    "nfet_01v8_lvt_W5_L4_m25p8": "mlp16",
+    "nfet_01v8_lvt_W5_L8_m26p1": "mlp16",
+    "nfet_01v8_lvt_W7_L0p25_m26p4": "mlp16",
+    "nfet_01v8_lvt_W7_L8_m26p8": "mlp16",
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": "mlp16",
+    "pfet_01v8_lvt_W0p42_L20_m27p7": "mlp16",
+    "pfet_01v8_lvt_W0p42_L4_m27p5": "mlp16",
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": "mlp16",
+    "pfet_01v8_lvt_W0p55_L1_m28p2": "mlp16",
+    "pfet_01v8_lvt_W0p55_L2_m28p3": "mlp16",
+    "pfet_01v8_lvt_W0p55_L4_m28p4": "mlp16",
+    "pfet_01v8_lvt_W0p55_L8_m28p5": "mlp16",
+    "pfet_01v8_lvt_W1_L0p35_m28p6": "mlp16",
+    "pfet_01v8_lvt_W1_L20_m29p4": "mlp16",
+    "pfet_01v8_lvt_W1_L2_m29p1": "mlp16",
+    "pfet_01v8_lvt_W1_L4_m29p2": "mlp16",
+    "pfet_01v8_lvt_W3_L0p35_m29p5": "mlp16",
+    "pfet_01v8_lvt_W3_L1_m29p6": "mlp16",
+    "pfet_01v8_lvt_W3_L1p5_m29p7": "mlp16",
+    "pfet_01v8_lvt_W3_L2_m29p8": "mlp16",
+    "pfet_01v8_lvt_W3_L4_m30p1": "mlp16",
+    "pfet_01v8_lvt_W5_L0p35_m30p3": "mlp16",
+    "pfet_01v8_lvt_W5_L1_m30p5": "mlp16",
+    "pfet_01v8_lvt_W5_L1p5_m30p6": "mlp16",
+    "pfet_01v8_lvt_W5_L4_m30p8": "mlp16",
+    "pfet_01v8_lvt_W7_L0p35_m31p2": "mlp16",
+    "pfet_01v8_lvt_W7_L1p5_m31p5": "mlp16",
+    "pfet_01v8_lvt_W7_L8_m31p7": "mlp16"
+   },
+   "tudelft_4K": {
+    "t40_nmos_W0p12_L0p04": "none",
+    "t40_nmos_W0p12_L0p05": "mlp16",
+    "t40_nmos_W0p36_L0p04": "mlp16",
+    "t40_nmos_W1_L0p04": "none",
+    "t40_nmos_W1_L1": "mlp16",
+    "t40_pmos_W1_L0p04": "mlp16",
+    "t40_pmos_W1_L1": "mlp16"
+   },
+   "ihp_meas_300K": {
+    "hv_nmos_W0p3_L0p5": "none",
+    "hv_nmos_W0p3_L10": "none",
+    "hv_nmos_W0p6_L1p2": "none",
+    "hv_nmos_W10_L0p5": "none",
+    "hv_pmos_W0p3_L10": "none",
+    "hv_pmos_W0p6_L0p5": "none",
+    "hv_pmos_W10_L0p35": "none",
+    "hv_pmos_W2_L1p2": "none",
+    "lv_nmos_W0p15_L0p18": "none",
+    "lv_nmos_W0p15_L10": "none",
+    "lv_nmos_W0p3_L0p13": "none",
+    "lv_nmos_W0p3_L10": "none",
+    "lv_nmos_W10_L10": "none",
+    "lv_pmos_W0p15_L0p18": "none",
+    "lv_pmos_W0p15_L10": "none",
+    "lv_pmos_W0p3_L0p13": "none",
+    "lv_pmos_W0p3_L10": "none",
+    "lv_pmos_W10_L10": "none"
+   }
+  },
+  "S_cv": {
+   "sky130_77K": {
+    "nmos_L0p15_W1p6": "mlp8",
+    "nmos_L0p25_W1p6": "mlp8",
+    "nmos_L100_W100": "mlp8",
+    "nmos_L1_W3": "mlp8",
+    "nmos_L20_W0p64": "mlp8",
+    "pmos_L0p35_W0p55": "mlp8",
+    "pmos_L0p35_W5": "mlp8",
+    "pmos_L0p5_W0p42": "mlp8",
+    "pmos_L2_W5": "mlp8",
+    "pmos_L4_W7": "lin",
+    "pmos_L8_W1p6": "mlp8",
+    "pmos_L8_W5": "mlp8"
+   },
+   "nist_4K": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": "mlp8",
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": "mlp8",
+    "nfet_01v8_lvt_W0p55_L1_m20p8": "mlp8",
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": "mlp8",
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": "mlp8",
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": "lin",
+    "nfet_01v8_lvt_W0p64_L1_m21p6": "mlp8",
+    "nfet_01v8_lvt_W1_L0p15_m22p2": "mlp8",
+    "nfet_01v8_lvt_W1_L0p18_m22p3": "mlp8",
+    "nfet_01v8_lvt_W1_L1_m22p6": "mlp8",
+    "nfet_01v8_lvt_W1_L4_m22p8": "mlp8",
+    "nfet_01v8_lvt_W1_L8_m23p1": "mlp8",
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": "mlp8",
+    "nfet_01v8_lvt_W1p65_L1_m23p6": "mlp8",
+    "nfet_01v8_lvt_W1p65_L2_m23p7": "mlp8",
+    "nfet_01v8_lvt_W1p65_L8_m23p8": "mlp8",
+    "nfet_01v8_lvt_W3_L0p18_m24p2": "mlp8",
+    "nfet_01v8_lvt_W3_L0p25_m24p3": "mlp8",
+    "nfet_01v8_lvt_W3_L0p5_m24p4": "mlp8",
+    "nfet_01v8_lvt_W3_L2_m24p6": "mlp8",
+    "nfet_01v8_lvt_W3_L8_m24p8": "mlp8",
+    "nfet_01v8_lvt_W5_L0p25_m25p4": "mlp8",
+    "nfet_01v8_lvt_W5_L0p5_m25p5": "lin",
+    "nfet_01v8_lvt_W5_L1_m25p6": "mlp8",
+    "nfet_01v8_lvt_W5_L2_m25p7": "mlp8",
+    "nfet_01v8_lvt_W5_L4_m25p8": "mlp8",
+    "nfet_01v8_lvt_W5_L8_m26p1": "mlp8",
+    "nfet_01v8_lvt_W7_L0p25_m26p4": "mlp8",
+    "nfet_01v8_lvt_W7_L8_m26p8": "mlp8",
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": "mlp8",
+    "pfet_01v8_lvt_W0p42_L20_m27p7": "mlp8",
+    "pfet_01v8_lvt_W0p42_L4_m27p5": "mlp8",
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": "mlp8",
+    "pfet_01v8_lvt_W0p55_L1_m28p2": "mlp8",
+    "pfet_01v8_lvt_W0p55_L2_m28p3": "mlp8",
+    "pfet_01v8_lvt_W0p55_L4_m28p4": "mlp8",
+    "pfet_01v8_lvt_W0p55_L8_m28p5": "mlp8",
+    "pfet_01v8_lvt_W1_L0p35_m28p6": "mlp8",
+    "pfet_01v8_lvt_W1_L20_m29p4": "mlp8",
+    "pfet_01v8_lvt_W1_L2_m29p1": "mlp8",
+    "pfet_01v8_lvt_W1_L4_m29p2": "mlp8",
+    "pfet_01v8_lvt_W3_L0p35_m29p5": "mlp8",
+    "pfet_01v8_lvt_W3_L1_m29p6": "mlp8",
+    "pfet_01v8_lvt_W3_L1p5_m29p7": "mlp8",
+    "pfet_01v8_lvt_W3_L2_m29p8": "mlp8",
+    "pfet_01v8_lvt_W3_L4_m30p1": "mlp8",
+    "pfet_01v8_lvt_W5_L0p35_m30p3": "mlp8",
+    "pfet_01v8_lvt_W5_L1_m30p5": "mlp8",
+    "pfet_01v8_lvt_W5_L1p5_m30p6": "mlp8",
+    "pfet_01v8_lvt_W5_L4_m30p8": "mlp8",
+    "pfet_01v8_lvt_W7_L0p35_m31p2": "mlp8",
+    "pfet_01v8_lvt_W7_L1p5_m31p5": "mlp8",
+    "pfet_01v8_lvt_W7_L8_m31p7": "mlp8"
+   },
+   "tudelft_4K": {
+    "t40_nmos_W0p12_L0p04": "lin",
+    "t40_nmos_W0p12_L0p05": "mlp8",
+    "t40_nmos_W0p36_L0p04": "lin",
+    "t40_nmos_W1_L0p04": "mlp8",
+    "t40_nmos_W1_L1": "lin",
+    "t40_pmos_W1_L0p04": "mlp8",
+    "t40_pmos_W1_L1": "lin"
+   },
+   "ihp_meas_300K": {
+    "hv_nmos_W0p3_L0p5": "mlp8",
+    "hv_nmos_W0p3_L10": "gam",
+    "hv_nmos_W0p6_L1p2": "gam",
+    "hv_nmos_W10_L0p5": "mlp8",
+    "hv_pmos_W0p3_L10": "mlp8",
+    "hv_pmos_W0p6_L0p5": "mlp8",
+    "hv_pmos_W10_L0p35": "gam",
+    "hv_pmos_W2_L1p2": "gam",
+    "lv_nmos_W0p15_L0p18": "mlp8",
+    "lv_nmos_W0p15_L10": "mlp8",
+    "lv_nmos_W0p3_L0p13": "mlp8",
+    "lv_nmos_W0p3_L10": "mlp8",
+    "lv_nmos_W10_L10": "mlp8",
+    "lv_pmos_W0p15_L0p18": "mlp8",
+    "lv_pmos_W0p15_L10": "mlp8",
+    "lv_pmos_W0p3_L0p13": "mlp8",
+    "lv_pmos_W0p3_L10": "mlp8",
+    "lv_pmos_W10_L10": "mlp8"
+   }
+  }
+ },
+ "primary": {
+  "vs_C0_refit": {
+   "S_loss": {
+    "ratio": 0.9728000405019414,
+    "ci_low": 0.9471560211495447,
+    "ci_high": 0.9980681799590283,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9718950267817669,
+      "ci_low": 0.9095082688984466,
+      "ci_high": 1.0330547953899167
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 24,
+      "ratio": 0.9873761587940293,
+      "ci_low": 0.9503206034618523,
+      "ci_high": 1.0251704580478962
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9699698108333658,
+      "ci_low": 0.9127530032434502,
+      "ci_high": 1.0261042406942624
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 27,
+      "ratio": 0.96213077448455,
+      "ci_low": 0.9189564770989003,
+      "ci_high": 0.999729620488568
+     }
+    }
+   },
+   "S_refit": {
+    "ratio": 0.9859055292913783,
+    "ci_low": 0.9639598146168873,
+    "ci_high": 1.0073778252031245,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9890845005098013,
+      "ci_low": 0.9286578794565445,
+      "ci_high": 1.0475662068086875
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 26,
+      "ratio": 0.9919325166040175,
+      "ci_low": 0.9623661659991049,
+      "ci_high": 1.0201068287142148
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 0.9962936715641109,
+      "ci_low": 0.9550159370471386,
+      "ci_high": 1.0475516593326262
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 23,
+      "ratio": 0.9665811336547059,
+      "ci_low": 0.923025832454899,
+      "ci_high": 0.9916292948266198
+     }
+    }
+   },
+   "S_gate": {
+    "ratio": 0.9894119563579898,
+    "ci_low": 0.9634336623493307,
+    "ci_high": 1.0107571249557088,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9792492101039543,
+      "ci_low": 0.9445963088474728,
+      "ci_high": 1.0164922016151328
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9857833151448787,
+      "ci_low": 0.9032838732225905,
+      "ci_high": 1.0532361272561284
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 15,
+      "ratio": 0.9927363486442045,
+      "ci_low": 0.9372030520771094,
+      "ci_high": 1.021627115791581
+     }
+    }
+   },
+   "S_cv": {
+    "ratio": 0.966961610110616,
+    "ci_low": 0.9428674607645624,
+    "ci_high": 0.9902403116169382,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 12,
+      "ratio": 0.9482059239534671,
+      "ci_low": 0.8919115624647612,
+      "ci_high": 1.0026598309372452
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9731682136070677,
+      "ci_low": 0.936460855895801,
+      "ci_high": 1.009442819477044
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 0.9576584929543643,
+      "ci_low": 0.8961971845323367,
+      "ci_high": 1.0216558543377703
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 26,
+      "ratio": 0.9893174854920184,
+      "ci_low": 0.9728554183093131,
+      "ci_high": 1.0051957681938593
+     }
+    }
+   }
+  },
+  "vs_mlp16": {
+   "S_loss": {
+    "ratio": 0.9872708685750405,
+    "ci_low": 0.9590626727532539,
+    "ci_high": 1.0203202534690694,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9881842125814236,
+      "ci_low": 0.9251942562871239,
+      "ci_high": 1.0742243055192235
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 12,
+      "ratio": 1.0082991628752116,
+      "ci_low": 0.9756314020603565,
+      "ci_high": 1.0390305407434388
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 0.983958437854886,
+      "ci_low": 0.9133713538087268,
+      "ci_high": 1.0559946109601908
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 25,
+      "ratio": 0.9690389143706896,
+      "ci_low": 0.9267301442620469,
+      "ci_high": 1.051757301262864
+     }
+    }
+   },
+   "S_refit": {
+    "ratio": 1.0005713072690727,
+    "ci_low": 0.9758916891897281,
+    "ci_high": 1.0290579217854228,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 1.0056617858712815,
+      "ci_low": 0.9655323013768313,
+      "ci_high": 1.053010874427739
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 18,
+      "ratio": 1.0129520722296184,
+      "ci_low": 0.9756910598819187,
+      "ci_high": 1.0530116571682078
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.0106619337716092,
+      "ci_low": 0.9405220085385941,
+      "ci_high": 1.1089451721154164
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 25,
+      "ratio": 0.9735212273089884,
+      "ci_low": 0.9452201420688249,
+      "ci_high": 0.9958856904693448
+     }
+    }
+   },
+   "S_gate": {
+    "ratio": 1.0041298939791043,
+    "ci_low": 0.9873509748459863,
+    "ci_high": 1.0218625977209046,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 1.0167602316616384,
+      "ci_low": 0.9513424623825926,
+      "ci_high": 1.0912810173846283
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 0.9998642378546537,
+      "ci_low": 0.9920434380651063,
+      "ci_high": 1.0075327011744397
+     }
+    }
+   },
+   "S_cv": {
+    "ratio": 0.9813455889661042,
+    "ci_low": 0.9449403771468616,
+    "ci_high": 1.0204935286575205,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 11,
+      "ratio": 0.9640980749018653,
+      "ci_low": 0.8717406549577625,
+      "ci_high": 1.0653083087184798
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 27,
+      "ratio": 0.9937901440877945,
+      "ci_low": 0.9373160930246939,
+      "ci_high": 1.0539844906404898
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9714695696727419,
+      "ci_low": 0.9024663479140497,
+      "ci_high": 1.0722489020864234
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 22,
+      "ratio": 0.9964208271196096,
+      "ci_low": 0.9553069351496429,
+      "ci_high": 1.0615524669598473
+     }
+    }
+   }
+  },
+  "vs_S_gate": {
+   "S_loss": {
+    "ratio": 0.9832103142181576,
+    "ci_low": 0.9557501712741349,
+    "ci_high": 1.013853896233802,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9718950267817669,
+      "ci_low": 0.9095082688984466,
+      "ci_high": 1.0330547953899167
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 12,
+      "ratio": 1.0082991628752116,
+      "ci_low": 0.9756314020603565,
+      "ci_high": 1.0390305407434388
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 0.983958437854886,
+      "ci_low": 0.9133713538087268,
+      "ci_high": 1.0559946109601908
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 27,
+      "ratio": 0.9691704910357589,
+      "ci_low": 0.9268254767925737,
+      "ci_high": 1.0526930174421305
+     }
+    }
+   },
+   "S_refit": {
+    "ratio": 0.9964560494300891,
+    "ci_low": 0.970090367152401,
+    "ci_high": 1.0271137233305834,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9890845005098013,
+      "ci_low": 0.9286578794565445,
+      "ci_high": 1.0475662068086875
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 18,
+      "ratio": 1.0129520722296184,
+      "ci_low": 0.9756910598819187,
+      "ci_high": 1.0530116571682078
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.0106619337716092,
+      "ci_low": 0.9405220085385941,
+      "ci_high": 1.1089451721154164
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 21,
+      "ratio": 0.9736534125851046,
+      "ci_low": 0.9445226627228122,
+      "ci_high": 1.0000800570097903
+     }
+    }
+   },
+   "S_cv": {
+    "ratio": 0.9773094047397474,
+    "ci_low": 0.9473548443159526,
+    "ci_high": 1.011896193357534,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 12,
+      "ratio": 0.9482059239534671,
+      "ci_low": 0.8919115624647612,
+      "ci_high": 1.0026598309372452
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 27,
+      "ratio": 0.9937901440877945,
+      "ci_low": 0.9373160930246939,
+      "ci_high": 1.0539844906404898
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9714695696727419,
+      "ci_low": 0.9024663479140497,
+      "ci_high": 1.0722489020864234
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 22,
+      "ratio": 0.9965561217166519,
+      "ci_low": 0.9539718789869552,
+      "ci_high": 1.060926215830981
+     }
+    }
+   }
+  },
+  "labels": {
+   "S_loss": {
+    "C1_not_worse_than_C0_refit_all_datasets": false,
+    "C1_failing_datasets": [
+     "ihp_meas_300K"
+    ],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "partly supported"
+   },
+   "S_refit": {
+    "C1_not_worse_than_C0_refit_all_datasets": false,
+    "C1_failing_datasets": [
+     "ihp_meas_300K",
+     "sky130_77K"
+    ],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "partly supported"
+   },
+   "S_gate": {
+    "C1_not_worse_than_C0_refit_all_datasets": false,
+    "C1_failing_datasets": [
+     "sky130_77K"
+    ],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "partly supported"
+   },
+   "S_cv": {
+    "C1_not_worse_than_C0_refit_all_datasets": true,
+    "C1_failing_datasets": [],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "supported"
+   }
+  }
+ },
+ "ci95": {
+  "vs_C0_refit": {
+   "S_loss": {
+    "ratio": 0.9728000405019414,
+    "ci_low": 0.955225078376476,
+    "ci_high": 0.9905354955530062,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9718950267817669,
+      "ci_low": 0.9288273562221384,
+      "ci_high": 1.0142689601365535
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 24,
+      "ratio": 0.9873761587940293,
+      "ci_low": 0.961798622358293,
+      "ci_high": 1.0132043081107358
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9699698108333658,
+      "ci_low": 0.9299124918976014,
+      "ci_high": 1.0099332249752808
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 27,
+      "ratio": 0.96213077448455,
+      "ci_low": 0.9329766091422478,
+      "ci_high": 0.9906767359918034
+     }
+    }
+   },
+   "S_refit": {
+    "ratio": 0.9859055292913783,
+    "ci_low": 0.9711624430870051,
+    "ci_high": 1.0005415561997306,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9890845005098013,
+      "ci_low": 0.9480780416581511,
+      "ci_high": 1.0296571587427454
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 26,
+      "ratio": 0.9919325166040175,
+      "ci_low": 0.971980694203131,
+      "ci_high": 1.0118871163679026
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 0.9962936715641109,
+      "ci_low": 0.967980459801824,
+      "ci_high": 1.0295109881289768
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 23,
+      "ratio": 0.9665811336547059,
+      "ci_low": 0.9416040188625681,
+      "ci_high": 0.9845151141251677
+     }
+    }
+   },
+   "S_gate": {
+    "ratio": 0.9894119563579898,
+    "ci_low": 0.9722271868241328,
+    "ci_high": 1.004358293100196,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9792492101039543,
+      "ci_low": 0.9548206812314236,
+      "ci_high": 1.0042193035183433
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9857833151448787,
+      "ci_low": 0.9298147182620229,
+      "ci_high": 1.0353532545014217
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 15,
+      "ratio": 0.9927363486442045,
+      "ci_low": 0.9609589311869233,
+      "ci_high": 1.0138020253471094
+     }
+    }
+   },
+   "S_cv": {
+    "ratio": 0.966961610110616,
+    "ci_low": 0.9505256044907415,
+    "ci_high": 0.9836065735441364,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 12,
+      "ratio": 0.9482059239534671,
+      "ci_low": 0.9092207832259523,
+      "ci_high": 0.9864215522507873
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9731682136070677,
+      "ci_low": 0.9485457290999318,
+      "ci_high": 0.9980282882308068
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 0.9576584929543643,
+      "ci_low": 0.9134853496157016,
+      "ci_high": 1.0022081719045597
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 26,
+      "ratio": 0.9893174854920184,
+      "ci_low": 0.9776740662222283,
+      "ci_high": 1.0008750352727809
+     }
+    }
+   }
+  },
+  "vs_mlp16": {
+   "S_loss": {
+    "ratio": 0.9872708685750405,
+    "ci_low": 0.9673045882990852,
+    "ci_high": 1.0094175423327085,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9881842125814236,
+      "ci_low": 0.9422381817998527,
+      "ci_high": 1.044553954279896
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 12,
+      "ratio": 1.0082991628752116,
+      "ci_low": 0.9859351689715201,
+      "ci_high": 1.029448370222309
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 0.983958437854886,
+      "ci_low": 0.9334550391584103,
+      "ci_high": 1.0345726122040537
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 25,
+      "ratio": 0.9690389143706896,
+      "ci_low": 0.9392395945428833,
+      "ci_high": 1.017892679434382
+     }
+    }
+   },
+   "S_refit": {
+    "ratio": 1.0005713072690727,
+    "ci_low": 0.9833432954039455,
+    "ci_high": 1.0194096511436166,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 1.0056617858712815,
+      "ci_low": 0.9766055298812997,
+      "ci_high": 1.0373386307281112
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 18,
+      "ratio": 1.0129520722296184,
+      "ci_low": 0.9876104492558971,
+      "ci_high": 1.0398887448258687
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.0106619337716092,
+      "ci_low": 0.957868032559496,
+      "ci_high": 1.0744212843478398
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 25,
+      "ratio": 0.9735212273089884,
+      "ci_low": 0.9537042092319166,
+      "ci_high": 0.9904540250881673
+     }
+    }
+   },
+   "S_gate": {
+    "ratio": 1.0041298939791043,
+    "ci_low": 0.9925968732781683,
+    "ci_high": 1.0162840084254543,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 1.0167602316616384,
+      "ci_low": 0.9709538783430515,
+      "ci_high": 1.0664904292747643
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 0.9998642378546537,
+      "ci_low": 0.994582625870725,
+      "ci_high": 1.0050783700660864
+     }
+    }
+   },
+   "S_cv": {
+    "ratio": 0.9813455889661042,
+    "ci_low": 0.9568942050637697,
+    "ci_high": 1.008097148112249,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 11,
+      "ratio": 0.9640980749018653,
+      "ci_low": 0.8992180510639716,
+      "ci_high": 1.0321282172433206
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 27,
+      "ratio": 0.9937901440877945,
+      "ci_low": 0.9546479380160464,
+      "ci_high": 1.0351934760287285
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9714695696727419,
+      "ci_low": 0.9191104736150255,
+      "ci_high": 1.0360195136636603
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 22,
+      "ratio": 0.9964208271196096,
+      "ci_low": 0.9666925103508026,
+      "ci_high": 1.0338617327423596
+     }
+    }
+   }
+  },
+  "vs_S_gate": {
+   "S_loss": {
+    "ratio": 0.9832103142181576,
+    "ci_low": 0.9639313942491975,
+    "ci_high": 1.0040122213379867,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9718950267817669,
+      "ci_low": 0.9288273562221384,
+      "ci_high": 1.0142689601365535
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 12,
+      "ratio": 1.0082991628752116,
+      "ci_low": 0.9859351689715201,
+      "ci_high": 1.029448370222309
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 0.983958437854886,
+      "ci_low": 0.9334550391584103,
+      "ci_high": 1.0345726122040537
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 27,
+      "ratio": 0.9691704910357589,
+      "ci_low": 0.938803892096787,
+      "ci_high": 1.0178685630777744
+     }
+    }
+   },
+   "S_refit": {
+    "ratio": 0.9964560494300891,
+    "ci_low": 0.9776241930385818,
+    "ci_high": 1.0165171031944034,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9890845005098013,
+      "ci_low": 0.9480780416581511,
+      "ci_high": 1.0296571587427454
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 18,
+      "ratio": 1.0129520722296184,
+      "ci_low": 0.9876104492558971,
+      "ci_high": 1.0398887448258687
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.0106619337716092,
+      "ci_low": 0.957868032559496,
+      "ci_high": 1.0744212843478398
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 21,
+      "ratio": 0.9736534125851046,
+      "ci_low": 0.9527079257462484,
+      "ci_high": 0.994020375584226
+     }
+    }
+   },
+   "S_cv": {
+    "ratio": 0.9773094047397474,
+    "ci_low": 0.9566671148666053,
+    "ci_high": 1.0003926708159077,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 12,
+      "ratio": 0.9482059239534671,
+      "ci_low": 0.9092207832259523,
+      "ci_high": 0.9864215522507873
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 27,
+      "ratio": 0.9937901440877945,
+      "ci_low": 0.9546479380160464,
+      "ci_high": 1.0351934760287285
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9714695696727419,
+      "ci_low": 0.9191104736150255,
+      "ci_high": 1.0360195136636603
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 22,
+      "ratio": 0.9965561217166519,
+      "ci_low": 0.9665907899030849,
+      "ci_high": 1.033401548372769
+     }
+    }
+   }
+  },
+  "labels": {
+   "S_loss": {
+    "C1_not_worse_than_C0_refit_all_datasets": true,
+    "C1_failing_datasets": [],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "supported"
+   },
+   "S_refit": {
+    "C1_not_worse_than_C0_refit_all_datasets": true,
+    "C1_failing_datasets": [],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "supported"
+   },
+   "S_gate": {
+    "C1_not_worse_than_C0_refit_all_datasets": false,
+    "C1_failing_datasets": [
+     "sky130_77K"
+    ],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "partly supported"
+   },
+   "S_cv": {
+    "C1_not_worse_than_C0_refit_all_datasets": true,
+    "C1_failing_datasets": [],
+    "C2_noninferior_to_mlp16_pooled": true,
+    "beats_mlp16_pooled": false,
+    "label": "supported"
+   }
+  }
+ },
+ "post_hoc_references": {
+  "S_loss": {
+   "vs_oracle_pooled_class": {
+    "ratio": 1.0261843653171359,
+    "ci_low": 1.0031302629691716,
+    "ci_high": 1.0507938546307265,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 3,
+      "ratio": 1.0470660991734966,
+      "ci_low": 0.9876751416770754,
+      "ci_high": 1.110534284617887
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 16,
+      "ratio": 1.0308174117598712,
+      "ci_low": 0.9931813960301789,
+      "ci_high": 1.071845077870714
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 1.028344995011813,
+      "ci_low": 0.9717009005671473,
+      "ci_high": 1.094140086567499
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 19,
+      "ratio": 0.9990952431139102,
+      "ci_low": 0.9824349306121126,
+      "ci_high": 1.0173638850214515
+     }
+    }
+   },
+   "vs_oracle_per_dataset_class": {
+    "ratio": 1.0261843653171359,
+    "ci_low": 1.0031302629691716,
+    "ci_high": 1.0507938546307265,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 3,
+      "ratio": 1.0470660991734966,
+      "ci_low": 0.9876751416770754,
+      "ci_high": 1.110534284617887
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 16,
+      "ratio": 1.0308174117598712,
+      "ci_low": 0.9931813960301789,
+      "ci_high": 1.071845077870714
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 1.028344995011813,
+      "ci_low": 0.9717009005671473,
+      "ci_high": 1.094140086567499
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 19,
+      "ratio": 0.9990952431139102,
+      "ci_low": 0.9824349306121126,
+      "ci_high": 1.0173638850214515
+     }
+    }
+   }
+  },
+  "S_refit": {
+   "vs_oracle_pooled_class": {
+    "ratio": 1.0400090437049165,
+    "ci_low": 1.0156670710143445,
+    "ci_high": 1.0643682462069086,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 1.065585090121374,
+      "ci_low": 1.000030219618379,
+      "ci_high": 1.136487637616964
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 16,
+      "ratio": 1.0355742340944114,
+      "ci_low": 1.0041721895622424,
+      "ci_high": 1.0692005394499497
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 3,
+      "ratio": 1.0562530908406844,
+      "ci_low": 1.000763144168751,
+      "ci_high": 1.1121198835710628
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 14,
+      "ratio": 1.003716582327837,
+      "ci_low": 0.9695166482176386,
+      "ci_high": 1.0349544186311572
+     }
+    }
+   },
+   "vs_oracle_per_dataset_class": {
+    "ratio": 1.0400090437049165,
+    "ci_low": 1.0156670710143445,
+    "ci_high": 1.0643682462069086,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 1.065585090121374,
+      "ci_low": 1.000030219618379,
+      "ci_high": 1.136487637616964
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 16,
+      "ratio": 1.0355742340944114,
+      "ci_low": 1.0041721895622424,
+      "ci_high": 1.0692005394499497
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 3,
+      "ratio": 1.0562530908406844,
+      "ci_low": 1.000763144168751,
+      "ci_high": 1.1121198835710628
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 14,
+      "ratio": 1.003716582327837,
+      "ci_low": 0.9695166482176386,
+      "ci_high": 1.0349544186311572
+     }
+    }
+   }
+  },
+  "S_gate": {
+   "vs_oracle_pooled_class": {
+    "ratio": 1.043707892886733,
+    "ci_low": 1.0180592020243342,
+    "ci_high": 1.0679916214016063,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 4,
+      "ratio": 1.0773448472523248,
+      "ci_low": 1.0373786978783914,
+      "ci_high": 1.1221382262992428
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 24,
+      "ratio": 1.0223329044729619,
+      "ci_low": 0.9809631891753622,
+      "ci_high": 1.0650595637762574
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 3,
+      "ratio": 1.0451101951558988,
+      "ci_low": 0.9742717644896103,
+      "ci_high": 1.1105264224069404
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 17,
+      "ratio": 1.0308766644826035,
+      "ci_low": 0.9859466095874506,
+      "ci_high": 1.0669809375700576
+     }
+    }
+   },
+   "vs_oracle_per_dataset_class": {
+    "ratio": 1.043707892886733,
+    "ci_low": 1.0180592020243342,
+    "ci_high": 1.0679916214016063,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 4,
+      "ratio": 1.0773448472523248,
+      "ci_low": 1.0373786978783914,
+      "ci_high": 1.1221382262992428
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 24,
+      "ratio": 1.0223329044729619,
+      "ci_low": 0.9809631891753622,
+      "ci_high": 1.0650595637762574
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 3,
+      "ratio": 1.0451101951558988,
+      "ci_low": 0.9742717644896103,
+      "ci_high": 1.1105264224069404
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 17,
+      "ratio": 1.0308766644826035,
+      "ci_low": 0.9859466095874506,
+      "ci_high": 1.0669809375700576
+     }
+    }
+   }
+  },
+  "S_cv": {
+   "vs_oracle_pooled_class": {
+    "ratio": 1.020025539519309,
+    "ci_low": 1.007746163924676,
+    "ci_high": 1.0350220330411464,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0215447663053976,
+      "ci_low": 1.003603356843227,
+      "ci_high": 1.0439496468424316
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 0,
+      "ratio": 1.0159843644418785,
+      "ci_low": 1.0,
+      "ci_high": 1.0426015725014373
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0152927515486962,
+      "ci_low": 1.0,
+      "ci_high": 1.0465834358849204
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 10,
+      "ratio": 1.0273264507249815,
+      "ci_low": 1.0017039389562528,
+      "ci_high": 1.0682719704265913
+     }
+    }
+   },
+   "vs_oracle_per_dataset_class": {
+    "ratio": 1.020025539519309,
+    "ci_low": 1.007746163924676,
+    "ci_high": 1.0350220330411464,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0215447663053976,
+      "ci_low": 1.003603356843227,
+      "ci_high": 1.0439496468424316
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 0,
+      "ratio": 1.0159843644418785,
+      "ci_low": 1.0,
+      "ci_high": 1.0426015725014373
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0152927515486962,
+      "ci_low": 1.0,
+      "ci_high": 1.0465834358849204
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 10,
+      "ratio": 1.0273264507249815,
+      "ci_low": 1.0017039389562528,
+      "ci_high": 1.0682719704265913
+     }
+    }
+   }
+  }
+ },
+ "secondary": {
+  "selection_counts": {
+   "S_loss": {
+    "sky130_77K": {
+     "none": 3,
+     "lin": 1,
+     "gam": 5,
+     "mlp8": 2,
+     "mlp16": 1
+    },
+    "nist_4K": {
+     "none": 7,
+     "lin": 10,
+     "gam": 7,
+     "mlp8": 9,
+     "mlp16": 20
+    },
+    "tudelft_4K": {
+     "none": 1,
+     "lin": 0,
+     "gam": 4,
+     "mlp8": 1,
+     "mlp16": 1
+    },
+    "ihp_meas_300K": {
+     "none": 2,
+     "lin": 6,
+     "gam": 4,
+     "mlp8": 2,
+     "mlp16": 4
+    }
+   },
+   "S_refit": {
+    "sky130_77K": {
+     "none": 3,
+     "lin": 3,
+     "gam": 3,
+     "mlp8": 2,
+     "mlp16": 1
+    },
+    "nist_4K": {
+     "none": 10,
+     "lin": 8,
+     "gam": 9,
+     "mlp8": 15,
+     "mlp16": 11
+    },
+    "tudelft_4K": {
+     "none": 2,
+     "lin": 0,
+     "gam": 2,
+     "mlp8": 2,
+     "mlp16": 1
+    },
+    "ihp_meas_300K": {
+     "none": 4,
+     "lin": 5,
+     "gam": 3,
+     "mlp8": 2,
+     "mlp16": 4
+    }
+   },
+   "S_gate": {
+    "sky130_77K": {
+     "none": 0,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 12
+    },
+    "nist_4K": {
+     "none": 0,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 53
+    },
+    "tudelft_4K": {
+     "none": 2,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 5
+    },
+    "ihp_meas_300K": {
+     "none": 18,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 0
+    }
+   },
+   "S_cv": {
+    "sky130_77K": {
+     "none": 0,
+     "lin": 1,
+     "gam": 0,
+     "mlp8": 11,
+     "mlp16": 0
+    },
+    "nist_4K": {
+     "none": 0,
+     "lin": 2,
+     "gam": 0,
+     "mlp8": 51,
+     "mlp16": 0
+    },
+    "tudelft_4K": {
+     "none": 0,
+     "lin": 4,
+     "gam": 0,
+     "mlp8": 3,
+     "mlp16": 0
+    },
+    "ihp_meas_300K": {
+     "none": 0,
+     "lin": 0,
+     "gam": 4,
+     "mlp8": 14,
+     "mlp16": 0
+    }
+   }
+  },
+  "selection_device_counts": {
+   "S_loss": {
+    "sky130_77K": {
+     "none": 3,
+     "lin": 1,
+     "gam": 5,
+     "mlp8": 2,
+     "mlp16": 1
+    },
+    "nist_4K": {
+     "none": 7,
+     "lin": 10,
+     "gam": 7,
+     "mlp8": 9,
+     "mlp16": 20
+    },
+    "tudelft_4K": {
+     "none": 8,
+     "lin": 0,
+     "gam": 27,
+     "mlp8": 8,
+     "mlp16": 2
+    },
+    "ihp_meas_300K": {
+     "none": 2,
+     "lin": 6,
+     "gam": 4,
+     "mlp8": 2,
+     "mlp16": 4
+    }
+   },
+   "S_refit": {
+    "sky130_77K": {
+     "none": 3,
+     "lin": 3,
+     "gam": 3,
+     "mlp8": 2,
+     "mlp16": 1
+    },
+    "nist_4K": {
+     "none": 10,
+     "lin": 8,
+     "gam": 9,
+     "mlp8": 15,
+     "mlp16": 11
+    },
+    "tudelft_4K": {
+     "none": 10,
+     "lin": 0,
+     "gam": 16,
+     "mlp8": 16,
+     "mlp16": 3
+    },
+    "ihp_meas_300K": {
+     "none": 4,
+     "lin": 5,
+     "gam": 3,
+     "mlp8": 2,
+     "mlp16": 4
+    }
+   },
+   "S_gate": {
+    "sky130_77K": {
+     "none": 0,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 12
+    },
+    "nist_4K": {
+     "none": 0,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 53
+    },
+    "tudelft_4K": {
+     "none": 16,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 29
+    },
+    "ihp_meas_300K": {
+     "none": 18,
+     "lin": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 0
+    }
+   },
+   "S_cv": {
+    "sky130_77K": {
+     "none": 0,
+     "lin": 1,
+     "gam": 0,
+     "mlp8": 11,
+     "mlp16": 0
+    },
+    "nist_4K": {
+     "none": 0,
+     "lin": 2,
+     "gam": 0,
+     "mlp8": 51,
+     "mlp16": 0
+    },
+    "tudelft_4K": {
+     "none": 0,
+     "lin": 26,
+     "gam": 0,
+     "mlp8": 19,
+     "mlp16": 0
+    },
+    "ihp_meas_300K": {
+     "none": 0,
+     "lin": 0,
+     "gam": 4,
+     "mlp8": 14,
+     "mlp16": 0
+    }
+   }
+  },
+  "agreement": {
+   "S_loss|S_refit": {
+    "sky130_77K": {
+     "n": 12,
+     "same": 3,
+     "fraction": 0.25
+    },
+    "nist_4K": {
+     "n": 53,
+     "same": 12,
+     "fraction": 0.22641509433962265
+    },
+    "tudelft_4K": {
+     "n": 7,
+     "same": 0,
+     "fraction": 0.0
+    },
+    "ihp_meas_300K": {
+     "n": 18,
+     "same": 2,
+     "fraction": 0.1111111111111111
+    }
+   },
+   "S_loss|S_gate": {
+    "sky130_77K": {
+     "n": 12,
+     "same": 1,
+     "fraction": 0.08333333333333333
+    },
+    "nist_4K": {
+     "n": 53,
+     "same": 20,
+     "fraction": 0.37735849056603776
+    },
+    "tudelft_4K": {
+     "n": 7,
+     "same": 1,
+     "fraction": 0.14285714285714285
+    },
+    "ihp_meas_300K": {
+     "n": 18,
+     "same": 2,
+     "fraction": 0.1111111111111111
+    }
+   },
+   "S_loss|S_cv": {
+    "sky130_77K": {
+     "n": 12,
+     "same": 1,
+     "fraction": 0.08333333333333333
+    },
+    "nist_4K": {
+     "n": 53,
+     "same": 9,
+     "fraction": 0.16981132075471697
+    },
+    "tudelft_4K": {
+     "n": 7,
+     "same": 0,
+     "fraction": 0.0
+    },
+    "ihp_meas_300K": {
+     "n": 18,
+     "same": 3,
+     "fraction": 0.16666666666666666
+    }
+   },
+   "S_refit|S_gate": {
+    "sky130_77K": {
+     "n": 12,
+     "same": 1,
+     "fraction": 0.08333333333333333
+    },
+    "nist_4K": {
+     "n": 53,
+     "same": 11,
+     "fraction": 0.20754716981132076
+    },
+    "tudelft_4K": {
+     "n": 7,
+     "same": 2,
+     "fraction": 0.2857142857142857
+    },
+    "ihp_meas_300K": {
+     "n": 18,
+     "same": 4,
+     "fraction": 0.2222222222222222
+    }
+   },
+   "S_refit|S_cv": {
+    "sky130_77K": {
+     "n": 12,
+     "same": 3,
+     "fraction": 0.25
+    },
+    "nist_4K": {
+     "n": 53,
+     "same": 14,
+     "fraction": 0.2641509433962264
+    },
+    "tudelft_4K": {
+     "n": 7,
+     "same": 0,
+     "fraction": 0.0
+    },
+    "ihp_meas_300K": {
+     "n": 18,
+     "same": 3,
+     "fraction": 0.16666666666666666
+    }
+   },
+   "S_gate|S_cv": {
+    "sky130_77K": {
+     "n": 12,
+     "same": 0,
+     "fraction": 0.0
+    },
+    "nist_4K": {
+     "n": 53,
+     "same": 0,
+     "fraction": 0.0
+    },
+    "tudelft_4K": {
+     "n": 7,
+     "same": 0,
+     "fraction": 0.0
+    },
+    "ihp_meas_300K": {
+     "n": 18,
+     "same": 0,
+     "fraction": 0.0
+    }
+   }
+  },
+  "device_bootstrap_tudelft": {
+   "S_loss": {
+    "ratio": 0.9728000405019414,
+    "ci_low": 0.9486426327607099,
+    "ci_high": 0.9970466616206334,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9718950267817669,
+      "ci_low": 0.9095082688984466,
+      "ci_high": 1.0330547953899167
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 24,
+      "ratio": 0.9873761587940293,
+      "ci_low": 0.9503206034618523,
+      "ci_high": 1.0251704580478962
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9699698108333658,
+      "ci_low": 0.9127530032434502,
+      "ci_high": 1.0261042406942624
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 27,
+      "ratio": 0.96213077448455,
+      "ci_low": 0.9349775767374577,
+      "ci_high": 0.9897485772178451
+     }
+    }
+   },
+   "S_refit": {
+    "ratio": 0.9859055292913783,
+    "ci_low": 0.9634163319683389,
+    "ci_high": 1.0089282532085793,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9890845005098013,
+      "ci_low": 0.9286578794565445,
+      "ci_high": 1.0475662068086875
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 26,
+      "ratio": 0.9919325166040175,
+      "ci_low": 0.9623661659991049,
+      "ci_high": 1.0201068287142148
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 0.9962936715641109,
+      "ci_low": 0.9550159370471386,
+      "ci_high": 1.0475516593326262
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 23,
+      "ratio": 0.9665811336547059,
+      "ci_low": 0.9239839819494837,
+      "ci_high": 1.009777162524663
+     }
+    }
+   },
+   "S_gate": {
+    "ratio": 0.9894119563579898,
+    "ci_low": 0.9650095846056032,
+    "ci_high": 1.0108088659318961,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9792492101039543,
+      "ci_low": 0.9445963088474728,
+      "ci_high": 1.0164922016151328
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9857833151448787,
+      "ci_low": 0.9032838732225905,
+      "ci_high": 1.0532361272561284
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 15,
+      "ratio": 0.9927363486442045,
+      "ci_low": 0.9544179556102739,
+      "ci_high": 1.027945516612072
+     }
+    }
+   },
+   "S_cv": {
+    "ratio": 0.966961610110616,
+    "ci_low": 0.941890768332376,
+    "ci_high": 0.9909015926008409,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 12,
+      "ratio": 0.9482059239534671,
+      "ci_low": 0.8919115624647612,
+      "ci_high": 1.0026598309372452
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9731682136070677,
+      "ci_low": 0.936460855895801,
+      "ci_high": 1.009442819477044
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 0.9576584929543643,
+      "ci_low": 0.8961971845323367,
+      "ci_high": 1.0216558543377703
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 26,
+      "ratio": 0.9893174854920184,
+      "ci_low": 0.9592052344817444,
+      "ci_high": 1.0216811943312498
+     }
+    }
+   }
+  },
+  "fixed_classes_vs_C0_refit_95": {
+   "lin": {
+    "ratio": 0.9797839446167854,
+    "ci_low": 0.96364128005438,
+    "ci_high": 0.9958094293382218,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 1.026812275281006,
+      "ci_low": 0.9810752574231446,
+      "ci_high": 1.072471147885325
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 31,
+      "ratio": 0.9679761128453745,
+      "ci_low": 0.9434174452842995,
+      "ci_high": 0.9928808119580308
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9610103324146729,
+      "ci_low": 0.9300522665048725,
+      "ci_high": 0.992777653805481
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 29,
+      "ratio": 0.9648005114746147,
+      "ci_low": 0.9393607494302407,
+      "ci_high": 0.9884656466849112
+     }
+    }
+   },
+   "gam": {
+    "ratio": 0.9857246339539885,
+    "ci_low": 0.9667617051641643,
+    "ci_high": 1.0047544236661998,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9818610490161573,
+      "ci_low": 0.9351627404981623,
+      "ci_high": 1.0269128970185344
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 27,
+      "ratio": 0.9908227222373175,
+      "ci_low": 0.9632835568218331,
+      "ci_high": 1.0185939110938986
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9996912768761147,
+      "ci_low": 0.9471663942496494,
+      "ci_high": 1.054316709884603
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 29,
+      "ratio": 0.9707570389145928,
+      "ci_low": 0.9560627986128328,
+      "ci_high": 0.9866161195535026
+     }
+    }
+   },
+   "mlp8": {
+    "ratio": 0.9479778423649082,
+    "ci_low": 0.9302020409720908,
+    "ci_high": 0.9655188975793885,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 14,
+      "ratio": 0.9282079016300249,
+      "ci_low": 0.8911558100092102,
+      "ci_high": 0.9639681266302874
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 34,
+      "ratio": 0.9578574707118339,
+      "ci_low": 0.9289028161254479,
+      "ci_high": 0.9859757884098874
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9432338520033573,
+      "ci_low": 0.8987818304340721,
+      "ci_high": 0.9901583619409965
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 28,
+      "ratio": 0.9630020572271448,
+      "ci_low": 0.9343465274969212,
+      "ci_high": 0.9876913663878577
+     }
+    }
+   },
+   "mlp16": {
+    "ratio": 0.9853425959038116,
+    "ci_low": 0.964885680016841,
+    "ci_high": 1.0042485676465327,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 10,
+      "ratio": 0.9835160432718262,
+      "ci_low": 0.9376549217417925,
+      "ci_high": 1.029915037474814
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9792492101039543,
+      "ci_low": 0.9548206812314236,
+      "ci_high": 1.0042193035183433
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9857833151448787,
+      "ci_low": 0.9298147182620229,
+      "ci_high": 1.0353532545014217
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 24,
+      "ratio": 0.9928711429606253,
+      "ci_low": 0.9604937966656327,
+      "ci_high": 1.0141537433807541
+     }
+    }
+   }
+  },
+  "oracle": {
+   "pooled": "mlp8",
+   "per_dataset": {
+    "sky130_77K": "mlp8",
+    "nist_4K": "mlp8",
+    "tudelft_4K": "mlp8",
+    "ihp_meas_300K": "mlp8"
+   }
+  },
+  "S_cv_full_menu": {
+   "selection_counts": {
+    "sky130_77K": {
+     "none": 0,
+     "const": 1,
+     "lin": 0,
+     "poly2": 0,
+     "poly3": 0,
+     "poly4": 0,
+     "poly5": 0,
+     "gam": 0,
+     "mlp8": 1,
+     "mlp16": 0,
+     "mlp16_s1": 6,
+     "mlp32": 0,
+     "gp": 4
+    },
+    "nist_4K": {
+     "none": 0,
+     "const": 0,
+     "lin": 0,
+     "poly2": 0,
+     "poly3": 46,
+     "poly4": 4,
+     "poly5": 0,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 0,
+     "mlp16_s1": 3,
+     "mlp32": 0,
+     "gp": 0
+    },
+    "tudelft_4K": {
+     "none": 0,
+     "const": 0,
+     "lin": 1,
+     "poly2": 0,
+     "poly3": 1,
+     "poly4": 1,
+     "poly5": 4,
+     "gam": 0,
+     "mlp8": 0,
+     "mlp16": 0,
+     "mlp16_s1": 0,
+     "mlp32": 0,
+     "gp": 0
+    },
+    "ihp_meas_300K": {
+     "none": 0,
+     "const": 0,
+     "lin": 0,
+     "poly2": 5,
+     "poly3": 0,
+     "poly4": 0,
+     "poly5": 0,
+     "gam": 1,
+     "mlp8": 11,
+     "mlp16": 0,
+     "mlp16_s1": 1,
+     "mlp32": 0,
+     "gp": 0
+    }
+   },
+   "vs_C0_refit": {
+    "ratio": 0.9889495286111293,
+    "ci_low": 0.973889862070503,
+    "ci_high": 1.0040298489595088,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9738642015325321,
+      "ci_low": 0.9363771527836952,
+      "ci_high": 1.0127228840722997
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9861668073364338,
+      "ci_low": 0.9578525180515496,
+      "ci_high": 1.0156752760968089
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 1.011815423985364,
+      "ci_low": 0.9827713077949489,
+      "ci_high": 1.042881539154391
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 27,
+      "ratio": 0.9843429452252196,
+      "ci_low": 0.9654257450393312,
+      "ci_high": 1.0034873979259342
+     }
+    }
+   },
+   "vs_mlp16": {
+    "ratio": 1.0036605874163078,
+    "ci_low": 0.9794621957561912,
+    "ci_high": 1.0299443795147836,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9901863911571939,
+      "ci_low": 0.9337303764210524,
+      "ci_high": 1.052531934298264
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 27,
+      "ratio": 1.00706418464381,
+      "ci_low": 0.9679483630702049,
+      "ci_high": 1.0474919686131603
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.026407536464197,
+      "ci_low": 0.9698021063724227,
+      "ci_high": 1.0973197323901644
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 25,
+      "ratio": 0.9914105694420974,
+      "ci_low": 0.9587094991146696,
+      "ci_high": 1.0315783659234132
+     }
+    }
+   }
+  },
+  "dataset_level_gate_I8_2": {
+   "class": {
+    "sky130_77K": "mlp16",
+    "nist_4K": "mlp16",
+    "tudelft_4K": "mlp16",
+    "ihp_meas_300K": "none"
+   },
+   "vs_C0_refit": {
+    "ratio": 0.9894455403801441,
+    "ci_low": 0.9721497519212526,
+    "ci_high": 1.0044334082565731,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 32,
+      "ratio": 0.9792492101039543,
+      "ci_low": 0.9548206812314236,
+      "ci_high": 1.0042193035183433
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9857833151448787,
+      "ci_low": 0.9298147182620229,
+      "ci_high": 1.0353532545014217
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 24,
+      "ratio": 0.9928711429606253,
+      "ci_low": 0.9604937966656327,
+      "ci_high": 1.0141537433807541
+     }
+    }
+   },
+   "vs_mlp16": {
+    "ratio": 1.0041639775783457,
+    "ci_low": 0.9926580073441497,
+    "ci_high": 1.0162235162126765,
+    "alpha": 0.05,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 1.0167602316616384,
+      "ci_low": 0.9709538783430515,
+      "ci_high": 1.0664904292747643
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0
+     }
+    }
+   }
+  },
+  "tie_sensitivity": {
+   "S_loss": {
+    "0.0": {
+     "vs_C0_refit": {
+      "ratio": 0.9728000405019414,
+      "ci_low": 0.9471560211495447,
+      "ci_high": 0.9980681799590283,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9718950267817669,
+        "ci_low": 0.9095082688984466,
+        "ci_high": 1.0330547953899167
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 24,
+        "ratio": 0.9873761587940293,
+        "ci_low": 0.9503206034618523,
+        "ci_high": 1.0251704580478962
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 6,
+        "ratio": 0.9699698108333658,
+        "ci_low": 0.9127530032434502,
+        "ci_high": 1.0261042406942624
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 27,
+        "ratio": 0.96213077448455,
+        "ci_low": 0.9189564770989003,
+        "ci_high": 0.999729620488568
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 0.9872708685750405,
+      "ci_low": 0.9590626727532539,
+      "ci_high": 1.0203202534690694,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9881842125814236,
+        "ci_low": 0.9251942562871239,
+        "ci_high": 1.0742243055192235
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 12,
+        "ratio": 1.0082991628752116,
+        "ci_low": 0.9756314020603565,
+        "ci_high": 1.0390305407434388
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 5,
+        "ratio": 0.983958437854886,
+        "ci_low": 0.9133713538087268,
+        "ci_high": 1.0559946109601908
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 25,
+        "ratio": 0.9690389143706896,
+        "ci_low": 0.9267301442620469,
+        "ci_high": 1.051757301262864
+       }
+      }
+     }
+    },
+    "0.01": {
+     "vs_C0_refit": {
+      "ratio": 0.9728000405019414,
+      "ci_low": 0.9471560211495447,
+      "ci_high": 0.9980681799590283,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9718950267817669,
+        "ci_low": 0.9095082688984466,
+        "ci_high": 1.0330547953899167
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 24,
+        "ratio": 0.9873761587940293,
+        "ci_low": 0.9503206034618523,
+        "ci_high": 1.0251704580478962
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 6,
+        "ratio": 0.9699698108333658,
+        "ci_low": 0.9127530032434502,
+        "ci_high": 1.0261042406942624
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 27,
+        "ratio": 0.96213077448455,
+        "ci_low": 0.9189564770989003,
+        "ci_high": 0.999729620488568
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 0.9872708685750405,
+      "ci_low": 0.9590626727532539,
+      "ci_high": 1.0203202534690694,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9881842125814236,
+        "ci_low": 0.9251942562871239,
+        "ci_high": 1.0742243055192235
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 12,
+        "ratio": 1.0082991628752116,
+        "ci_low": 0.9756314020603565,
+        "ci_high": 1.0390305407434388
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 5,
+        "ratio": 0.983958437854886,
+        "ci_low": 0.9133713538087268,
+        "ci_high": 1.0559946109601908
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 25,
+        "ratio": 0.9690389143706896,
+        "ci_low": 0.9267301442620469,
+        "ci_high": 1.051757301262864
+       }
+      }
+     }
+    },
+    "0.02": {
+     "vs_C0_refit": {
+      "ratio": 0.9728000405019414,
+      "ci_low": 0.9471560211495447,
+      "ci_high": 0.9980681799590283,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9718950267817669,
+        "ci_low": 0.9095082688984466,
+        "ci_high": 1.0330547953899167
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 24,
+        "ratio": 0.9873761587940293,
+        "ci_low": 0.9503206034618523,
+        "ci_high": 1.0251704580478962
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 6,
+        "ratio": 0.9699698108333658,
+        "ci_low": 0.9127530032434502,
+        "ci_high": 1.0261042406942624
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 27,
+        "ratio": 0.96213077448455,
+        "ci_low": 0.9189564770989003,
+        "ci_high": 0.999729620488568
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 0.9872708685750405,
+      "ci_low": 0.9590626727532539,
+      "ci_high": 1.0203202534690694,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9881842125814236,
+        "ci_low": 0.9251942562871239,
+        "ci_high": 1.0742243055192235
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 12,
+        "ratio": 1.0082991628752116,
+        "ci_low": 0.9756314020603565,
+        "ci_high": 1.0390305407434388
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 5,
+        "ratio": 0.983958437854886,
+        "ci_low": 0.9133713538087268,
+        "ci_high": 1.0559946109601908
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 25,
+        "ratio": 0.9690389143706896,
+        "ci_low": 0.9267301442620469,
+        "ci_high": 1.051757301262864
+       }
+      }
+     }
+    }
+   },
+   "S_refit": {
+    "0.0": {
+     "vs_C0_refit": {
+      "ratio": 0.9859055292913783,
+      "ci_low": 0.9639598146168873,
+      "ci_high": 1.0073778252031245,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 8,
+        "ratio": 0.9890845005098013,
+        "ci_low": 0.9286578794565445,
+        "ci_high": 1.0475662068086875
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 26,
+        "ratio": 0.9919325166040175,
+        "ci_low": 0.9623661659991049,
+        "ci_high": 1.0201068287142148
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 5,
+        "ratio": 0.9962936715641109,
+        "ci_low": 0.9550159370471386,
+        "ci_high": 1.0475516593326262
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 23,
+        "ratio": 0.9665811336547059,
+        "ci_low": 0.923025832454899,
+        "ci_high": 0.9916292948266198
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 1.0005713072690727,
+      "ci_low": 0.9758916891897281,
+      "ci_high": 1.0290579217854228,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 7,
+        "ratio": 1.0056617858712815,
+        "ci_low": 0.9655323013768313,
+        "ci_high": 1.053010874427739
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 18,
+        "ratio": 1.0129520722296184,
+        "ci_low": 0.9756910598819187,
+        "ci_high": 1.0530116571682078
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 6,
+        "ratio": 1.0106619337716092,
+        "ci_low": 0.9405220085385941,
+        "ci_high": 1.1089451721154164
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 25,
+        "ratio": 0.9735212273089884,
+        "ci_low": 0.9452201420688249,
+        "ci_high": 0.9958856904693448
+       }
+      }
+     }
+    },
+    "0.01": {
+     "vs_C0_refit": {
+      "ratio": 0.9859055292913783,
+      "ci_low": 0.9639598146168873,
+      "ci_high": 1.0073778252031245,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 8,
+        "ratio": 0.9890845005098013,
+        "ci_low": 0.9286578794565445,
+        "ci_high": 1.0475662068086875
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 26,
+        "ratio": 0.9919325166040175,
+        "ci_low": 0.9623661659991049,
+        "ci_high": 1.0201068287142148
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 5,
+        "ratio": 0.9962936715641109,
+        "ci_low": 0.9550159370471386,
+        "ci_high": 1.0475516593326262
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 23,
+        "ratio": 0.9665811336547059,
+        "ci_low": 0.923025832454899,
+        "ci_high": 0.9916292948266198
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 1.0005713072690727,
+      "ci_low": 0.9758916891897281,
+      "ci_high": 1.0290579217854228,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 7,
+        "ratio": 1.0056617858712815,
+        "ci_low": 0.9655323013768313,
+        "ci_high": 1.053010874427739
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 18,
+        "ratio": 1.0129520722296184,
+        "ci_low": 0.9756910598819187,
+        "ci_high": 1.0530116571682078
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 6,
+        "ratio": 1.0106619337716092,
+        "ci_low": 0.9405220085385941,
+        "ci_high": 1.1089451721154164
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 25,
+        "ratio": 0.9735212273089884,
+        "ci_low": 0.9452201420688249,
+        "ci_high": 0.9958856904693448
+       }
+      }
+     }
+    },
+    "0.02": {
+     "vs_C0_refit": {
+      "ratio": 0.9859055292913783,
+      "ci_low": 0.9639598146168873,
+      "ci_high": 1.0073778252031245,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 8,
+        "ratio": 0.9890845005098013,
+        "ci_low": 0.9286578794565445,
+        "ci_high": 1.0475662068086875
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 26,
+        "ratio": 0.9919325166040175,
+        "ci_low": 0.9623661659991049,
+        "ci_high": 1.0201068287142148
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 5,
+        "ratio": 0.9962936715641109,
+        "ci_low": 0.9550159370471386,
+        "ci_high": 1.0475516593326262
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 23,
+        "ratio": 0.9665811336547059,
+        "ci_low": 0.923025832454899,
+        "ci_high": 0.9916292948266198
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 1.0005713072690727,
+      "ci_low": 0.9758916891897281,
+      "ci_high": 1.0290579217854228,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 7,
+        "ratio": 1.0056617858712815,
+        "ci_low": 0.9655323013768313,
+        "ci_high": 1.053010874427739
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 18,
+        "ratio": 1.0129520722296184,
+        "ci_low": 0.9756910598819187,
+        "ci_high": 1.0530116571682078
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 6,
+        "ratio": 1.0106619337716092,
+        "ci_low": 0.9405220085385941,
+        "ci_high": 1.1089451721154164
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 25,
+        "ratio": 0.9735212273089884,
+        "ci_low": 0.9452201420688249,
+        "ci_high": 0.9958856904693448
+       }
+      }
+     }
+    }
+   },
+   "S_cv": {
+    "0.0": {
+     "vs_C0_refit": {
+      "ratio": 0.9590799442496301,
+      "ci_low": 0.9340478866284856,
+      "ci_high": 0.9839230920062071,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 12,
+        "ratio": 0.9482059239534671,
+        "ci_low": 0.8919115624647612,
+        "ci_high": 1.0026598309372452
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 34,
+        "ratio": 0.9578574707118339,
+        "ci_low": 0.9160079339256132,
+        "ci_high": 0.9979415656729613
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 8,
+        "ratio": 0.9432338520033573,
+        "ci_low": 0.882132655771746,
+        "ci_high": 1.0106982460640024
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 24,
+        "ratio": 0.9876346163945998,
+        "ci_low": 0.9693868508312395,
+        "ci_high": 1.0034640409939015
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 0.9733466798620515,
+      "ci_low": 0.9360406710039791,
+      "ci_high": 1.0127882725905564,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 11,
+        "ratio": 0.9640980749018653,
+        "ci_low": 0.8717406549577625,
+        "ci_high": 1.0653083087184798
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 29,
+        "ratio": 0.978154958746559,
+        "ci_low": 0.9213122037263943,
+        "ci_high": 1.0386116102924974
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9568369006780479,
+        "ci_low": 0.8805299417036186,
+        "ci_high": 1.06354268913463
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 24,
+        "ratio": 0.9947258749504888,
+        "ci_low": 0.9509909085126446,
+        "ci_high": 1.0606039847419972
+       }
+      }
+     }
+    },
+    "0.01": {
+     "vs_C0_refit": {
+      "ratio": 0.9772701925976605,
+      "ci_low": 0.9531862217881457,
+      "ci_high": 1.0000992394955193,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 12,
+        "ratio": 0.9469463362917692,
+        "ci_low": 0.8904751928222853,
+        "ci_high": 1.00187567276097
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 19,
+        "ratio": 1.022693215522497,
+        "ci_low": 0.9961478820724866,
+        "ci_high": 1.048651063183814
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 7,
+        "ratio": 0.9576584929543643,
+        "ci_low": 0.8961971845323367,
+        "ci_high": 1.0216558543377703
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 27,
+        "ratio": 0.9835064291972258,
+        "ci_low": 0.9482219020220364,
+        "ci_high": 1.0044393641396212
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 0.9918075161474709,
+      "ci_low": 0.95676892890239,
+      "ci_high": 1.0297790266169422,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 11,
+        "ratio": 0.9628173762591591,
+        "ci_low": 0.8704833267923249,
+        "ci_high": 1.0643465889866583
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 17,
+        "ratio": 1.0443646060372425,
+        "ci_low": 0.9953595764018575,
+        "ci_high": 1.0967667579328595
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 9,
+        "ratio": 0.9714695696727419,
+        "ci_low": 0.9024663479140497,
+        "ci_high": 1.0722489020864234
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 23,
+        "ratio": 0.9905680471934404,
+        "ci_low": 0.9532364189559319,
+        "ci_high": 1.0264709867538644
+       }
+      }
+     }
+    },
+    "0.02": {
+     "vs_C0_refit": {
+      "ratio": 0.9656019965081153,
+      "ci_low": 0.9430815047943364,
+      "ci_high": 0.9874803688126939,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 13,
+        "ratio": 0.9378749914258799,
+        "ci_low": 0.8834822464184854,
+        "ci_high": 0.9918612186964921
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 31,
+        "ratio": 0.9679761128453745,
+        "ci_low": 0.9322346137951867,
+        "ci_high": 1.0045472782189506
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 6,
+        "ratio": 0.9925342439358508,
+        "ci_low": 0.9422086321474413,
+        "ci_high": 1.0385059154288174
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 29,
+        "ratio": 0.9648005114746147,
+        "ci_low": 0.9288716114205654,
+        "ci_high": 0.9985090473422499
+       }
+      }
+     },
+     "vs_mlp16": {
+      "ratio": 0.979965750513821,
+      "ci_low": 0.9452915392608442,
+      "ci_high": 1.0192188931094537,
+      "alpha": 0.004545454545454546,
+      "n_boot": 20000,
+      "n_datasets": 4,
+      "per_dataset": {
+       "ihp_meas_300K": {
+        "n": 18,
+        "n_used": 18,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 11,
+        "ratio": 0.9535939935518349,
+        "ci_low": 0.8670893290128511,
+        "ci_high": 1.048637511656626
+       },
+       "nist_4K": {
+        "n": 57,
+        "n_used": 53,
+        "n_method_failed": 4,
+        "n_control_failed": 4,
+        "wins": 29,
+        "ratio": 0.988488020064491,
+        "ci_low": 0.9393665439135997,
+        "ci_high": 1.0411270763170712
+       },
+       "sky130_77K": {
+        "n": 12,
+        "n_used": 12,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 8,
+        "ratio": 1.0068482887539842,
+        "ci_low": 0.9397445241548051,
+        "ci_high": 1.1229311024910646
+       },
+       "tudelft_4K": {
+        "n": 45,
+        "n_used": 45,
+        "n_method_failed": 0,
+        "n_control_failed": 0,
+        "wins": 25,
+        "ratio": 0.9717278201859032,
+        "ci_low": 0.9290161688544136,
+        "ci_high": 1.0260665622378795
+       }
+      }
+     }
+    }
+   }
+  },
+  "nist_rt_I9_1": {
+   "c0_lodo_equals_baselines": true,
+   "S3_hyper": {
+    "seeds": [
+     0
+    ],
+    "steps": 500
+   },
+   "S3_fold_keys_match": true,
+   "menu": [
+    "none",
+    "poly3",
+    "mlp16"
+   ],
+   "S_gate": {
+    "selection_counts": {
+     "none": 0,
+     "poly3": 0,
+     "mlp16": 87
+    },
+    "vs_C0_refit": {
+     "ratio": 0.9622851336796616,
+     "ci_low": 0.9407601378449069,
+     "ci_high": 0.9846694182137927,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_rt": {
+       "n": 87,
+       "n_used": 87,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 57,
+       "ratio": 0.9622851336796616,
+       "ci_low": 0.9407601378449069,
+       "ci_high": 0.9846694182137927
+      }
+     }
+    },
+    "vs_mlp16": {
+     "ratio": 1.0,
+     "ci_low": 1.0,
+     "ci_high": 1.0,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_rt": {
+       "n": 87,
+       "n_used": 87,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 0,
+       "ratio": 1.0,
+       "ci_low": 1.0,
+       "ci_high": 1.0
+      }
+     }
+    }
+   },
+   "S_cv": {
+    "selection_counts": {
+     "none": 0,
+     "poly3": 3,
+     "mlp16": 84
+    },
+    "vs_C0_refit": {
+     "ratio": 0.9732554997462721,
+     "ci_low": 0.9527743507762954,
+     "ci_high": 0.9949995768687772,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_rt": {
+       "n": 87,
+       "n_used": 87,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 55,
+       "ratio": 0.9732554997462721,
+       "ci_low": 0.9527743507762954,
+       "ci_high": 0.9949995768687772
+      }
+     }
+    },
+    "vs_mlp16": {
+     "ratio": 1.011400327909734,
+     "ci_low": 1.0,
+     "ci_high": 1.0266247409981104,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_rt": {
+       "n": 87,
+       "n_used": 87,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 0,
+       "ratio": 1.011400327909734,
+       "ci_low": 1.0,
+       "ci_high": 1.0266247409981104
+      }
+     }
+    }
+   }
+  }
+ },
+ "selector_scores": {
+  "S_cv": {
+   "sky130_77K": {
+    "nmos_L0p15_W1p6": {
+     "scores": {
+      "lin": -0.048871676201286345,
+      "gam": 0.014005706106773496,
+      "mlp8": -0.06249031231293207,
+      "mlp16": 0.007562690617639361
+     },
+     "blocked": {}
+    },
+    "nmos_L0p25_W1p6": {
+     "scores": {
+      "lin": -0.0415129681659142,
+      "gam": -0.003340581685543241,
+      "mlp8": -0.055703599578034925,
+      "mlp16": -0.016405589120005174
+     },
+     "blocked": {}
+    },
+    "nmos_L100_W100": {
+     "scores": {
+      "lin": -0.03389922682850798,
+      "gam": -0.002892893700493904,
+      "mlp8": -0.04883368239664101,
+      "mlp16": -0.007605494265679633
+     },
+     "blocked": {}
+    },
+    "nmos_L1_W3": {
+     "scores": {
+      "lin": -0.03227898931119336,
+      "gam": -0.009378284673478553,
+      "mlp8": -0.048285496025361384,
+      "mlp16": -0.013886590028291611
+     },
+     "blocked": {}
+    },
+    "nmos_L20_W0p64": {
+     "scores": {
+      "lin": -0.03649716704383955,
+      "gam": 0.0092504845147128,
+      "mlp8": -0.0655964329780186,
+      "mlp16": -0.012204942540122183
+     },
+     "blocked": {}
+    },
+    "pmos_L0p35_W0p55": {
+     "scores": {
+      "lin": -0.04266008476327036,
+      "gam": -0.012965090428047237,
+      "mlp8": -0.07002398009993624,
+      "mlp16": -0.014730541824347482
+     },
+     "blocked": {}
+    },
+    "pmos_L0p35_W5": {
+     "scores": {
+      "lin": -0.03147996379046321,
+      "gam": 0.005003047392428578,
+      "mlp8": -0.05953300168256264,
+      "mlp16": -0.019203792203102463
+     },
+     "blocked": {}
+    },
+    "pmos_L0p5_W0p42": {
+     "scores": {
+      "lin": -0.03875671477834525,
+      "gam": -0.011922370668055555,
+      "mlp8": -0.051259635631624965,
+      "mlp16": -0.00599886777032595
+     },
+     "blocked": {}
+    },
+    "pmos_L2_W5": {
+     "scores": {
+      "lin": -0.03921081082341101,
+      "gam": 0.0063248486594643,
+      "mlp8": -0.06896333573026261,
+      "mlp16": -0.02581115661769254
+     },
+     "blocked": {}
+    },
+    "pmos_L4_W7": {
+     "scores": {
+      "lin": -0.04557508895614088,
+      "gam": 0.009076643615461379,
+      "mlp8": -0.049386643936296444,
+      "mlp16": -0.019493990859836618
+     },
+     "blocked": {}
+    },
+    "pmos_L8_W1p6": {
+     "scores": {
+      "lin": -0.0426097574817821,
+      "gam": 0.00011965576181645091,
+      "mlp8": -0.05454415166043553,
+      "mlp16": -0.020563435163068463
+     },
+     "blocked": {}
+    },
+    "pmos_L8_W5": {
+     "scores": {
+      "lin": -0.04388897190481464,
+      "gam": -0.006986414359190881,
+      "mlp8": -0.06667220573861161,
+      "mlp16": -0.02348281078859356
+     },
+     "blocked": {}
+    }
+   },
+   "nist_4K": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+     "scores": {
+      "lin": -0.033931812332155004,
+      "gam": -0.009673855875610605,
+      "mlp8": -0.04159250268526013,
+      "mlp16": -0.020538804555149066
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": {
+     "scores": {
+      "lin": -0.031138462932913818,
+      "gam": -0.008126872085922969,
+      "mlp8": -0.04556208644196897,
+      "mlp16": -0.023291349400763012
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W0p55_L1_m20p8": {
+     "scores": {
+      "lin": -0.03532952403524136,
+      "gam": -0.009942207275103056,
+      "mlp8": -0.04314483122014439,
+      "mlp16": -0.018934250120235988
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": {
+     "scores": {
+      "lin": -0.03399320050954107,
+      "gam": -0.006053636551308473,
+      "mlp8": -0.044820727122246315,
+      "mlp16": -0.024500562762211367
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": {
+     "scores": {
+      "lin": -0.03421942911214781,
+      "gam": -0.012894647473846473,
+      "mlp8": -0.040812442069489974,
+      "mlp16": -0.024409565970378376
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": {
+     "scores": {
+      "lin": -0.03483698934062428,
+      "gam": -0.006239171543046928,
+      "mlp8": -0.03958012618199684,
+      "mlp16": -0.017500366325481655
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W0p64_L1_m21p6": {
+     "scores": {
+      "lin": -0.03411145903407589,
+      "gam": -0.010588886377376597,
+      "mlp8": -0.041289889406687645,
+      "mlp16": -0.02052424473481105
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1_L0p15_m22p2": {
+     "scores": {
+      "lin": -0.034220094531908045,
+      "gam": -0.006664021109099268,
+      "mlp8": -0.045512424403821236,
+      "mlp16": -0.021454464417039323
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1_L0p18_m22p3": {
+     "scores": {
+      "lin": -0.03274223862837784,
+      "gam": -0.01103326285942807,
+      "mlp8": -0.04536136761982691,
+      "mlp16": -0.019332228537900654
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1_L1_m22p6": {
+     "scores": {
+      "lin": -0.029853070432738195,
+      "gam": -0.008080076209734308,
+      "mlp8": -0.043945908327556966,
+      "mlp16": -0.019370287352942387
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1_L4_m22p8": {
+     "scores": {
+      "lin": -0.03233716418457035,
+      "gam": -0.009124685697755876,
+      "mlp8": -0.041764737639072264,
+      "mlp16": -0.020338873520154274
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1_L8_m23p1": {
+     "scores": {
+      "lin": -0.031117030453532476,
+      "gam": -0.00892261040649534,
+      "mlp8": -0.04305582900175324,
+      "mlp16": -0.022216938489089073
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": {
+     "scores": {
+      "lin": -0.029860824437496495,
+      "gam": -0.010936822597491616,
+      "mlp8": -0.04273475623592039,
+      "mlp16": -0.019812107862053226
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1p65_L1_m23p6": {
+     "scores": {
+      "lin": -0.033093890897935734,
+      "gam": -0.008201665779861379,
+      "mlp8": -0.04264396226227351,
+      "mlp16": -0.024308314882374785
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1p65_L2_m23p7": {
+     "scores": {
+      "lin": -0.03150350196512683,
+      "gam": -0.0031139037417055792,
+      "mlp8": -0.038488007471465205,
+      "mlp16": -0.021353084479910196
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W1p65_L8_m23p8": {
+     "scores": {
+      "lin": -0.030616473150004098,
+      "gam": -0.007358374741550789,
+      "mlp8": -0.041657514108683354,
+      "mlp16": -0.020598182006022016
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W3_L0p18_m24p2": {
+     "scores": {
+      "lin": -0.030591094992196206,
+      "gam": -0.009173319189922678,
+      "mlp8": -0.04294177855152943,
+      "mlp16": -0.02358248002374275
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W3_L0p25_m24p3": {
+     "scores": {
+      "lin": -0.033113052991774056,
+      "gam": -0.007972972020770349,
+      "mlp8": -0.046223579831326224,
+      "mlp16": -0.021999829081298314
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W3_L0p5_m24p4": {
+     "scores": {
+      "lin": -0.03328662004843065,
+      "gam": -0.010300450974983924,
+      "mlp8": -0.04361649381078709,
+      "mlp16": -0.02150560904404297
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W3_L2_m24p6": {
+     "scores": {
+      "lin": -0.03514005374188544,
+      "gam": -0.010772578176240983,
+      "mlp8": -0.046001388478346825,
+      "mlp16": -0.02015863373931778
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W3_L8_m24p8": {
+     "scores": {
+      "lin": -0.03257010732209519,
+      "gam": -0.008535849703405832,
+      "mlp8": -0.0425502438725348,
+      "mlp16": -0.024283876040591384
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W5_L0p25_m25p4": {
+     "scores": {
+      "lin": -0.03460040429851234,
+      "gam": -0.005955323579400635,
+      "mlp8": -0.042821432963903346,
+      "mlp16": -0.022356637532605302
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W5_L0p5_m25p5": {
+     "scores": {
+      "lin": -0.03529352942843484,
+      "gam": -0.011481882241686035,
+      "mlp8": -0.03580848460081386,
+      "mlp16": -0.020404266521673188
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W5_L1_m25p6": {
+     "scores": {
+      "lin": -0.034808723292621704,
+      "gam": -0.01090282145341858,
+      "mlp8": -0.044198392426316464,
+      "mlp16": -0.017762366877946287
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W5_L2_m25p7": {
+     "scores": {
+      "lin": -0.02804820494180119,
+      "gam": -0.008244658695007342,
+      "mlp8": -0.04435947958426323,
+      "mlp16": -0.021512656671109024
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W5_L4_m25p8": {
+     "scores": {
+      "lin": -0.034959719606186566,
+      "gam": -0.01287442705204538,
+      "mlp8": -0.04669921690776331,
+      "mlp16": -0.018595941990602275
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W5_L8_m26p1": {
+     "scores": {
+      "lin": -0.0332499817005043,
+      "gam": -0.008149111914573421,
+      "mlp8": -0.042371293291701376,
+      "mlp16": -0.017495546106647025
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W7_L0p25_m26p4": {
+     "scores": {
+      "lin": -0.0334118112093595,
+      "gam": -0.006633257567793208,
+      "mlp8": -0.043488438228220364,
+      "mlp16": -0.020258612349513476
+     },
+     "blocked": {}
+    },
+    "nfet_01v8_lvt_W7_L8_m26p8": {
+     "scores": {
+      "lin": -0.03331076518028818,
+      "gam": -0.008520269657538153,
+      "mlp8": -0.041950588014916274,
+      "mlp16": -0.021336732749625754
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+     "scores": {
+      "lin": -0.0333329377620853,
+      "gam": -0.010892783406108875,
+      "mlp8": -0.041045339726071654,
+      "mlp16": -0.023261752232496026
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p42_L20_m27p7": {
+     "scores": {
+      "lin": -0.033211124415896104,
+      "gam": -0.00701723117909294,
+      "mlp8": -0.0419360110687319,
+      "mlp16": -0.02133861875480773
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p42_L4_m27p5": {
+     "scores": {
+      "lin": -0.03190664839899033,
+      "gam": -0.012572382179642875,
+      "mlp8": -0.04264391384306107,
+      "mlp16": -0.022345479719972156
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": {
+     "scores": {
+      "lin": -0.028939875341610764,
+      "gam": -0.007095937386728439,
+      "mlp8": -0.045913984136821843,
+      "mlp16": -0.018437975426906957
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p55_L1_m28p2": {
+     "scores": {
+      "lin": -0.03238741490020417,
+      "gam": -0.010655453715484781,
+      "mlp8": -0.04331162562509793,
+      "mlp16": -0.02075211105720618
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p55_L2_m28p3": {
+     "scores": {
+      "lin": -0.031051228129794068,
+      "gam": -0.009867069288219272,
+      "mlp8": -0.04178709406309552,
+      "mlp16": -0.021034310089460145
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p55_L4_m28p4": {
+     "scores": {
+      "lin": -0.03467410363182976,
+      "gam": -0.008523762684784657,
+      "mlp8": -0.043580214520614,
+      "mlp16": -0.022453607907374384
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W0p55_L8_m28p5": {
+     "scores": {
+      "lin": -0.03204154609618887,
+      "gam": -0.010897974296901158,
+      "mlp8": -0.04372577899622612,
+      "mlp16": -0.02101863577047267
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W1_L0p35_m28p6": {
+     "scores": {
+      "lin": -0.032757395831001165,
+      "gam": -0.005935797820774325,
+      "mlp8": -0.04200692628173574,
+      "mlp16": -0.022341747856412776
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W1_L20_m29p4": {
+     "scores": {
+      "lin": -0.030963008693083556,
+      "gam": -0.011430741235776991,
+      "mlp8": -0.04550589874828296,
+      "mlp16": -0.019825828229687762
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W1_L2_m29p1": {
+     "scores": {
+      "lin": -0.03161490001560667,
+      "gam": -0.008697556974424236,
+      "mlp8": -0.039675932368270946,
+      "mlp16": -0.021483816987361397
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W1_L4_m29p2": {
+     "scores": {
+      "lin": -0.03257468733524424,
+      "gam": -0.007776881549629482,
+      "mlp8": -0.04289670979691261,
+      "mlp16": -0.02159326217013307
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W3_L0p35_m29p5": {
+     "scores": {
+      "lin": -0.029740375561057783,
+      "gam": -0.010260745584059473,
+      "mlp8": -0.044586345746359196,
+      "mlp16": -0.018392027312746386
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W3_L1_m29p6": {
+     "scores": {
+      "lin": -0.033175106904438846,
+      "gam": -0.010858293594750169,
+      "mlp8": -0.0407334638519244,
+      "mlp16": -0.02113301645342772
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W3_L1p5_m29p7": {
+     "scores": {
+      "lin": -0.032392881197242,
+      "gam": -0.010300402089027811,
+      "mlp8": -0.04400209129061715,
+      "mlp16": -0.02017936038512185
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W3_L2_m29p8": {
+     "scores": {
+      "lin": -0.030316635905785302,
+      "gam": -0.012665225916761214,
+      "mlp8": -0.04579370533206028,
+      "mlp16": -0.017133734574228347
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W3_L4_m30p1": {
+     "scores": {
+      "lin": -0.027984880020415034,
+      "gam": -0.01089834563792489,
+      "mlp8": -0.04417981728218175,
+      "mlp16": -0.022638531937223406
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W5_L0p35_m30p3": {
+     "scores": {
+      "lin": -0.033583505019026724,
+      "gam": -0.011288308246329325,
+      "mlp8": -0.040057064960578107,
+      "mlp16": -0.02009956009021244
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W5_L1_m30p5": {
+     "scores": {
+      "lin": -0.0320245893020582,
+      "gam": -0.00778182638171986,
+      "mlp8": -0.041906997490465954,
+      "mlp16": -0.019156230517478674
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W5_L1p5_m30p6": {
+     "scores": {
+      "lin": -0.03157761935152968,
+      "gam": -0.009024879678332449,
+      "mlp8": -0.04567718677881116,
+      "mlp16": -0.020069833045232608
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W5_L4_m30p8": {
+     "scores": {
+      "lin": -0.03214272278107817,
+      "gam": -0.009902685073069937,
+      "mlp8": -0.04388109416835161,
+      "mlp16": -0.021061211981467487
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W7_L0p35_m31p2": {
+     "scores": {
+      "lin": -0.036090089263259115,
+      "gam": -0.008785906574937599,
+      "mlp8": -0.043288413046129945,
+      "mlp16": -0.023695268099157524
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W7_L1p5_m31p5": {
+     "scores": {
+      "lin": -0.03250109520568067,
+      "gam": -0.009400094017007843,
+      "mlp8": -0.04415583522537122,
+      "mlp16": -0.020476339854247252
+     },
+     "blocked": {}
+    },
+    "pfet_01v8_lvt_W7_L8_m31p7": {
+     "scores": {
+      "lin": -0.032763441805773334,
+      "gam": -0.009639458503471946,
+      "mlp8": -0.04469400513939119,
+      "mlp16": -0.02170391812341016
+     },
+     "blocked": {}
+    }
+   },
+   "tudelft_4K": {
+    "t40_nmos_W0p12_L0p04": {
+     "scores": {
+      "lin": -0.039731718740055856,
+      "gam": -0.022924486084569685,
+      "mlp8": -0.03633380640552615,
+      "mlp16": -0.006419518468834962
+     },
+     "blocked": {}
+    },
+    "t40_nmos_W0p12_L0p05": {
+     "scores": {
+      "lin": -0.030917162414691033,
+      "gam": -0.03238295732503049,
+      "mlp8": -0.03922815880051837,
+      "mlp16": 0.0029144172321186232
+     },
+     "blocked": {}
+    },
+    "t40_nmos_W0p36_L0p04": {
+     "scores": {
+      "lin": -0.03802484589290694,
+      "gam": -0.029762562967188762,
+      "mlp8": -0.03884780290813474,
+      "mlp16": -0.006857738571907302
+     },
+     "blocked": {}
+    },
+    "t40_nmos_W1_L0p04": {
+     "scores": {
+      "lin": -0.026232664835219455,
+      "gam": -0.02688834765371954,
+      "mlp8": -0.04377551368427659,
+      "mlp16": -0.011148176103533861
+     },
+     "blocked": {}
+    },
+    "t40_nmos_W1_L1": {
+     "scores": {
+      "lin": -0.045642077078275584,
+      "gam": -0.028719948047029972,
+      "mlp8": -0.022860152440584657,
+      "mlp16": -0.006001204248700786
+     },
+     "blocked": {}
+    },
+    "t40_pmos_W1_L0p04": {
+     "scores": {
+      "lin": -0.03471166061542965,
+      "gam": -0.032112985240046035,
+      "mlp8": -0.04506204333426467,
+      "mlp16": -0.0075856152418246085
+     },
+     "blocked": {}
+    },
+    "t40_pmos_W1_L1": {
+     "scores": {
+      "lin": -0.035886472816469665,
+      "gam": -0.03458319567978652,
+      "mlp8": -0.037397920702110135,
+      "mlp16": -0.016391640770585022
+     },
+     "blocked": {}
+    }
+   },
+   "ihp_meas_300K": {
+    "hv_nmos_W0p3_L0p5": {
+     "scores": {
+      "lin": 0.034711972124385634,
+      "gam": -0.03619079546673704,
+      "mlp8": -0.06283318458133137,
+      "mlp16": 0.008498482644029958
+     },
+     "blocked": {}
+    },
+    "hv_nmos_W0p3_L10": {
+     "scores": {
+      "lin": 0.027223186756877515,
+      "gam": -0.06020786060142847,
+      "mlp8": -0.053142791312888495,
+      "mlp16": 0.0043005714530983
+     },
+     "blocked": {}
+    },
+    "hv_nmos_W0p6_L1p2": {
+     "scores": {
+      "lin": 0.01417191384610467,
+      "gam": -0.048393542814848076,
+      "mlp8": -0.031103905743783168,
+      "mlp16": -0.025022722414531517
+     },
+     "blocked": {}
+    },
+    "hv_nmos_W10_L0p5": {
+     "scores": {
+      "lin": 0.004036832772398516,
+      "gam": -0.04180418590250775,
+      "mlp8": -0.05671419960761987,
+      "mlp16": 0.0016383762989083197
+     },
+     "blocked": {}
+    },
+    "hv_pmos_W0p3_L10": {
+     "scores": {
+      "lin": 0.04335821387703966,
+      "gam": -0.041615662444506304,
+      "mlp8": -0.04678824074171626,
+      "mlp16": -0.00031048415892291425
+     },
+     "blocked": {}
+    },
+    "hv_pmos_W0p6_L0p5": {
+     "scores": {
+      "lin": 0.003744080922137066,
+      "gam": -0.06035020758422742,
+      "mlp8": -0.07370103018541,
+      "mlp16": 0.02217083202199054
+     },
+     "blocked": {}
+    },
+    "hv_pmos_W10_L0p35": {
+     "scores": {
+      "lin": 0.006144771650090732,
+      "gam": -0.061639562862247865,
+      "mlp8": -0.054144888492077665,
+      "mlp16": -0.02260648134988801
+     },
+     "blocked": {}
+    },
+    "hv_pmos_W2_L1p2": {
+     "scores": {
+      "lin": 0.01420997197983184,
+      "gam": -0.07540792744219771,
+      "mlp8": -0.05946262937925464,
+      "mlp16": -0.012180037308290795
+     },
+     "blocked": {}
+    },
+    "lv_nmos_W0p15_L0p18": {
+     "scores": {
+      "lin": 0.03691308222648921,
+      "gam": 0.014166955268561095,
+      "mlp8": -0.08757113809408262,
+      "mlp16": -0.039151771483612416
+     },
+     "blocked": {}
+    },
+    "lv_nmos_W0p15_L10": {
+     "scores": {
+      "lin": 0.04333950939166399,
+      "gam": 0.0024363505159286864,
+      "mlp8": -0.09133762129088278,
+      "mlp16": -0.02782663664146244
+     },
+     "blocked": {}
+    },
+    "lv_nmos_W0p3_L0p13": {
+     "scores": {
+      "lin": 0.023651248301959707,
+      "gam": -0.0015683724569568798,
+      "mlp8": -0.0968830591376777,
+      "mlp16": -0.037481992837161485
+     },
+     "blocked": {}
+    },
+    "lv_nmos_W0p3_L10": {
+     "scores": {
+      "lin": 0.018070830158481863,
+      "gam": 0.0012327296610745717,
+      "mlp8": -0.08050703555348926,
+      "mlp16": -0.031418571129048334
+     },
+     "blocked": {}
+    },
+    "lv_nmos_W10_L10": {
+     "scores": {
+      "lin": 0.019833312898302303,
+      "gam": 0.0402935023547042,
+      "mlp8": -0.10035214998191318,
+      "mlp16": -0.0341101516042105
+     },
+     "blocked": {}
+    },
+    "lv_pmos_W0p15_L0p18": {
+     "scores": {
+      "lin": 0.025239214066432918,
+      "gam": 0.00036030651603314044,
+      "mlp8": -0.09583262367366475,
+      "mlp16": -0.025605906756796085
+     },
+     "blocked": {}
+    },
+    "lv_pmos_W0p15_L10": {
+     "scores": {
+      "lin": 0.03588058466727084,
+      "gam": 0.010238792193308458,
+      "mlp8": -0.08383653976747049,
+      "mlp16": -0.010920406871977546
+     },
+     "blocked": {}
+    },
+    "lv_pmos_W0p3_L0p13": {
+     "scores": {
+      "lin": 0.053277240699950046,
+      "gam": 0.009303777253256191,
+      "mlp8": -0.07036417242977562,
+      "mlp16": -0.03872865460359025
+     },
+     "blocked": {}
+    },
+    "lv_pmos_W0p3_L10": {
+     "scores": {
+      "lin": 0.039900968487037954,
+      "gam": 0.009887598754557176,
+      "mlp8": -0.10271178353286538,
+      "mlp16": -0.005797388110113678
+     },
+     "blocked": {}
+    },
+    "lv_pmos_W10_L10": {
+     "scores": {
+      "lin": 0.03255731217374441,
+      "gam": 0.009759490504173808,
+      "mlp8": -0.09370471494593607,
+      "mlp16": -0.02463097661402114
+     },
+     "blocked": {}
+    }
+   }
+  },
+  "S_loss": {
+   "sky130_77K": {
+    "nmos_L0p15_W1p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nmos_L0p25_W1p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nmos_L100_W100": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nmos_L1_W3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nmos_L20_W0p64": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pmos_L0p35_W0p55": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "pmos_L0p35_W5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pmos_L0p5_W0p42": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pmos_L2_W5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "pmos_L4_W7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pmos_L8_W1p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pmos_L8_W5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    }
+   },
+   "nist_4K": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W0p55_L1_m20p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L1_m21p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W1_L0p15_m22p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "nfet_01v8_lvt_W1_L0p18_m22p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W1_L1_m22p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W1_L4_m22p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W1_L8_m23p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L1_m23p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L2_m23p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L8_m23p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W3_L0p18_m24p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W3_L0p25_m24p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W3_L0p5_m24p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W3_L2_m24p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W3_L8_m24p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W5_L0p25_m25p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "nfet_01v8_lvt_W5_L0p5_m25p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nfet_01v8_lvt_W5_L1_m25p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W5_L2_m25p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W5_L4_m25p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W5_L8_m26p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W7_L0p25_m26p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nfet_01v8_lvt_W7_L8_m26p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W0p42_L20_m27p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pfet_01v8_lvt_W0p42_L4_m27p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L1_m28p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L2_m28p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L4_m28p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L8_m28p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W1_L0p35_m28p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W1_L20_m29p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W1_L2_m29p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W1_L4_m29p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W3_L0p35_m29p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W3_L1_m29p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W3_L1p5_m29p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pfet_01v8_lvt_W3_L2_m29p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W3_L4_m30p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W5_L0p35_m30p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W5_L1_m30p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W5_L1p5_m30p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W5_L4_m30p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pfet_01v8_lvt_W7_L0p35_m31p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W7_L1p5_m31p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W7_L8_m31p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    }
+   },
+   "tudelft_4K": {
+    "t40_nmos_W0p12_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "t40_nmos_W0p12_L0p05": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "t40_nmos_W0p36_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "t40_nmos_W1_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "t40_nmos_W1_L1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "t40_pmos_W1_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "t40_pmos_W1_L1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    }
+   },
+   "ihp_meas_300K": {
+    "hv_nmos_W0p3_L0p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "hv_nmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "hv_nmos_W0p6_L1p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "hv_nmos_W10_L0p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "hv_pmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "hv_pmos_W0p6_L0p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "hv_pmos_W10_L0p35": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "hv_pmos_W2_L1p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "lv_nmos_W0p15_L0p18": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "lv_nmos_W0p15_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "lv_nmos_W0p3_L0p13": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "lv_nmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "lv_nmos_W10_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "lv_pmos_W0p15_L0p18": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "lv_pmos_W0p15_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "lv_pmos_W0p3_L0p13": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "lv_pmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "lv_pmos_W10_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    }
+   }
+  },
+  "S_refit": {
+   "sky130_77K": {
+    "nmos_L0p15_W1p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nmos_L0p25_W1p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nmos_L100_W100": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nmos_L1_W3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nmos_L20_W0p64": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pmos_L0p35_W0p55": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pmos_L0p35_W5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pmos_L0p5_W0p42": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pmos_L2_W5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "pmos_L4_W7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pmos_L8_W1p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pmos_L8_W5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    }
+   },
+   "nist_4K": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W0p55_L1_m20p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W0p64_L1_m21p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "nfet_01v8_lvt_W1_L0p15_m22p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W1_L0p18_m22p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "nfet_01v8_lvt_W1_L1_m22p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W1_L4_m22p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W1_L8_m23p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L1_m23p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L2_m23p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W1p65_L8_m23p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W3_L0p18_m24p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W3_L0p25_m24p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nfet_01v8_lvt_W3_L0p5_m24p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W3_L2_m24p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "nfet_01v8_lvt_W3_L8_m24p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W5_L0p25_m25p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W5_L0p5_m25p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "nfet_01v8_lvt_W5_L1_m25p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W5_L2_m25p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "nfet_01v8_lvt_W5_L4_m25p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W5_L8_m26p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W7_L0p25_m26p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "nfet_01v8_lvt_W7_L8_m26p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W0p42_L20_m27p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W0p42_L4_m27p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L1_m28p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L2_m28p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L4_m28p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pfet_01v8_lvt_W0p55_L8_m28p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W1_L0p35_m28p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W1_L20_m29p4": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pfet_01v8_lvt_W1_L2_m29p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W1_L4_m29p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W3_L0p35_m29p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W3_L1_m29p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W3_L1p5_m29p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W3_L2_m29p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W3_L4_m30p1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W5_L0p35_m30p3": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "pfet_01v8_lvt_W5_L1_m30p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W5_L1p5_m30p6": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "pfet_01v8_lvt_W5_L4_m30p8": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "pfet_01v8_lvt_W7_L0p35_m31p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "pfet_01v8_lvt_W7_L1p5_m31p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "pfet_01v8_lvt_W7_L8_m31p7": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    }
+   },
+   "tudelft_4K": {
+    "t40_nmos_W0p12_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "t40_nmos_W0p12_L0p05": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "t40_nmos_W0p36_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "t40_nmos_W1_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "t40_nmos_W1_L1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "t40_pmos_W1_L0p04": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "t40_pmos_W1_L1": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    }
+   },
+   "ihp_meas_300K": {
+    "hv_nmos_W0p3_L0p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "hv_nmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "hv_nmos_W0p6_L1p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "hv_nmos_W10_L0p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "hv_pmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "hv_pmos_W0p6_L0p5": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "hv_pmos_W10_L0p35": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "hv_pmos_W2_L1p2": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "lv_nmos_W0p15_L0p18": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "lv_nmos_W0p15_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "gam",
+      "0.01": "gam",
+      "0.02": "gam"
+     }
+    },
+    "lv_nmos_W0p3_L0p13": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "lin",
+      "0.01": "lin",
+      "0.02": "lin"
+     }
+    },
+    "lv_nmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "lv_nmos_W10_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "lv_pmos_W0p15_L0p18": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "none",
+      "0.01": "none",
+      "0.02": "none"
+     }
+    },
+    "lv_pmos_W0p15_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    },
+    "lv_pmos_W0p3_L0p13": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "lv_pmos_W0p3_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp16",
+      "0.01": "mlp16",
+      "0.02": "mlp16"
+     }
+    },
+    "lv_pmos_W10_L10": {
+     "scores": {},
+     "blocked": {},
+     "tie_sensitivity": {
+      "0.0": "mlp8",
+      "0.01": "mlp8",
+      "0.02": "mlp8"
+     }
+    }
+   }
+  }
+ },
+ "S3": {
+  "sky130_77K": {
+   "S3_hyper": {
+    "seeds": [
+     0
+    ],
+    "steps": 500
+   },
+   "S3_f": {
+    "nmos_L0p15_W1p6": -0.14147251430474658,
+    "nmos_L0p25_W1p6": -0.14361668776865166,
+    "nmos_L100_W100": -0.1071064198230863,
+    "nmos_L1_W3": -0.1247188541585189,
+    "nmos_L20_W0p64": -0.11004798897370707,
+    "pmos_L0p35_W0p55": -0.14179582562606532,
+    "pmos_L0p35_W5": -0.12017537419718284,
+    "pmos_L0p5_W0p42": -0.10356996745709476,
+    "pmos_L2_W5": -0.09597416311377786,
+    "pmos_L4_W7": -0.09459109039666241,
+    "pmos_L8_W1p6": -0.09281416150322676,
+    "pmos_L8_W5": -0.0754786492934415
+   }
+  },
+  "nist_4K": {
+   "S3_hyper": {
+    "seeds": [
+     0
+    ],
+    "steps": 500
+   },
+   "S3_f": {
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1": -0.10759179626034884,
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6": -0.10563444293278319,
+    "nfet_01v8_lvt_W0p55_L1_m20p8": -0.11109250190973886,
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2": -0.10800978372992943,
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3": -0.1004973121672979,
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4": -0.11404875495177252,
+    "nfet_01v8_lvt_W0p64_L1_m21p6": -0.1060111349389537,
+    "nfet_01v8_lvt_W1_L0p15_m22p2": -0.11313958118387936,
+    "nfet_01v8_lvt_W1_L0p18_m22p3": -0.10471220342688049,
+    "nfet_01v8_lvt_W1_L1_m22p6": -0.11134496112016948,
+    "nfet_01v8_lvt_W1_L4_m22p8": -0.1048032245277489,
+    "nfet_01v8_lvt_W1_L8_m23p1": -0.10660746116203854,
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3": -0.10405399087070168,
+    "nfet_01v8_lvt_W1p65_L1_m23p6": -0.10966149056297869,
+    "nfet_01v8_lvt_W1p65_L2_m23p7": -0.11222186453648045,
+    "nfet_01v8_lvt_W1p65_L8_m23p8": -0.11132790748465818,
+    "nfet_01v8_lvt_W3_L0p18_m24p2": -0.10854478560271638,
+    "nfet_01v8_lvt_W3_L0p25_m24p3": -0.10748369508673061,
+    "nfet_01v8_lvt_W3_L0p5_m24p4": -0.10764923477548212,
+    "nfet_01v8_lvt_W3_L2_m24p6": -0.10474725385474498,
+    "nfet_01v8_lvt_W3_L8_m24p8": -0.10560618130688096,
+    "nfet_01v8_lvt_W5_L0p25_m25p4": -0.10519708325544946,
+    "nfet_01v8_lvt_W5_L0p5_m25p5": -0.10508576565727987,
+    "nfet_01v8_lvt_W5_L1_m25p6": -0.1046824798403744,
+    "nfet_01v8_lvt_W5_L2_m25p7": -0.10480632264902884,
+    "nfet_01v8_lvt_W5_L4_m25p8": -0.10780901302704991,
+    "nfet_01v8_lvt_W5_L8_m26p1": -0.10601781907590781,
+    "nfet_01v8_lvt_W7_L0p25_m26p4": -0.10625086403036461,
+    "nfet_01v8_lvt_W7_L8_m26p8": -0.10603623663597989,
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2": -0.11103960676747199,
+    "pfet_01v8_lvt_W0p42_L20_m27p7": -0.13422477433583488,
+    "pfet_01v8_lvt_W0p42_L4_m27p5": -0.10881897487879415,
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1": -0.1032784541861985,
+    "pfet_01v8_lvt_W0p55_L1_m28p2": -0.1070542250685307,
+    "pfet_01v8_lvt_W0p55_L2_m28p3": -0.1073605483586903,
+    "pfet_01v8_lvt_W0p55_L4_m28p4": -0.1074479606068252,
+    "pfet_01v8_lvt_W0p55_L8_m28p5": -0.11133278644945362,
+    "pfet_01v8_lvt_W1_L0p35_m28p6": -0.10549311761851089,
+    "pfet_01v8_lvt_W1_L20_m29p4": -0.11413123331076086,
+    "pfet_01v8_lvt_W1_L2_m29p1": -0.10725380582875671,
+    "pfet_01v8_lvt_W1_L4_m29p2": -0.10843491069466375,
+    "pfet_01v8_lvt_W3_L0p35_m29p5": -0.11078600839383325,
+    "pfet_01v8_lvt_W3_L1_m29p6": -0.11077711625903243,
+    "pfet_01v8_lvt_W3_L1p5_m29p7": -0.10745266118305202,
+    "pfet_01v8_lvt_W3_L2_m29p8": -0.10433196193302599,
+    "pfet_01v8_lvt_W3_L4_m30p1": -0.10763452208540834,
+    "pfet_01v8_lvt_W5_L0p35_m30p3": -0.1010895652969214,
+    "pfet_01v8_lvt_W5_L1_m30p5": -0.10675651281383436,
+    "pfet_01v8_lvt_W5_L1p5_m30p6": -0.10817293920926185,
+    "pfet_01v8_lvt_W5_L4_m30p8": -0.10229442895851687,
+    "pfet_01v8_lvt_W7_L0p35_m31p2": -0.10918765568844623,
+    "pfet_01v8_lvt_W7_L1p5_m31p5": -0.10439479981266947,
+    "pfet_01v8_lvt_W7_L8_m31p7": -0.11864123123130893
+   }
+  },
+  "tudelft_4K": {
+   "S3_hyper": {
+    "seeds": [
+     0
+    ],
+    "steps": 500
+   },
+   "S3_f": {
+    "t40_nmos_W0p12_L0p04": 0.02507286973493714,
+    "t40_nmos_W0p12_L0p05": -0.015113929140000275,
+    "t40_nmos_W0p36_L0p04": -0.006780342745561091,
+    "t40_nmos_W1_L0p04": 0.006881787378141318,
+    "t40_nmos_W1_L1": -0.058600932387970844,
+    "t40_pmos_W1_L0p04": -0.0514663214773052,
+    "t40_pmos_W1_L1": -0.09955885346517952
+   }
+  },
+  "ihp_meas_300K": {
+   "S3_hyper": {
+    "seeds": [
+     0
+    ],
+    "steps": 500
+   },
+   "S3_f": {
+    "hv_nmos_W0p3_L0p5": 0.25072751043883884,
+    "hv_nmos_W0p3_L10": 0.22169900588012115,
+    "hv_nmos_W0p6_L1p2": 0.36479652450674516,
+    "hv_nmos_W10_L0p5": 0.20626215765577255,
+    "hv_pmos_W0p3_L10": 0.18668053121516917,
+    "hv_pmos_W0p6_L0p5": 0.2680969867392849,
+    "hv_pmos_W10_L0p35": 0.20897904676489934,
+    "hv_pmos_W2_L1p2": 0.3053091574748797,
+    "lv_nmos_W0p15_L0p18": 0.32221645287748196,
+    "lv_nmos_W0p15_L10": 0.4388677892655526,
+    "lv_nmos_W0p3_L0p13": 0.32362945850703234,
+    "lv_nmos_W0p3_L10": 0.5573791713517333,
+    "lv_nmos_W10_L10": 0.5710069626575356,
+    "lv_pmos_W0p15_L0p18": 0.2801072669798297,
+    "lv_pmos_W0p15_L10": 0.6414733820693156,
+    "lv_pmos_W0p3_L0p13": 0.21231566474233413,
+    "lv_pmos_W0p3_L10": 0.631807584611815,
+    "lv_pmos_W10_L10": 0.6000625505763089
+   }
+  }
+ },
+ "runtime_s": 1.4,
+ "rule": {
+  "decision": "continue: multi-class selector",
+  "frozen_selector": "S_cv",
+  "supported": [
+   "S_cv"
+  ],
+  "beats_S_gate": []
+ }
+}

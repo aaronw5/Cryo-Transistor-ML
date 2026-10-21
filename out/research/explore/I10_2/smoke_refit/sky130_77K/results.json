@@ -1,0 +1,182 @@
+{
+ "dataset": "sky130_77K",
+ "smoke": true,
+ "guard": null,
+ "options": {
+  "heldout_nfev": 10,
+  "heldout_irls": 1,
+  "diff_step": 0.01
+ },
+ "refit_scope": "all",
+ "folds": {
+  "nmos_L0p15_W1p6": {
+   "pos": 0,
+   "refit_inner": [
+    0
+   ],
+   "refit_tags": [
+    "nmos_L0p25_W1p6"
+   ],
+   "scores": {
+    "lin": 0.008033205855379148,
+    "gam": 0.34777031644203377,
+    "mlp8": 0.08879154742591473,
+    "mlp16": 0.12694845702577978
+   },
+   "blocked": {},
+   "selected": "none",
+   "tie_sensitivity": {
+    "0.0": "none",
+    "0.01": "none",
+    "0.02": "none"
+   },
+   "per_device_log_ratio": {
+    "lin": {
+     "nmos_L0p25_W1p6": 0.008033205855379148
+    },
+    "gam": {
+     "nmos_L0p25_W1p6": 0.34777031644203377
+    },
+    "mlp8": {
+     "nmos_L0p25_W1p6": 0.08879154742591473
+    },
+    "mlp16": {
+     "nmos_L0p25_W1p6": 0.12694845702577978
+    }
+   }
+  },
+  "pmos_L0p35_W0p55": {
+   "pos": 5,
+   "refit_inner": [
+    0
+   ],
+   "refit_tags": [
+    "nmos_L0p15_W1p6"
+   ],
+   "scores": {
+    "lin": 0.024565736365073424,
+    "gam": 0.18618923450076857,
+    "mlp8": 0.01446379392551728,
+    "mlp16": 0.09657654710104759
+   },
+   "blocked": {},
+   "selected": "none",
+   "tie_sensitivity": {
+    "0.0": "none",
+    "0.01": "none",
+    "0.02": "none"
+   },
+   "per_device_log_ratio": {
+    "lin": {
+     "nmos_L0p15_W1p6": 0.024565736365073424
+    },
+    "gam": {
+     "nmos_L0p15_W1p6": 0.18618923450076857
+    },
+    "mlp8": {
+     "nmos_L0p15_W1p6": 0.01446379392551728
+    },
+    "mlp16": {
+     "nmos_L0p15_W1p6": 0.09657654710104759
+    }
+   }
+  }
+ },
+ "selection": {
+  "nmos_L0p15_W1p6": "none",
+  "pmos_L0p35_W0p55": "none"
+ },
+ "n_refits": 8,
+ "n_failed_refits": 0,
+ "rows": {
+  "lin|nmos_L0p15_W1p6|k0|nmos_L0p25_W1p6": {
+   "label": "lin|nmos_L0p15_W1p6|k0",
+   "tag": "nmos_L0p25_W1p6",
+   "n_active": 38,
+   "rrms": 0.01896960708747578,
+   "failed": [],
+   "n_sim": 44,
+   "runtime_s": 1.65,
+   "rrms_start": 0.019034546784522724,
+   "dataset": "sky130_77K"
+  },
+  "gam|nmos_L0p15_W1p6|k0|nmos_L0p25_W1p6": {
+   "label": "gam|nmos_L0p15_W1p6|k0",
+   "tag": "nmos_L0p25_W1p6",
+   "n_active": 38,
+   "rrms": 0.02664429834674014,
+   "failed": [],
+   "n_sim": 83,
+   "runtime_s": 3.12,
+   "rrms_start": 0.03215073969794805,
+   "dataset": "sky130_77K"
+  },
+  "mlp8|nmos_L0p15_W1p6|k0|nmos_L0p25_W1p6": {
+   "label": "mlp8|nmos_L0p15_W1p6|k0",
+   "tag": "nmos_L0p25_W1p6",
+   "n_active": 38,
+   "rrms": 0.020565119509945273,
+   "failed": [],
+   "n_sim": 44,
+   "runtime_s": 1.46,
+   "rrms_start": 0.02112587318712448,
+   "dataset": "sky130_77K"
+  },
+  "mlp16|nmos_L0p15_W1p6|k0|nmos_L0p25_W1p6": {
+   "label": "mlp16|nmos_L0p15_W1p6|k0",
+   "tag": "nmos_L0p25_W1p6",
+   "n_active": 38,
+   "rrms": 0.02136498405096181,
+   "failed": [],
+   "n_sim": 83,
+   "runtime_s": 2.76,
+   "rrms_start": 0.02703065264693961,
+   "dataset": "sky130_77K"
+  },
+  "lin|pmos_L0p35_W0p55|k0|nmos_L0p15_W1p6": {
+   "label": "lin|pmos_L0p35_W0p55|k0",
+   "tag": "nmos_L0p15_W1p6",
+   "n_active": 37,
+   "rrms": 0.01981916266944199,
+   "failed": [],
+   "n_sim": 43,
+   "runtime_s": 1.45,
+   "rrms_start": 0.01991750008103541,
+   "dataset": "sky130_77K"
+  },
+  "gam|pmos_L0p35_W0p55|k0|nmos_L0p15_W1p6": {
+   "label": "gam|pmos_L0p35_W0p55|k0",
+   "tag": "nmos_L0p15_W1p6",
+   "n_active": 37,
+   "rrms": 0.023295792838496934,
+   "failed": [],
+   "n_sim": 81,
+   "runtime_s": 2.84,
+   "rrms_start": 0.024683324848142757,
+   "dataset": "sky130_77K"
+  },
+  "mlp8|pmos_L0p35_W0p55|k0|nmos_L0p15_W1p6": {
+   "label": "mlp8|pmos_L0p35_W0p55|k0",
+   "tag": "nmos_L0p15_W1p6",
+   "n_active": 37,
+   "rrms": 0.019619958497544197,
+   "failed": [],
+   "n_sim": 43,
+   "runtime_s": 1.44,
+   "rrms_start": 0.0196575884533282,
+   "dataset": "sky130_77K"
+  },
+  "mlp16|pmos_L0p35_W0p55|k0|nmos_L0p15_W1p6": {
+   "label": "mlp16|pmos_L0p35_W0p55|k0",
+   "tag": "nmos_L0p15_W1p6",
+   "n_active": 37,
+   "rrms": 0.021298999334199563,
+   "failed": [],
+   "n_sim": 43,
+   "runtime_s": 1.37,
+   "rrms_start": 0.021322882395084862,
+   "dataset": "sky130_77K"
+  }
+ },
+ "runtime_s": 8.8
+}
