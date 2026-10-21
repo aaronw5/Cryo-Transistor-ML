@@ -3,7 +3,7 @@
  "title": "Second prospective DEV test on NIST mds2-2997 sky130 4 K transistors (MPW-5 tile), families nfet_01v8 / pfet_01v8 with the open sky130 room-temperature tt cards: the I7-1 frozen S1_lodo rule and the I3-2 bias-only correction",
  "iteration": "exploration iteration 9, item I9-1",
  "written": "2026-10-21",
- "status": "DRAFT, not in force. Written before any card fit on these families beyond the smoke, before any correction was trained on them and before any S statistic was computed on them. Done before this draft: card provenance and checks (cards.json), the Vb = 0 dataset of the two families (data/manifest.json), the DEV / TEST split (split.json; geometry, flags, bin coverage and the measured-only inclusion count), the stock-card scan of the 87 DEV devices (finiteness and timing only, no RRMS) and the reduced-setting smoke of every mode on 5 DEV devices (smoke_runs.json; not used for any decision). The open questions (section open_questions) are closed by the coordinator before this file is put in force; lodo and baselines refuse to start while the status starts with DRAFT",
+ "status": "IN FORCE from the commit that adds this version (2026-10-21). Written before any card fit on these families beyond the reduced-setting smoke, before any correction was trained on them at full settings and before any S statistic was computed on the full DEV set. Done before this version: card provenance and checks (cards.json), the Vb = 0 dataset (data/manifest.json), the DEV / TEST split (split.json; geometry, flags, bin coverage and the measured-only inclusion count), the stock-card scan of the 87 DEV devices (finiteness and timing, no RRMS) and the reduced-setting smoke of every mode on 5 DEV devices (smoke_runs.json, commit 5246240; not used for any decision). The draft open questions (draft_open_questions_closed) are closed by the coordinator's decisions (section decisions)",
  "questions": {
   "P_a": "does the I7-1 frozen rule, applied to S1_lodo computed from the DEV training folds, predict the sign of ln GMR(M_bias, C0_refit) on this second measured dataset?",
   "P_b": "does the I3-2 bias-only correction M_bias lower held-out error relative to C0_refit on this dataset?",
@@ -13,7 +13,7 @@
  },
  "parents": {
   "I8_1_decision": "out/research/explore/I8_1/decision.json (commit 4bff420): P_a correct (predicted y -0.236, observed -0.216), P_b supported GMR(M_bias, C0_refit) 0.806 [0.758, 0.864] 48/53, P_c correct; M_bias vs B3_d3 0.981 [0.961, 1.000]",
-  "I8_1_amendment_A1": "out/research/explore/I8_1/prereg_amendment_2026-10-20.json: records with non-finite simulated points excluded from every training set and S fold and scored as failed; built into this draft from the start",
+  "I8_1_amendment_A1": "out/research/explore/I8_1/prereg_amendment_2026-10-20.json: records with non-finite simulated points excluded from every training set and S fold and scored as failed; built into this pre-registration from the start",
   "I7_1_frozen_rule": "out/research/explore/I7_1/prereg_amendment_2026-10-20.json frozen_rule: predicted y_D = 0.007619219249052826 + (-0.4851839492908733) * S1_lodo_D; predicted gain iff S1_lodo_D > 0.015703774331753538",
   "I3_2_decision": "out/research/explore/I3_2/decision.json: sky130 77 K REAL_DEV GMR(M_bias, C0_refit) 0.769 [0.666, 0.886], 11/12"
  },
@@ -22,7 +22,7 @@
   "families": "nfet_01v8 (folder nthin, 80 devices, W 0.36-7 um, L 0.15-20 um) and pfet_01v8 (folder pthin, 71 devices with files, W 0.42-7 um, L 0.15-20 um; the readme position 17_6 'gate not connected' has no files). One device per W/L. Disjoint from the I8-1 devices (lvt folders). Inventory checks (I8-1 inventory.json): no bad device in either family",
   "curves": "Vb = 0 curves only, 9 per device, the I8-1 curve set: Id-Vg at |Vd| 0.1 and 1.8 V (idvg@d0, idvg@d1; 181 points), Id-Vd at |Vg| 0, 0.3, ..., 1.8 V (idvd@g0..g6; 91 points)",
   "inclusion_rule": "measured-only (I8-1 D4): trim to the first |I| > 1e-10 A, include iff trimmed mean |I| > 3e-7 A (Id-Vd) / 2e-7 A (Id-Vg). DEV: nMOS 288 curves (48 devices, 6 each), pMOS 161 curves (39 devices, 2-6 each)",
-  "exclusion": "decision D12 (draft): 6 pMOS devices with fewer than 2 included curves are excluded before the split: pfet_01v8_W0p42_L8_m11p8 (1), W0p42_L20_m12p1 (0), W0p55_L20_m13p1 (0), W0p64_L20_m13p8 (1), W1p26_L20_m15p4 (1), W1p68_L20_m16p5 (1); in these devices Id-Vd at |Vg| <= 1.2 V stays below 1e-12 A and only Id-Vd at |Vg| = 1.8 V (and for some Id-Vg at |Vd| = 1.8 V) passes the threshold",
+  "exclusion": "decision D12 (Q2): 6 pMOS devices with fewer than 2 included curves are excluded before the split: pfet_01v8_W0p42_L8_m11p8 (1), W0p42_L20_m12p1 (0), W0p55_L20_m13p1 (0), W0p64_L20_m13p8 (1), W1p26_L20_m15p4 (1), W1p68_L20_m16p5 (1); in these devices Id-Vd at |Vg| <= 1.2 V stays below 1e-12 A and only Id-Vd at |Vg| = 1.8 V (and for some Id-Vg at |Vd| = 1.8 V) passes the threshold",
   "split": {
    "file": "out/research/explore/I9_1/split.json",
    "rule": "I8-1 procedure (cryoml.explore.i8_1_nist.make_split): strata = family x bin coverage, devices sorted by (L, W), blocks of 5, 3 DEV / 2 TEST per block (short last block round(0.6 n)), numpy.random.default_rng(20261022) (new seed; I8-1 used 20261021)",
@@ -36,7 +36,7 @@
   "bin_coverage": "all 151 MPW-5 geometries of the two families (80 + 71), and all 87 DEV devices, lie inside a bin box; the bin is the one ngspice selects with the full card (eta0-sentinel readback where boxes share an edge; cryoml.explore.i9_1_nist_rt.native_bin). No forced nearest bin is needed (I8-1: 32 of 57 DEV devices)",
   "card_handling": "each bin's '+' lines are rewritten with one assignment per line (the cards hold e.g. '+ vth0 = {..} lvth0 = .. wvth0 = .. pvth0 = ..' on one line; 0 lines left unparsed), so a fitted parameter is written without changing its l / w / p binning terms; per simulation the card holds the subckt with the m-instance pointing at the device's bin and that bin's .model block only. Checks (smoke, 5 devices): this card gives currents identical to the full rewritten card with native selection (max relative difference 0), and the full rewritten card gives currents equal to the unmodified open_pdks sky130.lib.spice tt library (max absolute difference 1.7e-34 A)",
   "simulator": "ngspice-41 native arm64 build (/Users/anrunw/cryo-ng41/arm64/bin/ngspice). Deck as I8-1 (.options scale=1.0, alter / dc / wrdata per curve on the measured grid, -i(VD), pMOS negated) with the instance line Xm1 nd ng 0 0 sky130_fd_pr__{n,p}fet_01v8 l w nf=1 ad=as=0.29 W p, pd=ps=2 (W + 0.29) u, nrd=nrs=0.29 / W, sa=sb=sd=0, mult=1, m=1; library: mc_mm_switch = mc_pr_switch = 0. One ngspice process per device and card with all 9 sweeps; timeout 60 s. Stock scan of the 87 DEV devices at 30 C: 0 non-finite curves, 0 'Fatal' lines, median 0.025 s per simulation",
-  "deck_temperature": "draft decision D3: 30 C (the cards' tnom; see open question Q1)"
+  "deck_temperature": "decision D3 (Q1): 30 C, the cards' tnom"
  },
  "cards": {
   "parameter_set": "the 43-parameter sky130 set of I3-2 (i6_1_tudelft.BASE_SET), as I8-1",
@@ -58,7 +58,7 @@
    "role": "reported with GMR(M_bias, X), GMR(X, C0_refit) and device-bootstrap CIs; GMR(M_bias, B3_d3) is the pre-registered secondary S_B3"
   }
  },
- "transfer_arm_note": "Whether M_bias_lvt is meaningful: the inputs (is_pmos, |Vgs|/VDD, |Vds|/VDD), VDD, bias grid, measurement setup (same tile, same probe station, 4 K) and the loss are the same as in I8-1, so the trained g can be applied without change. The residual it learned is the one left by the 77 K lvt cards at a 77 K deck refit to 4 K lvt data; here the residual is the one left by the room-temperature regular-Vt cards at a 30 C deck refit to 4 K regular-Vt data. Two differences: (1) the threshold voltage differs (lvt vs regular Vt; in the 6 pMOS devices excluded by D12, Id-Vd at |Vg| <= 1.2 V stays below 1e-12 A at 4 K), so one |Vgs|/VDD value is a different gate overdrive; (2) the starting-card residual differs in its subthreshold part (a 30 C deck gives a smallest subthreshold swing of n x 60 mV/decade, a 77 K deck n x 15 mV/decade). The arm therefore tests transfer across device type and starting card together; a CI that contains 1 or lies above 1 does not bear on P_b. Cost: one training (5 seeds) and 87 held-out refits (about 3 min wall). Decision for the coordinator: open question Q4",
+ "transfer_arm_note": "Whether M_bias_lvt is meaningful: the inputs (is_pmos, |Vgs|/VDD, |Vds|/VDD), VDD, bias grid, measurement setup (same tile, same probe station, 4 K) and the loss are the same as in I8-1, so the trained g can be applied without change. The residual it learned is the one left by the 77 K lvt cards at a 77 K deck refit to 4 K lvt data; here the residual is the one left by the room-temperature regular-Vt cards at a 30 C deck refit to 4 K regular-Vt data. Two differences: (1) the threshold voltage differs (lvt vs regular Vt; in the 6 pMOS devices excluded by D12, Id-Vd at |Vg| <= 1.2 V stays below 1e-12 A at 4 K), so one |Vgs|/VDD value is a different gate overdrive; (2) the starting-card residual differs in its subthreshold part (a 30 C deck gives a smallest subthreshold swing of n x 60 mV/decade, a 77 K deck n x 15 mV/decade). The arm therefore tests transfer across device type and starting card together; a CI that contains 1 or lies above 1 does not bear on P_b. Cost: one training (5 seeds) and 87 held-out refits (about 3 min wall). Kept as secondary (decision Q4); it does not bear on P_b",
  "evaluation": {
   "folds": "leave-one-device-out over the DEV devices with a finite starting record (A1); training pool for M_bias, T1 and B3_d3 = the other such DEV devices, both polarities, one network (is_pmos input)",
   "metric": "strict paper RRMS with the frozen measured inclusion (e1_correction.score_device, non-sky130 branch); a non-finite included curve makes the device NaN (failed); every scored current is a fresh NGSpice simulation of the refit card (x exp(g) for M_bias, M_bias_lvt, T1, B3_d3)",
@@ -73,7 +73,7 @@
   "gates": "G: M_bias iff S3_D < 0, else C0_refit; G1: M_bias iff the frozen rule predicts a gain (I8-2 definitions)"
  },
  "order_of_operations": [
-  "1. Coordinator closes the open questions; the closed version (status IN FORCE) is committed alone and pushed.",
+  "1. Commit this file alone and push (pre-registration commit). Then commit the code change for the Q6 note in decide.",
   "2. Job I9_1_start: starting cards of the DEV devices (start/bins.json, start/records, start/summary.json).",
   "3. Job I9_1_stats: S statistics from start/records only; writes prediction.json.",
   "4. Job I9_1_commit_prediction: commits prediction.json alone and pushes.",
@@ -84,7 +84,8 @@
  "criterion": {
   "P_a": {
    "prediction": "sign of y_D = sign(0.007619219249052826 + (-0.4851839492908733) * S1_lodo_D)",
-   "outcome": "'correct' if sign(y_D) equals the predicted sign, else 'wrong'; |y_D - predicted y_D| reported (not deciding); per-family values reported (not deciding)"
+   "outcome": "'correct' if sign(y_D) equals the predicted sign, else 'wrong'; |y_D - predicted y_D| reported (not deciding); per-family values reported (not deciding)",
+   "calibration_range_note": "pre-registered note (decision Q6): decide records whether S1_lodo_D lies inside the S1_lodo range of the 11 I7-1 calibration datasets, [-0.37891158353132853, 0.5040862674260564] (out/research/explore/I7_1/retro/results.json), and reports the P_a outcome together with that note. P_a is stated unconditionally as primary; the note does not change the rule or the outcome label"
   },
   "P_b": {
    "R1": "the upper bound of the device-bootstrap 95% CI of GMR(M_bias, C0_refit) over the DEV devices is < 1",
@@ -127,10 +128,37 @@
   "frozen_rule_domain": "the I7-1 rule was fitted on 11 stored datasets and checked on 20 simulated datasets and on I8-1 (S1_lodo_D 0.502); S1_lodo of the 11 calibration datasets spans -0.379 to 0.504 (out/research/explore/I7_1/retro/results.json); a dataset with room-temperature starting cards may give S1_lodo_D outside that range; P_a is then an extrapolation of the rule",
   "pmos_low_current": "at 4 K the regular-Vt pMOS conducts little: DEV pMOS have 2-6 included curves (mean 4.1; I8-1 lvt pMOS 2-6), and 6 devices are excluded by D12"
  },
- "decisions_draft": {
+ "frozen_choices_note": "All choices above are fixed by this commit. No DEV result is used to change them; a later variant gets a new id or a dated amendment that leaves this file unchanged",
+ "decisions": {
+  "Q1_deck_temperature": {
+   "decision": "30 C, the cards' tnom",
+   "reason": "same principle as I8-1 D3 (deck at the card's nominal temperature); the brief's 27 C is not the tnom of these cards"
+  },
+  "Q2_min_included": {
+   "decision": "exclude the 6 pMOS devices with fewer than 2 measured-rule included curves before the split (D12); DEV 87, TEST 58",
+   "reason": "the criterion uses measured data only"
+  },
+  "Q3_s3_cost": {
+   "decision": "full S3 pair design (one reduced M_bias fit per unordered pair of DEV devices with finite records)",
+   "reason": "keeps the I7-1 S3 definition"
+  },
+  "Q4_transfer_arm": {
+   "decision": "keep M_bias_lvt as the pre-registered secondary S_transfer",
+   "reason": "about 3 min; stated as not bearing on P_b (transfer_arm_note)"
+  },
+  "Q5_V2_threshold": {
+   "decision": "V2 minimum 70 paired devices",
+   "reason": "80% of 87 DEV devices (I8-1: 45 of 57)"
+  },
+  "Q6_frozen_rule_domain": {
+   "decision": "P_a stated unconditionally as primary; a pre-registered note records whether S1_lodo_D lies inside the calibration range [-0.379, 0.504], and the P_a outcome is reported alongside it (no separate rule)",
+   "reason": "the I7-1 rule stays unchanged; the note shows whether P_a is an extrapolation of it"
+  }
+ },
+ "decisions_D": {
   "D1_families": "nfet_01v8 (nthin) and pfet_01v8 (pthin), the two MPW-5 1.8 V families not used in I8-1",
   "D2_bins": "native bin of the full room-temperature card for every device (all covered); no covered-subset secondary (it would equal the primary)",
-  "D3_deck_temperature": "30 C, the cards' tnom (by analogy with I8-1 D3: card at its tnom). The brief named 27 C; see Q1",
+  "D3_deck_temperature": "30 C, the cards' tnom (by analogy with I8-1 D3: card at its tnom). (decision Q1)",
   "D4_inclusion": "measured-only rule, as I8-1",
   "D5_curve_set": "Vb = 0, 9 curves, as I8-1",
   "D6_box": "cold_start round-one widths around the stock room-temperature values, as I8-1",
@@ -139,18 +167,17 @@
   "D9_vdd": "1.8 V",
   "D10_P_a": "one dataset-level binary sign prediction; predicted y_D and per-family values reported",
   "D11_gates": "G and G1 registered as secondary predictions",
-  "D12_min_included": "devices with fewer than 2 measured-rule included curves are excluded before the split (6 pMOS); see Q2",
+  "D12_min_included": "devices with fewer than 2 measured-rule included curves are excluded before the split (6 pMOS) (decision Q2)",
   "D13_A1": "amendment A1 of I8-1 built in (A1_built_in)",
   "D14_S_B3": "GMR(M_bias, B3_d3) with CI pre-registered as secondary S_B3",
-  "D15_transfer": "M_bias_lvt registered as secondary S_transfer (transfer_arm_note); see Q4"
+  "D15_transfer": "M_bias_lvt registered as secondary S_transfer (transfer_arm_note) (decision Q4)"
  },
- "open_questions": {
+ "draft_open_questions_closed": {
   "Q1_deck_temperature": "deck at 30 C (draft; the cards' tnom is 30 C, not 27 C) or 27 C as in the brief? Smoke on 5 devices: 27 C changes the stock-card currents at |Vg| = |Vd| = 1.8 V by 0.0-0.8% and at |Vg| = 0.9 V by 0.1-10% (relative to 30 C). Other options recorded in the smoke, not scored: 4.2 K with the card's temperature equations (on-current at |Vg| = |Vd| = 1.8 V x 1.4-12.8 of the 30 C value, current at |Vg| = 0.9 V down to 0-37%, finite, no fatal line) and 4.2 K with kt1, kt1l, kt2, ute, ua1, ub1, uc1, at, prt and their binning terms set to 0 (on-current x 0.94-0.99; smallest swing 8-19 mV/decade where defined)",
   "Q2_min_included": "exclude the 6 pMOS devices with < 2 included curves before the split (draft; DEV 87, TEST 58), or keep them (split with them: DEV 91, TEST 60) and count them as failed starts under V1 (one has 0 included curves, MeasProblem cannot form an objective)?",
   "Q3_s3_cost": "S3 is about 75 of the about 140 wall minutes. Keep the full pair design (draft), or compute S3 on a seeded subsample of inner devices per fold (P_c only; changes the I7-1 S3 definition)?",
   "Q4_transfer_arm": "keep M_bias_lvt as a pre-registered secondary (draft; about 3 min), or omit it (different device type and starting card; see transfer_arm_note)?",
   "Q5_V2_threshold": "V2 paired-device minimum 70 (80% of 87; I8-1 used 45 of 57 = 79%)",
   "Q6_frozen_rule_domain": "state P_a as in I8-1 even if S1_lodo_D falls outside the range of the I7-1 calibration datasets, or add a pre-registered condition (e.g. 'P_a stated only if S1_lodo_D lies within the calibration range -0.379 to 0.504')?"
- },
- "frozen_choices_note": "When put in force, all choices above are fixed by that commit; a later variant gets a new id or a dated amendment"
+ }
 }
