@@ -1,0 +1,512 @@
+{
+ "id": "I8_2_partA",
+ "title": "Pre-registered predictions of the sign of ln GMR(M_bias, C0_refit) on the 7 TEST datasets, from the DEV statistics S1_lodo (frozen I7-1 rule) and S3",
+ "written": "2026-10-20",
+ "code": {
+  "git_head_at_run": "3543948b8089211b5ee3971cc11d442b3c918cde",
+  "code_files": [
+   "scripts/research/explore/i8_2_gate.py",
+   "scripts/research/explore/i7_1_transfer.py",
+   "src/cryoml/explore/i7_1_transfer.py",
+   "src/cryoml/explore/e1_correction.py"
+  ],
+  "code_files_clean_at_run": true,
+  "script_sha256": "2eb027a2b20f802035c849a3b1324f94d898096094adb57022242ba977e737e7",
+  "command": "PYTHONPATH=src .venv/bin/python scripts/research/explore/i8_2_gate.py --mode prereg"
+ },
+ "status": "written before any TEST curve is loaded, simulated or fitted. The final TEST run is planned for about 2026-12-10",
+ "test_data_not_opened": {
+  "statement": "TEST data were not opened. The only TEST information used is the tag lists in the split files (device names), which carry no measured or simulated values",
+  "verification": "every record loaded by this script is checked to be in the DEV list and not in the TEST list of its split file (records_DEV_only below); the record directories read are the I7-1 retro DEV record paths; files_read lists every file this script opened",
+  "files_read": [
+   "out/research/explore/E1/real_dev.json",
+   "out/research/explore/E1/real_dev.npz",
+   "out/research/explore/I5_1/split.json",
+   "out/research/explore/I5_1/start/records_233K.json",
+   "out/research/explore/I5_1/start/records_233K.npz",
+   "out/research/explore/I5_1/start/records_300K.json",
+   "out/research/explore/I5_1/start/records_300K.npz",
+   "out/research/explore/I5_1/start/records_343K.json",
+   "out/research/explore/I5_1/start/records_343K.npz",
+   "out/research/explore/I5_1/start/records_398K.json",
+   "out/research/explore/I5_1/start/records_398K.npz",
+   "out/research/explore/I6_1/split.json",
+   "out/research/explore/I6_1/start/records_295K.json",
+   "out/research/explore/I6_1/start/records_295K.npz",
+   "out/research/explore/I6_1/start/records_4K.json",
+   "out/research/explore/I6_1/start/records_4K.npz",
+   "out/research/explore/I7_1/prereg_amendment_2026-10-20.json",
+   "out/research/explore/I7_1/retro/results.json",
+   "out/research/explore/I7_1/retro/s3.json",
+   "out/research/explore/real_split.json"
+  ],
+  "files_read_with_test_in_name": [],
+  "all_loaded_records_DEV": true
+ },
+ "frozen_rule": {
+  "form": "predicted y_D = a + b * S1_lodo_D; predicted sign of ln GMR(M_bias, C0_refit) = sign(a + b * S1_lodo_D); predicted gain iff a + b * S1_lodo_D < 0",
+  "a": 0.007619219249052826,
+  "b": -0.4851839492908733,
+  "zero_crossing_S1_lodo": 0.015703774331753538,
+  "fit": "OLS over the 11 stored datasets (dataset level), retro/results.json",
+  "n": 11,
+  "r2": 0.7847489919030067,
+  "slope_sign_note": "b < 0: higher S1_lodo predicts a lower log ratio (more gain)",
+  "source": "out/research/explore/I7_1/prereg_amendment_2026-10-20.json"
+ },
+ "S3_rule": "predicted gain (negative ln GMR) iff S3 < 0; S3 = stored dataset-level value (retro/s3.json per-fold values, weighted by held-out devices per fold), reduced M_bias recipe (1 seed, 500 steps)",
+ "statistic_definition_used": "primary: the stored dataset-level DEV values of out/research/explore/I7_1/retro/results.json (mean over the DEV leave-one-out folds of the statistic on each fold's training devices; the definition the frozen rule was fit on). Secondary (reported, not the prediction): S1_lodo on the TEST run's training set (all DEV devices; IHP per class)",
+ "how_TEST_is_scored": {
+  "sky130": {
+   "C0_refit": "held-out card refit of each TEST device without correction from its starting card: ngspice_fit.polish, max_nfev 400, irls_rounds 2, diff_step 0.01 (I3-2 settings), same parameter box as the dataset's DEV runs",
+   "M_bias": "I3-2 recipe unchanged (cryoml.explore.i3_2_bias.fit_bias, 'M_bias'): I = I_card * exp(g), g = tanh(h(x)), h = MLP 3-16-16-1 (tanh hidden, last layer zero-initialized), x = (is_pmos 0/1, |Vgs|/VDD, |Vds|/VDD) with the two bias inputs standardized by the training-point mean/std; loss = mean over training devices of the paper per-device RRMS of the corrected current + 1e-4 * sum of squared weight-matrix entries; Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4, g = mean of the 5 members. Trained post hoc on the starting-card records of the training set below, frozen; each TEST card is refit with g in the loop (same polish settings as C0_refit), the best card re-simulated, corrected with the same g and scored",
+   "score": "strict paper RRMS per device (e1_correction.score_device: mean over the frozen measured-inclusion curves of trimmed RMSE / trimmed mean |I_measured|)",
+   "outcome": "y = mean over TEST devices of ln(RRMS_M_bias / RRMS_C0_refit); GMR(M_bias, C0_refit) = exp(y) (i3_2_bias.paired_ratio; devices with a non-finite or non-positive RRMS in either arm left out and counted). Predicted sign correct iff sign(predicted y) = sign(y)",
+   "code_status": "no TEST mode exists in the code at this commit; the protocol is the TEST_policy / method-freeze text of the dataset's prereg, restated here",
+   "devices": [
+    "nmos_L0p19_W7",
+    "nmos_L1_W1p6",
+    "nmos_L8_W1p6",
+    "pmos_L0p35_W1p6",
+    "pmos_L0p5_W0p64",
+    "pmos_L8_W0p84"
+   ],
+   "source": "out/research/explore/real_split.json REAL_TEST (6 devices, 3 nMOS, 3 pMOS); I3-2 prereg data_reuse_note (REAL_TEST at the method freeze, configuration fixed before loading)",
+   "starting_cards": "the 43-parameter direct-fit cards in out/research/polished/direct43_r3_fd/real/summary.json (as for REAL_DEV); records by scripts/research/explore/e1_collect_real.py --split test (one NGSpice run per device)",
+   "box": "round-3 43-parameter box (out/cold_loop/full_direct/round_3/spec.json, cold_loop.box_for)",
+   "training_set": "all 12 REAL_DEV starting-card records (out/research/explore/E1/real_dev), both polarities, one M_bias ensemble"
+  },
+  "ihp_meas": {
+   "C0_refit": "held-out card refit of each TEST device without correction from its starting card: ngspice_fit.polish, max_nfev 400, irls_rounds 2, diff_step 0.01 (I3-2 settings), same parameter box as the dataset's DEV runs",
+   "M_bias": "I3-2 recipe unchanged (cryoml.explore.i3_2_bias.fit_bias, 'M_bias'): I = I_card * exp(g), g = tanh(h(x)), h = MLP 3-16-16-1 (tanh hidden, last layer zero-initialized), x = (is_pmos 0/1, |Vgs|/VDD, |Vds|/VDD) with the two bias inputs standardized by the training-point mean/std; loss = mean over training devices of the paper per-device RRMS of the corrected current + 1e-4 * sum of squared weight-matrix entries; Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4, g = mean of the 5 members. Trained post hoc on the starting-card records of the training set below, frozen; each TEST card is refit with g in the loop (same polish settings as C0_refit), the best card re-simulated, corrected with the same g and scored",
+   "score": "strict paper RRMS per device (e1_correction.score_device: mean over the frozen measured-inclusion curves of trimmed RMSE / trimmed mean |I_measured|)",
+   "outcome": "y = mean over TEST devices of ln(RRMS_M_bias / RRMS_C0_refit); GMR(M_bias, C0_refit) = exp(y) (i3_2_bias.paired_ratio; devices with a non-finite or non-positive RRMS in either arm left out and counted). Predicted sign correct iff sign(predicted y) = sign(y)",
+   "code_status": "no TEST mode exists in the code at this commit; the protocol is the TEST_policy / method-freeze text of the dataset's prereg, restated here",
+   "devices": [
+    "hv_nmos_W10_L10",
+    "hv_nmos_W2_L3",
+    "hv_pmos_W0p3_L0p35",
+    "hv_pmos_W10_L10",
+    "lv_nmos_W0p15_L0p13",
+    "lv_nmos_W10_L0p13",
+    "lv_nmos_W10_L0p18",
+    "lv_pmos_W0p15_L0p13",
+    "lv_pmos_W10_L0p13",
+    "lv_pmos_W10_L0p18"
+   ],
+   "source": "out/research/explore/I5_1/split.json TEST (10 DUTs: 6 LV, 4 HV); I5-1 prereg data.split.TEST_policy",
+   "starting_cards": "per TEST DUT and temperature: ngspice_fit.polish from the stock card, max_nfev 3000, irls_rounds 3, diff_step 0.01, objective = mean included-curve RRMS (frozen measured inclusion), best card kept (I5-1 prereg cards)",
+   "box": "IHP_WIDE 12-parameter PSP box, i5_1_ihp_real.base_box",
+   "training_set": "per temperature and class: all DEV DUTs of the TEST DUT's class (LV 10, HV 8) at that temperature (out/research/explore/I5_1/start/records_<T>K); one M_bias ensemble per (temperature, class)"
+  },
+  "tudelft": {
+   "C0_refit": "held-out card refit of each TEST device without correction from its starting card: ngspice_fit.polish, max_nfev 400, irls_rounds 2, diff_step 0.01 (I3-2 settings), same parameter box as the dataset's DEV runs",
+   "M_bias": "I3-2 recipe unchanged (cryoml.explore.i3_2_bias.fit_bias, 'M_bias'): I = I_card * exp(g), g = tanh(h(x)), h = MLP 3-16-16-1 (tanh hidden, last layer zero-initialized), x = (is_pmos 0/1, |Vgs|/VDD, |Vds|/VDD) with the two bias inputs standardized by the training-point mean/std; loss = mean over training devices of the paper per-device RRMS of the corrected current + 1e-4 * sum of squared weight-matrix entries; Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4, g = mean of the 5 members. Trained post hoc on the starting-card records of the training set below, frozen; each TEST card is refit with g in the loop (same polish settings as C0_refit), the best card re-simulated, corrected with the same g and scored",
+   "score": "strict paper RRMS per device (e1_correction.score_device: mean over the frozen measured-inclusion curves of trimmed RMSE / trimmed mean |I_measured|)",
+   "outcome": "y = mean over TEST devices of ln(RRMS_M_bias / RRMS_C0_refit); GMR(M_bias, C0_refit) = exp(y) (i3_2_bias.paired_ratio; devices with a non-finite or non-positive RRMS in either arm left out and counted). Predicted sign correct iff sign(predicted y) = sign(y)",
+   "code_status": "no TEST mode exists in the code at this commit; the protocol is the TEST_policy / method-freeze text of the dataset's prereg, restated here",
+   "devices": [
+    "t40_nmos_W1_L0p36_d144",
+    "t40_nmos_W1_L0p36_d145",
+    "t40_nmos_W1_L0p36_d146",
+    "t40_nmos_W1_L0p36_d147",
+    "t40_nmos_W1_L0p36_d148",
+    "t40_nmos_W1_L0p36_d149",
+    "t40_nmos_W1_L0p36_d150",
+    "t40_nmos_W1_L0p36_d151",
+    "t40_nmos_W4_L4_d136",
+    "t40_nmos_W4_L4_d137",
+    "t40_nmos_W4_L4_d138",
+    "t40_nmos_W4_L4_d139",
+    "t40_nmos_W4_L4_d140",
+    "t40_nmos_W4_L4_d141",
+    "t40_nmos_W4_L4_d142",
+    "t40_nmos_W4_L4_d143",
+    "t40_pmos_W4_L4_d336",
+    "t40_pmos_W4_L4_d337",
+    "t40_pmos_W4_L4_d338",
+    "t40_pmos_W4_L4_d339",
+    "t40_pmos_W4_L4_d340",
+    "t40_pmos_W4_L4_d341",
+    "t40_pmos_W4_L4_d342",
+    "t40_pmos_W4_L4_d343"
+   ],
+   "source": "out/research/explore/I6_1/split.json TEST (24 devices in 3 W/L groups: nMOS 1/0.36, nMOS 4/4, pMOS 4/4); I6-1 prereg data.split.TEST_policy",
+   "starting_cards": "per TEST device and temperature: ngspice_fit.polish from the stock card, max_nfev 3000, irls_rounds 3, diff_step 0.01, objective = mean included-curve RRMS (frozen measured inclusion), best card kept (I6-1 prereg cards)",
+   "box": "43-parameter sky130-set BSIM4 box around the 40 nm card, i6_1_tudelft.base_box",
+   "training_set": "all 45 DEV devices at the temperature (out/research/explore/I6_1/start/records_<T>K), both polarities, one M_bias ensemble per temperature"
+  }
+ },
+ "predictions": [
+  {
+   "name": "sky130_77K",
+   "dataset": "sky130 77 K REAL_TEST",
+   "temp_K": 77.0,
+   "n_test_devices": 6,
+   "n_dev_devices": 12,
+   "S1_lodo_stored": 0.32156035550322204,
+   "predicted_y_rule": -0.14839670396937765,
+   "predicted_gmr_rule": 0.8620890529485944,
+   "predicted_sign_S1": "negative (M_bias gain)",
+   "S1_predicts": "gain",
+   "S3_stored": -0.11261347471801349,
+   "predicted_sign_S3": "negative (M_bias gain)",
+   "S3_predicts": "gain",
+   "S1_and_S3_agree": true,
+   "secondary_S1_lodo_test_training_set": 0.3365473216418562,
+   "secondary_predicted_y_rule": -0.15566813938840876,
+   "secondary_S1_predicts": "gain",
+   "secondary_detail": {
+    "S1_lodo": 0.3365473216418562,
+    "n_train": 12,
+    "weighting": "one training set (all DEV devices)"
+   },
+   "dev_dataset_outcome_already_seen": {
+    "y_dev": -0.2631316035119305,
+    "gmr_dev": 0.7686407348345207,
+    "note": "DEV leave-one-out outcome (I3-2 / I5-1 / I6-1), known before this file"
+   }
+  },
+  {
+   "name": "ihp_meas_233K",
+   "dataset": "IHP SG13G2 TEST 233 K",
+   "temp_K": 233.0,
+   "n_test_devices": 10,
+   "n_dev_devices": 18,
+   "S1_lodo_stored": -0.31443914180003785,
+   "predicted_y_rule": 0.1601800438792281,
+   "predicted_gmr_rule": 1.1737221734626275,
+   "predicted_sign_S1": "positive (M_bias loss)",
+   "S1_predicts": "loss",
+   "S3_stored": 0.254485375298053,
+   "predicted_sign_S3": "positive (M_bias loss)",
+   "S3_predicts": "loss",
+   "S1_and_S3_agree": true,
+   "secondary_S1_lodo_test_training_set": -0.24559179511789875,
+   "secondary_predicted_y_rule": 0.12677641631778994,
+   "secondary_S1_predicts": "loss",
+   "secondary_detail": {
+    "S1_lodo": -0.24559179511789875,
+    "per_class": {
+     "lv": {
+      "S1_lodo": -0.2923910291626526,
+      "S1_pooled": 0.3946783694925976,
+      "S2": 0.2907600705427645,
+      "n_train": 10,
+      "n_train_pmos": 5,
+      "n_test": 6
+     },
+     "hv": {
+      "S1_lodo": -0.175392944050768,
+      "S1_pooled": 0.1230749343192683,
+      "S2": 0.15026893707507485,
+      "n_train": 8,
+      "n_train_pmos": 4,
+      "n_test": 4
+     }
+    },
+    "weighting": "per class S1_lodo of all DEV DUTs of the class, weighted by the number of TEST DUTs of the class (LV 6, HV 4)"
+   },
+   "dev_dataset_outcome_already_seen": {
+    "y_dev": 0.10115044955068582,
+    "gmr_dev": 1.106443093108062,
+    "note": "DEV leave-one-out outcome (I3-2 / I5-1 / I6-1), known before this file"
+   }
+  },
+  {
+   "name": "ihp_meas_300K",
+   "dataset": "IHP SG13G2 TEST 300 K",
+   "temp_K": 300.0,
+   "n_test_devices": 10,
+   "n_dev_devices": 18,
+   "S1_lodo_stored": -0.22331207012241736,
+   "predicted_y_rule": 0.11596665135536771,
+   "predicted_gmr_rule": 1.1229584223674445,
+   "predicted_sign_S1": "positive (M_bias loss)",
+   "S1_predicts": "loss",
+   "S3_stored": 0.3661898446841472,
+   "predicted_sign_S3": "positive (M_bias loss)",
+   "S3_predicts": "loss",
+   "S1_and_S3_agree": true,
+   "secondary_S1_lodo_test_training_set": -0.1886792595505719,
+   "secondary_predicted_y_rule": 0.09916336754707702,
+   "secondary_S1_predicts": "loss",
+   "secondary_detail": {
+    "S1_lodo": -0.1886792595505719,
+    "per_class": {
+     "lv": {
+      "S1_lodo": -0.2325012235090056,
+      "S1_pooled": 0.45691048753832053,
+      "S2": 0.3631218708119276,
+      "n_train": 10,
+      "n_train_pmos": 5,
+      "n_test": 6
+     },
+     "hv": {
+      "S1_lodo": -0.12294631361292141,
+      "S1_pooled": 0.18622239678418928,
+      "S2": 0.2680919106929625,
+      "n_train": 8,
+      "n_train_pmos": 4,
+      "n_test": 4
+     }
+    },
+    "weighting": "per class S1_lodo of all DEV DUTs of the class, weighted by the number of TEST DUTs of the class (LV 6, HV 4)"
+   },
+   "dev_dataset_outcome_already_seen": {
+    "y_dev": 0.19426781505559146,
+    "gmr_dev": 1.2144214797641033,
+    "note": "DEV leave-one-out outcome (I3-2 / I5-1 / I6-1), known before this file"
+   }
+  },
+  {
+   "name": "ihp_meas_343K",
+   "dataset": "IHP SG13G2 TEST 343 K",
+   "temp_K": 343.0,
+   "n_test_devices": 10,
+   "n_dev_devices": 18,
+   "S1_lodo_stored": -0.3307075342219471,
+   "predicted_y_rule": 0.16807320676310372,
+   "predicted_gmr_rule": 1.1830232127779254,
+   "predicted_sign_S1": "positive (M_bias loss)",
+   "S1_predicts": "loss",
+   "S3_stored": 0.3749413207884927,
+   "predicted_sign_S3": "positive (M_bias loss)",
+   "S3_predicts": "loss",
+   "S1_and_S3_agree": true,
+   "secondary_S1_lodo_test_training_set": -0.26593033594698057,
+   "secondary_predicted_y_rule": 0.13664434988005753,
+   "secondary_S1_predicts": "loss",
+   "secondary_detail": {
+    "S1_lodo": -0.26593033594698057,
+    "per_class": {
+     "lv": {
+      "S1_lodo": -0.42002524548971265,
+      "S1_pooled": 0.33615100166026113,
+      "S2": 0.3681159410617719,
+      "n_train": 10,
+      "n_train_pmos": 5,
+      "n_test": 6
+     },
+     "hv": {
+      "S1_lodo": -0.0347879716328825,
+      "S1_pooled": 0.24501449574524714,
+      "S2": 0.30487788682058997,
+      "n_train": 8,
+      "n_train_pmos": 4,
+      "n_test": 4
+     }
+    },
+    "weighting": "per class S1_lodo of all DEV DUTs of the class, weighted by the number of TEST DUTs of the class (LV 6, HV 4)"
+   },
+   "dev_dataset_outcome_already_seen": {
+    "y_dev": 0.16643207617943295,
+    "gmr_dev": 1.181083309454976,
+    "note": "DEV leave-one-out outcome (I3-2 / I5-1 / I6-1), known before this file"
+   }
+  },
+  {
+   "name": "ihp_meas_398K",
+   "dataset": "IHP SG13G2 TEST 398 K",
+   "temp_K": 398.0,
+   "n_test_devices": 10,
+   "n_dev_devices": 18,
+   "S1_lodo_stored": -0.37891158353132853,
+   "predicted_y_rule": 0.1914610377788414,
+   "predicted_gmr_rule": 1.211017648283346,
+   "predicted_sign_S1": "positive (M_bias loss)",
+   "S1_predicts": "loss",
+   "S3_stored": 0.39454247331233255,
+   "predicted_sign_S3": "positive (M_bias loss)",
+   "S3_predicts": "loss",
+   "S1_and_S3_agree": true,
+   "secondary_S1_lodo_test_training_set": -0.29044886455413127,
+   "secondary_predicted_y_rule": 0.14854034642047617,
+   "secondary_S1_predicts": "loss",
+   "secondary_detail": {
+    "S1_lodo": -0.29044886455413127,
+    "per_class": {
+     "lv": {
+      "S1_lodo": -0.2623854583721461,
+      "S1_pooled": 0.4535759908783924,
+      "S2": 0.27541690613476455,
+      "n_train": 10,
+      "n_train_pmos": 5,
+      "n_test": 6
+     },
+     "hv": {
+      "S1_lodo": -0.332543973827109,
+      "S1_pooled": 0.565731834159279,
+      "S2": 0.3625703787674149,
+      "n_train": 8,
+      "n_train_pmos": 4,
+      "n_test": 4
+     }
+    },
+    "weighting": "per class S1_lodo of all DEV DUTs of the class, weighted by the number of TEST DUTs of the class (LV 6, HV 4)"
+   },
+   "dev_dataset_outcome_already_seen": {
+    "y_dev": 0.24049302169962955,
+    "gmr_dev": 1.2718760582650601,
+    "note": "DEV leave-one-out outcome (I3-2 / I5-1 / I6-1), known before this file"
+   }
+  },
+  {
+   "name": "tudelft_4K",
+   "dataset": "TU Delft TEST 4.13 K",
+   "temp_K": 4.13,
+   "n_test_devices": 24,
+   "n_dev_devices": 45,
+   "S1_lodo_stored": 0.5040862674260564,
+   "predicted_y_rule": -0.23695534676401653,
+   "predicted_gmr_rule": 0.7890265198183836,
+   "predicted_sign_S1": "negative (M_bias gain)",
+   "S1_predicts": "gain",
+   "S3_stored": -0.032894979436669775,
+   "predicted_sign_S3": "negative (M_bias gain)",
+   "S3_predicts": "gain",
+   "S1_and_S3_agree": true,
+   "secondary_S1_lodo_test_training_set": 0.5050982168463891,
+   "secondary_predicted_y_rule": -0.23744632838025614,
+   "secondary_S1_predicts": "gain",
+   "secondary_detail": {
+    "S1_lodo": 0.5050982168463891,
+    "n_train": 45,
+    "weighting": "one training set (all DEV devices)"
+   },
+   "dev_dataset_outcome_already_seen": {
+    "y_dev": -0.0634014004250592,
+    "gmr_dev": 0.9385666570119345,
+    "note": "DEV leave-one-out outcome (I3-2 / I5-1 / I6-1), known before this file"
+   }
+  },
+  {
+   "name": "tudelft_295K",
+   "dataset": "TU Delft TEST 295 K",
+   "temp_K": 295.0,
+   "n_test_devices": 24,
+   "n_dev_devices": 45,
+   "S1_lodo_stored": 0.3231388181871947,
+   "predicted_y_rule": -0.1491625487281958,
+   "predicted_gmr_rule": 0.8614290793166899,
+   "predicted_sign_S1": "negative (M_bias gain)",
+   "S1_predicts": "gain",
+   "S3_stored": -0.0408894324969139,
+   "predicted_sign_S3": "negative (M_bias gain)",
+   "S3_predicts": "gain",
+   "S1_and_S3_agree": true,
+   "secondary_S1_lodo_test_training_set": 0.3044714066801575,
+   "secondary_predicted_y_rule": -0.14010542029017356,
+   "secondary_S1_predicts": "gain",
+   "secondary_detail": {
+    "S1_lodo": 0.3044714066801575,
+    "n_train": 45,
+    "weighting": "one training set (all DEV devices)"
+   },
+   "dev_dataset_outcome_already_seen": {
+    "y_dev": -0.22654776021434408,
+    "gmr_dev": 0.797281263079641,
+    "note": "DEV leave-one-out outcome (I3-2 / I5-1 / I6-1), known before this file"
+   }
+  }
+ ],
+ "checks": {
+  "sky130_77K": {
+   "records_DEV_only": {
+    "n_records": 12,
+    "all_in_DEV": true,
+    "n_in_TEST": 0,
+    "DEV_complete": true
+   },
+   "S1_lodo_recomputed": 0.32156035550322204,
+   "S1_lodo_abs_diff": 0.0,
+   "S3_recomputed_from_s3_json": -0.11261347471801349,
+   "S3_abs_diff": 0.0,
+   "fold_ids_match_stored": true
+  },
+  "ihp_meas_233K": {
+   "records_DEV_only": {
+    "n_records": 18,
+    "all_in_DEV": true,
+    "n_in_TEST": 0,
+    "DEV_complete": true
+   },
+   "S1_lodo_recomputed": -0.31443914180003785,
+   "S1_lodo_abs_diff": 0.0,
+   "S3_recomputed_from_s3_json": 0.254485375298053,
+   "S3_abs_diff": 0.0,
+   "fold_ids_match_stored": true
+  },
+  "ihp_meas_300K": {
+   "records_DEV_only": {
+    "n_records": 18,
+    "all_in_DEV": true,
+    "n_in_TEST": 0,
+    "DEV_complete": true
+   },
+   "S1_lodo_recomputed": -0.22331207012241736,
+   "S1_lodo_abs_diff": 0.0,
+   "S3_recomputed_from_s3_json": 0.3661898446841472,
+   "S3_abs_diff": 0.0,
+   "fold_ids_match_stored": true
+  },
+  "ihp_meas_343K": {
+   "records_DEV_only": {
+    "n_records": 18,
+    "all_in_DEV": true,
+    "n_in_TEST": 0,
+    "DEV_complete": true
+   },
+   "S1_lodo_recomputed": -0.3307075342219471,
+   "S1_lodo_abs_diff": 0.0,
+   "S3_recomputed_from_s3_json": 0.3749413207884927,
+   "S3_abs_diff": 0.0,
+   "fold_ids_match_stored": true
+  },
+  "ihp_meas_398K": {
+   "records_DEV_only": {
+    "n_records": 18,
+    "all_in_DEV": true,
+    "n_in_TEST": 0,
+    "DEV_complete": true
+   },
+   "S1_lodo_recomputed": -0.37891158353132853,
+   "S1_lodo_abs_diff": 0.0,
+   "S3_recomputed_from_s3_json": 0.39454247331233255,
+   "S3_abs_diff": 0.0,
+   "fold_ids_match_stored": true
+  },
+  "tudelft_4K": {
+   "records_DEV_only": {
+    "n_records": 45,
+    "all_in_DEV": true,
+    "n_in_TEST": 0,
+    "DEV_complete": true
+   },
+   "S1_lodo_recomputed": 0.5040862674260564,
+   "S1_lodo_abs_diff": 0.0,
+   "S3_recomputed_from_s3_json": -0.032894979436669775,
+   "S3_abs_diff": 0.0,
+   "fold_ids_match_stored": true
+  },
+  "tudelft_295K": {
+   "records_DEV_only": {
+    "n_records": 45,
+    "all_in_DEV": true,
+    "n_in_TEST": 0,
+    "DEV_complete": true
+   },
+   "S1_lodo_recomputed": 0.3231388181871947,
+   "S1_lodo_abs_diff": 0.0,
+   "S3_recomputed_from_s3_json": -0.0408894324969139,
+   "S3_abs_diff": 0.0,
+   "fold_ids_match_stored": true
+  }
+ },
+ "evaluation_at_TEST": {
+  "per_dataset": "sign of the TEST y against S1_predicts and S3_predicts; |TEST y - predicted_y_rule|",
+  "summary": "number of correct signs out of 7 for each statistic. The 4 IHP temperatures share DUTs and the 2 TU Delft temperatures share devices; the 7 outcomes are not independent (3 device sets)",
+  "no_change": "these predictions, the rule and the protocol are not changed after this file is committed; a change gets a dated amendment"
+ },
+ "dev_already_seen_note": "the DEV outcomes of all 7 datasets were known when the rule was fit (I7-1 step 2) and when this file was written; the predictions restate the DEV-calibrated rule for TEST"
+}
