@@ -1,0 +1,129 @@
+{
+ "id": "I10_2_prereg",
+ "status": "IN FORCE",
+ "date": "2026-10-21",
+ "code_commit": "d16c929",
+ "title": "Selection of the class of the shared bias-only correction from training data (retrospective DEV)",
+ "question": "Can the function class of g (including none = C0_refit) be selected per dataset from training data only, so that the selected method is not worse than C0_refit on any dataset and close to the best fixed class?",
+ "retrospective_note": "Menu, datasets, I9-2 per-class rows and I8-2 S3 values were seen before this pre-registration; the S_gate selections are known (S3_f < 0 on sky130 12/12, NIST 4 K 53/53, TU Delft 5/7, IHP 300 K 0/18, NIST RT 87/87). Prospective test: December TEST stage.",
+ "menu": [
+  "none",
+  "lin",
+  "gam",
+  "mlp8",
+  "mlp16"
+ ],
+ "menu_trained_values": {
+  "none": 0,
+  "lin": 6,
+  "gam": 66,
+  "mlp8": 565,
+  "mlp16": 1765
+ },
+ "secondary_full_menu": [
+  "none",
+  "const",
+  "lin",
+  "poly2",
+  "poly3",
+  "poly4",
+  "poly5",
+  "gam",
+  "mlp8",
+  "mlp16",
+  "mlp16_s1",
+  "mlp32",
+  "gp"
+ ],
+ "primary_datasets": [
+  "sky130_77K",
+  "nist_4K",
+  "tudelft_4K",
+  "ihp_meas_300K"
+ ],
+ "secondary_datasets": {
+  "nist_rt": "I9-1 NIST room temperature DEV, 87 devices; S_gate and S_cv over {none, poly3 (B3_d3), mlp16 (M_bias)}; 95%, descriptive"
+ },
+ "outer": {
+  "folds": "stored I9-2 folds (d92.load_records)",
+  "held_out_score": "stored I9-2 per_device row of the selected class (none -> C0_refit)",
+  "no_outer_refit": true
+ },
+ "inner": {
+  "design": "groups sorted by (family of first device, group); leave-one-group-out if <= 12 groups, else 4 folds (group i -> fold i mod 4)",
+  "recipe": "I9-2 class settings; MLP classes seed 0 only",
+  "logo_max": 12,
+  "k": 4,
+  "seeds": [
+   0
+  ]
+ },
+ "selectors": {
+  "S_loss": "mean over inner held-out devices of ln(RRMS(I_sim exp(g_X)) / RRMS(I_sim)) on starting-card records (post hoc, no refit)",
+  "S_refit": "same inner corrections; inner held-out cards refit with g frozen (max_nfev 400, irls 2, diff_step 0.01, I9-2 refit path); ln(RRMS_refit / RRMS_C0_refit stored); scope all inner devices except NIST (inner fold = outer position mod 4)",
+  "S_gate": "mlp16 iff stored fold-level S3_f < 0 else none",
+  "S_cv": "mean over the fold's training devices of ln(RRMS_X / RRMS_C0_refit) from stored I9-2 rows (not strictly nested; see D9)"
+ },
+ "selection_rule": {
+  "argmin": true,
+  "none_score": 0.0,
+  "tie": 0.005,
+  "tie_break": "fewer trained values",
+  "blocked": "non-finite inner value on a device with finite reference",
+  "tie_sensitivity": [
+   0.0,
+   0.01,
+   0.02
+  ]
+ },
+ "statistics": {
+  "pooled": "equal dataset weight, i9_2_classes.pooled_ratio, 20000 stratified resamples, default_rng(0)",
+  "clusters": "TU Delft geometry groups (primary); device bootstrap secondary",
+  "n_primary_contrasts": 11,
+  "alpha_adjusted": 0.004545454545454546,
+  "contrasts": [
+   "GMR(S, C0_refit) x 4 selectors",
+   "GMR(S, mlp16) x 4",
+   "GMR(S, S_gate) for S_loss, S_refit, S_cv"
+  ],
+  "margin": 1.03
+ },
+ "decision_rule": {
+  "C1": "every primary dataset: upper Bonferroni CI of GMR(S, C0_refit) <= 1.03",
+  "C2": "pooled upper Bonferroni CI of GMR(S, mlp16) <= 1.03",
+  "label": "supported (C1 and C2) / partly supported / not supported",
+  "overall": [
+   "stop if no selector supported",
+   "continue: class selection adds to the gate, if a supported multi-class selector has pooled GMR(S, S_gate) upper < 1 (frozen: lowest GMR(S, S_gate))",
+   "else continue: gate only, if S_gate supported",
+   "else continue: multi-class selector (lowest pooled GMR(S, C0_refit), ties 0.005 -> cheaper: S_gate, S_cv, S_loss, S_refit)"
+  ],
+  "code": "cryoml.explore.i10_2_select.selector_label / overall_decision; driver --mode decide"
+ },
+ "validity": {
+  "V_rows": "presence of every row and fold model (checked before prereg: pass)",
+  "V_fold": "lin retrain per outer fold = stored I9-2 lin model, max |coef diff| <= 1e-12",
+  "V_s3": "S3_f keys = I9-2 folds (checked: pass)",
+  "failed_inner_refits": "reported per class and dataset"
+ },
+ "post_hoc_references": {
+  "oracle_pooled": "lowest pooled GMR(X, C0_refit) over M5 (gam from I9-2)",
+  "oracle_per_dataset": "lowest per-dataset GMR (gam, gam, gam, lin from I9-2)"
+ },
+ "test_protocol": "see prereg.md: frozen selector run on all DEV devices before TEST is loaded; selected class per TEST dataset committed; class trained on all DEV records (5 seeds for MLP), TEST cards refit with g frozen; GMR(selected, C0_refit) per dataset and pooled, GMR(selected, M_bias); C1 / C2 at 95%, margin 1.03; TEST sets: 7 I8-2 TEST datasets + NIST TEST of I8-1 (38) and I9-1 (58)",
+ "compute": {
+  "train_cpu_h": 3.73,
+  "refit_cpu_h": 13.15,
+  "wall_min_6_workers": 198.6,
+  "plan": "out/research/explore/I10_2/plan.json"
+ },
+ "queue": [
+  "I10_2_inner",
+  "I10_2_refit_sky130_77K",
+  "I10_2_refit_ihp_meas_300K",
+  "I10_2_refit_tudelft_4K",
+  "I10_2_refit_nist_4K",
+  "I10_2_decide"
+ ],
+ "decisions_text": "out/research/explore/I10_2/prereg.md (D1-D15)"
+}
