@@ -308,9 +308,35 @@
     "question": "Which directions beyond matching NGSpice show a measurable effect under their pre-registered rules: E1 learned compact-model correction, E2 misspecification-robust one-pass inference, E3 temperature generalization under misspecification, E4 held-out-curve prediction with uncertainty, E5 shared discrepancy?",
     "answer": [
      {
-      "text": "Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
+      "text": "Iteration 8 in progress (2026-10-21): I8-1 NIST sky130 4 K DEV prospective test, P_a correct and P_b supported; I8-2 TEST predictions committed. Iteration 7 complete (2026-10-20): I7-1 training-set statistic S1_lodo for the transfer of the I3-2 correction, supported on 20 new simulated datasets (prospective); secondary S3 done (Spearman +0.985). I7-2 hierarchical per-device adjustment of the shared correction fitted on K = 2 / 4 curves, rule output inconclusive; GMR(c_hier, e_crossinterp) against the non-learned cross-curve control is above 1 on all four datasets. Iteration 6 (2026-10-20): I6-1 TU Delft 40 nm at 4.13 K and 295.0 K with a generic BSIM4 card, rule output refuted (R1 not met at 4.13 K); at 295.0 K the correction lowers the held-out RRMS. Iteration 5: I5-1 replication of I3-2 on IHP SG13G2 measured data, not replicated (300 K; also 233, 343, 398 K); matched by B1, B2. Iteration 4: I4-1 baselines for I3-2, rule output supported against baselines (development set); I4-2 interpretation analysis reported. Iteration 3: I3-1 KILL; I3-2 CONTINUE, follow-ups F1c (SPICE-native on ngspice-41) and F2 done. Iteration 2: I2-0 diagnosis done; I2-1 KILL; E3b CONTINUE on simulated tier M.",
       "source": [
        "docs/RESEARCH_LOOP.md"
+      ]
+     },
+     {
+      "text": "I8-1 (prospective, NIST sky130 4 K DEV, 57 devices, 53 scored; amendment A1: 4 nMOS forced-bin start failures excluded): P_a correct (frozen I7-1 rule predicted y -0.236, observed -0.216); P_b supported, GMR(M_bias, C0_refit) 0.806 [0.758, 0.864], 48/53; P_c correct (S3 -0.108). Covered subset 0.801 [0.739, 0.881]. M_bias vs B3_d3 0.981 [0.961, 1.000]: the cubic polynomial correction gives 91% of the log gain.",
+      "source": [
+       "out/research/explore/I8_1/decision.json"
+      ],
+      "claim": "i8-1",
+      "queue_match": "^I8_1_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i8_1",
+      "table": "I8-1 NIST sky130 4 K DEV prospective test",
+      "caption": "I8-1 pre-registered P_a, P_b, P_c, validity and amendment A1",
+      "rows": [
+       "P_a (decides)",
+       "P_a magnitude",
+       "P_b (decides)",
+       "P_c (secondary",
+       "validity V1",
+       "validity V2",
+       "validity V3",
+       "validity V4",
+       "amendment A1",
+       "covered subset"
       ]
      },
      {
@@ -521,7 +547,7 @@
       ]
      }
     ],
-    "updated": "2026-10-20"
+    "updated": "2026-10-21"
    },
    "sections": [
     {
@@ -4961,6 +4987,139 @@
     "scripts/research/plot_explore_i4.py"
    ],
    "updated": "2026-10-20"
+  },
+  {
+   "id": "i8-1",
+   "tab": "explore",
+   "statement": "I8-1: on 57 DEV transistors of the NIST mds2-2997 sky130 4 K data (MPW-5 tile, nfet_01v8_lvt / pfet_01v8_lvt, 77 K paper card), the frozen I7-1 S1_lodo rule predicted a held-out gain of the I3-2 bias-only correction (predicted y -0.236) before any held-out refit; the observed y is -0.216 (P_a correct) and GMR(M_bias, C0_refit) is 0.806 [0.758, 0.864] (P_b supported).",
+   "status": "in_progress",
+   "headline": {
+    "value": "P_a correct, P_b supported (NIST sky130 4 K DEV, prospective)",
+    "convention": "y = ln GMR(M_bias, C0_refit) over the 53 scored DEV devices (strict paper RRMS after the held-out card refit, leave-one-device-out); device-bootstrap 95% CI; 4 start failures excluded under amendment A1"
+   },
+   "numbers": [
+    {
+     "label": "P_a (frozen I7-1 rule, prediction.json 0c184f8)",
+     "value": "S1_lodo_D 0.50247 -> predicted y -0.2362 (gain); observed y_D -0.2157; |error| 0.0205 (rule in-sample residual RMS 0.0751): correct",
+     "convention": "one dataset, one binary outcome",
+     "source": "out/research/explore/I8_1/decision.json"
+    },
+    {
+     "label": "P_b: GMR(M_bias, C0_refit)",
+     "value": "0.806 [0.758, 0.864], 48/53 wins; R2 M_bias 0.03151 vs T1_inloop 0.03490 (+0.005); R3 0 failures: supported",
+     "convention": "means over the 53 finite starts",
+     "source": "out/research/explore/I8_1/decision.json"
+    },
+    {
+     "label": "P_c (S3, prediction_v2.json 4db5a7b)",
+     "value": "S3_D -0.1081 -> gain; correct (prediction.json P_c void: S3 NaN)",
+     "convention": "secondary, prospective",
+     "source": "out/research/explore/I8_1/prediction_v2.json"
+    },
+    {
+     "label": "per family and bin stratum",
+     "value": "nMOS 0.808 [0.780, 0.840] 28/29; pMOS 0.804 [0.707, 0.934] 20/24; covered subset (25) 0.801 [0.739, 0.881] 23/25; forced bin (28 scored) 0.811 [0.742, 0.898] 25/28",
+     "convention": "GMR(M_bias, C0_refit), device-bootstrap CI",
+     "source": "out/research/report/2026-10-21_i8_1/tables.md"
+    },
+    {
+     "label": "comparators",
+     "value": "M_bias vs T1_inloop 0.887 [0.852, 0.930]; T1_inloop vs C0_refit 0.908 [0.879, 0.939]; C0_refit vs C0 0.969",
+     "convention": "paired GMR, 53 devices",
+     "source": "out/research/explore/I8_1/lodo/results.json"
+    },
+    {
+     "label": "baselines (reported)",
+     "value": "M_bias vs B1 0.787 [0.739, 0.845], vs B2 0.811 [0.759, 0.874], vs B3_d3 0.981 [0.961, 1.000] 27/53; B3_d3 vs C0_refit 0.822 [0.768, 0.885] (91% of M_bias's log gain)",
+     "convention": "paired GMR, 53 devices; not in P_a, P_b or validity",
+     "source": "out/research/explore/I8_1/baselines/results.json"
+    }
+   ],
+   "what": [
+    "Prospective test of two I7-1 / I3-2 results on a dataset that none of the earlier steps used: NIST mds2-2997 (doi:10.18434/mds2-2997), sky130 MPW-5 test tile measured at 4 K. Families nfet_01v8_lvt (33 DEV) and pfet_01v8_lvt (24 DEV), Vb = 0 curves (Id-Vg at |Vd| 0.1 and 1.8 V, Id-Vd at |Vg| 0-1.8 V in 0.3 V steps), VDD 1.8 V. DEV / TEST split by (L, W) blocks (seed 20261021); TEST (38 devices) not opened.",
+    "Card: the 77 K paper card with an explicit bin per device (native bin for the 25 covered geometries, nearest bin in (ln L, ln W) for 32), deck at 77 K (limitation: kT/q, band gap and n_i at 77 K), mult = m = 1, ngspice-41 arm64. Starting card per device: polish from the stock card on the 43-parameter box (max_nfev 3000, irls 3).",
+    "Arms (leave-one-device-out): C0_refit (held-out refit, max_nfev 400, irls 2); M_bias (I3-2 recipe unchanged: I = I_card x exp(g), g = tanh(MLP 3-16-16-1 of (is_pmos, |Vgs|/VDD, |Vds|/VDD)), 5 seeds, trained on the other DEV starting records, held-out refit with g in the loop); T1_inloop (per-curve gain, non-deployable); B1 wider BSIM4 set, B2 Rext + self-heating, B3_d3 cubic polynomial g (reported only).",
+    "B3_d3 (I4-1 baseline B3 at degree 3, `i4_1_baselines.fit_poly`): same form and loss as M_bias with g = tanh(P_pol(u, v)), P_pol a polynomial of total degree 3 in the standardized u = |Vgs|/VDD, v = |Vds|/VDD (10 monomials), one coefficient vector per polarity (20 coefficients), L2 1e-4 on non-constant coefficients, Adam 3e-3, 2000 steps, one fit. It gives 91% of M_bias's log gain over C0_refit; the MLP form adds a factor 0.981 (CI upper 1.000) over it on these data.",
+    "Pre-registered: P_a sign of y_D from the frozen I7-1 rule y = 0.007619 - 0.485184 S1_lodo_D; P_b CI upper of GMR(M_bias, C0_refit) < 1 with R2 (M_bias mean <= T1_inloop mean + 0.005) and R3 (0 M_bias failures); P_c (secondary) gain iff S3_D < 0; validity V1-V4."
+   ],
+   "did": [
+    "Order of operations: ingest, inventory, split, smoke (commit 1b8a615) -> pre-registration in force (d022c32, committed alone before any fit) -> code and smoke runs -> I8_1_start (411 s; 4 starting records with a NaN curve, 1 ngspice timeout) -> I8_1_stats (1264 s) -> prediction.json committed alone (0c184f8) -> I8_1_lodo started and stopped before writing output (the 4 NaN records made every trained correction NaN) -> amendment A1 (5ba2f8e) -> I8_1_stats_v2 (992 s) -> prediction_v2.json committed alone (4db5a7b) -> I8_1_lodo (1016 s; guard checked prediction, prediction_v2 and amendment commits) -> I8_1_baselines (393 s) -> I8_1_decide (3 s).",
+    "Amendment A1 (after the prediction commit, before any held-out outcome): 4 nMOS forced-bin geometries (W0.55/L0.25, W3.01/L0.15, W7/L0.15, W7/L2) have a negative binned PCLM in the forced bin; BSIM4 parameter checking stops the first analysis of the ngspice process, so their Id-Vg curve at |Vd| 0.1 V is NaN (also with the stock card). They are excluded from every training set and S fold and scored as failed in every arm. P_a primary stays the committed value; the A1-recomputed S1_lodo (0.50712, predicted y -0.2384) is secondary; P_c, G and the per-family S3 values come from prediction_v2.json.",
+    "Report `scripts/research/plot_explore_i8_1.py` (batch 2026-10-21_i8_1) recomputes the per-device scores across files, all aggregates and paired ratios (all, covered, nMOS, pMOS), y_D, P_a / P_b / P_c, validity, gates, and the S1 / S3 dataset values from the per-fold values, and checks them against the stored files. Example I-V curves: `scripts/research/explore/i8_1_examples.py` re-simulates the stored C0, C0_refit and M_bias cards of 4 devices (0.4 s); RRMS reproduced with relative difference 0."
+   ],
+   "result": {
+    "text": [
+     "P_a correct: predicted y -0.236 (gain), observed -0.216. P_c correct: S3_D -0.108 (gain). P_b supported: GMR(M_bias, C0_refit) 0.806 [0.758, 0.864], 48/53 devices with a lower RRMS. Valid run: V1 53/57, V2 4 / 4 failed (start failures), 53 paired, V3 prospective, V4 1 start-job timeout reported, 0 arm timeouts.",
+     "The gain is similar across subsets: nMOS 0.808, pMOS 0.804, native bin 0.801, forced bin 0.811. Per-family rule and S3 signs are correct for both families.",
+     "M_bias is ahead of T1_inloop (0.887) and of B1 (0.787) and B2 (0.811). B3_d3 gives GMR 0.822 against C0_refit; M_bias vs B3_d3 is 0.981 [0.961, 1.000], 27/53: on these data the shared bias correction is reproduced by a cubic polynomial in the normalized bias to within about 2%.",
+     "At the trimmed included training points the mean M_bias g has RMS 0.015 (nMOS) and 0.067 (pMOS); M_bias and B3_d3 mean g correlate with Pearson r 0.94 / 0.95 there. Fold-level Spearman(S1_lodo_f, y_f) is +0.71 (positive within a dataset, as in I7-1).",
+     "Post hoc (not pre-registered): family x bin-stratum subsets, B3_d3 subset columns, the S3 OLS reference point, the g maps and the example I-V figures."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "01_table_i8_1_decision.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "02_i8_1_scatter_S1_lodo_S3.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "03_i8_1_per_device_log_ratio.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "04_table_i8_1_subsets.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "05_table_i8_1_arms.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "06_i8_1_g_map.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "07_i8_1_iv_nfet_01v8_lvt_W1p65_L8_m23p8.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "08_i8_1_iv_nfet_01v8_lvt_W5_L1_m25p6.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "09_i8_1_iv_pfet_01v8_lvt_W1_L0p35_m28p6.png"
+     },
+     {
+      "batch": "2026-10-21_i8_1",
+      "file": "10_i8_1_iv_pfet_01v8_lvt_W1_L2_m29p1.png"
+     }
+    ]
+   },
+   "caveats": [
+    "One dataset gives one binary P_a outcome; the frozen rule's magnitude error here (0.021) is below its in-sample residual RMS (0.075).",
+    "The deck runs at 77 K for 4 K data (decision D3); 32 of 57 DEV devices use a forced bin outside its geometry range, and 4 of these fail at the first analysis (negative binned PCLM).",
+    "M_bias's advantage over B3_d3 is 0.981 with the CI upper bound at 1.000; the cubic polynomial form gives most of the gain.",
+    "pfet_01v8_lvt_W1_L0p35_m28p6 had one ngspice timeout during its starting fit (record finite); it is scored and appears as example figure 09."
+   ],
+   "sources": [
+    "out/research/explore/I8_1/prereg.json",
+    "out/research/explore/I8_1/prereg_amendment_2026-10-20.json",
+    "out/research/explore/I8_1/prediction.json",
+    "out/research/explore/I8_1/prediction_v2.json",
+    "out/research/explore/I8_1/decision.json",
+    "out/research/explore/I8_1/lodo/results.json",
+    "out/research/explore/I8_1/baselines/results.json",
+    "out/research/explore/I8_1/examples/examples.json",
+    "src/cryoml/explore/i8_1_nist.py",
+    "scripts/research/explore/i8_1_nist.py",
+    "scripts/research/explore/i8_1_examples.py",
+    "scripts/research/plot_explore_i8_1.py",
+    "commits d022c32 (prereg), 0c184f8 (prediction), 5ba2f8e (amendment A1), 4db5a7b (prediction_v2)"
+   ],
+   "updated": "2026-10-21"
   },
   {
    "id": "i8-2",

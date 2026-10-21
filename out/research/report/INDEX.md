@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-21 · i8_1
+
+Folder: [2026-10-21_i8_1/](2026-10-21_i8_1/) · [tables.md](2026-10-21_i8_1/tables.md) · [README.md](2026-10-21_i8_1/README.md)
+
+- I8-1 NIST sky130 4 K DEV (prospective, 57 devices, 53 scored; A1: 4 nMOS forced-bin start failures): P_a correct (predicted y -0.236, observed -0.216); P_b supported, GMR(M_bias, C0_refit) 0.806 [0.758, 0.864], 48/53; P_c correct (S3 -0.108).
+- nMOS 0.808, pMOS 0.804, covered subset 0.801 [0.739, 0.881], forced bin 0.811. M_bias vs T1_inloop 0.887.
+- Baselines: M_bias vs B1 0.787, B2 0.811, B3_d3 0.981 [0.961, 1.000], 27/53; B3_d3 vs C0_refit 0.822 (91% of the log gain).
+
+Figures and tables: [01_table_i8_1_decision.png](2026-10-21_i8_1/01_table_i8_1_decision.png) · [02_i8_1_scatter_S1_lodo_S3.png](2026-10-21_i8_1/02_i8_1_scatter_S1_lodo_S3.png) · [03_i8_1_per_device_log_ratio.png](2026-10-21_i8_1/03_i8_1_per_device_log_ratio.png) · [04_table_i8_1_subsets.png](2026-10-21_i8_1/04_table_i8_1_subsets.png) · [05_table_i8_1_arms.png](2026-10-21_i8_1/05_table_i8_1_arms.png) · [06_i8_1_g_map.png](2026-10-21_i8_1/06_i8_1_g_map.png) · [07_i8_1_iv_nfet_01v8_lvt_W1p65_L8_m23p8.png](2026-10-21_i8_1/07_i8_1_iv_nfet_01v8_lvt_W1p65_L8_m23p8.png) · [08_i8_1_iv_nfet_01v8_lvt_W5_L1_m25p6.png](2026-10-21_i8_1/08_i8_1_iv_nfet_01v8_lvt_W5_L1_m25p6.png) · [09_i8_1_iv_pfet_01v8_lvt_W1_L0p35_m28p6.png](2026-10-21_i8_1/09_i8_1_iv_pfet_01v8_lvt_W1_L0p35_m28p6.png) · [10_i8_1_iv_pfet_01v8_lvt_W1_L2_m29p1.png](2026-10-21_i8_1/10_i8_1_iv_pfet_01v8_lvt_W1_L2_m29p1.png)
+
 ## 2026-10-20 · i8_2
 
 Folder: [2026-10-20_i8_2/](2026-10-20_i8_2/) · [tables.md](2026-10-20_i8_2/tables.md) · [README.md](2026-10-20_i8_2/README.md)

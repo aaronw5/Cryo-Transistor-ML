@@ -1,0 +1,450 @@
+{
+ "id": "I8_1_decision",
+ "smoke": false,
+ "prereg": "out/research/explore/I8_1/prereg.json",
+ "amendment": "out/research/explore/I8_1/prereg_amendment_2026-10-20.json",
+ "prediction_commit": "0c184f84dfa8b05c218adc28a6fa009fb2d9e795",
+ "prediction_v2_commit": "4db5a7b758b9039a4dbecdcfb3af348a4d65f498",
+ "checks": {
+  "S1_v1_abs_diff": 0.0,
+  "S1_v1_checked": true,
+  "S1_v2_abs_diff": 0.0,
+  "excluded_equal": true
+ },
+ "excluded_start_failures": [
+  "nfet_01v8_lvt_W0p55_L0p25_m20p7",
+  "nfet_01v8_lvt_W3p01_L0p15_m25p1",
+  "nfet_01v8_lvt_W7_L0p15_m26p2",
+  "nfet_01v8_lvt_W7_L2_m26p7"
+ ],
+ "dropped_timeouts_V4": [],
+ "validity": {
+  "V1": true,
+  "V2": true,
+  "V3_prospective": true,
+  "V4_n_timeout_start": 1,
+  "V4_dropped": [],
+  "valid": true,
+  "n_failed": {
+   "C0_refit": 4,
+   "M_bias": 4
+  }
+ },
+ "P_a": {
+  "predicted": "gain",
+  "observed": "gain",
+  "correct": true,
+  "y_D": -0.2156571470779945,
+  "predicted_y": -0.23617167538302675,
+  "abs_error_y": 0.020514528305032254,
+  "source": "prediction.json (committed 0c184f8), primary",
+  "stated": true,
+  "prospective": true
+ },
+ "P_a_secondary_recomputed": {
+  "predicted": "gain",
+  "observed": "gain",
+  "correct": true,
+  "predicted_y": -0.23842638132389926,
+  "source": "prediction_v2.json (amendment A1), secondary"
+ },
+ "P_b": {
+  "label": "supported",
+  "R1": true,
+  "R2": true,
+  "R3": true,
+  "gmr": {
+   "n": 57,
+   "n_used": 53,
+   "n_method_failed": 4,
+   "n_control_failed": 4,
+   "wins": 48,
+   "ties": 0,
+   "ratio": 0.8060115979378399,
+   "resample_unit": "device",
+   "ci_low": 0.7575362271073071,
+   "ci_high": 0.8644821611661706,
+   "n_boot": 10000
+  },
+  "means_valid_only": {
+   "C0_refit": 0.03997907995574401,
+   "M_bias": 0.03150929967129014,
+   "T1_inloop": 0.03489838991551525,
+   "C0": 0.04112555427658794
+  }
+ },
+ "P_c": {
+  "predicted": "gain",
+  "observed": "gain",
+  "correct": true,
+  "S3_D": -0.10807669712328591,
+  "source": "prediction_v2.json; the prediction.json P_c is void (NaN S3)",
+  "stated": true,
+  "prospective": true
+ },
+ "secondary": {
+  "covered_subset": {
+   "n": 25,
+   "n_used": 25,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 23,
+   "ties": 0,
+   "ratio": 0.8008197863479096,
+   "resample_unit": "device",
+   "ci_low": 0.7389043473367265,
+   "ci_high": 0.8805279546185886,
+   "n_boot": 10000
+  },
+  "per_family": {
+   "nmos": {
+    "y": -0.21349972691726474,
+    "n": 29,
+    "observed": "gain",
+    "rule_correct": true,
+    "S3_correct": true
+   },
+   "pmos": {
+    "y": -0.21826402977220968,
+    "n": 24,
+    "observed": "gain",
+    "rule_correct": true,
+    "S3_correct": true
+   }
+  },
+  "gates": {
+   "G": {
+    "choice": "M_bias",
+    "gmr_vs_C0_refit": 0.8060115979378399,
+    "gmr_vs_M_bias": 1.0,
+    "chose_lower": true
+   },
+   "G1": {
+    "choice": "M_bias",
+    "gmr_vs_C0_refit": 0.8060115979378399,
+    "gmr_vs_M_bias": 1.0,
+    "chose_lower": true
+   }
+  },
+  "baselines": {
+   "M_bias_vs_B1": {
+    "n": 57,
+    "n_used": 53,
+    "n_method_failed": 4,
+    "n_control_failed": 4,
+    "wins": 47,
+    "ties": 0,
+    "ratio": 0.7874208158821312,
+    "resample_unit": "device",
+    "ci_low": 0.7388679128651018,
+    "ci_high": 0.8454636778530873,
+    "n_boot": 10000
+   },
+   "M_bias_vs_B2": {
+    "n": 57,
+    "n_used": 53,
+    "n_method_failed": 4,
+    "n_control_failed": 4,
+    "wins": 48,
+    "ties": 0,
+    "ratio": 0.8111002240662173,
+    "resample_unit": "device",
+    "ci_low": 0.7591385946808759,
+    "ci_high": 0.8742655500826926,
+    "n_boot": 10000
+   },
+   "M_bias_vs_B3_d3": {
+    "n": 57,
+    "n_used": 53,
+    "n_method_failed": 4,
+    "n_control_failed": 4,
+    "wins": 27,
+    "ties": 0,
+    "ratio": 0.9809205985452202,
+    "resample_unit": "device",
+    "ci_low": 0.9610869994826505,
+    "ci_high": 1.0002967126201225,
+    "n_boot": 10000
+   },
+   "B1_vs_C0_refit": {
+    "n": 57,
+    "n_used": 53,
+    "n_method_failed": 4,
+    "n_control_failed": 4,
+    "wins": 17,
+    "ties": 0,
+    "ratio": 1.0236097162797022,
+    "resample_unit": "device",
+    "ci_low": 1.0137649686232755,
+    "ci_high": 1.0342771735155536,
+    "n_boot": 10000
+   },
+   "B2_vs_C0_refit": {
+    "n": 57,
+    "n_used": 53,
+    "n_method_failed": 4,
+    "n_control_failed": 4,
+    "wins": 32,
+    "ties": 0,
+    "ratio": 0.9937262671401236,
+    "resample_unit": "device",
+    "ci_low": 0.9778428515662958,
+    "ci_high": 1.0085174980387221,
+    "n_boot": 10000
+   },
+   "B3_d3_vs_C0_refit": {
+    "n": 57,
+    "n_used": 53,
+    "n_method_failed": 4,
+    "n_control_failed": 4,
+    "wins": 47,
+    "ties": 0,
+    "ratio": 0.8216889309218467,
+    "resample_unit": "device",
+    "ci_low": 0.7683090572262562,
+    "ci_high": 0.8851947412101698,
+    "n_boot": 10000
+   }
+  },
+  "bins_stretch": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": [
+    1.0,
+    2.142857142857143
+   ],
+   "nfet_01v8_lvt_W0p55_L0p15_m20p6": [
+    1.0,
+    1.636363636363636
+   ],
+   "nfet_01v8_lvt_W0p55_L0p25_m20p7": [
+    1.3888888888888888,
+    1.636363636363636
+   ],
+   "nfet_01v8_lvt_W0p55_L1_m20p8": [
+    1.0,
+    1.8181818181818181
+   ],
+   "nfet_01v8_lvt_W0p64_L0p15_m21p2": [
+    1.0,
+    1.4062499999999998
+   ],
+   "nfet_01v8_lvt_W0p64_L0p18_m21p3": [
+    1.0,
+    1.4062499999999998
+   ],
+   "nfet_01v8_lvt_W0p64_L0p25_m21p4": [
+    1.0,
+    1.5625
+   ],
+   "nfet_01v8_lvt_W0p64_L1_m21p6": [
+    1.0,
+    1.5625
+   ],
+   "nfet_01v8_lvt_W1_L0p15_m22p2": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1_L0p18_m22p3": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1_L1_m22p6": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1_L4_m22p8": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1_L8_m23p1": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1p65_L0p18_m23p3": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1p65_L1_m23p6": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1p65_L2_m23p7": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W1p65_L8_m23p8": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W3_L0p18_m24p2": [
+    1.0,
+    1.6833333333333333
+   ],
+   "nfet_01v8_lvt_W3_L0p25_m24p3": [
+    1.0,
+    1.6833333333333333
+   ],
+   "nfet_01v8_lvt_W3_L0p5_m24p4": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W3_L2_m24p6": [
+    1.0,
+    1.8181818181818181
+   ],
+   "nfet_01v8_lvt_W3_L8_m24p8": [
+    1.0,
+    1.8181818181818181
+   ],
+   "nfet_01v8_lvt_W3p01_L0p15_m25p1": [
+    1.2,
+    1.6777408637873754
+   ],
+   "nfet_01v8_lvt_W5_L0p25_m25p4": [
+    1.0,
+    1.01
+   ],
+   "nfet_01v8_lvt_W5_L0p5_m25p5": [
+    1.0,
+    1.6666666666666667
+   ],
+   "nfet_01v8_lvt_W5_L1_m25p6": [
+    1.0,
+    1.6666666666666667
+   ],
+   "nfet_01v8_lvt_W5_L2_m25p7": [
+    2.0,
+    1.6666666666666667
+   ],
+   "nfet_01v8_lvt_W5_L4_m25p8": [
+    2.0,
+    1.4
+   ],
+   "nfet_01v8_lvt_W5_L8_m26p1": [
+    1.0,
+    1.4
+   ],
+   "nfet_01v8_lvt_W7_L0p15_m26p2": [
+    1.2,
+    1.0
+   ],
+   "nfet_01v8_lvt_W7_L0p25_m26p4": [
+    1.0,
+    1.0
+   ],
+   "nfet_01v8_lvt_W7_L2_m26p7": [
+    2.0,
+    2.3333333333333335
+   ],
+   "nfet_01v8_lvt_W7_L8_m26p8": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W0p42_L20_m27p7": [
+    2.5,
+    1.3095238095238098
+   ],
+   "pfet_01v8_lvt_W0p42_L4_m27p5": [
+    1.0,
+    1.3095238095238098
+   ],
+   "pfet_01v8_lvt_W0p55_L0p5_m28p1": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W0p55_L1_m28p2": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W0p55_L2_m28p3": [
+    2.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W0p55_L4_m28p4": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W0p55_L8_m28p5": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W1_L0p35_m28p6": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W1_L20_m29p4": [
+    2.5,
+    1.0
+   ],
+   "pfet_01v8_lvt_W1_L2_m29p1": [
+    2.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W1_L4_m29p2": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W3_L0p35_m29p5": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W3_L1_m29p6": [
+    2.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W3_L1p5_m29p7": [
+    1.3333333333333333,
+    1.0
+   ],
+   "pfet_01v8_lvt_W3_L2_m29p8": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W3_L4_m30p1": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W5_L0p35_m30p3": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W5_L1_m30p5": [
+    2.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W5_L1p5_m30p6": [
+    1.3333333333333333,
+    1.0
+   ],
+   "pfet_01v8_lvt_W5_L4_m30p8": [
+    1.0,
+    1.0
+   ],
+   "pfet_01v8_lvt_W7_L0p35_m31p2": [
+    1.0,
+    1.4
+   ],
+   "pfet_01v8_lvt_W7_L1p5_m31p5": [
+    1.3333333333333333,
+    1.4
+   ],
+   "pfet_01v8_lvt_W7_L8_m31p7": [
+    1.0,
+    1.0
+   ]
+  }
+ },
+ "rule": {
+  "form": "predicted y_D = a + b * S1_lodo_D; predicted sign of ln GMR(M_bias, C0_refit) = sign(a + b * S1_lodo_D); predicted gain iff a + b * S1_lodo_D < 0",
+  "a": 0.007619219249052826,
+  "b": -0.4851839492908733,
+  "zero_crossing_S1_lodo": 0.015703774331753538,
+  "fit": "OLS over the 11 stored datasets (dataset level), retro/results.json",
+  "n": 11,
+  "r2": 0.7847489919030067,
+  "slope_sign_note": "b < 0: higher S1_lodo predicts a lower log ratio (more gain)"
+ }
+}

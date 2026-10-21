@@ -1330,3 +1330,38 @@ prediction_v2.json and refuses non-finite S3 values, lodo / baselines require pr
 the amendment committed, decide checks the S1 values (v1 and v2) and the excluded sets; unit test with a NaN record
 (9 tests). Smoke rerun with one failed device (smoke_runs.json, amendment_A1_smoke). Queue: I8_1_stats_v2,
 I8_1_commit_prediction_v2, I8_1_lodo, I8_1_baselines, I8_1_decide.
+
+## I8-1 outcome (2026-10-21 00:45): NIST mds2-2997 sky130 4 K DEV, prospective
+
+Queue (after amendment A1): I8_1_stats_v2 992 s, I8_1_commit_prediction_v2 -> 4db5a7b, I8_1_lodo 1016 s (guard: prediction
+0c184f8, prediction_v2 4db5a7b, amendment 5ba2f8e tracked, unmodified, ancestors of HEAD), I8_1_baselines 393 s,
+I8_1_decide 3 s. Outputs `out/research/explore/I8_1/{lodo, baselines}/{results, cards, corrections}.json`,
+`decision.json`.
+Validity: V1 53/57 finite starts; V2 failed C0_refit 4, M_bias 4 (the A1 start failures), 53 paired; V3 prospective;
+V4 1 start-job timeout (pfet_01v8_lvt_W1_L0p35_m28p6, record finite), 0 timeouts in lodo and baselines, 0 dropped.
+P_a (primary, frozen I7-1 rule on the committed S1_lodo_D 0.50247): predicted y -0.2362 (gain), observed y_D
+-0.2157: correct; |error| 0.0205 (frozen rule in-sample residual RMS 0.0751). A1-recomputed S1_lodo 0.50712,
+predicted y -0.2384: correct. P_c (prediction_v2 S3_D -0.1081, gain): correct. P_b: GMR(M_bias, C0_refit) 0.806
+[0.758, 0.864], 48/53; R2 M_bias mean 0.03151 vs T1_inloop 0.03490 + 0.005; R3 0 M_bias failures: supported.
+Secondary: nMOS 0.808 [0.780, 0.840] 28/29, pMOS 0.804 [0.707, 0.934] 20/24 (rule and S3 signs correct in both);
+covered subset (25) 0.801 [0.739, 0.881] 23/25; forced bin 0.811 [0.742, 0.898] 25/28. Gates G and G1 choose M_bias.
+M_bias vs T1_inloop 0.887 [0.852, 0.930]; T1_inloop vs C0_refit 0.908; C0_refit vs C0 0.969. Fold-level
+Spearman(S1_lodo_f, y_f) +0.706 (prediction.json folds), +0.734 (prediction_v2 folds); Spearman(S3_f, y_f) -0.381.
+Baselines (reported): M_bias vs B1 0.787 [0.739, 0.845], vs B2 0.811 [0.759, 0.874], vs B3_d3 0.981 [0.961, 1.000]
+27/53; B3_d3 vs C0_refit 0.822 [0.768, 0.885]. B3_d3 is the I4-1 baseline B3 at degree 3
+(`i4_1_baselines.fit_poly`): same form I = I_card x exp(g) and same loss as M_bias, g = tanh(P_pol(u, v)) with a
+polynomial of total degree 3 in the standardized u = |Vgs|/VDD, v = |Vds|/VDD (10 monomials), one coefficient
+vector per polarity (20 coefficients), L2 1e-4, Adam 3e-3, 2000 steps, one fit, held-out refit with g in the loop.
+ln GMR(B3_d3, C0_refit) / ln GMR(M_bias, C0_refit) = 0.911: the cubic polynomial gives 91% of the log gain; the MLP
+form adds a factor 0.981 over it on these data. At the trimmed included training points the mean fold g of M_bias
+and B3_d3 have Pearson r 0.94 (nMOS) / 0.95 (pMOS), RMS difference 0.005 / 0.039.
+Report batch `out/research/report/2026-10-21_i8_1/` (`scripts/research/plot_explore_i8_1.py`; recomputes and checks
+every stored aggregate, paired ratio, y, P_a / P_b / P_c, validity, gates and the S1 / S3 dataset values): table 01
+decision, figure 02 I7-1 S1_lodo / S3 scatter with the NIST point, figure 03 per-device log ratio vs L, W and GMR per
+stratum, table 04 subsets, table 05 arms, figure 06 mean fold g maps (NIST M_bias, NIST B3_d3, sky130 77 K I3-2
+M_bias), figures 07-10 example I-V. Example curves: `scripts/research/explore/i8_1_examples.py` re-simulates the
+stored C0, C0_refit and M_bias cards of 4 devices (per family and bin stratum, the device nearest the stratum
+median log ratio; 0.4 s, `examples/examples.json`); RRMS reproduced with relative difference 0. Post hoc (not
+pre-registered): family x stratum rows, B3_d3 subset columns, the S3 OLS reference point, g maps, I-V figures.
+Site: new claim `i8-1` (in progress; headline "P_a correct, P_b supported (NIST sky130 4 K DEV, prospective)") in the
+Exploration tab, status item and decision table. Site rebuilt, not published.
