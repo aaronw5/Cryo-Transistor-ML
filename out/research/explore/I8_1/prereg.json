@@ -3,7 +3,7 @@
  "title": "Prospective DEV test on NIST mds2-2997 sky130 transistors at 4 K (MPW-5 tile): the I7-1 frozen S1_lodo rule and the I3-2 bias-only correction",
  "iteration": "exploration iteration 8, item I8-1",
  "written": "2026-10-20",
- "status": "DRAFT for review; not in force. Done before this file: download and sha256 check (data/sources.json), parsing of every MPW-5 transistor file and every ETest file (inventory.json, inventory.md; checks read every current array, before the split), the Vb = 0 dataset of the two chosen families (data/manifest.json; data/nist4k.npz not committed), the DEV / TEST split (split.json; geometry, flags and bin coverage only), and a stock-card smoke on 4 DEV devices (smoke/smoke.json; shape, finiteness, sign and timing; no RRMS, no fit). No card has been fit to these data; no correction has been trained; no S statistic has been computed. The open questions in section open_questions must be closed (by editing this draft) before the file is committed as the pre-registration",
+ "status": "IN FORCE from the commit that adds this version (2026-10-20). Written before any card fit on these data, before any correction was trained and before any S statistic was computed. Done before this version: download and sha256 check (data/sources.json), parsing and inventory of every MPW-5 transistor file and every ETest file (inventory.json; checks read every current array, before the split), the Vb = 0 dataset of the two families (data/manifest.json), the DEV / TEST split (split.json; geometry, flags and bin coverage only), and a stock-card smoke on 4 DEV devices (smoke/smoke.json; shape, finiteness, sign and timing; no RRMS, no fit). Smoke runs of the start / stats / s3 / lodo / baselines / decide modes are run after this commit with reduced settings into smoke_* directories, check the code only and are not used for any decision. The draft open questions were closed by the coordinator's decisions (section decisions)",
  "questions": {
   "P_a": "does the I7-1 frozen rule, applied to S1_lodo computed from the DEV training folds, predict the sign of ln GMR(M_bias, C0_refit) on this new measured dataset?",
   "P_b": "does the I3-2 bias-only correction M_bias lower held-out error relative to C0_refit on this dataset (the I3-2 claim on new measured data)?",
@@ -23,7 +23,7 @@
   "families": "nfet_01v8_lvt (folder nthin_lvt, modules 20-26) and pfet_01v8_lvt (pthin_lvt, modules 27-31): the device types of the two 77 K paper cards (spice_pdk._SUBCKT). W/L from 'Module Layout Coding.xlsx' sheet FETModules (global module = local column number + the 'Column # +N' offset)",
   "devices": "nfet_01v8_lvt 56 (56 W/L, W 0.42-7 um, L 0.15-8 um); pfet_01v8_lvt 40 (40 W/L, W 0.42-7 um, L 0.35-20 um). One device per W/L. Excluded: nfet_01v8_lvt_W1p65_L0p25_m23p4 (folder readme '23_4 Issue'; Id-Vd gate-control ratio 12.1 < 100)",
   "curves": "Vb = 0 curves only, 9 per device: Id-Vg at |Vd| 0.1 and 1.8 V (keys idvg@d0, idvg@d1; |Vg| 0-1.8 V, 10 mV, 181 points) and Id-Vd at |Vg| 0, 0.3, 0.6, 0.9, 1.2, 1.5, 1.8 V (keys idvd@g0..g6; |Vd| 0-1.8 V, 20 mV, 91 points). The body-bias curves (Id-Vg at 4 further Vb, Id-Vd at Vb -1 / +1 V) are not used. Pipeline convention (to_pipeline_curves): signed voltages, pMOS Id as a positive magnitude, as the 77 K curves",
-  "inclusion_rule": "frozen from the measured current only (cryoml.pdk2.metric, as I5-1 and I6-1): clean_current, trim the leading points up to the first |I| > 1e-10 A, denominator = mean |I| of the trimmed measured curve, include iff denominator > 3e-7 A (Id-Vd) or > 2e-7 A (Id-Vg), both polarities. DEV: 198 included curves for 33 nMOS devices (6 each), 102 for 24 pMOS devices (2-6 each). SEE open question Q4",
+  "inclusion_rule": "measured-only (decision D4): clean_current, trim to the first |I| > 1e-10 A, denominator = trimmed mean |I|, include iff > 3e-7 A (Id-Vd) or > 2e-7 A (Id-Vg), both polarities; stored on the starting-card records. DEV: 198 included curves for 33 nMOS devices (6 each), 102 for 24 pMOS devices (2-6 each)",
   "split": {
    "file": "out/research/explore/I8_1/split.json",
    "rule": "strata = family x 77 K card bin coverage; per stratum devices sorted by (L, W), consecutive blocks of 5, seeded permutation puts 3 of 5 in DEV (short last block round(0.6 n)); numpy.random.default_rng(20261021) (cryoml.explore.i8_1_nist.make_split)",
@@ -33,42 +33,51 @@
  },
  "compact_model": {
   "cards": "the 77 K paper cards of the canonical setup: nMOS sky130_fd_pr__nfet_01v8_lvt__tt_77k.corner.spice (original published card), pMOS update_sky130_fd_pr__pfet_01v8_lvt__tt_77k.corner.spice (upstream 39b1e51), as built by spice_pdk.ensure_pdk77k (data/processed/pdk77k/); tnom = -196.15 C in every bin",
-  "bin_coverage": "the 77 K cards hold only the bins of the 18 paper devices (nMOS 8 bins, pMOS 12). Geometries inside a bin: nfet_01v8_lvt 21 of 56, pfet_01v8_lvt 22 of 40 (DEV 12 of 33 and 13 of 24). For the other geometries ngspice finds no model. SEE open question Q2",
-  "uncovered_geometries_draft": "forced nearest bin: the bin whose (ln L, ln W) box is nearest (Euclidean distance in log units, 0 inside), referenced explicitly in the subckt instance (spice_pdk._force_bin); largest DEV distance 1.09 (factor 3.0). Check: forcing the native bin reproduces the native-selection currents exactly (max relative difference 0.0 on the two covered smoke devices); forcing another bin changes them",
-  "deck_temperature_draft": "77 K (deck .options temp = -196.15 C = tnom of the card), so the card's temperature model is not extrapolated to 4 K and the 4 K behaviour enters only through the fitted parameters. SEE open question Q3",
-  "simulator": "ngspice-41 native arm64 build (/Users/anrunw/cryo-ng41/arm64/bin/ngspice; resolve_ngspice_bin), spice_pdk.simulate_pdk deck (sweeps.spice instance line, nf = 1, 0.29-based ad/as/pd/ps, mult = 1 for every MPW-5 geometry, body at 0, -i(VD), pMOS negated), one ngspice process per device and card with all 9 sweeps"
+  "bin_coverage": "the 77 K cards hold only the bins of the 18 paper devices (nMOS 8 bins, pMOS 12). Geometries inside a bin: nfet_01v8_lvt 21 of 56, pfet_01v8_lvt 22 of 40 (DEV 12 of 33 and 13 of 24 = 25 of 57)",
+  "simulator": "ngspice-41 native arm64 build (/Users/anrunw/cryo-ng41/arm64/bin/ngspice), the canonical 77 K library (spice_pdk.ensure_pdk77k) with the device's corner file patched (forced bin, fitted parameter values written into that bin, spice_pdk._patch_params_in_bin); deck as spice_pdk._batch_deck (.options scale=1.0, temp=-196.15, alter / dc / wrdata per curve on the measured grid, -i(VD), pMOS negated) with the instance line Xm1 nd ng 0 0 <subckt> l w nf=1 ad=as=0.29 W p, pd=ps=2 (W + 0.29) u, nrd=nrs=0.29 / W, sa=sb=sd=0, mult=1, m=1 for every device (cryoml.explore.i8_1_nist.simulate; the spice_pdk per-paper-device mult and minimal-instance tables are not applied). One ngspice process per device and card with all 9 sweeps; timeout 60 s",
+  "bin_rule": "decision D2: every instance references one bin explicitly (spice_pdk._force_bin): covered geometries the natively selected bin (find_bin_index), uncovered geometries the bin whose (ln L, ln W) box is nearest (Euclidean distance, 0 inside; largest DEV distance 1.09). Stretch factors per device: s_L = exp(max(ln(Lmin/L), 0, ln(L/Lmax))), s_W likewise, reported in start/bins.json. Check (stock smoke): forcing the native bin reproduces native selection exactly",
+  "deck_temperature": "77 K (decision D3, with the limitation stated there)"
  },
  "cards": {
   "parameter_set": "the 43-parameter sky130 set of I3-2 (out/cold_loop/full_direct/round_3/spec.json selected_parameters)",
-  "box_draft": "cold_start round-one rule around the value in the device's (native or forced) bin: vth0 factor 3, the 7 paper parameters (VTH0 excluded) factor 100, the other parameters factor 3 (symmetric in ln); zero-valued parameters inactive (cold_start.spec_from_centers). SEE open question Q6",
-  "stock": "the 77 K card in the device's bin, unchanged",
-  "starting_cards": "per DEV device: ngspice_fit.polish from the stock card, max_nfev 3000, irls_rounds 3, diff_step 0.01, objective = mean included-curve RRMS (frozen measured inclusion); best card seen kept (I5-1 / I6-1 recipe)",
-  "training_records": "one NGSpice simulation of each DEV device's starting card on its measured grid (e1_correction.DeviceRec, source 'nist4k', vdd 1.8)"
+  "stock": "the 77 K card in the device's bin with the 43 parameters written as their showmod readback values (6 significant digits); the stock smoke reports the difference to the unpatched card",
+  "starting_cards": "per DEV device: ngspice_fit.polish from the stock values, max_nfev 3000 (total NGSpice runs), irls_rounds 3, diff_step 0.01, objective = mean included-curve RRMS (frozen measured inclusion); best card seen kept (I5-1 / I6-1 recipe)",
+  "training_records": "one NGSpice simulation of each DEV device's starting card on its measured grid (e1_correction.DeviceRec, source 'nist4k', family nmos / pmos, vdd 1.8, curve keys idvg@d0..d1, idvd@g0..g6)",
+  "box": "cold_start round-one widths (sky130 rule) around the stock value v of the device's bin: VTH0 v x/\u00f7 3, U0, NFACTOR, VSAT, DELTA, RDSW, ETA0 v x/\u00f7 100, the other 36 parameters v x/\u00f7 3, log-scaled with the sign kept; parameters with v = 0 inactive (cold_start.spec_from_centers rule). v = showmod readback of the bin at 77 K (cryoml.explore.i8_1_nist.base_box)"
  },
  "arms": {
   "C0": "the starting card of the held-out device, scored without refit (reported; not in P_a or P_b)",
   "C0_refit": "control: held-out card refit without correction from its starting card, ngspice_fit.polish max_nfev 400, irls_rounds 2, diff_step 0.01 (I3-2 settings)",
   "M_bias": "PRIMARY: I3-2 recipe unchanged: I = I_card * exp(g), g = tanh(MLP 3-16-16-1 of (is_pmos, |Vgs|/VDD, |Vds|/VDD)), VDD = 1.8 V, inputs standardized on the fold training points, loss = mean paper RRMS of the corrected training records + 1e-4 L2, Adam 3e-3, 2000 full-batch steps, float64, seeds 0-4, g = mean of the 5 members (i3_2_bias.fit_bias); trained on the fold's training records, frozen; held-out card refit with g in the loop (same settings as C0_refit); best card re-simulated, multiplied by exp(g), scored",
-  "T1_inloop": "non-deployable comparator: one log-gain per (polarity, curve key) (e1_correction.fit_arm('T1')) on the fold's training records; held-out refit with it in the loop. Curve keys index the same bias within a polarity (bias grid identical across devices of one family)"
+  "T1_inloop": "non-deployable comparator: one log-gain per (polarity, curve key) (e1_correction.fit_arm('T1')) on the fold's training records; held-out refit with it in the loop. Curve keys index the same bias within a polarity (bias grid identical across devices of one family)",
+  "baselines_reported": {
+   "B1": "wider BSIM4 set, no correction: base box plus extras fitted jointly from the starting card. Universe: the 115-name sky130 sensitivity universe (out/pdk_parameter_sensitivity/summary.json) minus the 43 base names, values from the showmod readback of the device's bin (names not reported skipped); I4-1 box rule (b1_param_box: nonzero v -> |v|/2 .. 2|v| log; zero v -> BSIM4_ZERO_RANGE if listed, else inactive); screen (job I8_1_baselines, before the refits): a name is kept if its edge response >= 1e-4 on at least one DEV starting card (i4_1_baselines.edge_response); max_nfev from i4_1_baselines.matched_nfev",
+   "B2": "I4-1 B2: equal extrinsic series resistors per side outside the card (netlist), rext in [0, 4 x 0.5 x RDSW_start / W_um] ohm (start 0), heating factor exp(kappa |Vds I| / P_max), kappa in [-0.5, 0.5] (start 0); fitted jointly with the base box; matched max_nfev",
+   "B3_d3": "I4-1 B3_d3: shared polynomial correction of total degree 3 in the standardized (|Vgs|/VDD, |Vds|/VDD), per polarity, g = tanh(P), trained on the fold's training records (i4_1_baselines.fit_poly); held-out refit with it in the loop",
+   "role": "reported with GMR(M_bias, X) and GMR(X, C0_refit) and device-bootstrap CIs; not in P_a, P_b or the validity conditions"
+  }
  },
  "evaluation": {
-  "folds": "leave-one-device-out over the 57 DEV devices (one device per geometry); training pool for M_bias and T1 = the other 56 DEV devices, both polarities, one network (is_pmos input), as I3-2",
+  "folds": "leave-one-device-out over the 57 DEV devices (one device per geometry); training pool for M_bias, T1 and B3_d3 = the other 56 DEV devices, both polarities, one network (is_pmos input), as I3-2",
   "metric": "strict paper RRMS with the frozen measured inclusion (e1_correction.score_device, non-sky130 branch): per included curve RMSE over the trimmed points / trimmed mean |I_measured|, device value = mean over included curves; a non-finite included curve makes the device NaN (failed). Every scored current is a fresh NGSpice simulation of the refit card, multiplied by exp(g) for M_bias and T1",
-  "aggregates": "all-device mean over DEV, combined = mean of the nMOS and pMOS family means, median, per-device values, failed count; also per family and per bin-coverage stratum",
+  "aggregates": "all-device mean over DEV, combined = mean of the nMOS and pMOS family means, median, per-device values, failed count; per family; on the 25 bin-covered devices (decision D2 secondary)",
   "decision_statistic": "GMR(A, B) = exp(mean_i ln(rrms_A_i / rrms_B_i)) over devices with both values finite and > 0; device bootstrap 95% CI = 2.5 / 97.5 percentiles over 10000 resamples (numpy default_rng(0)); wins = devices with rrms_A < rrms_B (i3_2_bias.paired_ratio). y_D = ln GMR(M_bias, C0_refit)"
  },
  "statistics_before_outcome": {
   "S1_lodo": "I7-1 definition unchanged (out/research/explore/I7_1/prereg.json definitions; i7_1_transfer.stats_for): computed per fold from the starting-card records of the fold's 56 training devices only (no held-out record, no refit card, no outcome); 12 x 12 bins of (|Vgs|/VDD, |Vds|/VDD) per polarity, residual clip +-1, M_bias loss weights. Dataset value S1_lodo_D = mean over the 57 folds (fold mean weighted by held-out devices; 1 per fold). Also S1_pooled and S2 (reported)",
-  "S3": "I7-1 definition unchanged: per fold, inner leave-one-device-out post-hoc gain of the reduced M_bias recipe (1 seed, 500 steps) on the training records, no refit; S3_D = mean over folds",
-  "prediction_file": "out/research/explore/I8_1/prediction.json: S1_lodo_D, S1_pooled_D, S2_D, S3_D, per-fold values, predicted y_D = a + b S1_lodo_D with the frozen a, b, predicted sign for P_a, predicted sign for P_c, the code commit, and the sha256 of the starting-card record files they were computed from"
+  "S3": "I7-1 definition unchanged: for fold f (held-out device f, training set D_f = DEV minus f) and each inner device h of D_f, M_bias reduced recipe (seed 0, 500 steps) trained on DEV minus {f, h}, applied post hoc (no refit) to h's starting-card record: v(f, h) = ln(RRMS_corrected / RRMS_start); S3_f = mean over h; S3_D = mean over folds. The training set DEV minus {f, h} is the same for (f, h) and (h, f); one fit per unordered pair (1596 fits) serves both (deterministic seed, identical result)",
+  "prediction_file": "out/research/explore/I8_1/prediction.json: S1_lodo_D, S1_pooled_D, S2_D, S3_D, per-fold values, predicted y_D (frozen rule), predicted sign for P_a and P_c, per-family secondary predictions, G and G1 choices, git HEAD at the stats run, and the sha256 of the starting-card record files",
+  "per_family_secondary": "nMOS-only (resp. pMOS-only) dataset: S1_lodo_fam = mean over the family's folds of S1_lodo computed on the fold's same-family training records; S3_fam = mean over the family's folds of the mean of v(f, h) over same-family h; y_fam = mean over the family's held-out devices of ln(M_bias / C0_refit) from the primary run; predicted signs as P_a (frozen rule) and P_c",
+  "gates": "G: M_bias for every DEV device if S3_D < 0, else C0_refit; G1: M_bias if 0.007619219249052826 - 0.4851839492908733 S1_lodo_D < 0, else C0_refit. Outcome: ln GMR(G, C0_refit) = y_D if G chooses M_bias, else 0; ln GMR(G, M_bias) = ln GMR(G, C0_refit) - y_D (I8-2 definitions)"
  },
  "order_of_operations": [
-  "1. Close the open questions in this draft; commit this file alone and push (pre-registration commit). No fitting before this commit.",
-  "2. Job I8_1_start: starting cards of the 57 DEV devices; write start/records (DeviceRec files) and start/summary.json (stock and starting-card RRMS per device).",
-  "3. Job I8_1_stats (mode stats): S1_lodo, S1_pooled, S2 from start/records only; job I8_1_s3 (mode s3): S3 from start/records only. Write prediction.json. Neither mode reads any refit card or held-out score.",
-  "4. Commit prediction.json alone and push (prediction commit). The lodo mode refuses to start unless prediction.json is tracked by git, unmodified in the working tree, and contained in a commit that is an ancestor of HEAD (git ls-files --error-unmatch; git diff --quiet; git merge-base --is-ancestor); it records that commit hash in results.json.",
-  "5. Job I8_1_lodo: C0, C0_refit, M_bias, T1_inloop for the 57 folds; results.json.",
-  "6. Job I8_1_decide: P_a, P_b, P_c outcomes and validity conditions; decision.json. The decide mode recomputes S1_lodo_D from start/records and checks it equals prediction.json (abs difference < 1e-12)."
+  "1. Commit this file alone and push (pre-registration commit). Then commit the code and the smoke runs (smoke_* directories, reduced settings, not used for any decision).",
+  "2. Queue job I8_1_start: starting cards of the 57 DEV devices; start/bins.json (bin, stretch factors), start/records (DeviceRec files with the frozen inclusion), start/summary.json.",
+  "3. Queue job I8_1_stats: S1_lodo, S1_pooled, S2, S3 (and per-family values) from start/records only; writes prediction.json. Reads no refit card and no held-out score.",
+  "4. Queue job I8_1_commit_prediction: commits prediction.json alone and pushes; fails if the file is missing.",
+  "5. Queue job I8_1_lodo: C0, C0_refit, M_bias, T1_inloop. Refuses to start unless prediction.json is tracked by git, unmodified in the working tree, and contained in a commit that is an ancestor of HEAD; records that commit hash in results.json.",
+  "6. Queue job I8_1_baselines: B1 screen, then B1, B2, B3_d3 on the same folds (same guard).",
+  "7. Queue job I8_1_decide: P_a, P_b, P_c, secondary outcomes, validity; decision.json. Recomputes S1_lodo_D from start/records and checks it against prediction.json (|difference| < 1e-12)."
  ],
  "criterion": {
   "P_a": {
@@ -93,7 +102,13 @@
    "V3": "prediction.json was committed (order step 4) before any lodo output existed; the commit hash recorded in results.json is an ancestor of the results commit; otherwise P_a and P_c are reported as 'not prospective' and not counted",
    "V4": "0 ngspice processes stopped by the timeout in the start and lodo jobs, or the count is reported and devices with a timeout in any arm are dropped from every arm"
   },
-  "implementation": "scripts/research/explore/i8_1_nist.py modes start, stats, s3, lodo, decide (to be written after the open questions are closed; the current script has modes sources, inventory, data, split, smoke)"
+  "implementation": "scripts/research/explore/i8_1_nist.py modes start, stats, commit_prediction, lodo, baselines, decide (functions in cryoml.explore.i8_1_nist)",
+  "secondary": {
+   "covered_subset": "decision D2: P_b statistics on the 25 bin-covered DEV devices (reported, not deciding)",
+   "magnitude": "|y_D - predicted y_D| (frozen rule)",
+   "per_family": "nMOS-only and pMOS-only: sign(y_fam) vs the frozen-rule sign on S1_lodo_fam and vs sign(S3_fam)",
+   "gates": "G and G1: GMR(G, C0_refit), GMR(G, M_bias), and whether the gate chose the arm with the lower GMR"
+  }
  },
  "secondary_reported_not_deciding": [
   "C0 (starting card) and stock-card RRMS per device",
@@ -104,10 +119,58 @@
  ],
  "compute": {
   "smoke_timing": "stock 77 K card, 9 sweeps (2 x 181 + 7 x 91 points) in one ngspice-41 process: 0.023-0.025 s per simulation (0.04-0.09 s for the first call of a process, which includes the native-bin lookup); same at deck temperature 77 K and 4.2 K; 0 non-finite curves",
-  "estimate": "scaled from the smoke timing and the I6-1 / I7-1 job times (I6-1: 0.03 s per simulation, 90 starting fits in 1083 s on 6 workers = about 72 CPU-s per fit; refits about 20 CPU-s each; I7-1 S3: about 1.4 s per inner fit of 1 seed x 500 steps on 16-device training sets). Starting fits 57 x about 60 CPU-s = about 1 CPU-h; S1_lodo, S1_pooled, S2 about 10 s; S3 57 x 56 inner fits (1596 distinct training sets, since the inner set of fold f without h equals that of fold h without f) x 3-6 s = 1.3-5 CPU-h; LODO: 57 x 3 refits x about 20 CPU-s = about 1 CPU-h plus 57 M_bias trainings (5 seeds x 2000 steps on about 300 curves) x 50-100 s = 0.8-1.6 CPU-h. Total about 4-9 CPU-h; with 6 workers about 45-90 min wall time (S3 is the largest part). Seconds per device: starting fit about 60 CPU-s, LODO fold about 110-160 CPU-s, S3 about 80-330 CPU-s per fold",
+  "estimate": "ngspice_fit.polish max_nfev counts NGSpice runs: starting fits 57 x 3000 runs x about 0.03 s = about 1.4 CPU-h; S1 statistics about 10 s; S3 1596 fits of 1 seed x 500 steps on about 56 x 5 curves (2-4 s each) = 1-2 CPU-h; LODO 57 x 3 refits x 400 runs x about 0.03 s = about 0.6 CPU-h plus 57 x 5 M_bias seeds x 2000 steps (about 10-20 s each) = 0.8-1.6 CPU-h; baselines about 1 CPU-h. Total about 5-7 CPU-h, about 60-80 min wall on 6 workers. Refined after the smoke",
   "jobs": "I8_1_start, I8_1_stats, I8_1_s3, (prediction commit), I8_1_lodo, I8_1_decide; process pool of 6 workers, 1 torch thread each; one compute-heavy job at a time (CLAUDE.md resource policy). Not queued"
  },
- "open_questions": {
+ "data_reuse_note": "These data have not been used by any earlier direction (the I3-1 and 2026-10-20 catalog passes read the tile README, the layout xlsx and three MDM files). Before this file: inventory checks over all files, the split, and the 4-device stock-card smoke (no RRMS). DEV results will be development evidence for the I3-2 claim and prospective evidence for the I7-1 rule (P_a) only if V3 holds",
+ "frozen_choices_note": "All choices above are fixed by this commit. No DEV result is used to change them; a later variant gets a new id or a dated amendment that leaves this file unchanged",
+ "decisions": {
+  "D1_families": {
+   "decision": "nfet_01v8_lvt (nthin_lvt) and pfet_01v8_lvt (pthin_lvt)",
+   "reason": "these are the device types of the two 77 K paper cards (spice_pdk._SUBCKT); nfet_01v8 has no 77 K card"
+  },
+  "D2_bins": {
+   "decision": "PRIMARY: all 57 DEV devices; every instance references one bin explicitly: the bin ngspice selects natively (spice_pdk.find_bin_index) for the 25 bin-covered geometries, the nearest bin for the 32 others. PRE-REGISTERED SECONDARY: the same statistics (GMR, CI, wins, means) restricted to the 25 bin-covered DEV devices, computed from the same per-device results (no separate run). The bin stretch factor is reported per device",
+   "reason": "the pruned 77 K cards hold only the 18 paper-device bins; the covered subset alone (25 devices) gives a wide bootstrap CI; the secondary subset shows whether the forced bins change the result"
+  },
+  "D3_deck_temperature": {
+   "decision": "deck .options temp = -196.15 C (77 K), the card's tnom",
+   "reason": "avoids extrapolating the BSIM4 temperature equations from 77 K to 4 K; the card refit absorbs the difference. LIMITATION: the simulated device is a 77 K device whose parameters are fitted to 4 K data; kT/q, the band gap and the intrinsic carrier density in the model stay at their 77 K values, so the 4 K subthreshold slope is reproduced only through the fitted parameters (e.g. NFACTOR, VOFF, CIT)"
+  },
+  "D4_inclusion": {
+   "decision": "measured-only rule as in I5-1 / I6-1 (pdk2.metric: clean, trim to the first |I| > 1e-10 A, include iff trimmed mean |I| > 3e-7 A Id-Vd / 2e-7 A Id-Vg, both polarities), evaluated and stored on the C0 starting-card records (start job) and used unchanged by every arm",
+   "reason": "the rule depends on the measured current only, so no fit can change which curves count; the rrmsCalc pMOS rule has no trim-floor entry for these geometries and would include near-zero measured curves where the card conducts"
+  },
+  "D5_curve_set": {
+   "decision": "Vb = 0 curves only (9 per device)",
+   "reason": "the deck ties the body to ground; same setting as the I7-1 calibration datasets"
+  },
+  "D6_box": {
+   "decision": "cold_start round-one widths (sky130 rule) around the stock value v of the device's bin: VTH0 v x/\u00f7 3, U0, NFACTOR, VSAT, DELTA, RDSW, ETA0 v x/\u00f7 100, the other 36 parameters v x/\u00f7 3, log-scaled with the sign kept; parameters with v = 0 inactive (cold_start.spec_from_centers rule). v = showmod readback of the bin at 77 K",
+   "reason": "the sky130 rule used for the 43-parameter sky130 fits; the centre is the stock 77 K card, the starting point of every fit here"
+  },
+  "D7_S1_records": {
+   "decision": "frozen I7-1 definition: starting-card records of the fold's training devices",
+   "reason": "the frozen rule was calibrated on that definition; C0_refit cards exist only for held-out devices"
+  },
+  "D8_baselines": {
+   "decision": "B1, B2, B3_d3 (I4-1 recipes) in a separate job on the same folds; reported, not in the decision rule",
+   "reason": "context for the size of any M_bias gain at the cost of about 1 CPU-h"
+  },
+  "D9_vdd": {
+   "decision": "VDD = 1.8 V for the M_bias / T1 / B3 inputs",
+   "reason": "largest |V| of every MPW-5 sweep, so |V|/VDD <= 1"
+  },
+  "D10_P_a": {
+   "decision": "P_a stays the dataset-level binary sign prediction; prediction.json also registers the predicted y_D of the frozen rule, and per-family secondary predictions (nMOS-only and pMOS-only: S1_lodo, S3, predicted signs) as secondary outcomes",
+   "reason": "one dataset gives one binary outcome; the magnitude and per-family values add information without changing the primary"
+  },
+  "D11_gates": {
+   "decision": "I8-2 gates G (M_bias iff S3_D < 0, else C0_refit) and G1 (M_bias iff the frozen rule predicts a gain) registered as secondary predictions in prediction.json",
+   "reason": "no extra compute; prospective check of the I8-2 gates"
+  }
+ },
+ "draft_open_questions_closed": {
   "Q1_nmos_family": "the nMOS 77 K paper card is nfet_01v8_lvt (spice_pdk._SUBCKT, upstream README), not nfet_01v8. This draft uses nthin_lvt (56 devices). nthin (nfet_01v8, 80 devices, W 0.36-7, L 0.15-20) has no 77 K card in the repository; using it needs the room-temperature sky130 nfet_01v8 card (Volare) as the starting card",
   "Q2_bin_coverage": "21 of 56 nMOS and 22 of 40 pMOS geometries lie in a bin of the pruned 77 K cards. Options: (a) covered geometries only (DEV 25: 12 nMOS + 13 pMOS); (b) all DEV devices with the forced nearest bin for the 32 uncovered (draft); (c) the full room-temperature sky130 lvt cards (all bins) as stock. With (a) the bootstrap CI rests on 25 devices",
   "Q3_deck_temperature": "77 K deck temperature (draft; card at its tnom) or 4.2 K (card temperature model extrapolated; smoke: at 4.2 K the simulated subthreshold currents of the stock card drop to the 1.8e-12 A GMIN floor for |Vg| <= 0.6 V (nMOS) / 0.9 V (pMOS), on-currents at |Vg| = |Vd| = 1.8 V change by < 3%; values at |Vd| = 1.8 V). I6-1 used the stage temperature with the temperature coefficients set to 0",
@@ -119,7 +182,5 @@
   "Q9_vdd": "VDD for the M_bias inputs: 1.8 V (draft; largest |V| of every sweep) or 1.85 V (77 K pipeline)",
   "Q10_single_dataset": "P_a is one binary outcome; a second dataset (ETest 1.8 V core devices, 5 per type; or nthin / pthin with a room-temperature card) would add outcomes",
   "Q11_i8_2_gate": "the I8-2 gate G (use M_bias iff S3_D < 0, else C0_refit; commit 08d23e3 / d9854a3) can be evaluated on this dataset from the same S3_D and LODO outputs at no extra cost; add it as a secondary prediction in prediction.json?"
- },
- "data_reuse_note": "These data have not been used by any earlier direction (the I3-1 and 2026-10-20 catalog passes read the tile README, the layout xlsx and three MDM files). Before this file: inventory checks over all files, the split, and the 4-device stock-card smoke (no RRMS). DEV results will be development evidence for the I3-2 claim and prospective evidence for the I7-1 rule (P_a) only if V3 holds",
- "frozen_choices_note": "Draft. After the open questions are closed and the file is committed, all choices are fixed; later variants get a new id or a dated amendment"
+ }
 }
