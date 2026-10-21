@@ -1,0 +1,64 @@
+I3_2 real sky130: 18 folds, 18 held-out records, arms ['M_bias'], opts {'heldout_nfev': 400, 'heldout_irls': 2, 'diff_step': 0.01}, hyper {}, preregistered=False
+training done (330.0 s, 95 seed tasks)
+{
+ "summary": {
+  "M_bias": {
+   "all_device_mean": 0.07316345449986766,
+   "combined": 0.06911020463438923,
+   "median": 0.06430640784463298,
+   "n_failed": 0
+  },
+  "C0_refit": {
+   "all_device_mean": 0.10427533896799393,
+   "combined": 0.09747228035981803,
+   "median": 0.08197973624689832,
+   "n_failed": 0
+  },
+  "T1_inloop": {
+   "all_device_mean": 0.0744060406798039,
+   "combined": 0.07026664021375681,
+   "median": 0.06719404562871739,
+   "n_failed": 0
+  }
+ },
+ "comparisons": {
+  "M_bias_vs_C0_refit": {
+   "ratio": 0.7550793184208181,
+   "ci_low": 0.672660521887471,
+   "ci_high": 0.852178157660092,
+   "wins": 16,
+   "n_used": 18
+  },
+  "M_bias_vs_T1_inloop": {
+   "ratio": 0.9739916079511592,
+   "ci_low": 0.9445654032485462,
+   "ci_high": 1.0014723778110048,
+   "wins": 11,
+   "n_used": 18
+  },
+  "T1_inloop_vs_C0_refit": {
+   "ratio": 0.7752421193948126,
+   "ci_low": 0.6950701247687375,
+   "ci_high": 0.8645117231171748,
+   "wins": 16,
+   "n_used": 18
+  }
+ },
+ "reproduction": {
+  "C0_refit_vs_stored_I2_1_on_REAL_DEV": 0.0
+ },
+ "criterion": null,
+ "export": {
+  "path": "out/research/explore/I3_2/all18/m_bias_sky130_all18_full.va",
+  "lines": 209,
+  "max_abs_g_diff_va_vs_python": 2.393105158482456e-11
+ },
+ "timing": {
+  "t1_fit_s": 4.0,
+  "train_s": 330.0,
+  "train_n_seed_tasks": 95,
+  "heldout_refit_s": 191.2,
+  "heldout_refit_n": 54
+ }
+}
+runtime 526.3 s

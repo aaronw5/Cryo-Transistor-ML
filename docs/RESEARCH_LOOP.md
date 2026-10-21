@@ -1753,3 +1753,31 @@ decision.json): table 01 primary result, figure 02 forest vs C0_refit per datase
 A1 secondary C1, table 08 secondary analyses.
 Site: new claim `i10-2` (status "refuted"; headline "stop (pre-registered rule): no selector supported") in the
 Exploration tab, status item and primary table. Site rebuilt, not published.
+
+## sky130 77 K REAL_TEST opened by user decision; I3-2 recipe on all 18 devices (2026-10-21 16:28)
+
+User decision (2026-10-21, verbatim): "Nahhh don't lock the real data the point is the fit the real data". The 6
+sky130 77 K REAL_TEST devices (nmos_L0p19_W7, nmos_L1_W1p6, nmos_L8_W1p6, pmos_L0p35_W1p6, pmos_L0p5_W0p64,
+pmos_L8_W0p84) are opened; the December TEST-stage prediction for sky130 77 K (I8-2 Part A) can no longer be checked
+on held-out data. The other datasets' TEST splits are unchanged.
+Starting-card records of the 6 devices: `scripts/research/explore/e1_collect_real.py --split test`
+(`out/research/explore/E1/real_test.json`; strict RRMS equal to `card_eval.score_card`, all 6).
+Run: `scripts/research/explore/i3_2_bias.py --mode real --devices all18 --name all18 --arms M_bias --workers 6`
+(new flag; the default `--devices dev` path is unchanged). Leave-one-device-out over 18 devices, I3-2 recipe
+unchanged (g trained on the other 17 starting-card records, 5 seeds, 2000 steps; held-out refit from direct43_r3_fd
+with g in the loop, max_nfev 400, irls 2, diff_step 0.01); C0_refit and T1_inloop are new runs (T1 per fold fitted on
+the other 17 records with `e1_correction.fit_arm`; on a REAL_DEV fold this reproduces the stored E1 table exactly).
+Not pre-registered. 526 s (training 330 s, 54 refits 191 s), 0 failed devices.
+All-device (combined) [median]: published card 0.2751 (0.2595) [0.2304]; starting card 0.1044 (0.0976); C0_refit
+0.1043 (0.0975) [0.0820]; T1_inloop 0.0744 (0.0703) [0.0672]; M_bias 0.0732 (0.0691) [0.0643]. M_bias below
+C0_refit on 16/18 devices; GMR(M_bias, C0_refit) 0.755 [0.673, 0.852]; GMR(M_bias, T1_inloop) 0.974 [0.945, 1.001],
+11/18. The 6 former TEST devices: C0_refit 0.0985, T1_inloop 0.0589, M_bias 0.0590. On the 12 REAL_DEV devices:
+C0_refit 0.1072 (difference to the stored I2-1 rows 0.0), M_bias 0.0803 (I3-2, trained on 11: 0.0806), T1_inloop
+0.0822 (0.0820). Full model trained on all 18: `out/research/explore/I3_2/all18/m_bias_sky130_all18_full.va`
+(209 lines, max |g difference| to Python 2.4e-11). Outputs `out/research/explore/I3_2/all18/{results, corrections,
+heldout_cards}.json`, log `I3_2/logs/all18.log`.
+Re-simulation for the slide deck (`scripts/research/explore/mbias_deck_resim.py --dataset sky130`, 4 workers, 24 s):
+published, starting, C0_refit and M_bias (Python x exp(g)) RRMS reproduced with max |difference| 0.0 on 18/18; the 18
+fold models compiled to OSDI (OpenVAF 23.5.0) and run in the ngspice-41 OSDI build give all-device 0.073171 vs
+0.073163 (max per-device |difference| 1.7e-5). Deck `slides/cryo_ml_mbias_real_data.pptx` (27 slides,
+`scripts/make_mbias_slides.py`, figures `scripts/research/explore/mbias_deck_plots.py`).

@@ -17,6 +17,14 @@ Modes:
   pdk2    GF180 / IHP tier c sets 0-2, leave-one-geometry-out.  C0_refit read
           from I2-1 (re-run as a check); T1_inloop is a new held-out refit with
           the E1 leave-one-geometry-out fold T1 correction.
+  real --devices all18
+          all 18 sky130 77 K devices (REAL_DEV + REAL_TEST; the TEST devices
+          were opened on 2026-10-21 by user decision), leave-one-device-out,
+          same recipe.  C0_refit and T1_inloop are new runs (T1 per fold
+          fitted on the other 17 records, e1_correction.fit_arm); C0_refit on
+          the 12 REAL_DEV devices is compared with the stored I2-1 rows.
+          Needs out/research/explore/E1/real_test.{npz,json}
+          (e1_collect_real.py --split test).  Output out/research/explore/I3_2/all18/.
   decide  read real_dev / gf180_c_logo / ihp_c_logo results and evaluate R1-R4.
   export  write a stored correction as Verilog-A text.
 
@@ -25,6 +33,8 @@ Modes:
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_bias.py \
       --mode pdk2 --pdk gf180 --name gf180_c_logo --workers 6
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_bias.py --mode decide
+  PYTHONPATH=src .venv/bin/python scripts/research/explore/i3_2_bias.py \
+      --mode real --devices all18 --name all18 --arms M_bias --workers 6
 """
 from __future__ import annotations
 
@@ -78,6 +88,26 @@ def aggregate(values: dict) -> dict:
 def load_records(mode: str, pdk: str):
     from i2_1_joint import load_records as lr
     return lr(argparse.Namespace(mode=mode, pdk=pdk))
+
+
+def load_records_all18():
+    """REAL_DEV + REAL_TEST starting-card records (direct43_r3_fd cards)."""
+    from cryoml.explore.e1_correction import load_devices
+    split = json.loads((ROOT / "out/research/explore/real_split.json").read_text())
+    tags = sorted(split["REAL_DEV"] + split["REAL_TEST"])
+    recs = load_devices(E1 / "real_dev") + load_devices(E1 / "real_test")
+    if sorted(r.tag for r in recs) != tags or len(tags) != 18:
+        raise RuntimeError("all18 records differ from REAL_DEV + REAL_TEST")
+    cards = json.loads((ROOT / "out/research/polished/direct43_r3_fd/real/summary.json")
+                       .read_text())["devices"]
+    for r in recs:
+        r.meta["params"] = dict(cards[r.tag]["params"])
+    return recs, (lambda r: r.tag)
+
+
+def t1_task(task):
+    from cryoml.explore.e1_correction import fit_arm
+    return fit_arm("T1", task, threads=1).to_json()
 
 
 def stored_rows(real: bool, pdk: str) -> dict[str, dict]:
@@ -159,6 +189,8 @@ def main() -> int:
     ap.add_argument("--mode", choices=("real", "pdk2", "decide", "export"), required=True)
     ap.add_argument("--pdk", choices=("gf180", "ihp"), default="gf180")
     ap.add_argument("--name", default="")
+    ap.add_argument("--devices", choices=("dev", "all18"), default="dev",
+                    help="real: REAL_DEV (pre-registered I3-2) or all 18 devices")
     ap.add_argument("--arms", default=",".join(ARMS))
     ap.add_argument("--no-check", action="store_true",
                     help="skip the C0_refit / T1_inloop reproduction reruns (real)")
@@ -193,10 +225,15 @@ def main() -> int:
         hyper["seeds"] = tuple(int(x) for x in args.m_seeds.split(","))
     if args.m_steps:
         hyper["steps"] = args.m_steps
+    all18 = real and args.devices == "all18"
     preregistered = (opts == PREREG_OPTIONS and not hyper and not args.folds_limit
-                     and set(ARMS) <= set(arms))
+                     and set(ARMS) <= set(arms) and not all18)
 
-    records, key, g0 = load_records(args.mode, args.pdk)
+    if all18:
+        records, key = load_records_all18()
+        g0 = None
+    else:
+        records, key, g0 = load_records(args.mode, args.pdk)
     groups = sorted({key(r) for r in records})
     if args.folds_limit:
         groups = groups[:args.folds_limit]
@@ -215,6 +252,11 @@ def main() -> int:
     timing = {}
     with get_context("spawn").Pool(args.workers) as pool:
         t0 = time.time()
+        if all18:
+            t1s = pool.map(t1_task, [[r for r in records if key(r) != g] for g in groups])
+            g0 = {g: {"T1": t} for g, t in zip(groups, t1s)}
+            timing["t1_fit_s"] = round(time.time() - t0, 1)
+            t0 = time.time()
         expanded, owner = split_seed_tasks(train_tasks, hyper)
         corrs = dict(zip(train_names, merge_seed_results(
             len(train_tasks), owner, pool.map(train_task, expanded, chunksize=1))))
@@ -229,7 +271,10 @@ def main() -> int:
         for g in groups:
             for rec in held[g]:
                 t1 = Correction.from_json(g0[g]["T1"])
-                if real:
+                if all18:
+                    tasks += [("C0_refit", None, Correction("C0"), rec, opts),
+                              ("T1_inloop", None, t1, rec, opts)]
+                elif real:
                     if not args.no_check:
                         tasks += [("C0_refit_rerun", None, Correction("C0"), rec, opts),
                                   ("T1_inloop_rerun", None, t1, rec, opts)]
@@ -247,7 +292,15 @@ def main() -> int:
         rows.setdefault(row["label"], {})[row["tag"]] = row
     held_tags = [r.tag for r in held_recs]
     scores = {lab: {t: r["rrms"] for t, r in v.items()} for lab, v in rows.items()}
-    stored = {lab: {t: v[t] for t in held_tags} for lab, v in stored_rows(real, args.pdk).items()}
+    if all18:
+        stored = {}
+        dev12 = stored_rows(True, args.pdk)["C0_refit"]
+        repro_dev12 = {"C0_refit_vs_stored_I2_1_on_REAL_DEV": max_abs_diff(
+            {t: v for t, v in scores["C0_refit"].items() if t in dev12}, dev12)}
+    else:
+        stored = {lab: {t: v[t] for t in held_tags}
+                  for lab, v in stored_rows(real, args.pdk).items()}
+        repro_dev12 = {}
     scores.update(stored)
     posthoc = {arm: {r.tag: corrected_score(corrs[f"{arm}|{key(r)}"], r) for r in held_recs}
                for arm in arms}
@@ -264,13 +317,15 @@ def main() -> int:
         if f"{lab}_rerun" in scores:
             checks_repro[lab] = {"max_abs_diff_rerun_vs_stored":
                                  max_abs_diff(scores[f"{lab}_rerun"], scores[lab])}
+    checks_repro.update(repro_dev12)
 
     result = {"name": args.name, "mode": args.mode, "pdk": "sky130" if real else args.pdk,
               "prereg": str(PREREG.relative_to(ROOT)), "preregistered_config": preregistered,
               "smoke": not preregistered, "options": opts, "hyper": HYPER_BIAS,
               "hyper_overrides": hyper, "arms": arms, "n_folds": len(groups),
               "n_heldout_records": len(held_recs),
-              "stored_sources": {
+              "devices": args.devices if real else None,
+              "stored_sources": {} if all18 else {
                   "C0_refit": ("out/research/explore/I2_1/real_dev/results.json per_device.C0_refit"
                                if real else f"out/research/explore/I2_1/{args.pdk}_c_logo/"
                                "results.json per_device.C0_refit"),
@@ -298,7 +353,12 @@ def main() -> int:
                                   and summary["M_bias"]["n_failed"] == 0)}
     target = OUT / args.name
     target.mkdir(parents=True, exist_ok=True)
-    if real:
+    if all18:
+        result["note"] = ("all 18 sky130 77 K devices; the 6 REAL_TEST devices were opened on "
+                          "2026-10-21 by user decision; not pre-registered; I3-2 recipe unchanged")
+        result["export"] = export_va(corrs["full|M_bias"], 1.85,
+                                     target / "m_bias_sky130_all18_full.va")
+    elif real:
         # legacy form: reproduces the stored I3-2 artifact; the corrected
         # export is m_bias_sky130_dev_full_sense_rs.va (--mode export)
         result["export"] = export_va(corrs["full|M_bias"], 1.85,
