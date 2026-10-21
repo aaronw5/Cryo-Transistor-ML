@@ -72,6 +72,8 @@ T1_PLUS = 0.005
 V2_MAX_FAILED = 0.10
 V2_MIN_PAIRED = 0.80
 V1_MIN_FINITE = 0.90
+# S1_lodo range of the 11 I7-1 calibration datasets (out/research/explore/I7_1/retro/results.json); prereg Q6
+S1_CALIBRATION_RANGE = (-0.37891158353132853, 0.5040862674260564)
 
 
 # ---------------------------------------------------------------------------
@@ -955,7 +957,11 @@ def run_decide(args) -> int:
     p_a = {"predicted": pred["P_a"]["predicted_sign"], "observed": sign(y_d),
            "correct": pred["P_a"]["predicted_sign"] == sign(y_d), "y_D": y_d,
            "predicted_y": pred["dataset"]["predicted_y"],
-           "abs_error_y": abs(y_d - pred["dataset"]["predicted_y"])}
+           "abs_error_y": abs(y_d - pred["dataset"]["predicted_y"]),
+           "S1_lodo_D": pred["dataset"]["S1_lodo"],
+           "calibration_range_note": {           # prereg decision Q6 (does not change the outcome)
+               "range": list(S1_CALIBRATION_RANGE),
+               "inside": bool(S1_CALIBRATION_RANGE[0] <= pred["dataset"]["S1_lodo"] <= S1_CALIBRATION_RANGE[1])}}
     p_c = {"predicted": pred["P_c"]["predicted_sign"], "observed": sign(y_d),
            "correct": pred["P_c"]["predicted_sign"] == sign(y_d), "S3_D": pred["dataset"]["S3"]}
     fam_out = {}
