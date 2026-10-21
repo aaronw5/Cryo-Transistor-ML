@@ -2,14 +2,30 @@
  "id": "I8_1_decision",
  "smoke": true,
  "prereg": "out/research/explore/I8_1/prereg.json",
- "prediction_commit": null,
- "S1_lodo_D_recomputed_abs_diff": 0.0,
+ "amendment": "out/research/explore/I8_1/prereg_amendment_2026-10-20.json",
+ "prediction_commit": "08f4b80ce7472575eaa3c665cbeeab72d359cb0c",
+ "prediction_v2_commit": null,
+ "checks": {
+  "S1_v1_abs_diff": 0.0,
+  "S1_v1_checked": false,
+  "S1_v2_abs_diff": 0.0,
+  "excluded_equal": true
+ },
+ "excluded_start_failures": [
+  "nfet_01v8_lvt_W7_L2_m26p7"
+ ],
+ "dropped_timeouts_V4": [],
  "validity": {
-  "V1": true,
-  "V2": true,
+  "V1": false,
+  "V2": false,
   "V3_prospective": false,
-  "V4": true,
-  "valid": true
+  "V4_n_timeout_start": 0,
+  "V4_dropped": [],
+  "valid": false,
+  "n_failed": {
+   "C0_refit": 1,
+   "M_bias": 1
+  }
  },
  "P_a": {
   "predicted": "no gain",
@@ -18,19 +34,27 @@
   "y_D": 0.2760048735465824,
   "predicted_y": 0.15696257310448172,
   "abs_error_y": 0.11904230044210065,
-  "stated": true,
+  "source": "prediction.json (committed 0c184f8), primary",
+  "stated": false,
   "prospective": false
  },
+ "P_a_secondary_recomputed": {
+  "predicted": "no gain",
+  "observed": "no gain",
+  "correct": true,
+  "predicted_y": 0.15696257310448172,
+  "source": "prediction_v2.json (amendment A1), secondary"
+ },
  "P_b": {
-  "label": "not supported",
+  "label": "invalid",
   "R1": false,
   "R2": true,
   "R3": true,
   "gmr": {
-   "n": 4,
+   "n": 5,
    "n_used": 4,
-   "n_method_failed": 0,
-   "n_control_failed": 0,
+   "n_method_failed": 1,
+   "n_control_failed": 1,
    "wins": 2,
    "ties": 0,
    "ratio": 1.3178542866359075,
@@ -39,39 +63,11 @@
    "ci_high": 2.125784216033193,
    "n_boot": 10000
   },
-  "means": {
-   "C0_refit": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.22068712845325264,
-    "valid_only_mean": 0.22068712845325264,
-    "median": 0.2363489584596204,
-    "combined": 0.22068712845325267
-   },
-   "M_bias": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.25302986032890534,
-    "valid_only_mean": 0.25302986032890534,
-    "median": 0.2663774728246495,
-    "combined": 0.25302986032890534
-   },
-   "T1_inloop": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.2558655415914368,
-    "valid_only_mean": 0.2558655415914368,
-    "median": 0.2673471654547248,
-    "combined": 0.2558655415914368
-   },
-   "C0": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.27290379306304624,
-    "valid_only_mean": 0.27290379306304624,
-    "median": 0.2740392377457439,
-    "combined": 0.27290379306304624
-   }
+  "means_valid_only": {
+   "C0_refit": 0.22068712845325264,
+   "M_bias": 0.25302986032890534,
+   "T1_inloop": 0.2558655415914368,
+   "C0": 0.27290379306304624
   }
  },
  "P_c": {
@@ -79,7 +75,8 @@
   "observed": "no gain",
   "correct": true,
   "S3_D": 0.302704023774132,
-  "stated": true,
+  "source": "prediction_v2.json; the prediction.json P_c is void (NaN S3)",
+  "stated": false,
   "prospective": false
  },
  "secondary": {
@@ -128,10 +125,10 @@
   },
   "baselines": {
    "M_bias_vs_B1": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 0,
     "ties": 0,
     "ratio": 2.232739388694049,
@@ -141,10 +138,10 @@
     "n_boot": 10000
    },
    "M_bias_vs_B2": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 0,
     "ties": 0,
     "ratio": 2.32738611729252,
@@ -154,10 +151,10 @@
     "n_boot": 10000
    },
    "M_bias_vs_B3_d3": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 2,
     "ties": 0,
     "ratio": 1.0080202828881235,
@@ -167,10 +164,10 @@
     "n_boot": 10000
    },
    "B1_vs_C0_refit": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 3,
     "ties": 0,
     "ratio": 0.5902409807920903,
@@ -180,10 +177,10 @@
     "n_boot": 10000
    },
    "B2_vs_C0_refit": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 3,
     "ties": 0,
     "ratio": 0.566237925389443,
@@ -193,10 +190,10 @@
     "n_boot": 10000
    },
    "B3_d3_vs_C0_refit": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 2,
     "ties": 0,
     "ratio": 1.3073688188694623,
@@ -214,6 +211,10 @@
    "nfet_01v8_lvt_W5_L0p25_m25p4": [
     1.0,
     1.01
+   ],
+   "nfet_01v8_lvt_W7_L2_m26p7": [
+    2.0,
+    2.3333333333333335
    ],
    "pfet_01v8_lvt_W3_L2_m29p8": [
     1.0,

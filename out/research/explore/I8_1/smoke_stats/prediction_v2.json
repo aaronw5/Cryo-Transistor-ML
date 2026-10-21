@@ -1,0 +1,146 @@
+{
+ "id": "I8_1_prediction_v2",
+ "smoke": true,
+ "prereg": "out/research/explore/I8_1/prereg.json",
+ "amendment": "out/research/explore/I8_1/prereg_amendment_2026-10-20.json (A1)",
+ "excluded_records": [
+  "nfet_01v8_lvt_W7_L2_m26p7"
+ ],
+ "n_records": 5,
+ "primary_P_a_from_v1": {
+  "S1_lodo": -0.30780769659363955,
+  "predicted_y": 0.15696257310448172,
+  "predicted_sign": "no gain",
+  "file": "out/research/explore/I8_1/smoke_stats/prediction.json"
+ },
+ "written": "2026-10-20 23:39:25",
+ "git_head_at_run": "5ba2f8e1695f9dd9ab57df37fb1d92a388a62cf5",
+ "records_sha256": {
+  ".json": "962ba9455bfaca3c6d9280ef1155c5efe5a42e049ffab225329112f158c228e3",
+  ".npz": "bbdc3e2c9222acda19039918fe5e6f3a5445b7b3198247a51f2480e0df874b64"
+ },
+ "frozen_rule": {
+  "form": "predicted y_D = a + b * S1_lodo_D; predicted sign of ln GMR(M_bias, C0_refit) = sign(a + b * S1_lodo_D); predicted gain iff a + b * S1_lodo_D < 0",
+  "a": 0.007619219249052826,
+  "b": -0.4851839492908733,
+  "zero_crossing_S1_lodo": 0.015703774331753538,
+  "fit": "OLS over the 11 stored datasets (dataset level), retro/results.json",
+  "n": 11,
+  "r2": 0.7847489919030067,
+  "slope_sign_note": "b < 0: higher S1_lodo predicts a lower log ratio (more gain)"
+ },
+ "n_folds": 4,
+ "dataset": {
+  "S1_lodo": -0.30780769659363955,
+  "S1_pooled": 0.7317731714725064,
+  "S2": 0.44356946436103917,
+  "S3": 0.302704023774132,
+  "predicted_y": 0.15696257310448172
+ },
+ "P_a_secondary_recomputed": {
+  "predicted_sign": "no gain",
+  "rule": "gain iff a + b S1_lodo_D < 0",
+  "predicted_y": 0.15696257310448172,
+  "note": "S1 with amendment A1; the primary P_a is the committed prediction.json value"
+ },
+ "P_c": {
+  "predicted_sign": "no gain",
+  "rule": "gain iff S3_D < 0"
+ },
+ "per_family_secondary": {
+  "nmos": {
+   "n_folds": 2,
+   "S1_lodo": 0.0,
+   "S3": 0.0003177419944207227,
+   "predicted_y_rule": 0.007619219249052826,
+   "P_a_predicted_sign": "no gain",
+   "P_c_predicted_sign": "no gain"
+  },
+  "pmos": {
+   "n_folds": 2,
+   "S1_lodo": 0.0,
+   "S3": 0.1499255061699727,
+   "predicted_y_rule": 0.007619219249052826,
+   "P_a_predicted_sign": "no gain",
+   "P_c_predicted_sign": "no gain"
+  }
+ },
+ "gates": {
+  "G": "C0_refit",
+  "G1": "C0_refit"
+ },
+ "S3_hyper": {
+  "seeds": [
+   0
+  ],
+  "steps": 50
+ },
+ "per_fold": {
+  "nfet_01v8_lvt_W1p65_L1_m23p6": {
+   "S1_lodo": -0.680037300481408,
+   "S1_pooled": 0.5796285003642889,
+   "S2": 0.1498080987012403,
+   "n_train": 3,
+   "n_train_pmos": 2,
+   "S1_lodo_family": 0.0,
+   "S3": 0.5589704326254267,
+   "S3_family": 0.4893804198531663,
+   "S3_inner": {
+    "nfet_01v8_lvt_W5_L0p25_m25p4": 0.4893804198531663,
+    "pfet_01v8_lvt_W3_L2_m29p8": 1.1993977354359595,
+    "pfet_01v8_lvt_W7_L1p5_m31p5": -0.011866857412845887
+   }
+  },
+  "nfet_01v8_lvt_W5_L0p25_m25p4": {
+   "S1_lodo": -0.4495353753868665,
+   "S1_pooled": 0.7219663128930642,
+   "S2": 0.1498080987012403,
+   "n_train": 3,
+   "n_train_pmos": 2,
+   "S1_lodo_family": 0.0,
+   "S3": 0.22229149314060082,
+   "S3_family": -0.4887449358643249,
+   "S3_inner": {
+    "nfet_01v8_lvt_W1p65_L1_m23p6": -0.4887449358643249,
+    "pfet_01v8_lvt_W3_L2_m29p8": 1.156794297980396,
+    "pfet_01v8_lvt_W7_L1p5_m31p5": -0.0011748826942687175
+   }
+  },
+  "pfet_01v8_lvt_W3_L2_m29p8": {
+   "S1_lodo": -0.0356769498947922,
+   "S1_pooled": 0.8676424274523197,
+   "S2": 0.737330830020838,
+   "n_train": 3,
+   "n_train_pmos": 1,
+   "S1_lodo_family": 0.0,
+   "S3": 0.2705189330973821,
+   "S3_family": 0.19578254609957116,
+   "S3_inner": {
+    "nfet_01v8_lvt_W1p65_L1_m23p6": -0.36658526231771543,
+    "nfet_01v8_lvt_W5_L0p25_m25p4": 0.9823595155102907,
+    "pfet_01v8_lvt_W7_L1p5_m31p5": 0.19578254609957116
+   }
+  },
+  "pfet_01v8_lvt_W7_L1p5_m31p5": {
+   "S1_lodo": -0.06598116061149151,
+   "S1_pooled": 0.7578554451803527,
+   "S2": 0.737330830020838,
+   "n_train": 3,
+   "n_train_pmos": 1,
+   "S1_lodo_family": 0.0,
+   "S3": 0.15903523623311852,
+   "S3_family": 0.10406846624037422,
+   "S3_inner": {
+    "nfet_01v8_lvt_W1p65_L1_m23p6": -0.45231143118724665,
+    "nfet_01v8_lvt_W5_L0p25_m25p4": 0.825348673646228,
+    "pfet_01v8_lvt_W3_L2_m29p8": 0.10406846624037422
+   }
+  }
+ },
+ "timing": {
+  "s1_s": 0.01,
+  "s3_s": 1.1,
+  "n_s3_fits": 6
+ },
+ "note": "computed from the starting-card records only; no refit card or held-out score read"
+}

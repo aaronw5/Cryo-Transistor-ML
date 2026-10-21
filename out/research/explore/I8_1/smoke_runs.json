@@ -128,5 +128,59 @@
   },
   "S1_lodo_D_recomputed_abs_diff": 0.0
  },
- "guard_checks": "lodo and baselines with --smoke report the guard (smoke prediction untracked: ok false) and continue; without --smoke, lodo with no committed prediction.json exits with 'refusing to start'; commit_prediction with no prediction.json exits 1"
+ "guard_checks": "lodo and baselines with --smoke report the guard (smoke prediction untracked: ok false) and continue; without --smoke, lodo with no committed prediction.json exits with 'refusing to start'; commit_prediction with no prediction.json exits 1",
+ "amendment_A1_smoke": {
+  "written": "2026-10-20",
+  "devices": [
+   "nfet_01v8_lvt_W1p65_L1_m23p6",
+   "nfet_01v8_lvt_W5_L0p25_m25p4",
+   "nfet_01v8_lvt_W7_L2_m26p7",
+   "pfet_01v8_lvt_W3_L2_m29p8",
+   "pfet_01v8_lvt_W7_L1p5_m31p5"
+  ],
+  "failed_start_device": "nfet_01v8_lvt_W7_L2_m26p7",
+  "statement": "rerun of start, stats_v2, lodo, baselines, decide after amendment A1 (commit 5ba2f8e) with the 4 smoke devices plus one device whose starting record failed in the full run; reduced settings; not used for any decision",
+  "excluded_records": [
+   "nfet_01v8_lvt_W7_L2_m26p7"
+  ],
+  "S3_D_finite": true,
+  "failed_device_scores": {
+   "C0_refit": null,
+   "M_bias": null,
+   "T1_inloop": null,
+   "C0": null
+  },
+  "lodo_timing": {
+   "train_s": 1.2,
+   "train_n": 8,
+   "refit_s": 7.6,
+   "refit_n": 12
+  },
+  "baselines_timing": {
+   "train_s": 1.1,
+   "train_n": 4,
+   "screen_s": 3.2,
+   "refit_s": 8.9,
+   "refit_n": 12
+  },
+  "decide_checks": {
+   "S1_v1_abs_diff": 0.0,
+   "S1_v1_checked": false,
+   "S1_v2_abs_diff": 0.0,
+   "excluded_equal": true
+  },
+  "decide_validity": {
+   "V1": false,
+   "V2": false,
+   "V3_prospective": false,
+   "V4_n_timeout_start": 0,
+   "V4_dropped": [],
+   "valid": false,
+   "n_failed": {
+    "C0_refit": 1,
+    "M_bias": 1
+   }
+  },
+  "note": "V1 and V2 are false in the smoke because 1 of 5 smoke devices is a failed start (20%)"
+ }
 }

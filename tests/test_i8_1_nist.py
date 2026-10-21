@@ -155,6 +155,31 @@ class TestI81(unittest.TestCase):
         f.write_text('{"x": 1}')
         self.assertFalse(m.prediction_guard(f, cwd=repo)["ok"])         # modified
 
+    def test_nan_record_excluded(self):
+        from cryoml.explore.e1_correction import CurveRec, DeviceRec
+        from cryoml.explore.i3_2_bias import fit_bias
+
+        def rec(tag, fam, bad=False):
+            vg = np.linspace(0, 1.8, 40)
+            r = DeviceRec(tag, fam, 1.0, 1.0, 1.8, "nist4k")
+            for k, vd in enumerate((0.1, 1.8)):
+                tgt = 1e-5 * (1 + vg) * (1.0 + 0.1 * k)
+                sim = tgt * 1.2
+                if bad and k == 0:
+                    sim = np.full_like(sim, np.nan)
+                r.curves.append(CurveRec(f"idvg@d{k}", "idvg", vg, np.full_like(vg, vd), sim, tgt,
+                                         0, float(np.mean(tgt)), True))
+            return r
+        recs = [rec("a", "nmos"), rec("b", "nmos", bad=True), rec("c", "pmos"), rec("d", "pmos")]
+        good, bad = m.split_finite(recs)
+        self.assertEqual(bad, ["b"])
+        self.assertEqual([r.tag for r in good], ["a", "c", "d"])
+        hyper = {"seeds": (0,), "steps": 20}
+        g_all = fit_bias("M_bias", recs, hyper=hyper, threads=1).apply(recs[0])
+        g_good = fit_bias("M_bias", good, hyper=hyper, threads=1).apply(recs[0])
+        self.assertFalse(all(np.all(np.isfinite(x)) for x in g_all))   # the failure mode
+        self.assertTrue(all(np.all(np.isfinite(x)) for x in g_good))
+
 
 if __name__ == "__main__":
     unittest.main()

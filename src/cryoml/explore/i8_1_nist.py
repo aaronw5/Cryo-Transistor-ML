@@ -981,3 +981,18 @@ def prediction_guard(path: Path, cwd: Path = ROOT) -> dict:
         out["ancestor_of_head"] = False
     out["ok"] = bool(out["exists"] and out["tracked"] and out["unmodified"] and out["ancestor_of_head"])
     return out
+
+
+# ---------------------------------------------------------------------------
+# Amendment 2026-10-20 (A1): records with non-finite simulated points
+# ---------------------------------------------------------------------------
+def finite_record(rec) -> bool:
+    """True iff every simulated point of every curve of ``rec`` is finite."""
+    return all(bool(np.all(np.isfinite(np.asarray(c.sim, dtype=np.float64)))) for c in rec.curves)
+
+
+def split_finite(recs) -> tuple[list, list[str]]:
+    """(records with only finite simulated points, tags of the others)."""
+    good = [r for r in recs if finite_record(r)]
+    bad = sorted(r.tag for r in recs if not finite_record(r))
+    return good, bad

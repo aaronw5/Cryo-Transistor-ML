@@ -358,12 +358,21 @@ def odir(args, name: str) -> Path:
     return OUT / (f"smoke_{name}" if args.smoke else name)
 
 
-def prediction_path(args) -> Path:
-    return odir(args, "stats") / "prediction.json" if args.smoke else PREDICTION
+PREDICTION_V2 = OUT / "prediction_v2.json"
+AMENDMENT = OUT / "prereg_amendment_2026-10-20.json"
+
+
+def prediction_path(args, version: int = 1) -> Path:
+    name = "prediction.json" if version == 1 else "prediction_v2.json"
+    return odir(args, "stats") / name if args.smoke else OUT / name
+
+
+# a device whose starting record failed in the full run (amendment A1 smoke check)
+SMOKE_FAILED_TAG = "nfet_01v8_lvt_W7_L2_m26p7"
 
 
 def smoke_tags(devices, info) -> list[str]:
-    picks = []
+    picks = [SMOKE_FAILED_TAG] if any(d.tag == SMOKE_FAILED_TAG for d in devices) else []
     for pol in ("nmos", "pmos"):
         for cov in (True, False):
             ds = sorted([d for d in devices if d.polarity == pol and info[d.tag]["bin77k_covered"] == cov],
@@ -379,6 +388,12 @@ def run_devices(args):
         keep = set(smoke_tags(devices, info))
         devices = [d for d in devices if d.tag in keep]
     return devices, info
+
+
+def nan_scores(per_device: dict) -> dict:
+    """JSON null (written for NaN) -> float nan."""
+    return {a: {t: (float("nan") if x is None else float(x)) for t, x in v.items()}
+            for a, v in per_device.items()}
 
 
 def family_of(tags) -> dict:
@@ -497,7 +512,8 @@ def _init_recs(path: str) -> None:
     import torch
     torch.set_num_threads(1)
     _RECS.clear()
-    _RECS.update({r.tag: r for r in load_devices(Path(path))})
+    good, _ = m.split_finite(load_devices(Path(path)))      # amendment A1
+    _RECS.update({r.tag: r for r in good})
 
 
 def s3_pair_task(task):
@@ -517,8 +533,13 @@ def frozen_rule() -> dict:
                       .read_text())["frozen_rule"]
 
 
-def s1_rows(recs, fam) -> dict:
+def s1_rows(recs, fam, finite_only: bool = True) -> dict:
+    """S1 statistics per fold.  ``finite_only`` (amendment A1): folds and
+    training sets use only records with finite simulated points;
+    ``finite_only=False`` is the committed prediction.json computation."""
     from cryoml.explore.i7_1_transfer import stats_for
+    if finite_only:
+        recs, _ = m.split_finite(recs)
     tags = [r.tag for r in recs]
     rows = {}
     for f in tags:
@@ -529,9 +550,19 @@ def s1_rows(recs, fam) -> dict:
 
 
 def run_stats(args) -> int:
+    if not args.smoke:
+        raise SystemExit("mode stats is superseded by stats_v2 (amendment A1); prediction.json "
+                         "stays as committed in 0c184f8")
+    return run_stats_v2(args)
+
+
+def run_stats_v2(args) -> int:
     from cryoml.explore.i7_1_transfer import rule_predict
     t_start = time.time()
-    recs = load_records(args)
+    all_recs = load_records(args)
+    recs, excluded = m.split_finite(all_recs)
+    print(f"amendment A1: {len(excluded)} records with non-finite simulated points excluded "
+          f"from every training set and fold: {excluded}", flush=True)
     tags = sorted(r.tag for r in recs)
     fam = family_of(tags)
     rows = s1_rows(recs, fam)
@@ -569,16 +600,25 @@ def run_stats(args) -> int:
                          "P_a_predicted_sign": "gain" if rule_predict(rule, s1f) < 0 else "no gain",
                          "P_c_predicted_sign": "gain" if s3f < 0 else "no gain"}
     rc, head = m._git("rev-parse", "HEAD")
+    v1_path = prediction_path(args, 1)
+    v1 = json.loads(v1_path.read_text()) if v1_path.exists() else None
     pred = {
-        "id": "I8_1_prediction", "smoke": bool(args.smoke),
+        "id": "I8_1_prediction_v2", "smoke": bool(args.smoke),
         "prereg": "out/research/explore/I8_1/prereg.json",
+        "amendment": "out/research/explore/I8_1/prereg_amendment_2026-10-20.json (A1)",
+        "excluded_records": excluded, "n_records": len(all_recs),
+        "primary_P_a_from_v1": ({"S1_lodo": v1["dataset"]["S1_lodo"], "predicted_y": v1["dataset"]["predicted_y"],
+                                 "predicted_sign": v1["P_a"]["predicted_sign"],
+                                 "file": str(v1_path.relative_to(ROOT))} if v1 else None),
         "written": time.strftime("%Y-%m-%d %H:%M:%S"),
         "git_head_at_run": head if rc == 0 else None,
         "records_sha256": {s: file_sha(records_path(args).with_suffix(s)) for s in (".json", ".npz")},
         "frozen_rule": rule, "n_folds": len(tags),
         "dataset": {**ds, "predicted_y": y_hat},
-        "P_a": {"predicted_sign": "gain" if y_hat < 0 else "no gain",
-                "rule": "gain iff a + b S1_lodo_D < 0", "predicted_y": y_hat},
+        "P_a_secondary_recomputed": {"predicted_sign": "gain" if y_hat < 0 else "no gain",
+                                     "rule": "gain iff a + b S1_lodo_D < 0", "predicted_y": y_hat,
+                                     "note": "S1 with amendment A1; the primary P_a is the committed "
+                                             "prediction.json value"},
         "P_c": {"predicted_sign": "gain" if ds["S3"] < 0 else "no gain", "rule": "gain iff S3_D < 0"},
         "per_family_secondary": per_family,
         "gates": {"G": "M_bias" if ds["S3"] < 0 else "C0_refit",
@@ -586,20 +626,33 @@ def run_stats(args) -> int:
         "S3_hyper": hyper, "per_fold": rows,
         "timing": {"s1_s": t_s1, "s3_s": t_s3, "n_s3_fits": len(pairs)},
         "note": "computed from the starting-card records only; no refit card or held-out score read"}
-    target = prediction_path(args)
+    for f in tags:
+        if not all(np.isfinite(x) for x in rows[f]["S3_inner"].values()):
+            raise RuntimeError(f"fold {f}: non-finite S3 inner value")
+    target = prediction_path(args, 2)
     m.write_json(target, pred)
-    print(json.dumps({k: pred[k] for k in ("dataset", "P_a", "P_c", "per_family_secondary", "gates",
-                                           "timing")}, indent=1))
+    print(json.dumps({k: pred[k] for k in ("dataset", "P_a_secondary_recomputed", "P_c",
+                                           "per_family_secondary", "gates", "timing")}, indent=1))
     return 0
 
 
 def run_commit_prediction(args) -> int:
-    path = prediction_path(args)
+    return commit_prediction(args, 1)
+
+
+def run_commit_prediction_v2(args) -> int:
+    return commit_prediction(args, 2)
+
+
+def commit_prediction(args, version: int) -> int:
+    path = prediction_path(args, version)
     if not path.exists():
         print(f"missing {path}")
         return 1
     rel = str(path.relative_to(ROOT))
-    msg = ("I8-1 prediction (pre-registered order step 4): S1_lodo, S3, predicted signs, per-family "
+    head = ("I8-1 prediction (pre-registered order step 4)" if version == 1 else
+            "I8-1 prediction_v2 (amendment A1: records with non-finite simulated points excluded)")
+    msg = (head + ": S1_lodo, S3, predicted signs, per-family "
            "values and gate choices from the DEV starting-card records, committed before any "
            "held-out refit\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n"
            "Claude-Session: https://claude.ai/code/session_01FTjyogfhfbXwhjQosGAjKp\n")
@@ -730,11 +783,22 @@ def screen_task(task):
 
 
 def require_prediction(args) -> dict:
-    g = m.prediction_guard(prediction_path(args))
-    print(f"prediction guard: {json.dumps(g)}", flush=True)
-    if not g["ok"] and not args.smoke:
-        raise SystemExit("prediction.json is not committed in an ancestor of HEAD; refusing to start")
-    return g
+    """prediction.json and (amendment A1) prediction_v2.json and the amendment
+    must be committed in an ancestor of HEAD and unmodified."""
+    out = {}
+    paths = {"v1": prediction_path(args, 1), "v2": prediction_path(args, 2)}
+    if not args.smoke:
+        paths["amendment"] = AMENDMENT
+    for k, pth in paths.items():
+        out[k] = m.prediction_guard(pth)
+        print(f"guard {k}: {json.dumps(out[k])}", flush=True)
+    out["ok"] = all(v["ok"] for v in out.values() if isinstance(v, dict))
+    out["commit"] = out["v1"].get("commit")
+    out["commit_v2"] = out["v2"].get("commit")
+    if not out["ok"] and not args.smoke:
+        raise SystemExit("prediction files or amendment not committed in an ancestor of HEAD; "
+                         "refusing to start")
+    return out
 
 
 def summaries(scores: dict, tags: list, bins: dict) -> dict:
@@ -764,12 +828,16 @@ def run_lodo_like(args, arms: tuple[str, ...], name: str) -> int:
     t_start = time.time()
     guard = require_prediction(args)
     devices = {d.tag: d for d in run_devices(args)[0]}
-    recs = load_records(args)
-    by_tag = {r.tag: r for r in recs}
-    if sorted(by_tag) != sorted(devices):
+    all_recs = load_records(args)
+    if sorted(r.tag for r in all_recs) != sorted(devices):
         raise RuntimeError("starting records differ from the run devices")
+    recs, excluded = m.split_finite(all_recs)          # amendment A1
+    print(f"amendment A1: {len(excluded)} failed starting records excluded from training and "
+          f"refits, scored as failed: {excluded}", flush=True)
+    by_tag = {r.tag: r for r in recs}
     bins = load_bins(args)
     tags = sorted(by_tag)
+    all_tags = sorted(r.tag for r in all_recs)
     opts = dict(HELDOUT_OPTIONS)
     hyper = {}
     hyper_short = {}
@@ -843,17 +911,21 @@ def run_lodo_like(args, arms: tuple[str, ...], name: str) -> int:
     scores = {a: {t: r["rrms"] for t, r in v.items()} for a, v in rows.items()}
     scores["C0"] = {h: float(score_device(by_tag[h], [c.sim for c in by_tag[h].curves])["rrms"])
                     for h in tags}
+    for a in scores:                                   # failed starting records: failed in every arm
+        for t in excluded:
+            scores[a][t] = float("nan")
     if name == "baselines":
         lodo = json.loads((odir(args, "lodo") / "results.json").read_text())
         for a in ("C0_refit", "M_bias"):
-            scores[a] = {t: lodo["per_device"][a][t] for t in tags}
+            scores[a] = {t: nan_scores(lodo["per_device"])[a][t] for t in all_tags}
         pairs = [("M_bias", x) for x in arms] + [(x, "C0_refit") for x in arms]
     else:
         pairs = [("M_bias", "C0_refit"), ("M_bias", "T1_inloop"), ("T1_inloop", "C0_refit"),
                  ("C0_refit", "C0")]
+    tags = all_tags
     cov = [t for t in tags if bins[t]["covered"]]
     fam = family_of(tags)
-    result = {"name": odir(args, name).name, "prereg": "out/research/explore/I8_1/prereg.json",
+    result = {"name": odir(args, name).name, "excluded_records": excluded, "prereg": "out/research/explore/I8_1/prereg.json",
               "smoke": bool(args.smoke), "prediction_guard": guard, "options": opts,
               "hyper_overrides": {"bias": hyper, "short": hyper_short}, "arms": list(arms),
               "held_out": tags, "covered": cov,
@@ -901,22 +973,38 @@ def p_b_label(cmp: dict, r2: bool, r3: bool) -> str:
 
 
 def run_decide(args) -> int:
-    from cryoml.explore.i7_1_transfer import rule_predict
-    recs = load_records(args)
-    tags = sorted(r.tag for r in recs)
-    fam = family_of(tags)
+    from cryoml.explore.i3_2_bias import paired_ratio
+    all_recs = load_records(args)
+    recs, excluded = m.split_finite(all_recs)
+    all_tags = sorted(r.tag for r in all_recs)
     bins = load_bins(args)
-    pred = json.loads(prediction_path(args).read_text())
+    pred1 = json.loads(prediction_path(args, 1).read_text())
+    pred2 = json.loads(prediction_path(args, 2).read_text())
     lodo = json.loads((odir(args, "lodo") / "results.json").read_text())
     start = json.loads((odir(args, "start") / "summary.json").read_text())
     base_path = odir(args, "baselines") / "results.json"
     base = json.loads(base_path.read_text()) if base_path.exists() else None
-    rows = s1_rows(recs, fam)
-    s1_d = float(np.mean([rows[t]["S1_lodo"] for t in tags]))
-    s1_check = abs(s1_d - pred["dataset"]["S1_lodo"])
-    if s1_check >= 1e-12:
-        raise RuntimeError(f"S1_lodo_D {s1_d} differs from prediction.json ({s1_check})")
-    sc = lodo["per_device"]
+    # checks: v1 S1 (committed computation, all records), v2 S1 (amendment A1),
+    # excluded sets in prediction_v2 / lodo / baselines equal the non-finite records
+    rows1 = s1_rows(all_recs, family_of(all_tags), finite_only=False)
+    s1_v1 = float(np.mean([rows1[t]["S1_lodo"] for t in all_tags]))
+    good_tags = sorted(r.tag for r in recs)
+    rows2 = s1_rows(all_recs, family_of(all_tags), finite_only=True)
+    s1_v2 = float(np.mean([rows2[t]["S1_lodo"] for t in good_tags]))
+    v1_same_set = pred1.get("n_folds") == len(all_tags)          # smoke: earlier 4-device file
+    checks = {"S1_v1_abs_diff": abs(s1_v1 - pred1["dataset"]["S1_lodo"]) if v1_same_set else 0.0,
+              "S1_v1_checked": bool(v1_same_set),
+              "S1_v2_abs_diff": abs(s1_v2 - pred2["dataset"]["S1_lodo"]),
+              "excluded_equal": (excluded == pred2["excluded_records"] == lodo["excluded_records"]
+                                 and (base is None or base["excluded_records"] == excluded))}
+    if (not v1_same_set and not args.smoke) or checks["S1_v1_abs_diff"] >= 1e-12 or checks["S1_v2_abs_diff"] >= 1e-12 or not checks["excluded_equal"]:
+        raise RuntimeError(f"decide checks failed: {checks}")
+    sc = nan_scores(lodo["per_device"])
+    # V4: devices with a simulator timeout in any arm are dropped from every arm
+    arm_rows = [lodo["rows"]] + ([base["rows"]] if base else [])
+    timeout_tags = sorted({t for rows in arm_rows for v in rows.values() for t, r in v.items()
+                           if r.get("n_sim_timeout", 0) > 0})
+    scored = [t for t in all_tags if t not in timeout_tags]
 
     def y_of(sel):
         lr = [math.log(sc["M_bias"][t] / sc["C0_refit"][t]) for t in sel
@@ -924,57 +1012,81 @@ def run_decide(args) -> int:
               and sc["M_bias"][t] > 0 and sc["C0_refit"][t] > 0]
         return float(np.mean(lr)) if lr else float("nan"), len(lr)
 
-    y_d, n_pair = y_of(tags)
+    def sub(arm, sel):
+        return {t: sc[arm][t] for t in sel}
+
+    def vmean(arm, sel):
+        x = np.array([sc[arm][t] for t in sel], float)
+        return float(np.mean(x[np.isfinite(x)])) if np.isfinite(x).any() else float("nan")
+
+    fam = family_of(all_tags)
+    y_d, n_pair = y_of(scored)
     sign = lambda x: "gain" if x < 0 else "no gain"
-    s_all = lodo["summary"]["all"]
-    cmp = lodo["comparisons"]["all"]["M_bias_vs_C0_refit"]
+    cmp = paired_ratio(sub("M_bias", scored), sub("C0_refit", scored))
+    finite_scored = [t for t in scored if t not in excluded]
     r1 = cmp["ci_high"] < 1
-    r2 = s_all["M_bias"]["all_device_mean"] <= s_all["T1_inloop"]["all_device_mean"] + T1_PLUS
-    r3 = s_all["M_bias"]["n_failed"] == 0
-    n = len(tags)
-    v1 = sum(1 for t in tags if np.isfinite(start["rows"][t]["start_rrms"])
+    r2 = vmean("M_bias", finite_scored) <= vmean("T1_inloop", finite_scored) + T1_PLUS
+    r3 = all(np.isfinite(sc["M_bias"][t]) for t in finite_scored)     # A1: start failures under V1
+    n = len(all_tags)
+    v1 = sum(1 for t in all_tags if np.isfinite(start["rows"][t]["start_rrms"] or np.nan)
              and start["rows"][t]["n_curves"] >= 2) >= 0.9 * n
-    v2 = all(s_all[a]["n_failed"] <= 0.1 * n for a in ("C0_refit", "M_bias")) and n_pair >= (45 if not args.smoke else 1)
+    n_fail = {a: sum(1 for t in scored if not np.isfinite(sc[a][t])) for a in ("C0_refit", "M_bias")}
+    v2 = all(x <= 0.1 * n for x in n_fail.values()) and n_pair >= (45 if not args.smoke else 1)
     g = lodo["prediction_guard"]
-    pred_commit = g.get("commit")
-    # the lodo job checked the guard before producing any output (refuses otherwise)
     v3 = bool(g.get("ok")) and not args.smoke
-    v4 = lodo["n_sim_timeout"] == 0 and start["n_sim_timeout"] == 0
-    rule = frozen_rule()
-    p_a = {"predicted": pred["P_a"]["predicted_sign"], "observed": sign(y_d),
-           "correct": pred["P_a"]["predicted_sign"] == sign(y_d), "y_D": y_d,
-           "predicted_y": pred["dataset"]["predicted_y"],
-           "abs_error_y": abs(y_d - pred["dataset"]["predicted_y"])}
-    p_c = {"predicted": pred["P_c"]["predicted_sign"], "observed": sign(y_d),
-           "correct": pred["P_c"]["predicted_sign"] == sign(y_d), "S3_D": pred["dataset"]["S3"]}
+    valid = v1 and v2
+    p_a = {"predicted": pred1["P_a"]["predicted_sign"], "observed": sign(y_d),
+           "correct": pred1["P_a"]["predicted_sign"] == sign(y_d), "y_D": y_d,
+           "predicted_y": pred1["dataset"]["predicted_y"],
+           "abs_error_y": abs(y_d - pred1["dataset"]["predicted_y"]),
+           "source": "prediction.json (committed 0c184f8), primary"}
+    p_a2 = {"predicted": pred2["P_a_secondary_recomputed"]["predicted_sign"], "observed": sign(y_d),
+            "correct": pred2["P_a_secondary_recomputed"]["predicted_sign"] == sign(y_d),
+            "predicted_y": pred2["P_a_secondary_recomputed"]["predicted_y"],
+            "source": "prediction_v2.json (amendment A1), secondary"}
+    p_c = {"predicted": pred2["P_c"]["predicted_sign"], "observed": sign(y_d),
+           "correct": pred2["P_c"]["predicted_sign"] == sign(y_d), "S3_D": pred2["dataset"]["S3"],
+           "source": "prediction_v2.json; the prediction.json P_c is void (NaN S3)"}
     fam_out = {}
     for f in ("nmos", "pmos"):
-        yf, nf = y_of([t for t in tags if fam[t] == f])
-        pf = pred["per_family_secondary"][f]
+        yf, nf = y_of([t for t in scored if fam[t] == f])
+        pf = pred2["per_family_secondary"][f]
         fam_out[f] = {"y": yf, "n": nf, "observed": sign(yf),
                       "rule_correct": pf["P_a_predicted_sign"] == sign(yf),
                       "S3_correct": pf["P_c_predicted_sign"] == sign(yf)}
     gates = {}
-    for gname, choice in pred["gates"].items():
+    for gname, choice in pred2["gates"].items():
         ln_c0 = y_d if choice == "M_bias" else 0.0
         gates[gname] = {"choice": choice, "gmr_vs_C0_refit": math.exp(ln_c0),
                         "gmr_vs_M_bias": math.exp(ln_c0 - y_d),
                         "chose_lower": (choice == "M_bias") == (y_d < 0)}
-    cov_cmp = lodo["comparisons"]["covered"].get("M_bias_vs_C0_refit")
-    valid = v1 and v2 and v4
-    out = {"id": "I8_1_decision", "smoke": bool(args.smoke), "prereg": "out/research/explore/I8_1/prereg.json",
-           "prediction_commit": pred_commit, "S1_lodo_D_recomputed_abs_diff": s1_check,
-           "validity": {"V1": v1, "V2": v2, "V3_prospective": v3, "V4": v4, "valid": valid},
+    cov = [t for t in scored if bins[t]["covered"]]
+    base_cmp = None
+    if base:
+        bsc = nan_scores(base["per_device"])
+        base_cmp = {f"M_bias_vs_{x}": paired_ratio(sub("M_bias", scored), {t: bsc[x][t] for t in scored})
+                    for x in BASELINE_ARMS}
+        base_cmp.update({f"{x}_vs_C0_refit": paired_ratio({t: bsc[x][t] for t in scored},
+                                                          sub("C0_refit", scored)) for x in BASELINE_ARMS})
+    out = {"id": "I8_1_decision", "smoke": bool(args.smoke),
+           "prereg": "out/research/explore/I8_1/prereg.json",
+           "amendment": "out/research/explore/I8_1/prereg_amendment_2026-10-20.json",
+           "prediction_commit": g.get("commit"), "prediction_v2_commit": g.get("commit_v2"),
+           "checks": checks, "excluded_start_failures": excluded, "dropped_timeouts_V4": timeout_tags,
+           "validity": {"V1": v1, "V2": v2, "V3_prospective": v3,
+                        "V4_n_timeout_start": start["n_sim_timeout"],
+                        "V4_dropped": timeout_tags, "valid": valid, "n_failed": n_fail},
            "P_a": {**p_a, "stated": valid, "prospective": v3},
+           "P_a_secondary_recomputed": p_a2,
            "P_b": {"label": p_b_label(cmp, r2, r3) if valid else "invalid", "R1": r1, "R2": r2, "R3": r3,
-                   "gmr": cmp, "means": {a: s_all[a] for a in s_all}},
+                   "gmr": cmp, "means_valid_only": {a: vmean(a, finite_scored) for a in sc}},
            "P_c": {**p_c, "stated": valid, "prospective": v3},
-           "secondary": {"covered_subset": cov_cmp, "per_family": fam_out, "gates": gates,
-                         "baselines": base["comparisons"]["all"] if base else None,
-                         "bins_stretch": {t: [bins[t]["stretch_L"], bins[t]["stretch_W"]] for t in tags}},
-           "rule": rule}
+           "secondary": {"covered_subset": paired_ratio(sub("M_bias", cov), sub("C0_refit", cov)),
+                         "per_family": fam_out, "gates": gates, "baselines": base_cmp,
+                         "bins_stretch": {t: [bins[t]["stretch_L"], bins[t]["stretch_W"]] for t in all_tags}},
+           "rule": frozen_rule()}
     m.write_json(odir(args, "decision") / "decision.json" if args.smoke else OUT / "decision.json", out)
-    print(json.dumps({k: out[k] for k in ("validity", "P_a", "P_c")}, indent=1))
+    print(json.dumps({k: out[k] for k in ("checks", "validity", "P_a", "P_c")}, indent=1))
     print(f"P_b {out['P_b']['label']} GMR {cmp['ratio']:.3f} [{cmp['ci_low']:.3f}, {cmp['ci_high']:.3f}]")
     return 0
 
@@ -983,14 +1095,16 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", required=True,
                     choices=("sources", "inventory", "data", "split", "smoke", "start", "stats",
-                             "commit_prediction", "lodo", "baselines", "decide"))
+                             "stats_v2", "commit_prediction", "commit_prediction_v2", "lodo",
+                             "baselines", "decide"))
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--smoke", action="store_true")
     args = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     return {"sources": run_sources, "inventory": run_inventory, "data": run_data,
             "split": run_split, "smoke": run_smoke, "start": run_start, "stats": run_stats,
-            "commit_prediction": run_commit_prediction, "lodo": run_lodo,
+            "stats_v2": run_stats_v2, "commit_prediction": run_commit_prediction,
+            "commit_prediction_v2": run_commit_prediction_v2, "lodo": run_lodo,
             "baselines": run_baselines, "decide": run_decide}[args.mode](args)
 
 

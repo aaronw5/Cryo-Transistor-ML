@@ -1,15 +1,33 @@
 {
  "name": "smoke_lodo",
+ "excluded_records": [
+  "nfet_01v8_lvt_W7_L2_m26p7"
+ ],
  "prereg": "out/research/explore/I8_1/prereg.json",
  "smoke": true,
  "prediction_guard": {
-  "path": "out/research/explore/I8_1/smoke_stats/prediction.json",
-  "exists": true,
-  "tracked": false,
-  "unmodified": true,
-  "commit": null,
-  "ancestor_of_head": false,
-  "ok": false
+  "v1": {
+   "path": "out/research/explore/I8_1/smoke_stats/prediction.json",
+   "exists": true,
+   "tracked": true,
+   "unmodified": true,
+   "commit": "08f4b80ce7472575eaa3c665cbeeab72d359cb0c",
+   "ancestor_of_head": true,
+   "commit_date": "2026-10-20T22:59:28-04:00",
+   "ok": true
+  },
+  "v2": {
+   "path": "out/research/explore/I8_1/smoke_stats/prediction_v2.json",
+   "exists": true,
+   "tracked": false,
+   "unmodified": true,
+   "commit": null,
+   "ancestor_of_head": false,
+   "ok": false
+  },
+  "ok": false,
+  "commit": "08f4b80ce7472575eaa3c665cbeeab72d359cb0c",
+  "commit_v2": null
  },
  "options": {
   "heldout_nfev": 60,
@@ -35,6 +53,7 @@
  "held_out": [
   "nfet_01v8_lvt_W1p65_L1_m23p6",
   "nfet_01v8_lvt_W5_L0p25_m25p4",
+  "nfet_01v8_lvt_W7_L2_m26p7",
   "pfet_01v8_lvt_W3_L2_m29p8",
   "pfet_01v8_lvt_W7_L1p5_m31p5"
  ],
@@ -45,33 +64,33 @@
  "summary": {
   "all": {
    "C0_refit": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.22068712845325264,
+    "n": 5,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.22068712845325264,
     "median": 0.2363489584596204,
     "combined": 0.22068712845325267
    },
    "M_bias": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.25302986032890534,
+    "n": 5,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.25302986032890534,
     "median": 0.2663774728246495,
     "combined": 0.25302986032890534
    },
    "T1_inloop": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.2558655415914368,
+    "n": 5,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.2558655415914368,
     "median": 0.2673471654547248,
     "combined": 0.2558655415914368
    },
    "C0": {
-    "n": 4,
-    "n_failed": 0,
-    "all_device_mean": 0.27290379306304624,
+    "n": 5,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.27290379306304624,
     "median": 0.2740392377457439,
     "combined": 0.27290379306304624
@@ -113,33 +132,33 @@
   },
   "nmos": {
    "C0_refit": {
-    "n": 2,
-    "n_failed": 0,
-    "all_device_mean": 0.2050252984468849,
+    "n": 3,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.2050252984468849,
     "median": 0.2050252984468849,
     "combined": null
    },
    "M_bias": {
-    "n": 2,
-    "n_failed": 0,
-    "all_device_mean": 0.20301652945428283,
+    "n": 3,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.20301652945428283,
     "median": 0.20301652945428283,
     "combined": null
    },
    "T1_inloop": {
-    "n": 2,
-    "n_failed": 0,
-    "all_device_mean": 0.2047609708464475,
+    "n": 3,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.2047609708464475,
     "median": 0.2047609708464475,
     "combined": null
    },
    "C0": {
-    "n": 2,
-    "n_failed": 0,
-    "all_device_mean": 0.27176834838034863,
+    "n": 3,
+    "n_failed": 1,
+    "all_device_mean": null,
     "valid_only_mean": 0.27176834838034863,
     "median": 0.27176834838034863,
     "combined": null
@@ -183,10 +202,10 @@
  "comparisons": {
   "all": {
    "M_bias_vs_C0_refit": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 2,
     "ties": 0,
     "ratio": 1.3178542866359075,
@@ -196,10 +215,10 @@
     "n_boot": 10000
    },
    "M_bias_vs_T1_inloop": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 3,
     "ties": 0,
     "ratio": 0.9894670418268954,
@@ -209,10 +228,10 @@
     "n_boot": 10000
    },
    "T1_inloop_vs_C0_refit": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 1,
     "ties": 0,
     "ratio": 1.331882954082732,
@@ -222,10 +241,10 @@
     "n_boot": 10000
    },
    "C0_refit_vs_C0": {
-    "n": 4,
+    "n": 5,
     "n_used": 4,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 4,
     "ties": 0,
     "ratio": 0.7781444169424764,
@@ -291,10 +310,10 @@
   },
   "nmos": {
    "M_bias_vs_C0_refit": {
-    "n": 2,
+    "n": 3,
     "n_used": 2,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 1,
     "ties": 0,
     "ratio": 1.2872341905845353,
@@ -304,10 +323,10 @@
     "n_boot": 10000
    },
    "M_bias_vs_T1_inloop": {
-    "n": 2,
+    "n": 3,
     "n_used": 2,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 2,
     "ties": 0,
     "ratio": 0.991348934966403,
@@ -317,10 +336,10 @@
     "n_boot": 10000
    },
    "T1_inloop_vs_C0_refit": {
-    "n": 2,
+    "n": 3,
     "n_used": 2,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 1,
     "ties": 0,
     "ratio": 1.298467315777325,
@@ -330,10 +349,10 @@
     "n_boot": 10000
    },
    "C0_refit_vs_C0": {
-    "n": 2,
+    "n": 3,
     "n_used": 2,
-    "n_method_failed": 0,
-    "n_control_failed": 0,
+    "n_method_failed": 1,
+    "n_control_failed": 1,
     "wins": 2,
     "ties": 0,
     "ratio": 0.6925141556130119,
@@ -403,25 +422,29 @@
    "nfet_01v8_lvt_W1p65_L1_m23p6": 0.33871615605504535,
    "nfet_01v8_lvt_W5_L0p25_m25p4": 0.07133444083872449,
    "pfet_01v8_lvt_W3_L2_m29p8": 0.16256712715846855,
-   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.31013078976077224
+   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.31013078976077224,
+   "nfet_01v8_lvt_W7_L2_m26p7": null
   },
   "M_bias": {
    "nfet_01v8_lvt_W1p65_L1_m23p6": 0.23736395577087532,
    "nfet_01v8_lvt_W5_L0p25_m25p4": 0.16866910313769032,
    "pfet_01v8_lvt_W3_L2_m29p8": 0.31069539252863204,
-   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.2953909898784237
+   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.2953909898784237,
+   "nfet_01v8_lvt_W7_L2_m26p7": null
   },
   "T1_inloop": {
    "nfet_01v8_lvt_W1p65_L1_m23p6": 0.23924703117286483,
    "nfet_01v8_lvt_W5_L0p25_m25p4": 0.17027491052003016,
    "pfet_01v8_lvt_W3_L2_m29p8": 0.2954472997365848,
-   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.3184929249362674
+   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.3184929249362674,
+   "nfet_01v8_lvt_W7_L2_m26p7": null
   },
   "C0": {
    "nfet_01v8_lvt_W1p65_L1_m23p6": 0.4249863299045295,
    "nfet_01v8_lvt_W5_L0p25_m25p4": 0.11855036685616772,
    "pfet_01v8_lvt_W3_L2_m29p8": 0.1783802254447664,
-   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.3696982500467214
+   "pfet_01v8_lvt_W7_L1p5_m31p5": 0.3696982500467214,
+   "nfet_01v8_lvt_W7_L2_m26p7": null
   }
  },
  "n_sim_timeout": 0,
@@ -438,7 +461,7 @@
      0.4249863299045295,
      0.33871615605504535
     ],
-    "runtime_s": 2.38,
+    "runtime_s": 2.47,
     "rrms_start_corrected": 0.4249863299045295,
     "n_sim_timeout": 0
    },
@@ -453,7 +476,7 @@
      0.11855036685616772,
      0.07133444083872449
     ],
-    "runtime_s": 2.39,
+    "runtime_s": 2.47,
     "rrms_start_corrected": 0.11855036685616772,
     "n_sim_timeout": 0
    },
@@ -468,7 +491,7 @@
      0.1783802254447664,
      0.16256712715846855
     ],
-    "runtime_s": 2.42,
+    "runtime_s": 2.47,
     "rrms_start_corrected": 0.1783802254447664,
     "n_sim_timeout": 0
    },
@@ -483,7 +506,7 @@
      0.3696982500467214,
      0.31013078976077224
     ],
-    "runtime_s": 2.41,
+    "runtime_s": 2.43,
     "rrms_start_corrected": 0.3696982500467214,
     "n_sim_timeout": 0
    }
@@ -500,7 +523,7 @@
      0.31295971916886006,
      0.23736395577087532
     ],
-    "runtime_s": 2.41,
+    "runtime_s": 2.47,
     "rrms_start_corrected": 0.31295971916886006,
     "n_sim_timeout": 0
    },
@@ -515,7 +538,7 @@
      0.23271312564596489,
      0.16866910313769032
     ],
-    "runtime_s": 2.42,
+    "runtime_s": 2.47,
     "rrms_start_corrected": 0.23271312564596489,
     "n_sim_timeout": 0
    },
@@ -530,7 +553,7 @@
      0.5395203015096284,
      0.31069539252863204
     ],
-    "runtime_s": 2.42,
+    "runtime_s": 2.47,
     "rrms_start_corrected": 0.5395203015096284,
     "n_sim_timeout": 0
    },
@@ -562,7 +585,7 @@
      0.31565298615152837,
      0.23924703117286483
     ],
-    "runtime_s": 2.41,
+    "runtime_s": 2.47,
     "rrms_start_corrected": 0.31565298615152837,
     "n_sim_timeout": 0
    },
@@ -577,7 +600,7 @@
      0.23609210262096744,
      0.17027491052003016
     ],
-    "runtime_s": 2.42,
+    "runtime_s": 2.44,
     "rrms_start_corrected": 0.23609210262096744,
     "n_sim_timeout": 0
    },
@@ -607,7 +630,7 @@
      0.39533673985794937,
      0.3184929249362674
     ],
-    "runtime_s": 2.44,
+    "runtime_s": 2.43,
     "rrms_start_corrected": 0.39533673985794937,
     "n_sim_timeout": 0
    }
@@ -616,8 +639,8 @@
  "timing": {
   "train_s": 1.2,
   "train_n": 8,
-  "refit_s": 7.5,
+  "refit_s": 7.6,
   "refit_n": 12
  },
- "runtime_s": 8.8
+ "runtime_s": 9.0
 }

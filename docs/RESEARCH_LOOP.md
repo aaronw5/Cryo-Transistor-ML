@@ -1305,3 +1305,28 @@ to end; 0 timeouts, 0 failed devices; 0.024 s per NGSpice run; the lodo guard re
 refuses without --smoke. Queue: I8_1_start, I8_1_stats, I8_1_commit_prediction, I8_1_lodo, I8_1_baselines,
 I8_1_decide. Estimated wall time about 70 min on 6 workers (start 12 min, stats 22 min, lodo 25 min, baselines 10
 min).
+
+## I8-1 failed starting records and amendment A1 (2026-10-20 23:55)
+
+The full run (queue jobs I8_1_start 411 s, I8_1_stats 1264 s, I8_1_commit_prediction -> 0c184f8) produced 4 starting
+records with NaN simulated points: nfet_01v8_lvt W0.55/L0.25, W3.01/L0.15, W7/L0.15, W7/L2 (forced bins 0, 1, 1, 4,
+stretch factors up to 2.0 x 2.33). Cause: for these bin-uncovered geometries the forced bin's binned PCLM is negative
+(-0.34, -0.13, -0.03, -0.12); BSIM4 4.8.2 parameter checking stops the first analysis of the ngspice process ("Pclm
+is not positive"), so the first sweep (Id-Vg at Vd = 0.1 V) has no output while the other 8 sweeps run. The stock
+card fails the same way; the starting fits kept the penalty for that curve (objective about 1.67-1.70). Not a code
+bug; the starting fits are unchanged. fit_bias trains on every record of a training set, so one NaN record made
+every correction NaN: S3_D and every S3 inner value in prediction.json are null, and its P_c ('no gain') and gate G
+('C0_refit') came from NaN < 0 being false. The I8_1_lodo job was stopped before writing output.
+S1 statistics were finite but included the 4 records (device_residual keeps their finite curves). Committed:
+S1_lodo 0.50247, S1_pooled 0.54795, S2 0.61573; with the 4 records excluded (53 folds): 0.50712, 0.55282, 0.64218;
+frozen-rule sign 'gain' in both (predicted y -0.2362 / -0.2385).
+Amendment A1 (`prereg_amendment_2026-10-20.json`, commit 5ba2f8e, before any held-out outcome): records with any
+non-finite simulated point are excluded from every training set and S fold and scored as failed in every arm; R2
+means and R3 over devices with a finite starting record; V4 read as written (1 start-job timeout,
+pfet_01v8_lvt_W1_L0p35_m28p6, reported; arm timeouts drop devices); P_a primary stays the committed value, the
+recomputed S1 is secondary; P_c, G and the per-family S3 values of prediction.json are void and come from
+prediction_v2.json. Code: worker processes hold only finite records (split_finite), stats_v2 writes
+prediction_v2.json and refuses non-finite S3 values, lodo / baselines require prediction.json, prediction_v2.json and
+the amendment committed, decide checks the S1 values (v1 and v2) and the excluded sets; unit test with a NaN record
+(9 tests). Smoke rerun with one failed device (smoke_runs.json, amendment_A1_smoke). Queue: I8_1_stats_v2,
+I8_1_commit_prediction_v2, I8_1_lodo, I8_1_baselines, I8_1_decide.
