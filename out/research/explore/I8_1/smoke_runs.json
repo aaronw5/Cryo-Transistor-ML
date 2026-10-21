@@ -1,0 +1,132 @@
+{
+ "id": "I8_1_smoke_runs",
+ "written": "2026-10-20",
+ "statement": "code check after the pre-registration commit d022c32; 4 DEV devices (per family one bin-covered and one forced-bin device), reduced settings (start max_nfev 100 irls 1; held-out max_nfev 60 irls 1; M_bias 1 seed 200 steps; T1 / B3_d3 200 steps; S3 1 seed 50 steps); no smoke value is used for any decision",
+ "devices": [
+  "nfet_01v8_lvt_W1p65_L1_m23p6",
+  "nfet_01v8_lvt_W5_L0p25_m25p4",
+  "pfet_01v8_lvt_W3_L2_m29p8",
+  "pfet_01v8_lvt_W7_L1p5_m31p5"
+ ],
+ "bins": {
+  "nfet_01v8_lvt_W1p65_L1_m23p6": {
+   "bin": 3,
+   "covered": true,
+   "stretch_L": 1.0,
+   "stretch_W": 1.0
+  },
+  "nfet_01v8_lvt_W5_L0p25_m25p4": {
+   "bin": 1,
+   "covered": false,
+   "stretch_L": 1.0,
+   "stretch_W": 1.01
+  },
+  "pfet_01v8_lvt_W3_L2_m29p8": {
+   "bin": 11,
+   "covered": true,
+   "stretch_L": 1.0,
+   "stretch_W": 1.0
+  },
+  "pfet_01v8_lvt_W7_L1p5_m31p5": {
+   "bin": 11,
+   "covered": false,
+   "stretch_L": 1.3333333333333333,
+   "stretch_W": 1.4
+  }
+ },
+ "stock_readback_vs_card_max_rel_diff": 0.0008967259226772661,
+ "absent_in_bin_text": {
+  "nfet_01v8_lvt_W1p65_L1_m23p6": [],
+  "nfet_01v8_lvt_W5_L0p25_m25p4": [],
+  "pfet_01v8_lvt_W3_L2_m29p8": [
+   "vfb"
+  ],
+  "pfet_01v8_lvt_W7_L1p5_m31p5": [
+   "vfb"
+  ]
+ },
+ "start": {
+  "runtime_s": 1.6,
+  "n_sim_per_fit": [
+   45,
+   45,
+   45,
+   45
+  ],
+  "s_per_fit": [
+   1.1,
+   1.1,
+   1.1,
+   1.1
+  ],
+  "timeouts": 0
+ },
+ "stats": {
+  "s1_s": 0.01,
+  "s3_s": 1.6,
+  "n_s3_fits": 6
+ },
+ "lodo": {
+  "timing": {
+   "train_s": 1.2,
+   "train_n": 8,
+   "refit_s": 7.5,
+   "refit_n": 12
+  },
+  "runtime_s": 8.8,
+  "failed": {
+   "C0_refit": 0,
+   "M_bias": 0,
+   "T1_inloop": 0,
+   "C0": 0
+  },
+  "prediction_guard_ok": false,
+  "timeouts": 0
+ },
+ "baselines": {
+  "timing": {
+   "train_s": 1.0,
+   "train_n": 4,
+   "screen_s": 3.2,
+   "refit_s": 8.7,
+   "refit_n": 12
+  },
+  "runtime_s": 13.0,
+  "b1_selected": [
+   "a1",
+   "alpha1",
+   "cdsc",
+   "dvtp0",
+   "fprout",
+   "minv",
+   "pdits",
+   "phin",
+   "pscbe1",
+   "pvag",
+   "rdswmin",
+   "ud",
+   "up",
+   "voffl"
+  ],
+  "failed": {
+   "B1": 0,
+   "B2": 0,
+   "B3_d3": 0,
+   "C0": 0,
+   "C0_refit": 0,
+   "M_bias": 0
+  },
+  "timeouts": 0
+ },
+ "decide": {
+  "validity": {
+   "V1": true,
+   "V2": true,
+   "V3_prospective": false,
+   "V4": true,
+   "valid": true
+  },
+  "S1_lodo_D_recomputed_abs_diff": 0.0
+ },
+ "guard_checks": "lodo and baselines with --smoke report the guard (smoke prediction untracked: ok false) and continue; without --smoke, lodo with no committed prediction.json exits with 'refusing to start'; commit_prediction with no prediction.json exits 1"
+}

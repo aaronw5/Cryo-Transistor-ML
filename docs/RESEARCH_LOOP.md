@@ -1288,3 +1288,20 @@ Pre-registration draft (`prereg.json`, `prereg.md`; not in force, not queued): P
 (starting-card records), P_b GMR(M_bias, C0_refit) CI upper < 1 with R2 / R3, P_c sign(S3_D); prediction.json
 committed before the LODO job; 11 open questions (card bins, deck temperature, inclusion rule, box, curve set,
 baselines, VDD, S1 records). Compute estimate 4-9 CPU-h, about 45-90 min on 6 workers.
+
+## I8-1 pre-registration in force, pipeline, smoke, queue (2026-10-20 23:10)
+
+Pre-registration `out/research/explore/I8_1/prereg.json` in force (commit d022c32, committed alone before any fit on
+these data). Decisions D1-D11 close the draft questions: nfet_01v8_lvt / pfet_01v8_lvt; all 57 DEV devices with an
+explicit bin per device (native bin for the 25 covered geometries, nearest bin in (ln L, ln W) otherwise), the
+25-device covered subset as a pre-registered secondary from the same results; deck at 77 K (limitation: kT/q, band
+gap and n_i stay at 77 K); measured-only inclusion stored on the starting-card records; Vb = 0; cold_start round-one
+box around the showmod stock values; S1_lodo from starting-card records (I7-1 definition); B1 / B2 / B3_d3 reported
+only; VDD 1.8 V; predicted y_D, per-family values and the I8-2 gates G / G1 registered as secondary predictions.
+Code: `cryoml.explore.i8_1_nist` (bins, deck with mult = m = 1 for every device, showmod readback, box, problem,
+records, guard), driver modes start, stats, commit_prediction, lodo, baselines, decide; tests 8 cases.
+Smoke (`smoke_*`, `smoke_runs.json`; 4 DEV devices, reduced settings, not used for any decision): all modes run end
+to end; 0 timeouts, 0 failed devices; 0.024 s per NGSpice run; the lodo guard reports an untracked prediction and
+refuses without --smoke. Queue: I8_1_start, I8_1_stats, I8_1_commit_prediction, I8_1_lodo, I8_1_baselines,
+I8_1_decide. Estimated wall time about 70 min on 6 workers (start 12 min, stats 22 min, lodo 25 min, baselines 10
+min).

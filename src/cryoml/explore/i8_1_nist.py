@@ -619,3 +619,365 @@ def write_json(path: Path, obj) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(_finite(obj), indent=1, default=json_default, allow_nan=False)
                     + "\n")
+
+
+# ===========================================================================
+# Fitting pipeline (pre-registration out/research/explore/I8_1/prereg.json)
+# ===========================================================================
+SOURCE = "nist4k"
+DECK_TEMP_K = 77.0           # decision D3: the card's tnom (-196.15 C)
+TIMEOUT_S = 60.0
+N_TIMEOUT = 0                # ngspice processes stopped by TIMEOUT_S (this process)
+REL_TOL_STOCK = 1e-12        # a parameter within this relative distance of stock is not written
+
+
+def _sp():
+    from .. import spice_pdk
+    return spice_pdk
+
+
+def _base_set() -> tuple[str, ...]:
+    from .i6_1_tudelft import BASE_SET
+    return BASE_SET
+
+
+# ---------------------------------------------------------------------------
+# Bins (decision D2)
+# ---------------------------------------------------------------------------
+def bin_boxes(polarity: str) -> dict[int, dict[str, float]]:
+    """{bin: {lmin, lmax, wmin, wmax} in um} of the 77 K card."""
+    sp = _sp()
+    err = sp.ensure_pdk77k()
+    if err:
+        raise RuntimeError(err)
+    text = (sp.PDK77K_DIR / sp._CORNER_BASENAME[polarity]).read_text(errors="replace")
+    return {idx: {k: v * 1e6 for k, v in sp._bin_geometry(text[a:b]).items()}
+            for idx, a, b in sp._bin_spans(text, polarity)}
+
+
+def stretch(box: dict, W_um: float, L_um: float) -> tuple[float, float]:
+    """(s_L, s_W) >= 1: factor by which L (W) lies outside the bin range."""
+    dl = max(math.log(box["lmin"] / L_um), 0.0, math.log(L_um / box["lmax"]))
+    dw = max(math.log(box["wmin"] / W_um), 0.0, math.log(W_um / box["wmax"]))
+    return math.exp(dl), math.exp(dw)
+
+
+def bin_choice(polarity: str, W_um: float, L_um: float) -> dict:
+    """Explicit bin of a device: the natively selected bin if the geometry
+    lies in a bin, else the bin nearest in (ln L, ln W)."""
+    boxes = bin_boxes(polarity)
+    eps = 1e-6
+    cands = [i for i, g in boxes.items()
+             if g["lmin"] - eps <= L_um <= g["lmax"] + eps and g["wmin"] - eps <= W_um <= g["wmax"] + eps]
+    if cands:
+        b = _sp().find_bin_index(polarity, L_um, W_um)
+        if b is None or b not in cands:
+            raise RuntimeError(f"{polarity} W{W_um} L{L_um}: native bin lookup failed ({b}, {cands})")
+        covered = True
+    else:
+        b = min(boxes, key=lambda i: math.hypot(*map(math.log, stretch(boxes[i], W_um, L_um))))
+        covered = False
+    sl, sw = stretch(boxes[b], W_um, L_um)
+    return {"bin": int(b), "covered": covered, "candidates": cands, "stretch_L": sl,
+            "stretch_W": sw, "log_distance": math.hypot(math.log(sl), math.log(sw)),
+            "bin_box_um": boxes[b]}
+
+
+# ---------------------------------------------------------------------------
+# Deck
+# ---------------------------------------------------------------------------
+def instance_line(polarity: str, W_um: float, L_um: float, rs_ext_ohm: float = 0.0) -> str:
+    """sweeps.spice instance form with mult = m = 1 for every device."""
+    subckt = _sp()._SUBCKT[polarity]
+    drain, source = ("ndi", "nsi") if rs_ext_ohm > 0 else ("nd", "0")
+    ext = (f"RDEXT nd ndi {rs_ext_ohm:.10g}\nRSEXT nsi 0 {rs_ext_ohm:.10g}\n"
+           if rs_ext_ohm > 0 else "")
+    area, perim, sq = W_um * 0.29, 2 * (W_um + 0.29), 0.29 / W_um
+    return (f"Xm1 {drain} ng {source} 0 {subckt} l={L_um:.6g}u w={W_um:.6g}u nf=1 "
+            f"ad={area:.6g}p as={area:.6g}p pd={perim:.6g}u ps={perim:.6g}u "
+            f"nrd={sq:.6g} nrs={sq:.6g} sa=0 sb=0 sd=0 mult=1 m=1\n") + ext
+
+
+_BASE_TEXT: dict[str, str] = {}
+
+
+def corner_text(polarity: str, bin_index: int, params: dict | None = None) -> str:
+    sp = _sp()
+    if polarity not in _BASE_TEXT:
+        sp.ensure_pdk77k()
+        _BASE_TEXT[polarity] = (sp.PDK77K_DIR / sp._CORNER_BASENAME[polarity]).read_text(errors="replace")
+    text = sp._force_bin(_BASE_TEXT[polarity], polarity, bin_index)
+    if params:
+        text = sp._patch_params_in_bin(text, polarity, bin_index, params)
+    return text
+
+
+def _write_lib(td: Path, polarity: str, bin_index: int, params: dict | None) -> Path:
+    sp = _sp()
+    corner = td / sp._CORNER_BASENAME[polarity]
+    corner.write_text(corner_text(polarity, bin_index, params))
+    lib = td / "lib77k.spice"
+    lib.write_text(sp.LIB_FILE.read_text().replace(
+        (sp.PDK77K_DIR / sp._CORNER_BASENAME[polarity]).as_posix(), corner.as_posix()))
+    return lib
+
+
+def changed_params(params: dict | None, stock: dict) -> dict:
+    """Parameters that differ from the stock readback (others are not written,
+    so the stock card text and BSIM4 defaults stay unchanged)."""
+    out = {}
+    for k, v in (params or {}).items():
+        s = stock.get(k)
+        if s is None or abs(float(v) - float(s)) > REL_TOL_STOCK * max(abs(float(s)), 1e-30):
+            out[k] = float(v)
+    return out
+
+
+def simulate(polarity: str, W_um: float, L_um: float, bin_index: int, curves,
+             params: dict | None = None, rs_ext_ohm: float = 0.0,
+             timeout_s: float = TIMEOUT_S) -> list[np.ndarray]:
+    """All sweeps of ``curves`` (pipeline Curves) in one ngspice process at
+    77 K; pMOS currents negated (magnitude convention)."""
+    import subprocess
+    import tempfile
+    sp = _sp()
+    curves = list(curves)
+    with tempfile.TemporaryDirectory(prefix="i8_1_sim_") as td_s:
+        td = Path(td_s)
+        lib = _write_lib(td, polarity, bin_index, params)
+        lines = ["* I8-1 NIST 4 K measured-grid DC sweeps (77 K card)\n", ".options scale=1.0\n",
+                 f".options temp={DECK_TEMP_K - 273.15:.4f}\n", f'.lib "{lib.as_posix()}" tt_77k\n',
+                 instance_line(polarity, W_um, L_um, rs_ext_ohm), "VG ng 0 DC 0\n", "VD nd 0 DC 0\n",
+                 ".control\n", "set filetype=ascii\n"]
+        lines += sp._sweep_lines(curves, td, "raw_")
+        lines += ["quit\n", ".endc\n", ".end\n"]
+        deck = td / "deck.sp"
+        deck.write_text("".join(lines))
+        try:
+            proc = subprocess.run([sp._NGSPICE_BIN, "-b", str(deck)], cwd=str(td),
+                                  capture_output=True, timeout=timeout_s, text=True, check=False)
+            fatal = "could not find a valid modelname" in (proc.stdout + proc.stderr).lower()
+        except subprocess.TimeoutExpired:
+            global N_TIMEOUT
+            N_TIMEOUT += 1
+            fatal = True
+        return sp._read_curves(td, "raw_", curves, polarity, fatal)
+
+
+def read_params(polarity: str, W_um: float, L_um: float, bin_index: int,
+                names: Sequence[str], required: bool = True) -> dict[str, float]:
+    """showmod readback of model parameters of the explicit bin at 77 K."""
+    import subprocess
+    import tempfile
+    sp = _sp()
+    sign = -1 if polarity == "pmos" else 1
+    vals: dict[str, float] = {}
+    names = list(names)
+    for i0 in range(0, len(names), 40):
+        chunk = names[i0:i0 + 40]
+        with tempfile.TemporaryDirectory(prefix="i8_1_showmod_") as td_s:
+            td = Path(td_s)
+            lib = _write_lib(td, polarity, bin_index, None)
+            deck = td / "d.sp"
+            deck.write_text(
+                f'* showmod readback\n.options scale=1.0\n.lib "{lib.as_posix()}" tt_77k\n'
+                f".options temp={DECK_TEMP_K - 273.15:.4f}\n"
+                + instance_line(polarity, W_um, L_um)
+                + f"VG ng 0 DC {sign}\nVD nd 0 DC {sign}\n.op\n.control\nrun\n"
+                f"showmod m.xm1.m{sp._SUBCKT[polarity]} : {' '.join(chunk)}\nquit\n.endc\n.end\n")
+            out = subprocess.run([sp._NGSPICE_BIN, "-b", str(deck)], capture_output=True,
+                                 text=True, timeout=30).stdout
+        for p in chunk:
+            mm = re.search(rf"^\s*{p}\s+([0-9eE.+\-]+)\s*$", out, re.MULTILINE)
+            if mm:
+                vals[p] = float(mm.group(1))
+    missing = [p for p in names if p not in vals]
+    if missing and required:
+        raise RuntimeError(f"showmod readback missing {missing} ({polarity} bin {bin_index})")
+    return vals
+
+
+def params_in_bin_text(polarity: str, bin_index: int, names: Sequence[str]) -> list[str]:
+    """Names written as '+ name =' lines in the bin's .model block."""
+    sp = _sp()
+    text = corner_text(polarity, bin_index)
+    for idx, a, b in sp._bin_spans(text, polarity):
+        if idx == bin_index:
+            span = text[a:b]
+            return [n for n in names if re.search(rf"^\+\s*{re.escape(n)}\s*=", span,
+                                                  re.IGNORECASE | re.MULTILINE)]
+    raise KeyError(bin_index)
+
+
+# ---------------------------------------------------------------------------
+# Box (decision D6)
+# ---------------------------------------------------------------------------
+def base_box(stock: dict[str, float]):
+    """cold_start round-one widths around the stock readback values."""
+    from ..cold_start import half_width
+    from ..parameter_space import ParameterBox
+    names = _base_set()
+    bounds, logs = {}, []
+    for n in names:
+        v = float(stock[n])
+        if v == 0.0:
+            bounds[n] = [0.0, 0.0]
+            logs.append(False)
+            continue
+        w = half_width(n)
+        a, b = v * math.exp(-w), v * math.exp(w)
+        bounds[n] = [min(a, b), max(a, b)]
+        logs.append(True)
+    return ParameterBox(names=names, published={n: float(stock[n]) for n in names},
+                        bounds=bounds, log_scale=tuple(logs))
+
+
+# ---------------------------------------------------------------------------
+# Problem and records
+# ---------------------------------------------------------------------------
+class MeasProblem:
+    """``ngspice_fit.polish`` interface for one NIST device."""
+
+    def __init__(self, dev: NistDevice, binfo: dict, stock: dict, box):
+        self.dev = self.device = dev
+        self.tag = dev.tag
+        self.binfo = binfo
+        self.bin_index = int(binfo["bin"])
+        self.stock = dict(stock)
+        self.box = box
+        self.curves = self.meas = to_pipeline_curves(dev)
+        self.layout = []
+        for index, c in enumerate(self.curves):
+            inc = inclusion_measured(c.kind, c.Id)
+            if inc["included"]:
+                from ..metrics import clean_current
+                self.layout.append({"index": index, "start": inc["start"], "tag": c.meta["key"],
+                                    "target": clean_current(c.Id)[inc["start"]:],
+                                    "denominator": inc["den"]})
+        if not self.layout:
+            raise RuntimeError(f"{dev.tag}: no included curves")
+        self.n_curves = len(self.layout)
+        self.n_sim = 0
+
+    def params(self, local) -> dict[str, float]:
+        return self.box.local_to_params(np.asarray(local, dtype=np.float64))
+
+    def simulate_params(self, params: dict | None, rs_ext_ohm: float = 0.0) -> list[np.ndarray]:
+        self.n_sim += 1
+        return simulate(self.dev.polarity, self.dev.W_um, self.dev.L_um, self.bin_index,
+                        self.curves, changed_params(params, self.stock), rs_ext_ohm)
+
+    def simulate(self, local) -> list[np.ndarray]:
+        return self.simulate_params(self.params(local))
+
+    def curve_rrms(self, sims) -> np.ndarray:
+        return pdk2_metric.curve_rrms(sims, self.layout)
+
+    def residual_vector(self, sims, weights) -> np.ndarray:
+        pieces = []
+        scale = 1.0 / math.sqrt(self.n_curves)
+        for row, w in zip(self.layout, weights):
+            sim = np.asarray(sims[row["index"]], dtype=np.float64)[row["start"]:]
+            n = len(row["target"])
+            if not np.all(np.isfinite(sim)):
+                pieces.append(np.full(n, pdk2_metric.PENALTY * w * scale / math.sqrt(n)))
+                continue
+            pieces.append((sim - row["target"]) * w * scale / (row["denominator"] * math.sqrt(n)))
+        return np.concatenate(pieces)
+
+    def objective(self, local) -> float:
+        return float(np.mean(self.curve_rrms(self.simulate(local))))
+
+
+def to_record(dev: NistDevice, binfo: dict, sims, params: dict | None = None):
+    """E1 ``DeviceRec`` (source ``nist4k``, vdd 1.8 V) with the frozen
+    measured inclusion (decision D4)."""
+    from .e1_correction import CurveRec, DeviceRec
+    rec = DeviceRec(dev.tag, dev.polarity, dev.L_um, dev.W_um, VDD, SOURCE,
+                    meta={"dev_type": dev.dev_type, "bin": int(binfo["bin"]),
+                          "covered": bool(binfo["covered"]), "params": dict(params or {})})
+    for c, s in zip(to_pipeline_curves(dev), sims):
+        inc = inclusion_measured(c.kind, c.Id)
+        rec.curves.append(CurveRec(c.meta["key"], c.kind, np.asarray(c.Vg, float),
+                                   np.asarray(c.Vd, float), np.asarray(s, float),
+                                   np.asarray(c.Id, float), inc["start"], inc["den"],
+                                   inc["included"]))
+    return rec
+
+
+def corrected_problem(prob: MeasProblem, corr):
+    from .i2_1_joint import CorrectedProblem
+    dev = prob.dev
+    cp = CorrectedProblem(prob, corr, dev.polarity, dev.L_um, dev.W_um, VDD, SOURCE)
+    cp._keys = [c.meta["key"] for c in prob.curves]
+    return cp
+
+
+# ---------------------------------------------------------------------------
+# Baselines (decision D8)
+# ---------------------------------------------------------------------------
+SENS_SUMMARY = ROOT / "out" / "pdk_parameter_sensitivity" / "summary.json"
+
+
+def b1_universe() -> list[str]:
+    names = list(json.loads(SENS_SUMMARY.read_text())["parameters"])
+    base = set(_base_set())
+    return [n for n in names if n not in base]
+
+
+def b1_extras(values: dict[str, float], start: dict, names: Sequence[str] | None = None) -> dict:
+    from .i4_1_baselines import BSIM4_ZERO_RANGE, b1_extra_box
+    universe = b1_universe() if names is None else [n for n in b1_universe() if n in set(names)]
+    return b1_extra_box(universe, values, BSIM4_ZERO_RANGE, rdsw=start.get("rdsw"))
+
+
+def rext_max(dev: NistDevice, start: dict) -> float:
+    from .i4_1_baselines import B2_REXT_FACTOR
+    return B2_REXT_FACTOR * 0.5 * float(start["rdsw"]) / dev.W_um
+
+
+# ---------------------------------------------------------------------------
+# Aggregates, prediction guard
+# ---------------------------------------------------------------------------
+def aggregate(values: dict, family: dict) -> dict:
+    v = np.array(list(values.values()), dtype=float)
+    finite = v[np.isfinite(v)]
+    out = {"n": int(len(v)), "n_failed": int(np.sum(~np.isfinite(v))),
+           "all_device_mean": float(np.mean(v)) if len(v) and np.all(np.isfinite(v)) else float("nan"),
+           "valid_only_mean": float(np.mean(finite)) if len(finite) else float("nan"),
+           "median": float(np.median(finite)) if len(finite) else float("nan")}
+    means = []
+    for f in ("nmos", "pmos"):
+        xs = [x for t, x in values.items() if family[t] == f and np.isfinite(x)]
+        if xs:
+            means.append(float(np.mean(xs)))
+    out["combined"] = float(np.mean(means)) if len(means) == 2 else float("nan")
+    return out
+
+
+def _git(*args, cwd: Path = ROOT) -> tuple[int, str]:
+    import subprocess
+    p = subprocess.run(["git", *args], cwd=str(cwd), capture_output=True, text=True)
+    return p.returncode, (p.stdout + p.stderr).strip()
+
+
+def prediction_guard(path: Path, cwd: Path = ROOT) -> dict:
+    """ok iff ``path`` is tracked, identical to HEAD (no staged or unstaged
+    change), and last changed in a commit that is an ancestor of HEAD."""
+    rel = str(Path(path).resolve().relative_to(Path(cwd).resolve()))
+    out = {"path": rel, "exists": Path(path).exists()}
+    rc, _ = _git("ls-files", "--error-unmatch", rel, cwd=cwd)
+    out["tracked"] = rc == 0
+    rc, _ = _git("diff", "--quiet", "HEAD", "--", rel, cwd=cwd)
+    out["unmodified"] = rc == 0
+    rc, commit = _git("log", "-1", "--format=%H", "--", rel, cwd=cwd)
+    out["commit"] = commit if rc == 0 and commit else None
+    if out["commit"]:
+        rc, _ = _git("merge-base", "--is-ancestor", out["commit"], "HEAD", cwd=cwd)
+        out["ancestor_of_head"] = rc == 0
+        rc, date = _git("log", "-1", "--format=%cI", out["commit"], cwd=cwd)
+        out["commit_date"] = date
+    else:
+        out["ancestor_of_head"] = False
+    out["ok"] = bool(out["exists"] and out["tracked"] and out["unmodified"] and out["ancestor_of_head"])
+    return out

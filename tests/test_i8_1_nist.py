@@ -111,6 +111,50 @@ class TestI81(unittest.TestCase):
         assert all(np.all(c.Id >= 0) for c in pc)          # pMOS magnitude convention
         assert pc[0].fixed == -0.1 and np.all(pc[0].Vd == -0.1)
 
+    def test_stretch_and_box(self):
+        box = {"lmin": 0.5, "lmax": 1.0, "wmin": 1.0, "wmax": 3.0}
+        self.assertEqual(m.stretch(box, 2.0, 0.7), (1.0, 1.0))
+        sl, sw = m.stretch(box, 6.0, 0.25)
+        self.assertAlmostEqual(sl, 2.0)
+        self.assertAlmostEqual(sw, 2.0)
+        names = m._base_set()
+        stock = {n: 1.0 for n in names}
+        stock.update(vth0=-0.6, u0=0.02, b0=0.0)
+        b = m.base_box(stock)
+        self.assertAlmostEqual(b.bounds["vth0"][0], -1.8)        # x/ 3, sign kept
+        self.assertAlmostEqual(b.bounds["u0"][1], 2.0)           # x/ 100
+        self.assertAlmostEqual(b.bounds["k1"][1], 3.0)           # x/ 3
+        self.assertEqual(list(b.bounds["b0"]), [0.0, 0.0])       # zero -> inactive
+        self.assertEqual(b.n_active, len(names) - 1)
+
+    def test_changed_params_and_instance(self):
+        stock = {"vth0": 0.5, "u0": 0.03}
+        self.assertEqual(m.changed_params({"vth0": 0.5, "u0": 0.031}, stock), {"u0": 0.031})
+        self.assertEqual(m.changed_params(None, stock), {})
+        line = m.instance_line("pmos", 5.0, 0.35)
+        self.assertIn("mult=1 m=1", line)                          # no paper-device mult table
+        self.assertIn("ad=1.45p", line)
+
+    def test_prediction_guard(self):
+        import subprocess
+        repo = self.tmp / "repo"
+        repo.mkdir()
+        run = lambda *a: subprocess.run(["git", *a], cwd=repo, capture_output=True, check=True)
+        run("init", "-q")
+        run("config", "user.email", "t@example.com")
+        run("config", "user.name", "t")
+        f = repo / "prediction.json"
+        self.assertFalse(m.prediction_guard(f, cwd=repo)["ok"])         # missing
+        f.write_text("{}")
+        self.assertFalse(m.prediction_guard(f, cwd=repo)["ok"])         # untracked
+        run("add", "prediction.json")
+        run("commit", "-q", "-m", "p")
+        g = m.prediction_guard(f, cwd=repo)
+        self.assertTrue(g["ok"])
+        self.assertTrue(g["commit"])
+        f.write_text('{"x": 1}')
+        self.assertFalse(m.prediction_guard(f, cwd=repo)["ok"])         # modified
+
 
 if __name__ == "__main__":
     unittest.main()
