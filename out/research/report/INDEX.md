@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-21 · i11_1
+
+Folder: [2026-10-21_i11_1/](2026-10-21_i11_1/) · [tables.md](2026-10-21_i11_1/tables.md) · [README.md](2026-10-21_i11_1/README.md)
+
+- I11-1 M_bias OSDI add-on, sky130 77 K, 18 devices: not deployable (pre-registered rule).
+- Q1 tight 2.6e-05 (1e-14 A floor), default 1.9e-03; Q2 AC 6.4e-03 (Vgs = 0 kink), gm sign 1 curve, gds sign 27 curves; terminal asymmetry 0.117; drain displacement current x exp(g).
+- Q3 0 element-only failures; Q4 ratio up to 3.25.
+
+Figures and tables: [01_table_i11_1_decision.png](2026-10-21_i11_1/01_table_i11_1_decision.png) · [02_i11_1_q1_per_device.png](2026-10-21_i11_1/02_i11_1_q1_per_device.png) · [03_i11_1_q1_maps.png](2026-10-21_i11_1/03_i11_1_q1_maps.png) · [04_i11_1_q1_terminal_swap.png](2026-10-21_i11_1/04_i11_1_q1_terminal_swap.png) · [05_table_i11_1_per_device.png](2026-10-21_i11_1/05_table_i11_1_per_device.png) · [06_i11_1_q2_gm_gds.png](2026-10-21_i11_1/06_i11_1_q2_gm_gds.png) · [07_i11_1_q2_ac_cap.png](2026-10-21_i11_1/07_i11_1_q2_ac_cap.png) · [08_table_i11_1_circuits.png](2026-10-21_i11_1/08_table_i11_1_circuits.png) · [09_i11_1_q3_circuits.png](2026-10-21_i11_1/09_i11_1_q3_circuits.png) · [10_table_i11_1_diagnosis.png](2026-10-21_i11_1/10_table_i11_1_diagnosis.png) · [11_i11_1_q4_runtime.png](2026-10-21_i11_1/11_i11_1_q4_runtime.png)
+
 ## 2026-10-21 · i10_2
 
 Folder: [2026-10-21_i10_2/](2026-10-21_i10_2/) · [tables.md](2026-10-21_i10_2/tables.md) · [README.md](2026-10-21_i10_2/README.md)

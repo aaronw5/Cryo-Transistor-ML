@@ -1,0 +1,85 @@
+{
+ "summary_values": {
+  "q1_tight_max": 2.5111311142888352e-06,
+  "q1_default_max": 0.001725883027580136,
+  "q1_bad": 0,
+  "q1_vds0_max": 8.081927375877e-13,
+  "q2_ac_max": 2.7055239876443617e-06,
+  "q2_gm_sign": 0,
+  "q2_gds_sign": 5,
+  "q3_fail": 0,
+  "q3_fail_cardonly": 2,
+  "swap_asym_max": 0.11723687139546875,
+  "cap_scaled": true,
+  "runtime_ratio_max": 3.4136005258592053
+ },
+ "decision": {
+  "outcome": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3 (tightened reltol needed for equivalence)",
+   "not source/drain symmetric (g uses the instance source terminal)",
+   "drain displacement current scaled by exp(g)",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "n_devices": 2,
+ "card_only_messages": 0,
+ "q3_not_ok": [
+  "ro5_B|C0_refit",
+  "ro5_B|M_card",
+  "ro5_B|M_full"
+ ],
+ "runtime_grid": {
+  "nmos_L1_W1p6": {
+   "card_s": 0.11425554199377075,
+   "corr_s": 0.18537812502472661,
+   "ratio": 1.6224869427763382
+  },
+  "pmos_L2_W5": {
+   "card_s": 0.1110108749999199,
+   "corr_s": 0.18550266700913198,
+   "ratio": 1.671031482359416
+  }
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": {
+   "card_s": 0.0461465000116732,
+   "corr_s": 0.06326091598020867,
+   "ratio": 1.3708713762518547
+  },
+  "inv_B_vtc": {
+   "card_s": 0.04504533301224001,
+   "corr_s": 0.06966479099355638,
+   "ratio": 1.5465484731709414
+  },
+  "ro5_A": {
+   "card_s": 0.386263416003203,
+   "corr_s": 1.3185489999887068,
+   "ratio": 3.4136005258592053
+  },
+  "ro5_B": {
+   "card_s": 0.1391206249827519,
+   "corr_s": 0.30979945801664144,
+   "ratio": 2.226840614431183
+  },
+  "mirror_n": {
+   "card_s": 0.028772874997230247,
+   "corr_s": 0.03262883302522823,
+   "ratio": 1.1340136509948753
+  },
+  "mirror_p": {
+   "card_s": 0.02917083300417289,
+   "corr_s": 0.0327963329909835,
+   "ratio": 1.1242851030785437
+  }
+ },
+ "refit_in_sample": {
+  "mean_rrms_M_full_python": 0.04247813399890937,
+  "mean_rrms_M_full_native": 0.042481543996788385,
+  "mean_rrms_M_card_only": 0.05661731238347616,
+  "max_rel_native_vs_python_measured_1nA": 0.0009889863971940568,
+  "n_failed": 0
+ }
+}

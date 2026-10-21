@@ -1824,3 +1824,37 @@ only): every mode runs, 0 failed records, V1 relative difference 0 on 2 records;
 the stored X300 rows on 2 records (difference 0.0).
 Queue (runner started 17:47): I11_2_validity, I11_2_stats, I11_2_commit_prediction, I11_2_lodo_ihp (954 training
 tasks, 432 refits), I11_2_lodo_tud (35 training tasks, 180 refits), I11_2_decide; estimate about 50-75 min on 6 workers.
+
+## I11-1 (2026-10-21 18:40): M_bias as an ngspice-41 OSDI add-on, sky130 77 K, 18 devices, not deployable (pre-registered rule)
+
+Started by the user's default choice (no reply by 17:00). Pre-registration `out/research/explore/I11_1/prereg.md` /
+`prereg.json` (in force from da03859, committed alone after a 2-device smoke). Code `src/cryoml/explore/i11_1_deploy.py`,
+`scripts/research/explore/i11_1_deploy.py`, tests `tests/test_i11_1_deploy.py`. Element: the stored full-data Verilog-A
+`I3_2/all18/m_bias_sky130_all18_full.va` compiled with OpenVAF 23.5.0 (g of the emitted text vs Python 2.5e-11), BSIM4
+drain on an internal node, module `N d g s di`, total drain current I(sense) x exp(g), ngspice-41 OSDI build. Card
+M_full: per device the 43-parameter card refit from direct43_r3_fd with the full-data g in the loop (I3-2 recipe; 171 s,
+0 failed); in-sample all-device RRMS SPICE-native 0.06971, Python 0.06970, same card without g 0.1057 (in-sample, not
+comparable with the LODO 0.0732). Run 3.4 min, 4 workers, directly (an I11-2 queue job with 6 workers ran at the same
+time; the wall times in Q4 were measured under that load).
+Outcome (rule): **not deployable**. Core failures: Q1 tight max relative difference 2.59e-5 > 1e-5 (4 devices; points at
+1.0-2.6 nA with |dI| <= 2.8e-14 A; above 10 nA max 1.5e-6; gmin 1e-15 and nobypass do not remove it, post hoc); Q2 AC
+difference 6.35e-3 > 1e-3 at one point, nmos_L100_W100 at Vgs = 0 (abs() derivative jump; OSDI one-sided, Python
+central difference), max 7.3e-6 off the lines Vgs = 0 and Vds = 0 (post hoc); Q2 gm sign change introduced on 1 of 54
+curves (nmos_L100_W100, |Vds| 0.05 V, |Vgs| 1.757-1.85 V, gm down to -5.5e-6 S). Passed: 0 convergence messages and 0
+non-finite values in element runs; max |I(Vds = 0)| 9.6e-13 A; 0 circuits failing only with the element.
+Restrictions: default-tolerance difference 1.94e-3 (reltol 1e-4: 1.04e-3); drain/source exchange changes ln I by up to
+0.043 (nMOS) / 0.117 (pMOS), equal to the value predicted from g (g uses the instance source terminal and abs(V(d,s)));
+Im Y_dd and Im Y_dg of the element are exp(g) times the card value (max deviation 3e-11), Im Y_gg unchanged: the element
+scales the whole drain-terminal current including displacement and junction currents; 27 of 90 gds curves acquire
+negative gds (pmos_L2_W5 5, pmos_L4_W7 5, pmos_L8_W0p84 4, pmos_L8_W1p6 4, pmos_L0p5_W0p42 4, pmos_L8_W5 3, nmos_L8_W1p6 2;
+where measured, the average slope over |Vds| 1.0-1.85 V is positive, post hoc); wall-time ratio DC grid 1.58-1.87,
+circuits 1.11-3.25 (ro5_A).
+Q3 (simulator-level, no measured circuit data; published / C0_refit / M_card / M_full): inv_A V_M 0.7466 / 0.7593 /
+0.7592 / 0.7598 V; ro5_A 5.322 / 5.287 / 5.297 / 5.382 GHz; mirror_p Iout/Iref at 0.9 V 0.938 / 0.992 / 0.992 / 0.969;
+ro5_B (nmos_L1_W1p6 + pmos_L2_W5) stops with 'timestep too small' for C0_refit, M_card and M_full (card-level; removing the
+k1 or k2 change of the pmos_L2_W5 C0_refit card removes it, smoke diagnosis); the published card runs (0.276 GHz).
+Next actions (each needs a new pre-registration): source/drain-symmetric g input; exp(g) applied to the channel current
+only (correction inside a Verilog-A BSIM4); training penalty on negative gm / gds; smooth abs(); equivalence criterion
+as |dI| <= 1e-6 |I| + 1e-13 A. Report batch `out/research/report/2026-10-21_i11_1/`
+(`scripts/research/plot_explore_i11_1.py`); site claims `i11-1` (refuted) and `i3-2-all18` (the all-18 LODO result,
+verified, not pre-registered).

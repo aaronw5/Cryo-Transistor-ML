@@ -1,0 +1,34 @@
+compile: max |g text - g python| 2.52e-11
+refit: 18 devices, 171 s, in-sample mean RRMS 0.0697
+q12: 18 devices, 17.3 s
+q3: 24 runs, 4.7 s
+{
+ "summary_values": {
+  "q1_tight_max": 2.5896129996308623e-05,
+  "q1_default_max": 0.0019420005156154468,
+  "q1_bad": 0,
+  "q1_vds0_max": 9.592734889182e-13,
+  "q2_ac_max": 0.006351999782446815,
+  "q2_gm_sign": 1,
+  "q2_gds_sign": 27,
+  "q3_fail": 0,
+  "q3_fail_cardonly": 2,
+  "swap_asym_max": 0.11723687519782812,
+  "cap_scaled": true,
+  "runtime_ratio_max": 3.2475568777002595
+ },
+ "outcome": "not deployable",
+ "core_fail": [
+  "Q1 tight-tolerance equivalence",
+  "Q2 derivative agreement",
+  "Q2 gm sign change in strong inversion"
+ ],
+ "restrictions": [
+  "default tolerance above 1e-3 (tightened reltol needed for equivalence)",
+  "not source/drain symmetric (g uses the instance source terminal)",
+  "drain displacement current scaled by exp(g)",
+  "gds sign changes introduced",
+  "runtime overhead > 2x"
+ ]
+}
+PYTHONPATH=src .venv/bin/python -I scripts/research/explore/i11_1_deploy.py    354.96s user 203.69s system 274% cpu 3:23.42 total

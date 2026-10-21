@@ -1,0 +1,464 @@
+{
+ "wall_s": 4.6,
+ "circuits": {
+  "inv_A_vtc": {
+   "kind": "vtc",
+   "devices": [
+    "nmos_L0p15_W1p6",
+    "pmos_L0p35_W1p6"
+   ],
+   "settings": {}
+  },
+  "inv_B_vtc": {
+   "kind": "vtc",
+   "devices": [
+    "nmos_L1_W1p6",
+    "pmos_L2_W5"
+   ],
+   "settings": {}
+  },
+  "ro5_A": {
+   "kind": "ring",
+   "devices": [
+    "nmos_L0p15_W1p6",
+    "pmos_L0p35_W1p6"
+   ],
+   "settings": {
+    "tstep": 1e-12,
+    "tstop": 1e-08
+   }
+  },
+  "ro5_B": {
+   "kind": "ring",
+   "devices": [
+    "nmos_L1_W1p6",
+    "pmos_L2_W5"
+   ],
+   "settings": {
+    "tstep": 5e-12,
+    "tstop": 5e-08
+   }
+  },
+  "mirror_n": {
+   "kind": "mirror",
+   "devices": [
+    "nmos_L1_W1p6"
+   ],
+   "settings": {
+    "iref": 1e-05
+   }
+  },
+  "mirror_p": {
+   "kind": "mirror",
+   "devices": [
+    "pmos_L2_W5"
+   ],
+   "settings": {
+    "iref": 1e-05
+   }
+  }
+ },
+ "rows": {
+  "inv_A_vtc|published": {
+   "circuit": "inv_A_vtc",
+   "arm": "published",
+   "kind": "vtc",
+   "wall": [
+    0.04634812500444241
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.7465763819036106,
+   "gain_max": 25.922065039249958,
+   "vin_at_gain_max": 0.751,
+   "vout_min": 2.203380040777e-09,
+   "vout_max": 1.79999999787,
+   "ok": true
+  },
+  "inv_A_vtc|C0_refit": {
+   "circuit": "inv_A_vtc",
+   "arm": "C0_refit",
+   "kind": "vtc",
+   "wall": [
+    0.05273766699247062
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.7593387572522059,
+   "gain_max": 24.552582077999887,
+   "vin_at_gain_max": 0.725,
+   "vout_min": 2.452851399095e-09,
+   "vout_max": 1.799999996976,
+   "ok": true
+  },
+  "inv_A_vtc|M_card": {
+   "circuit": "inv_A_vtc",
+   "arm": "M_card",
+   "kind": "vtc",
+   "wall": [
+    0.04534162502386607,
+    0.0461465000116732,
+    0.04635937500279397
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.7593302441313918,
+   "gain_max": 24.56203652450006,
+   "vin_at_gain_max": 0.725,
+   "vout_min": 2.452963344896e-09,
+   "vout_max": 1.799999996984,
+   "ok": true
+  },
+  "inv_A_vtc|M_full": {
+   "circuit": "inv_A_vtc",
+   "arm": "M_full",
+   "kind": "vtc",
+   "wall": [
+    0.06515400001080707,
+    0.06256133399438113,
+    0.06326091598020867
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.7599491131891521,
+   "gain_max": 28.81504317849999,
+   "vin_at_gain_max": 0.726,
+   "vout_min": 2.438565845864e-09,
+   "vout_max": 1.799999994893,
+   "ok": true
+  },
+  "inv_B_vtc|published": {
+   "circuit": "inv_B_vtc",
+   "arm": "published",
+   "kind": "vtc",
+   "wall": [
+    0.04696291699656285
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.6417126686431738,
+   "gain_max": 61.827880059999984,
+   "vin_at_gain_max": 0.633,
+   "vout_min": 1.111101374306e-09,
+   "vout_max": 1.799999995239,
+   "ok": true
+  },
+  "inv_B_vtc|C0_refit": {
+   "circuit": "inv_B_vtc",
+   "arm": "C0_refit",
+   "kind": "vtc",
+   "wall": [
+    0.044019666995154694
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.6491309156822023,
+   "gain_max": 184.83893878209977,
+   "vin_at_gain_max": 0.648,
+   "vout_min": 1.047968382496e-09,
+   "vout_max": 1.799999993733,
+   "ok": true
+  },
+  "inv_B_vtc|M_card": {
+   "circuit": "inv_B_vtc",
+   "arm": "M_card",
+   "kind": "vtc",
+   "wall": [
+    0.04504533301224001,
+    0.040862708003260195,
+    0.04607591702369973
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.6490009456751128,
+   "gain_max": 184.5122446161999,
+   "vin_at_gain_max": 0.647,
+   "vout_min": 1.05091140639e-09,
+   "vout_max": 1.7999999936,
+   "ok": true
+  },
+  "inv_B_vtc|M_full": {
+   "circuit": "inv_B_vtc",
+   "arm": "M_full",
+   "kind": "vtc",
+   "wall": [
+    0.06966479099355638,
+    0.06757220800500363,
+    0.07308316699345596
+   ],
+   "msgs": [],
+   "finite": true,
+   "vm": 0.6495796629801529,
+   "gain_max": 259.25298503324973,
+   "vin_at_gain_max": 0.646,
+   "vout_min": 1.033226888731e-09,
+   "vout_max": 1.79999999066,
+   "ok": true
+  },
+  "ro5_A|published": {
+   "circuit": "ro5_A",
+   "arm": "published",
+   "kind": "ring",
+   "wall": [
+    0.39790579199325293
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_periods": 36,
+   "period_s": 1.8791106036077171e-10,
+   "freq_hz": 5321666527.133066,
+   "period_spread": 4.379281388063049e-05,
+   "n_points": 10008,
+   "ok": true
+  },
+  "ro5_A|C0_refit": {
+   "circuit": "ro5_A",
+   "arm": "C0_refit",
+   "kind": "ring",
+   "wall": [
+    0.38811400000122376
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_periods": 36,
+   "period_s": 1.891491459372392e-10,
+   "freq_hz": 5286833281.98482,
+   "period_spread": 5.679867978144631e-05,
+   "n_points": 10008,
+   "ok": true
+  },
+  "ro5_A|M_card": {
+   "circuit": "ro5_A",
+   "arm": "M_card",
+   "kind": "ring",
+   "wall": [
+    0.386263416003203,
+    0.3867660420073662,
+    0.3842299579991959
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_periods": 36,
+   "period_s": 1.8906636882844446e-10,
+   "freq_hz": 5289147965.3231325,
+   "period_spread": 3.283554034801537e-05,
+   "n_points": 10008,
+   "ok": true
+  },
+  "ro5_A|M_full": {
+   "circuit": "ro5_A",
+   "arm": "M_full",
+   "kind": "ring",
+   "wall": [
+    1.473732457990991,
+    1.308450417011045,
+    1.3185489999887068
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_periods": 37,
+   "period_s": 1.8607373679185907e-10,
+   "freq_hz": 5374213563.081144,
+   "period_spread": 0.00010107865400218673,
+   "n_points": 10008,
+   "ok": true
+  },
+  "ro5_B|published": {
+   "circuit": "ro5_B",
+   "arm": "published",
+   "kind": "ring",
+   "wall": [
+    0.341579667001497
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_periods": 9,
+   "period_s": 3.625565449665862e-09,
+   "freq_hz": 275819045.024318,
+   "period_spread": 8.011504858093704e-06,
+   "n_points": 10008,
+   "ok": true
+  },
+  "ro5_B|C0_refit": {
+   "circuit": "ro5_B",
+   "arm": "C0_refit",
+   "kind": "ring",
+   "wall": [
+    0.1646058750047814
+   ],
+   "msgs": [
+    "doanalyses: tran:  timestep too small; time = 4.64014e-09, timestep = 6.25e-24: trouble with node \"m.xs5n.msky130_fd_pr__nfet_01v8_lvt#source\"",
+    "tran simulation(s) aborted"
+   ],
+   "finite": true,
+   "n_periods": 0,
+   "period_s": NaN,
+   "freq_hz": NaN,
+   "period_spread": NaN,
+   "n_points": 1128,
+   "ok": false
+  },
+  "ro5_B|M_card": {
+   "circuit": "ro5_B",
+   "arm": "M_card",
+   "kind": "ring",
+   "wall": [
+    0.1391206249827519,
+    0.13707695898483507,
+    0.14403570801368915
+   ],
+   "msgs": [
+    "doanalyses: tran:  timestep too small; time = 1.78626e-09, timestep = 6.25e-24: trouble with node \"m.xs2n.msky130_fd_pr__nfet_01v8_lvt#source\"",
+    "tran simulation(s) aborted"
+   ],
+   "finite": true,
+   "n_periods": 0,
+   "period_s": NaN,
+   "freq_hz": NaN,
+   "period_spread": NaN,
+   "n_points": 558,
+   "ok": false
+  },
+  "ro5_B|M_full": {
+   "circuit": "ro5_B",
+   "arm": "M_full",
+   "kind": "ring",
+   "wall": [
+    0.31779199998709373,
+    0.30979945801664144,
+    0.2841980000084732
+   ],
+   "msgs": [
+    "doanalyses: tran:  timestep too small; time = 5.62632e-10, timestep = 6.25e-24: trouble with node \"ns5p#flow(sense)\"",
+    "tran simulation(s) aborted"
+   ],
+   "finite": true,
+   "n_periods": 0,
+   "period_s": NaN,
+   "freq_hz": NaN,
+   "period_spread": NaN,
+   "n_points": 244,
+   "ok": false
+  },
+  "mirror_n|published": {
+   "circuit": "mirror_n",
+   "arm": "published",
+   "kind": "mirror",
+   "wall": [
+    0.02898004199960269
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.7049288592873,
+   "ratio_at_0p9": 1.059423285608,
+   "ratio_at_vref": 0.9999976951989165,
+   "ok": true
+  },
+  "mirror_n|C0_refit": {
+   "circuit": "mirror_n",
+   "arm": "C0_refit",
+   "kind": "mirror",
+   "wall": [
+    0.02887587499571964
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.73018242576,
+   "ratio_at_0p9": 1.022479871353,
+   "ratio_at_vref": 0.9999998866188424,
+   "ok": true
+  },
+  "mirror_n|M_card": {
+   "circuit": "mirror_n",
+   "arm": "M_card",
+   "kind": "mirror",
+   "wall": [
+    0.03155508401687257,
+    0.028772874997230247,
+    0.027750792010920122
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.7301608089936,
+   "ratio_at_0p9": 1.022660844851,
+   "ratio_at_vref": 0.9999998964396136,
+   "ok": true
+  },
+  "mirror_n|M_full": {
+   "circuit": "mirror_n",
+   "arm": "M_full",
+   "kind": "mirror",
+   "wall": [
+    0.03199395799310878,
+    0.033190083981025964,
+    0.03262883302522823
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.7313809637689,
+   "ratio_at_0p9": 1.032882527102,
+   "ratio_at_vref": 0.9999516211137637,
+   "ok": true
+  },
+  "mirror_p|published": {
+   "circuit": "mirror_p",
+   "arm": "published",
+   "kind": "mirror",
+   "wall": [
+    0.03062491602031514
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.5146388753717,
+   "ratio_at_0p9": 0.9375332100536998,
+   "ratio_at_vref": 0.9999998644297173,
+   "ok": true
+  },
+  "mirror_p|C0_refit": {
+   "circuit": "mirror_p",
+   "arm": "C0_refit",
+   "kind": "mirror",
+   "wall": [
+    0.030443708004895598
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.5261388148144,
+   "ratio_at_0p9": 0.9919862748366,
+   "ratio_at_vref": 0.9999997075667039,
+   "ok": true
+  },
+  "mirror_p|M_card": {
+   "circuit": "mirror_p",
+   "arm": "M_card",
+   "kind": "mirror",
+   "wall": [
+    0.03371470799902454,
+    0.02917083300417289,
+    0.028949333995115012
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.525681242111,
+   "ratio_at_0p9": 0.9919802931903,
+   "ratio_at_vref": 0.9999996970333581,
+   "ok": true
+  },
+  "mirror_p|M_full": {
+   "circuit": "mirror_p",
+   "arm": "M_full",
+   "kind": "mirror",
+   "wall": [
+    0.03364062498440035,
+    0.0327963329909835,
+    0.03002374997595325
+   ],
+   "msgs": [],
+   "finite": true,
+   "v_ref": 0.5268361977188,
+   "ratio_at_0p9": 0.9691592300825999,
+   "ratio_at_vref": 1.0000118908824964,
+   "ok": true
+  }
+ }
+}

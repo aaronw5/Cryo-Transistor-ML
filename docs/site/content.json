@@ -314,6 +314,27 @@
       ]
      },
      {
+      "text": "Iteration 11 (2026-10-21): I11-1 M_bias as an ngspice-41 OSDI add-on on sky130 77 K (18 devices, M_full card + full-data g): not deployable under the pre-registered rule. Every element run converges; OSDI matches the Python model to 1.5e-6 above 10 nA, but the tight threshold fails at 1-3 nA (2.6e-5, 1e-14 A floor), the AC check fails at the Vgs = 0 abs() kink (6.4e-3), and gm turns negative on one curve (nmos_L100_W100). Restrictions: terminal asymmetry 0.117, drain displacement current x exp(g), 27/90 gds curves negative, ring-oscillator wall time 3.25x.",
+      "source": [
+       "out/research/explore/I11_1/runs/full/decision.json"
+      ],
+      "claim": "i11-1",
+      "queue_match": "^I11_1_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i11_1",
+      "table": "I11-1 pre-registered checks",
+      "caption": "I11-1 pre-registered checks and outcome"
+     },
+     {
+      "text": "sky130 77 K all 18 devices (REAL_TEST opened by user decision, 2026-10-21), I3-2 recipe leave-one-device-out: RRMS published 0.2751, C0_refit 0.1043, T1_inloop 0.0744, M_bias 0.0732; M_bias vs C0_refit 0.755 [0.673, 0.852], 16/18. Not pre-registered.",
+      "source": [
+       "out/research/explore/I3_2/all18/results.json"
+      ],
+      "claim": "i3-2-all18"
+     },
+     {
       "text": "I10-2 (class selection for g per outer fold from training data; menu none / lin / gam / mlp8 / mlp16; sky130 77 K, NIST 4 K, TU Delft 4.13 K, IHP 300 K): pre-registered rule output stop, no selector supported. S_loss 0.838, S_refit 0.834, S_cv 0.814 pooled vs C0_refit, partly supported (C2 holds: vs mlp16 0.914 / 0.910 / 0.888; C1 fails on TU Delft, S_refit also on IHP 1.020); S_gate 0.893 not supported (vs mlp16 upper 1.049). gam selected on sky130 and NIST. Secondary A1: S_cv passes C1 with the TU Delft device bootstrap at 95%; fixed mlp16 fails C1 under every variant. The deployed rule stays the I8-2 gate.",
       "source": [
        "out/research/explore/I10_2/decision.json"
@@ -4830,6 +4851,65 @@
    "updated": "2026-10-20"
   },
   {
+   "id": "i3-2-all18",
+   "tab": "explore",
+   "statement": "sky130 77 K, all 18 measured devices (REAL_TEST opened by user decision on 2026-10-21), leave-one-device-out with the I3-2 recipe: the shared bias-only correction M_bias gives all-device RRMS 0.0732 against 0.1043 for the refit card without correction (C0_refit) and 0.2751 for the published card; lower than C0_refit on 16 of 18 devices.",
+   "status": "verified",
+   "headline": {
+    "value": "all-device RRMS published 0.2751, C0_refit 0.1043, T1_inloop 0.0744, M_bias 0.0732 (18 devices, 0 failed)",
+    "convention": "strict paper RRMS after the held-out 43-parameter card refit with g frozen; all-device mean (combined in the numbers)"
+   },
+   "numbers": [
+    {
+     "label": "all-device (combined) [median]",
+     "value": "published 0.2751 (0.2595) [0.2304]; starting card 0.1044 (0.0976); C0_refit 0.1043 (0.0975) [0.0820]; T1_inloop 0.0744 (0.0703) [0.0672]; M_bias 0.0732 (0.0691) [0.0643]",
+     "convention": "18 devices",
+     "source": "out/research/explore/I3_2/all18/results.json"
+    },
+    {
+     "label": "paired GMR (device bootstrap 95% CI)",
+     "value": "M_bias vs C0_refit 0.755 [0.673, 0.852], 16/18; M_bias vs T1_inloop 0.974 [0.945, 1.001], 11/18; T1_inloop vs C0_refit 0.775 [0.695, 0.865]",
+     "convention": "10,000 resamples",
+     "source": "out/research/explore/I3_2/all18/results.json"
+    },
+    {
+     "label": "former REAL_TEST devices (6)",
+     "value": "C0_refit 0.0985, T1_inloop 0.0589, M_bias 0.0590",
+     "convention": "all-device mean",
+     "source": "out/research/explore/I3_2/all18/results.json"
+    },
+    {
+     "label": "SPICE-native check",
+     "value": "18 fold models compiled to OSDI (OpenVAF 23.5.0) in the ngspice-41 OSDI build: all-device 0.073171 vs 0.073163 (max per-device |difference| 1.7e-5)",
+     "convention": "default ngspice tolerances",
+     "source": "out/research/explore/mbias_deck/sky130/check.json"
+    }
+   ],
+   "what": [
+    "The I3-2 recipe (g = mean of 5 tanh MLPs on is_pmos, |Vgs|/VDD, |Vds|/VDD, trained on the other 17 starting-card records; held-out 43-parameter card refit with g frozen, max_nfev 400, irls 2) applied leave-one-device-out to all 18 sky130 77 K devices after the user opened the 6 REAL_TEST devices (\"don't lock the real data the point is the fit the real data\")."
+   ],
+   "did": [
+    "Run `scripts/research/explore/i3_2_bias.py --mode real --devices all18 --name all18 --arms M_bias --workers 6`, 526 s, 0 failed devices; C0_refit and T1_inloop are new runs on the same folds. Full-data model written as Verilog-A (`m_bias_sky130_all18_full.va`, max |g difference| to Python 2.4e-11)."
+   ],
+   "result": {
+    "text": [
+     "M_bias lowers the held-out RRMS against C0_refit (GMR 0.755, CI upper 0.852) and does not separate from T1_inloop (CI includes 1). On the 12 former REAL_DEV devices the values reproduce I3-2 (M_bias 0.0803 trained on 17 vs 0.0806 trained on 11).",
+     "Deployment as an ngspice OSDI element is examined in I11-1."
+    ]
+   },
+   "caveats": [
+    "Not pre-registered; the December TEST-stage prediction for sky130 77 K (I8-2 Part A) can no longer be checked on held-out data.",
+    "REAL_DEV was reused by E1, I2-1 and the I3-2 design."
+   ],
+   "sources": [
+    "out/research/explore/I3_2/all18/results.json",
+    "out/research/explore/I3_2/all18/corrections.json",
+    "out/research/explore/I3_2/all18/heldout_cards.json",
+    "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
    "id": "i4-1",
    "tab": "explore",
    "statement": "I4-1: on the 12 REAL_DEV devices the I3-2 correction M_bias gives lower held-out RRMS than each of five pre-registered baselines (B1 wider card parameter set, B2 extrinsic series resistance + self-heating factor, B3_d2 / B3_d3 shared polynomial g, B4 shared GP discrepancy), with the 95% CI upper bound of GMR(M_bias, X) below 1 for every X; on simulated GF180 and IHP tier c no baseline meets the condition GMR < 0.95 on both PDKs. The pre-registered rule output is 'supported against baselines'. REAL_DEV values are development evidence.",
@@ -5663,6 +5743,120 @@
     "scripts/research/explore/i10_1_diagnose.py",
     "scripts/research/plot_explore_i10_1.py",
     "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
+   "id": "i11-1",
+   "tab": "explore",
+   "statement": "I11-1: the 43-parameter card plus the shared bias-only correction, compiled from Verilog-A to an OSDI element in ngspice-41, is not deployable under the pre-registered simulator-level rule on sky130 77 K (18 devices): it converges in every device sweep and circuit where the card alone converges and matches the Python model to 1e-6 above 10 nA, but it fails the tight equivalence threshold at 1-3 nA, the derivative check at the Vgs = 0 abs() kink, and introduces one gm and 27 gds sign changes.",
+   "status": "refuted",
+   "headline": {
+    "value": "not deployable (pre-registered rule); restrictions: default-tolerance difference 1.9e-3, terminal asymmetry 0.117 in ln I, drain displacement current x exp(g), 27/90 gds curves with introduced negative values, wall time up to 3.25x",
+    "convention": "M_full card (43-parameter card refit with the full-data g in the loop) + full-data g; OSDI element vs I_card x exp(g) on the same ngspice-41 OSDI build; |I| > 1 nA; no measured circuit data"
+   },
+   "numbers": [
+    {
+     "label": "Q1 OSDI vs Python, max relative difference (|I| > 1 nA, 75 x 149 grid, Vds -1.85 to 1.85 V)",
+     "value": "tight 2.59e-05 (threshold 1e-5; points above at 1.0-2.6 nA, |dI| <= 2.8e-14 A; above 10 nA 1.5e-06); reltol 1e-4 1.04e-3; default 1.94e-03; 0 convergence messages; max |I(Vds = 0)| 9.6e-13 A",
+     "convention": "tight = reltol 1e-9, abstol 1e-18, vntol 1e-12",
+     "source": "out/research/explore/I11_1/runs/full/q12.json"
+    },
+    {
+     "label": "Q2 AC small signal vs Python",
+     "value": "max 6.35e-03 (only point above 1e-3: nmos_L100_W100 at Vgs = 0, abs() kink); off Vgs = 0 / Vds = 0 7.3e-06; gm sign changes introduced 1/54 curves (nmos_L100_W100, |Vds| 0.05 V, |Vgs| 1.757-1.85 V); gds 27/90 curves (pMOS L >= 2 um and pmos_L0p5_W0p42, nmos_L8_W1p6)",
+     "convention": "normalized |dY| / max(|Y|, 1e-9 S); curve-level sign rule, strong inversion |Vgs| >= V_T + 0.2 V",
+     "source": "out/research/explore/I11_1/runs/full/q12.json"
+    },
+    {
+     "label": "capacitances and terminal exchange",
+     "value": "Im Y_dd, Im Y_dg of the element = exp(g) x card (max deviation 3e-11); Im Y_gg unchanged; drain/source exchange changes ln I by up to 0.117 (nMOS 0.043, pMOS 0.117)",
+     "convention": "AC at 1 MHz, tight; forward operation",
+     "source": "out/research/explore/I11_1/runs/full/q12.json"
+    },
+    {
+     "label": "Q3 circuits (published / C0_refit / M_card / M_full)",
+     "value": "inv_A V_M 0.7466 / 0.7593 / 0.7592 / 0.7598 V; ro5_A 5.322 / 5.287 / 5.297 / 5.382 GHz; mirror_p Iout/Iref at 0.9 V 0.938 / 0.992 / 0.992 / 0.969; ro5_B stops for C0_refit, M_card and M_full ('timestep too small', card-level)",
+     "convention": "77 K, VDD 1.8 V, default tolerances; simulator-level, no measured circuit data",
+     "source": "out/research/explore/I11_1/runs/full/q3.json"
+    },
+    {
+     "label": "Q4 wall time element / card",
+     "value": "DC grid 1.58-1.87; circuits inv_A_vtc 1.56, inv_B_vtc 1.58, ro5_A 3.25, ro5_B 1.28, mirror_n 1.33, mirror_p 1.11",
+     "convention": "median of 3; measured while a 6-worker queue job ran",
+     "source": "out/research/explore/I11_1/runs/full/summary.json"
+    },
+    {
+     "label": "M_full in-sample RRMS on the measured curves",
+     "value": "SPICE-native 0.0697, Python 0.0697, same card without g 0.1057",
+     "convention": "in-sample (g trained on all 18); not comparable with LODO 0.0732",
+     "source": "out/research/explore/I11_1/runs/full/refit.json"
+    }
+   ],
+   "what": [
+    "Question: does the 43-parameter card + shared bias-only correction (M_bias, I3-2 recipe, I = I_card x exp(g(is_pmos, |Vgs|/1.85, |Vds|/1.85))) work as a compact-model add-on in circuit simulation? The stored full-data Verilog-A (trained on all 18 sky130 77 K devices) is compiled with OpenVAF 23.5.0 and placed as an OSDI element around the BSIM4 instance (drain moved to an internal node; sense branch V(sense) <+ RS*I(sense), RS = 0) in the ngspice-41 OSDI build.",
+    "Pre-registered (in force from da03859): core checks Q1 tight equivalence <= 1e-5, 0 convergence messages, |I(Vds = 0)| <= 1e-12 A; Q2 AC derivative difference <= 1e-3 and 0 introduced gm sign changes in strong inversion; Q3 0 circuits failing only with the element. Restrictions: default-tolerance difference > 1e-3, terminal asymmetry > 1e-3, drain displacement current changed, introduced gds sign changes, wall-time ratio > 2. Outcome: not deployable / deployable with restrictions / deployable (simulator-level)."
+   ],
+   "did": [
+    "Card M_full: per device the 43-parameter card refit from direct43_r3_fd with the full-data g in the loop (max_nfev 400, irls 2), 171 s. Q1: 11,175-point grid per device at three tolerances, plus drain/source-exchanged instances. Q2: 600 op points per device with op + AC at 1 MHz (gate and drain excitation), 1 mV sweeps. Q3: inverter VTCs, 5-stage ring oscillators and 1:1 mirrors with 4 arms. Q4: median of 3 wall times. Total run 3.4 min, 4 workers. Post hoc diagnosis in diagnosis.json.",
+    "Report `scripts/research/plot_explore_i11_1.py` (batch 2026-10-21_i11_1) recomputes the decision from the stored summary values and checks them against q12.json."
+   ],
+   "result": {
+    "text": [
+     "Outcome (pre-registered rule): not deployable. Core failures: (1) tight-tolerance difference 2.6e-5 > 1e-5 at 1.0-2.6 nA, absolute differences <= 2.8e-14 A (gmin and bypass settings do not remove them); (2) AC derivative difference 6.4e-3 at Vgs = 0 on nmos_L100_W100, where abs() has a derivative jump and OSDI takes a one-sided derivative; elsewhere <= 7.3e-6; (3) gm becomes negative on nmos_L100_W100 at |Vds| 0.05 V, |Vgs| 1.757-1.85 V, where the card alone has positive gm.",
+     "Restrictions found: at default tolerance the difference is 1.9e-3 (reltol-level); the element is not source/drain symmetric because g uses the instance source terminal; it multiplies the whole drain-terminal current including displacement and junction currents (drain capacitive admittance scaled by exp(g)); 27 of 90 gds curves acquire negative values (mainly long pMOS; the measured average slopes on those curves are positive); the 5-stage ring oscillator runs 3.25x slower.",
+     "No circuit fails only because of the element. The M_full card itself (with or without g) and the C0_refit card stop the ro5_B transient (pmos_L2_W5 card, 'timestep too small'); the published card runs. Circuit differences between arms are small for the inverter (V_M within 1.3 mV of the card alone) and up to 2.3% for the pMOS mirror ratio.",
+     "Next actions (new pre-registration each): source/drain-symmetric g input; apply exp(g) to the channel current only (correction inside a Verilog-A BSIM4); train g with a penalty on negative gm / gds; smooth abs(); restate the equivalence check as relative plus absolute tolerance."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "01_table_i11_1_decision.png"
+     },
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "02_i11_1_q1_per_device.png"
+     },
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "04_i11_1_q1_terminal_swap.png"
+     },
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "06_i11_1_q2_gm_gds.png"
+     },
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "07_i11_1_q2_ac_cap.png"
+     },
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "09_i11_1_q3_circuits.png"
+     },
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "10_table_i11_1_diagnosis.png"
+     },
+     {
+      "batch": "2026-10-21_i11_1",
+      "file": "11_i11_1_q4_runtime.png"
+     }
+    ]
+   },
+   "caveats": [
+    "Simulator-level only: there is no measured circuit data, so Q3 shows consistency and convergence, not accuracy.",
+    "The tight threshold 1e-5 was set after a 2-device smoke (2.5e-6); on 18 devices the floor reached 2.6e-5.",
+    "The M_full RRMS is in-sample; the held-out (LODO) M_bias value is 0.0732.",
+    "Wall times were measured while another 6-worker job was running."
+   ],
+   "sources": [
+    "out/research/explore/I11_1/prereg.md",
+    "out/research/explore/I11_1/prereg.json",
+    "out/research/explore/I11_1/runs/full/decision.json",
+    "out/research/explore/I11_1/runs/full/summary.json",
+    "out/research/explore/I11_1/runs/full/diagnosis.json",
+    "src/cryoml/explore/i11_1_deploy.py",
+    "scripts/research/explore/i11_1_deploy.py"
    ],
    "updated": "2026-10-21"
   },

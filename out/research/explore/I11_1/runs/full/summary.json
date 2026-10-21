@@ -1,0 +1,169 @@
+{
+ "summary_values": {
+  "q1_tight_max": 2.5896129996308623e-05,
+  "q1_default_max": 0.0019420005156154468,
+  "q1_bad": 0,
+  "q1_vds0_max": 9.592734889182e-13,
+  "q2_ac_max": 0.006351999782446815,
+  "q2_gm_sign": 1,
+  "q2_gds_sign": 27,
+  "q3_fail": 0,
+  "q3_fail_cardonly": 2,
+  "swap_asym_max": 0.11723687519782812,
+  "cap_scaled": true,
+  "runtime_ratio_max": 3.2475568777002595
+ },
+ "decision": {
+  "outcome": "not deployable",
+  "core_fail": [
+   "Q1 tight-tolerance equivalence",
+   "Q2 derivative agreement",
+   "Q2 gm sign change in strong inversion"
+  ],
+  "restrictions": [
+   "default tolerance above 1e-3 (tightened reltol needed for equivalence)",
+   "not source/drain symmetric (g uses the instance source terminal)",
+   "drain displacement current scaled by exp(g)",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "n_devices": 18,
+ "card_only_messages": 0,
+ "q3_not_ok": [
+  "ro5_B|C0_refit",
+  "ro5_B|M_card",
+  "ro5_B|M_full"
+ ],
+ "runtime_grid": {
+  "nmos_L0p15_W1p6": {
+   "card_s": 0.1205524169781711,
+   "corr_s": 0.20520125000621192,
+   "ratio": 1.702174499275021
+  },
+  "nmos_L0p19_W7": {
+   "card_s": 0.11957787501160055,
+   "corr_s": 0.20297425001626834,
+   "ratio": 1.6974231227689678
+  },
+  "nmos_L0p25_W1p6": {
+   "card_s": 0.11945766699500382,
+   "corr_s": 0.20375787498778664,
+   "ratio": 1.705691062896018
+  },
+  "nmos_L100_W100": {
+   "card_s": 0.11479870797484182,
+   "corr_s": 0.21505299999262206,
+   "ratio": 1.8733050553125652
+  },
+  "nmos_L1_W1p6": {
+   "card_s": 0.12432037497637793,
+   "corr_s": 0.20666166601586156,
+   "ratio": 1.6623314243954723
+  },
+  "nmos_L1_W3": {
+   "card_s": 0.12685366699588485,
+   "corr_s": 0.20289029102423228,
+   "ratio": 1.5994042255854857
+  },
+  "nmos_L20_W0p64": {
+   "card_s": 0.12081845797365531,
+   "corr_s": 0.20897691600839607,
+   "ratio": 1.7296770668432457
+  },
+  "nmos_L8_W1p6": {
+   "card_s": 0.12719308299710974,
+   "corr_s": 0.2112217500107363,
+   "ratio": 1.6606386529331627
+  },
+  "pmos_L0p35_W0p55": {
+   "card_s": 0.12271445800433867,
+   "corr_s": 0.200412582984427,
+   "ratio": 1.633161945574019
+  },
+  "pmos_L0p35_W1p6": {
+   "card_s": 0.11768554200534709,
+   "corr_s": 0.20481512500555255,
+   "ratio": 1.7403592787654978
+  },
+  "pmos_L0p35_W5": {
+   "card_s": 0.12269916699733585,
+   "corr_s": 0.19801691701286472,
+   "ratio": 1.6138407607703176
+  },
+  "pmos_L0p5_W0p42": {
+   "card_s": 0.12522108398843557,
+   "corr_s": 0.19774941701325588,
+   "ratio": 1.5792022454582686
+  },
+  "pmos_L0p5_W0p64": {
+   "card_s": 0.12372808301006444,
+   "corr_s": 0.21471187501447275,
+   "ratio": 1.7353527977719287
+  },
+  "pmos_L2_W5": {
+   "card_s": 0.12101950001670048,
+   "corr_s": 0.20734758299659006,
+   "ratio": 1.713340271344506
+  },
+  "pmos_L4_W7": {
+   "card_s": 0.11513383299461566,
+   "corr_s": 0.21492545801447704,
+   "ratio": 1.866744573895392
+  },
+  "pmos_L8_W0p84": {
+   "card_s": 0.1175216670089867,
+   "corr_s": 0.21529995801392943,
+   "ratio": 1.8320022468492196
+  },
+  "pmos_L8_W1p6": {
+   "card_s": 0.11335050000343472,
+   "corr_s": 0.19517562500550412,
+   "ratio": 1.7218770539132158
+  },
+  "pmos_L8_W5": {
+   "card_s": 0.11067645900766365,
+   "corr_s": 0.188528916973155,
+   "ratio": 1.7034238234898764
+  }
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": {
+   "card_s": 0.04297562499414198,
+   "corr_s": 0.06687204199261032,
+   "ratio": 1.5560458283439895
+  },
+  "inv_B_vtc": {
+   "card_s": 0.049055958981625736,
+   "corr_s": 0.07772050000494346,
+   "ratio": 1.5843233241868584
+  },
+  "ro5_A": {
+   "card_s": 0.4055944999854546,
+   "corr_s": 1.3171912079851609,
+   "ratio": 3.2475568777002595
+  },
+  "ro5_B": {
+   "card_s": 0.14242479199310765,
+   "corr_s": 0.18171716699725948,
+   "ratio": 1.2758815684705602
+  },
+  "mirror_n": {
+   "card_s": 0.029537249996792525,
+   "corr_s": 0.03918116699787788,
+   "ratio": 1.3265001651180321
+  },
+  "mirror_p": {
+   "card_s": 0.03400604199850932,
+   "corr_s": 0.03779358300380409,
+   "ratio": 1.1113784722568065
+  }
+ },
+ "refit_in_sample": {
+  "mean_rrms_M_full_python": 0.06970001396738051,
+  "mean_rrms_M_full_native": 0.06970519461674562,
+  "mean_rrms_M_card_only": 0.10573520944816732,
+  "max_rel_native_vs_python_measured_1nA": 0.0013541026243995466,
+  "n_failed": 0
+ }
+}

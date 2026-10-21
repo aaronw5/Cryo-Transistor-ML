@@ -1,0 +1,15 @@
+{
+ "outcome": "not deployable",
+ "core_fail": [
+  "Q1 tight-tolerance equivalence",
+  "Q2 derivative agreement",
+  "Q2 gm sign change in strong inversion"
+ ],
+ "restrictions": [
+  "default tolerance above 1e-3 (tightened reltol needed for equivalence)",
+  "not source/drain symmetric (g uses the instance source terminal)",
+  "drain displacement current scaled by exp(g)",
+  "gds sign changes introduced",
+  "runtime overhead > 2x"
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "outcome": "deployable with restrictions",
+ "core_fail": [],
+ "restrictions": [
+  "default tolerance above 1e-3 (tightened reltol needed for equivalence)",
+  "not source/drain symmetric (g uses the instance source terminal)",
+  "drain displacement current scaled by exp(g)",
+  "gds sign changes introduced",
+  "runtime overhead > 2x"
+ ]
+}
