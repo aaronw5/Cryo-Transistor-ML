@@ -1781,3 +1781,46 @@ published, starting, C0_refit and M_bias (Python x exp(g)) RRMS reproduced with 
 fold models compiled to OSDI (OpenVAF 23.5.0) and run in the ngspice-41 OSDI build give all-device 0.073171 vs
 0.073163 (max per-device |difference| 1.7e-5). Deck `slides/cryo_ml_mbias_real_data.pptx` (27 slides,
 `scripts/make_mbias_slides.py`, figures `scripts/research/explore/mbias_deck_plots.py`).
+
+## I11-2 pre-registration in force, code, smoke, queue (2026-10-21 17:47): temperature-input bias-only correction, held-out temperature
+
+Started by the user's default choice (no reply by 17:00). Question: does a shared bias-only correction
+g(is_pmos, |Vgs|/VDD, |Vds|/VDD, T), trained on other devices at other temperatures, lower the held-out RRMS of a
+device at a temperature absent from training, compared with C0_refit and with the same correction without the
+temperature input? Pre-registration `out/research/explore/I11_2/prereg.{json,md}` in force from 964a828 (committed
+alone, before any I11-2 held-out refit); code 02df93c (`src/cryoml/explore/i11_2_temp.py`,
+`scripts/research/explore/i11_2_temp.py`, `tests/test_i11_2_temp.py`, 15 tests).
+Data (D1, DEV only): IHP SG13G2 I5-1 DEV 18 DUTs at 233.15 / 300.15 / 343.15 / 398.15 K and TU Delft I6-1 DEV 45
+devices (7 geometry groups) at 4.13 / 295.0 K, stored starting-card records. The TEST devices of both datasets are not
+read: reading them cannot be undone and would void the I8-2 TEST predictions of 6 dataset-temperatures.
+Protocol: held-out (device, temperature) record; training excludes the held-out unit (IHP DUT, within class; TU Delft
+geometry group) at every temperature and every record at the held-out temperature (except the reference M_bias_in);
+the code raises on a violation. Held-out card: the device's own starting card at the held-out temperature refit with
+g frozen in the loop (max_nfev 400, irls 2, diff_step 0.01), strict paper RRMS. t = ln(T / 300 K), standardized.
+Arms: M_bias_T (4-16-16-1 MLP, M_bias recipe with t as fourth input; IHP), M_bias_pool (M_bias on the same records),
+M_bias_near (stored I5-1 fold M_bias at the nearest training temperature in ln T: 233->300, 300->343, 343->300,
+398->343), TU Delft M_bias_X (stored I6-1 fold M_bias of the other temperature; with 2 temperatures pool = near = X),
+references M_bias_in (all temperatures, unit excluded) and M_bias_sameT (stored), IHP secondary lin_T / lin_pool.
+Primary contrasts (Bonferroni over 8, level 0.99375): IHP interpolation (300, 343 K) and extrapolation (233, 398 K)
+GMR(M_bias_T, X) for X = C0_refit, M_bias_pool, M_bias_near (device bootstrap over DUTs, per-DUT mean over the
+stratum's temperatures); TU Delft GMR(M_bias_X, C0_refit) at 4 K and at 295 K held out (cluster bootstrap over 7
+groups). Labels: IHP stratum supported (all three lower) / transfer without temperature input / loss / no gain; TU
+Delft transfer gain / loss / inconclusive (reported, not in the action: with one training temperature a temperature
+input is constant in training). Decision: invalid -> stop, fix and re-register; supported -> continue (second
+multi-temperature dataset); transfer without temperature input -> continue, reduced (pooled g, no temperature
+input); otherwise stop. Validity: V1 6 stored C0_refit rows reproduced, V2 M_bias_near at 233 / 343 K equals the
+stored X300 rows, V3 <= 2 failed records per primary arm and dataset, V5 retrained stored fold corrections reproduced.
+No card clamp (D9): no card is shifted, the held-out card is refit inside the stored base box (0 failed records in
+I5-1 / I6-1); the I10-1 failure mechanism (shifted effective BSIM4 values) does not arise.
+Secondary prediction (stats -> commit_prediction -> lodo, as I8-1 / I9-1): per IHP held-out temperature S1_loto (I7-1
+S1 with the shared function estimated without the scored record's temperature and DUT) and S3_loto (1 seed, 500
+steps, inner leave-one-temperature-out x 2 DUT parts) for M_bias_T and M_bias_pool; 12 predicted signs. No TU Delft
+prediction.
+Known before the pre-registration: I5-1 GMR(M_bias, C0_refit) 1.106 / 1.214 / 1.181 / 1.272 at 233 / 300 / 343 /
+398 K and X300 1.116 / 1.197 / 1.341; I6-1 0.939 (4.13 K) / 0.797 (295 K); I9-2 / I10-2 IHP 300 K lin 0.983, gam
+1.471.
+Smoke (2 workers, 1 seed, 200 steps, refit nfev 60; 2 IHP DUTs at 233 / 343 K, 2 TU Delft devices; 86 s; code check
+only): every mode runs, 0 failed records, V1 relative difference 0 on 2 records; M_bias_near at full settings equals
+the stored X300 rows on 2 records (difference 0.0).
+Queue (runner started 17:47): I11_2_validity, I11_2_stats, I11_2_commit_prediction, I11_2_lodo_ihp (954 training
+tasks, 432 refits), I11_2_lodo_tud (35 training tasks, 180 refits), I11_2_decide; estimate about 50-75 min on 6 workers.
