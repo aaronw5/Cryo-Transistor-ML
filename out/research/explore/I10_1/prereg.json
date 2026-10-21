@@ -1,0 +1,251 @@
+{
+ "id": "I10_1_prereg",
+ "title": "I10-1: predict a device's 4 K I-V from its room-temperature data (NIST ETest sky130 g5v0d10v5 and TU Delft 40 nm DEV; 1.8 V core ETest TEST protocol)",
+ "iteration": "I10-1 (iteration 10, option 1)",
+ "written": "2026-10-21",
+ "status": "IN FORCE from the commit that adds this file, committed alone. Written before any full-setting fit on the I10-1 DEV data and before any full-setting arm was scored. Done before this version: feasibility check (docs/research/i10_1_feasibility_2026-10-21.md, a108203), code and 21 unit tests, NIST DEV dataset (data/manifest.json), stock-card scan of the 77 checked NIST devices (finiteness and timing, no RRMS; smoke/smoke.json), card checks, and the reduced-setting smoke of every mode on 6 NIST and 7 TU Delft DEV devices (smoke_runs.json, commit eeaed11; not used for any decision except the addition of contrast K2, see D14)",
+ "question": "Can a device's 4 K I-V be predicted without any of its 4 K data, from its room-temperature (RT) data and what training devices with both temperatures teach?",
+ "parents": [
+  "I8-1 (measured-only inclusion, records, A1 rule)",
+  "I9-1 (open_pdks room-temperature cards, deck 30 C, bin stretch)",
+  "I3-2 (M_bias recipe)",
+  "I6-1 (TU Delft DEV devices, card, stored starting cards)",
+  "I9-2 (mlp16 = M_bias is the smallest-error class family; recipe unchanged here)"
+ ],
+ "code": {
+  "module": "src/cryoml/explore/i10_1_rt4k.py",
+  "driver": "scripts/research/explore/i10_1_rt4k.py",
+  "tests": "tests/test_i10_1_rt4k.py",
+  "code_commit": "eeaed11"
+ },
+ "data": {
+  "DEV_nist": {
+   "source": "NIST mds2-2997 ETest tile 4 K (doi 10.18434/mds2-2997) paired by module/pad ID with google/skywater-pdk-sky130-raw-data RT files at 1f7214f2f81a0629303947a07e1ec00a28ae8a33 (i10_1_etest_rt)",
+   "types": [
+    "nfet_g5v0d10v5",
+    "pfet_g5v0d10v5"
+   ],
+   "n": 67,
+   "n_nmos": 36,
+   "n_pmos": 31,
+   "geometry_groups": 61,
+   "covered_by_a_bin": {
+    "nmos": 19,
+    "pmos": 11
+   },
+   "excluded": "14 of 81: 4 fail device checks at 4 K or RT (gate control < 100); 10 with L 0.30-0.40 um whose stock card (nearest bin, stretched) gives non-finite currents at deck 30 C (BSIM4 parameter checks: Lpeb < -Leff, Pclm <= 0, Drout < 0) (D10)",
+   "curves_4K": "Vb = 0, 9 per device: Id-Vg |Vd| 0.1, 3.3 V (331 points), Id-Vd |Vg| 0, 0.55, ..., 3.3 V (133 points)",
+   "curves_RT": "Vb = 0 curves inside |V| <= 3.3 V: Id-Vg |Vd| 0.1 V and Id-Vd |Vg| 0, 1, 2, 3 V, truncated at 3.3 V (67 points, 50 mV)",
+   "included_curves": {
+    "4K": {
+     "nmos": 244,
+     "pmos": 184
+    },
+    "RT": {
+     "nmos": 137,
+     "pmos": 117
+    }
+   },
+   "manifest": "out/research/explore/I10_1/data/manifest.json"
+  },
+  "DEV_tud": {
+   "source": "TU Delft 40 nm (I6-1), the 45 DEV devices in 7 geometry groups (split.json of I6-1), 4.13 K and 295.0 K campaign-1 curves (23 per temperature)",
+   "cards": "I6-1 CMOSedu 50 nm BSIM4 card with temperature coefficients 0; stored I6-1 starting cards at both temperatures (start/summary.json); the stored cards reproduce their stored records (relative difference 0, checked in start mode)"
+  },
+  "TEST": {
+   "devices": "the 25 ETest 1.8 V core devices (nfet_01v8, nfet_01v8_lvt, pfet_01v8, pfet_01v8_lvt, pfet_01v8_hvt; 5 each), i10_1_etest_rt.pair_etest(types=CORE_TYPES)",
+   "status": "locked: no I10-1 mode reads their files (discover_types parses only DEV-type file names); used once in December by the TEST protocol below",
+   "prior_exposure": "the feasibility check (a108203) read the TEST 4 K and RT files once for descriptive numbers (constant-current threshold, 4 K/RT current ratio, inclusion counts) and simulated the stock card on two TEST devices (nfet_01v8 and pfet_01v8 W 7/L 0.15; RRMS 0.311/0.377 and 2.650/0.549 at deck 30 C / -269.15 C); no card was fitted and no I10-1 arm was scored on TEST"
+  }
+ },
+ "cards": "open_pdks a918dc7 sky130 tt (Volare build on disk): per type the tt.corner .param block (if corners/tt.spice includes a corner file) and the tt.pm3 bins, mismatch corner, lod.spice; one assignment per '+' line; per simulation the subckt forced to the device's bin with that bin's block only; equal to the full card and to the unmodified sky130.lib.spice tt library (relative difference <= 2.8e-18) on 2 covered DEV devices and on a synthetic grid for the 5 core types (smoke.json). Uncovered geometries: nearest bin in (ln L, ln W) (I8-1 / I9-1 bin stretch). Fitted set: the 43-parameter set, I8-1 base_box (cold_start round-one log widths around the showmod stock values; zero-valued parameters inactive).",
+ "fits": {
+  "C0_RT": "NIST: RT card, polish from the stock card on the restricted RT curves, deck 30 C, max_nfev 3000, irls 3, diff_step 0.01. TU Delft: the stored I6-1 295 K card (deck 295.0 K stage temperature).",
+  "C4": "4 K card used for training shifts and as R_oracle: NIST polish from C0_RT on the 4 K curves at deck 30 C; TU Delft polish from the stored 295 K card on the 4 K curves at the 295 K stage deck; same budget.",
+  "C4_ind": "NIST variant V_ind: 4 K polish from the stock card, deck 30 C (I9-1 convention).",
+  "C4_deck": "NIST variant V_deck: 4 K polish from C0_RT at deck -269.15 C.",
+  "C4_i6": "TU Delft variant V_i6: the stored I6-1 4 K card (independent fit from stock at the 4.13 K stage deck)."
+ },
+ "arms": {
+  "A0": "C0_RT simulated on the 4 K grid at the 4 K deck (NIST -269.15 C with the cards' BSIM4 temperature equations; TU Delft 4.13 K stage temperature, kT/q-only model because the I6-1 card has temperature coefficients 0)",
+  "A0_rtdeck": "C0_RT on the 4 K grid at the RT deck (no temperature change)",
+  "A1": "C0_RT + dz, dz = per-coordinate median over the training devices of (z_C4 - z_C0_RT) in ParameterBox local coordinates, all active parameters, clipped to the box; RT deck",
+  "A1_L": "secondary: A1 + ridge term on (log10 L, log10 W) only (same ridge rule as A3)",
+  "A2": "A1 card current x exp(g); g = M_bias (I3-2 recipe: is_pmos, |Vgs|/VDD, |Vds|/VDD; 2 x 16 tanh, 5 seeds, 2000 steps, L2 1e-4, Adam 3e-3; VDD 3.3 V NIST, 1.1 V TU Delft) trained per fold on nested A1 records of every finite training device of both polarities outside the held-out group; each nested record uses the median shift of its own polarity/type computed without the held-out group and without its own group (fallback: without itself, when its group is the only other group of its polarity: TU Delft pMOS). No held-out refit.",
+  "A3": "C0_RT + dz_hat, dz_hat = median(dz) + B^T s(x); x = log10 L, log10 W, RT descriptors (constant-current threshold at max(1e-7 W/L, 1e-8) A on the smallest-|Vd| Id-Vg, log10 |Id| at its largest |Vg|, log10 |Id| at the end of the largest-|Vg| Id-Vd), RT card local coordinates; s standardized with training mean/SD (NaN features: training median; constant columns dropped); B ridge slopes per target coordinate; lambda/n in {1e-3, 1e-2, 0.1, 1, 10, 100, 1000, infinity} by exact inner leave-one-out squared error in local coordinates (ties: larger lambda; infinity = A1)",
+  "R_pop": "reference: median of the training devices' C4 local coordinates applied to the held-out device's bin/box (no data of the held-out device except geometry and bin); RT deck",
+  "R_oracle": "reference: the held-out device's own C4 card (uses its 4 K data; upper reference only)",
+  "R_stock4k": "reference: stock card at the 4 K deck",
+  "R_stock_rtdeck": "reference: stock card at the RT deck",
+  "variants": {
+   "V_ind": "A1 with dz from C4_ind (NIST)",
+   "V_mean": "A1 with the mean",
+   "V_sub7": "A1 shifting only vth0, u0, nfactor, vsat, delta, rdsw, eta0",
+   "V_deck": "A1 with dz from C4_deck, simulated at -269.15 C (NIST)",
+   "V_i6": "A1 with dz from the stored I6-1 4 K cards, simulated at the 4.13 K stage deck (TU Delft)"
+  }
+ },
+ "evaluation": {
+  "folds": "leave-one-geometry-out; NIST group = (type, W, L) (61 groups), training devices = finite devices of the same type outside the group; TU Delft group = I6-1 (polarity, W, L) group (7), training devices = finite devices of the same polarity outside the group",
+  "score": "strict paper RRMS (e1_correction.score_device, non-sky130 branch) on the held-out device's 4 K Vb = 0 curves, measured-only inclusion frozen from the measured 4 K current (I8-1 / I9-1); NaN if an included curve is non-finite",
+  "A1_rule": "decided in advance: a device whose C0_RT or C4 record has a non-finite simulated point is excluded from every training set (dz, ridge, R_pop, M_bias) and scored as failed (NaN) in every arm; a variant record with a non-finite point is excluded from that variant's training and the variant arm is NaN for that device; nested records with a non-finite point are dropped from that fold's M_bias training (count reported)"
+ },
+ "statistics": {
+  "contrasts": {
+   "K1 (primary)": "GMR(A1, A0)",
+   "K2": "GMR(A1, A0_rtdeck)",
+   "K3": "GMR(A1, R_pop)",
+   "K4": "GMR(A2, A1)",
+   "K5": "GMR(A3, A1)"
+  },
+  "method": "paired geometric-mean ratio over devices with both values finite; percentile CI from 10,000 device-bootstrap resamples (seed 0); two-sided level 1 - 0.05/5 = 0.99 (Bonferroni over K1-K5); 95% CI and group-cluster bootstrap CI reported (TU Delft: 7 clusters)",
+  "labels": "lower (CI upper < 1), higher (CI lower > 1), inconclusive",
+  "decision_dataset": "NIST DEV. TU Delft DEV is a replication: same contrasts, device and cluster CIs; it does not change any label; tud_direction_agrees reports whether the TU Delft point GMR lies on the same side of 1 as NIST."
+ },
+ "validity": {
+  "V1": ">= 90% of DEV devices with finite C0_RT and C4 records and >= 2 included 4 K curves",
+  "V2": "arms A0, A0_rtdeck, A1, A2, A3, R_pop: <= 10% failed devices; every K contrast >= 80% of the DEV devices paired",
+  "V3": "start, lodo and decide ran with this file tracked, unmodified, committed in an ancestor of HEAD and not DRAFT (guard stored in each output)",
+  "V4": "simulator timeouts reported per job",
+  "invalid": "if V1 or V2 fails on NIST: outcome 'invalid', action 'stop: validity check failed; fix and re-register'"
+ },
+ "criterion": {
+  "supported": "K1, K2 and K3 lower -> continue: run the TEST protocol in December with confirmatory contrasts K1, K2, K3",
+  "partly supported": "K1 lower and K2 or K3 not lower -> continue, reduced: TEST confirmatory contrasts = K1 and those of K2, K3 labelled lower; the others reported only",
+  "not supported": "K1 not lower -> stop: no I10-1 TEST run; the TEST devices stay locked",
+  "TEST primary arm": "A1, unless K4 or K5 is labelled lower: then the arm (A2 or A3) with the lower K GMR among those labelled lower; the TEST confirmatory set then also contains that arm vs A1",
+  "TEST configuration": "variant selection on NIST: the variant V in {V_ind, V_mean, V_sub7, V_deck} with the lowest GMR(V, A1) among those whose 95% device-bootstrap CI upper bound < 1 replaces the primary configuration in TEST (at most one); none: primary configuration"
+ },
+ "secondary_reported_not_deciding": [
+  "per family (nMOS / pMOS) K1-K5",
+  "GMR(A1_L, A1)",
+  "GMR(A0, R_stock4k), GMR(A0_rtdeck, R_stock_rtdeck)",
+  "GMR(A1, R_oracle) and the gap fraction ln GMR(arm, A0) / ln GMR(R_oracle, A0) for A1, A2, A3",
+  "GMR(R_pop, A0), GMR(A2, A0), GMR(A3, A0), GMR(A2, R_pop), GMR(A3, R_pop)",
+  "variant GMRs (95%)",
+  "per-fold median shift and ridge lambda per parameter",
+  "TU Delft V_i6"
+ ],
+ "TEST_protocol_december": {
+  "precondition": "decision.json outcome 'supported' or 'partly supported' with the DEV decision committed",
+  "data": "25 core devices, pair_etest(types=CORE_TYPES); same checks and exclusion rules (device checks at both temperatures, >= 2 included 4 K and RT curves, finite stock card at deck 30 C); RT fit on the full RT Vb = 0 curves (0-1.8 V, the 4 K voltage range); 4 K Vb = 0 curves (nMOS 9, pMOS 11); VDD 1.8 V",
+  "configuration": "the DEV primary configuration (deck 30 C, warm start from C0_RT, median, all active parameters) or the adopted variant",
+  "folds": "leave-one-device-out within type (4 training devices per type; the 5 geometries of a type are distinct)",
+  "arms": "A0, A0_rtdeck, A1, A2 (M_bias trained on nested A1 records of the other 24 core devices; nested shift within type without the held-out device and the record's device), A3 (ridge pooled per polarity over the types with one-hot type indicators added to the DEV feature set, base = per-type median, inner leave-one-out over the pooled training devices), R_pop (median of the 4 training C4 cards of the type), R_oracle, R_stock4k",
+  "statistics": "the confirmatory contrasts from the DEV decision, Bonferroni over that set, device bootstrap over 25 devices (10,000, seed 0); 5-type cluster bootstrap and per-type GMRs reported",
+  "outcome_wording": "'confirmed' iff every confirmatory contrast is labelled lower; otherwise 'not confirmed', listing the contrasts that are not lower"
+ },
+ "decisions": [
+  {
+   "id": "D1",
+   "decision": "deck convention: C0_RT and C4 fitted at the RT deck (NIST 30 C = tnom; TU Delft 295 K stage); dz absorbs the temperature change; A0 is the only primary arm that uses a temperature model; the -269.15 C fit convention is variant V_deck",
+   "reason": "I9-1 4 K fits at 30 C reached 0.0576 mean RRMS; at -269.15 C the stock card's subthreshold current is at the gmin floor and BSIM4 needs NFACTOR about 10-25 for the measured swing (feasibility section 2); V_deck tests the other convention on DEV"
+  },
+  {
+   "id": "D2",
+   "decision": "C4 warm-started from C0_RT; independent fits as variant V_ind",
+   "reason": "warm start makes C4 - C0_RT a local difference; independent fits of 34-37 active parameters (smoke devices) can differ by compensating parameter combinations that do not transfer between devices"
+  },
+  {
+   "id": "D3",
+   "decision": "dz statistic: per-coordinate median in ParameterBox local coordinates (log coordinates for nonzero parameters, so the shift is multiplicative and comparable across bins); clipped to the box; mean as variant V_mean",
+   "reason": "robust to devices with bound hits or compensating fits; with 4 training devices per type in TEST it is the mean of the middle two"
+  },
+  {
+   "id": "D4",
+   "decision": "parameter subset: all active parameters; the 7-parameter subset as variant V_sub7",
+   "reason": "no evidence on DEV yet about which parameters carry the shift; the variant tests the canonical 7"
+  },
+  {
+   "id": "D5",
+   "decision": "leave-one-geometry-out folds; training within type (NIST) / polarity (TU Delft)",
+   "reason": "6 NIST geometries have 2 copies; geometry features of A3 would otherwise see the held-out geometry; TEST geometries are distinct within type"
+  },
+  {
+   "id": "D6",
+   "decision": "A2 g trained on nested out-of-fold A1 records, M_bias recipe unchanged, no held-out refit",
+   "reason": "g must learn the residual of a prediction, not of an in-sample fit (feasibility item 4); I9-2 found no class better than M_bias with fewer parameters; the held-out device has no 4 K data to refit"
+  },
+  {
+   "id": "D7",
+   "decision": "A3 = ridge with inner leave-one-out lambda per coordinate, median intercept, features geometry + 3 RT descriptors + RT card coordinates; A1_L secondary",
+   "reason": "n about 30 per type against about 42 features (2 geometry, 3 descriptors, about 37 non-constant card coordinates) needs regularization; the median intercept makes lambda = infinity equal A1, so A3 can only add a feature-dependent term; A1_L separates the geometry part"
+  },
+  {
+   "id": "D8",
+   "decision": "R_pop uses the median C4 coordinates (not the mean)",
+   "reason": "same statistic as A1, so K3 compares the device RT information with the population at equal robustness"
+  },
+  {
+   "id": "D9",
+   "decision": "exclude DEV devices with < 2 included 4 K curves or < 2 included RT curves inside 3.3 V (measured-only rule); none of the 77 checked devices was excluded by it",
+   "reason": "as I9-1 D12; uses measured data only"
+  },
+  {
+   "id": "D10",
+   "decision": "exclude the 10 DEV devices whose stock card (stretched nearest bin) gives non-finite currents at deck 30 C (decided after the stock scan, before any fit)",
+   "reason": "I8-1 showed that such records keep the penalty and stay non-finite after the fit; the 25 TEST devices all lie inside a bin, so the rule does not change the TEST design"
+  },
+  {
+   "id": "D11",
+   "decision": "A1 rule written in advance (evaluation.A1_rule)",
+   "reason": "I8-1 amendment A1"
+  },
+  {
+   "id": "D12",
+   "decision": "split: DEV = NIST g5v0d10v5 (67) + TU Delft I6-1 DEV (45); TEST = 25 core devices; kept as recommended by the feasibility check",
+   "reason": "TEST shares tile, measurement chain and card source with DEV NIST and all its devices lie in a bin; the core types are used by no DEV choice; g5v0d10v5 is the only ETest set with more than 5 devices per type"
+  },
+  {
+   "id": "D13",
+   "decision": "decision dataset NIST DEV; TU Delft replication only",
+   "reason": "TEST is NIST sky130; TU Delft has a different card without temperature coefficients (its A0 is a kT/q-only model) and 7 clusters"
+  },
+  {
+   "id": "D14",
+   "decision": "five contrasts K1-K5 with K1 = GMR(A1, A0) primary; Bonferroni 0.99",
+   "reason": "K1 is the coordinator's suggested primary; K2 (vs no temperature change) was added after the smoke, where A0 had RRMS about 7 against about 0.8 for A0_rtdeck on 6 NIST devices, so that the decision does not rest on a comparison with the weakest RT-card arm alone; adding K2 makes the rule stricter; K3 tests the device RT information against the population card"
+  },
+  {
+   "id": "D15",
+   "decision": "variant selection by 95% CI upper < 1 (not Bonferroni), at most one variant",
+   "reason": "the primary configuration stays unless a variant is better on DEV with a clear margin"
+  },
+  {
+   "id": "D16",
+   "decision": "smoke and TEST locked as above",
+   "reason": "pre-registration order of I8-1 / I9-1"
+  }
+ ],
+ "compute": {
+  "estimate_6_workers": {
+   "I10_1_start_nist": "268 fits (67 x C0_RT, C4, C4_ind, C4_deck), about 30-40 min",
+   "I10_1_start_tud": "45 fits, about 9 min",
+   "I10_1_lodo_nist": "about 1,000 arm and 2,100 nested simulations (under 1 min) and 61 folds x 5 M_bias seeds (about 25-35 min)",
+   "I10_1_lodo_tud": "about 7-8 min",
+   "I10_1_decide": "seconds"
+  },
+  "total": "about 75-95 min of queue time"
+ },
+ "limitations": [
+  "DEV g5v0d10v5 are thick-oxide devices with their own cards and a 3.3 V 4 K range; TEST core devices are thin-oxide at 1.8 V; DEV results transfer to TEST only through the pre-registered choices",
+  "the RT fit sees 4-5 curves inside 3.3 V and a measurement floor near 1e-9 A, so C0_RT is not constrained in deep subthreshold",
+  "die identity of the RT and 4 K measurements is not documented; die-to-die variation can enter the pair",
+  "37 of 67 NIST DEV devices use a stretched bin",
+  "A0 at -269.15 C rests on BSIM4 temperature equations outside their calibrated range; K1 may be decided by that alone, hence K2",
+  "TEST: 4 training devices per type, 2-3 distinct L"
+ ],
+ "outputs": {
+  "start": "out/research/explore/I10_1/start_{nist,tud}/summary.json, records_*.json (npz not committed)",
+  "lodo": "out/research/explore/I10_1/lodo_{nist,tud}/results.json, cards.json, corrections.json.gz",
+  "decision": "out/research/explore/I10_1/decision.json",
+  "work": "out/research/explore/I10_1/work/ (nested records, gitignored)"
+ },
+ "queue": [
+  "I10_1_start_nist",
+  "I10_1_start_tud",
+  "I10_1_lodo_nist",
+  "I10_1_lodo_tud",
+  "I10_1_decide"
+ ]
+}
