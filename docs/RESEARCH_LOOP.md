@@ -1572,3 +1572,44 @@ S_cv both select mlp16 on 87/87 folds, GMR vs C0_refit 0.797 [0.749, 0.859]; pos
 Queue (after the runner was idle; started 09:47): I10_2_inner (about 45 min), I10_2_refit_{sky130_77K, ihp_meas_300K,
 tudelft_4K, nist_4K} (about 23 / 19 / 36 / 76 min), I10_2_decide; plan 3.73 CPU-h training + 13.15 CPU-h refits, about
 3.3 h wall on 6 workers.
+
+## I10-1 pre-registration in force, code, smoke, queue (2026-10-21 10:00): 4 K I-V from room-temperature data
+
+Question: can a device's 4 K I-V be predicted without any of its 4 K data, from its room-temperature (RT) data and
+what training devices with both temperatures teach? Pre-registration `out/research/explore/I10_1/prereg.json` / `.md`
+in force from 17c96a1 (committed alone, before any full-setting fit on the I10-1 DEV data); code, manifest and smoke
+eeaed11; feasibility a108203 (`docs/research/i10_1_feasibility_2026-10-21.md`).
+Code: `src/cryoml/explore/i10_1_rt4k.py` (open_pdks tt card handling for any sky130 FET type, generalized from I9-1;
+DEV-type ETest discovery that parses only DEV-type file names; RT restriction to |V| <= 3.3 V; RT descriptors; shift in
+ParameterBox local coordinates; ridge shift with inner leave-one-out lambda; GMR with a CI level),
+`scripts/research/explore/i10_1_rt4k.py` (modes data, smoke, start, lodo, decide; start, lodo and decide refuse outside
+--smoke unless prereg.json is tracked, unmodified, in an ancestor of HEAD and not DRAFT), `tests/test_i10_1_rt4k.py`
+(15 cases; 21 with the I10-1 pairing and I9-1 card tests).
+DEV: NIST ETest nfet_g5v0d10v5 36 / pfet_g5v0d10v5 31 devices (61 geometry groups, 37 bin-stretched), 4 K paired with
+the google sky130 raw-data RT files, RT fit on |V| <= 3.3 V; 14 of 81 excluded (4 device checks; 10 with L 0.30-0.40 um
+whose stretched-bin stock card fails BSIM4 parameter checks at 30 C: Lpeb < -Leff, Pclm <= 0, Drout < 0). TU Delft I6-1
+DEV 45 devices with the stored 295 K and 4.13 K cards (reproduce their records, difference 0). TEST: 25 ETest 1.8 V core
+devices, locked; no I10-1 mode reads them (the feasibility check read them once for descriptive numbers; no fit, no
+arm scored). Card checks: single-bin card equals the full card and the open_pdks library (relative difference <=
+2.8e-18) on 2 DEV devices and on a synthetic grid for the 5 core types.
+Fits: C0_RT (RT card, deck 30 C) and C4 (4 K card at the RT deck, warm start from C0_RT); variants C4_ind (from stock),
+C4_deck (deck -269.15 C); TU Delft C4 warm start from the stored 295 K card at the 295 K stage deck.
+Arms (leave-one-geometry-out, training within type / polarity): A0 C0_RT at the 4 K deck (NIST BSIM4 temperature
+equations at -269.15 C; TU Delft kT/q only); A0_rtdeck C0_RT at the RT deck; A1 C0_RT + median shift of (C4 - C0_RT)
+in local coordinates; A2 A1 x exp(g), M_bias trained on nested out-of-fold A1 records, no held-out refit; A3 A1 + ridge
+term on geometry, 3 RT descriptors and the RT card coordinates; A1_L (geometry-only ridge); references R_pop (median
+training C4 on the device's bin), R_oracle (own C4), stock card at both decks; variants V_ind, V_mean, V_sub7, V_deck
+(TU Delft V_i6). Score: strict paper RRMS on the held-out 4 K Vb = 0 curves, measured-only inclusion; A1 rule in
+advance.
+Decision (NIST DEV; TU Delft replication only): K1 GMR(A1, A0) primary, K2 GMR(A1, A0_rtdeck), K3 GMR(A1, R_pop), K4
+GMR(A2, A1), K5 GMR(A3, A1); device bootstrap, Bonferroni level 0.99. Supported (K1-K3 lower): continue to the
+December TEST protocol with K1-K3; partly supported (K1 lower only with some of K2, K3): continue, reduced; not
+supported (K1 not lower): stop, TEST stays locked; invalid (V1 or V2 fails): stop. TEST primary arm A1 unless K4 / K5
+is lower; one variant is adopted for TEST if its 95% CI vs A1 lies below 1. K2 was added after the smoke (A0 RRMS about
+7 vs A0_rtdeck about 0.8 on 6 NIST devices) so that the decision does not rest on K1 alone (D14).
+Smoke (`smoke_runs.json`; 6 NIST and 7 TU Delft DEV devices, start nfev 100, M_bias 1 seed 200 steps, 2 workers; not
+used for any decision except D14): every mode runs end to end, 0 non-finite start records, 0 simulator timeouts;
+start 21 s (NIST) / 15 s (TU Delft), lodo 5 s / 11 s.
+Queue (inserted ahead of the I10-2 refit jobs, after the running I10_2_inner): I10_1_start_nist (268 fits, about 30-40
+min), I10_1_start_tud (45 fits, about 9 min), I10_1_lodo_nist (61 folds x 5 M_bias seeds, about 25-35 min),
+I10_1_lodo_tud (about 7-8 min), I10_1_decide; total about 75-95 min.
