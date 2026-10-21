@@ -1,0 +1,167 @@
+{
+ "iteration": "I11-2",
+ "title": "Shared bias-only correction with a temperature input, held-out temperature",
+ "status": "IN FORCE",
+ "date": "2026-10-21",
+ "code_commit": "02df93c",
+ "question": "Does a shared bias-only correction g(is_pmos, |Vgs|/VDD, |Vds|/VDD, T), trained on starting-card records of other devices at other temperatures, lower the held-out RRMS of a device at a temperature that is absent from training, compared with the refit card without g (C0_refit), and compared with the same correction without the temperature input?",
+ "known_before_this_file": [
+  "I5-1 (IHP, same-temperature LODO): GMR(M_bias, C0_refit) 1.106 / 1.214 / 1.181 / 1.272 at 233 / 300 / 343 / 398 K; X300 (300 K fold g applied at the other temperatures) 1.116 / 1.197 / 1.341 at 233 / 343 / 398 K.",
+  "I6-1 (TU Delft, same-temperature leave-one-geometry-out): GMR(M_bias, C0_refit) 0.939 at 4.13 K, 0.797 at 295.0 K.",
+  "I9-2 / I10-2: on IHP 300 K every class with more than 6 trained values is above C0_refit (mlp16 1.214, gam 1.471); lin 0.983, const 1.000.",
+  "I7-1 retrospective S1_lodo / S3 values of the stored datasets.",
+  "Smoke outputs in out/research/explore/I11_2/smoke/ (reduced settings, 2 IHP DUTs at 233 / 343 K, 2 TU Delft devices); no decision uses them."
+ ],
+ "data": {
+  "IHP": "I5-1 IHP SG13G2 measured MOSFETs, DEV split (18 DUTs: LV 10, HV 8), stored starting-card records at 233.15 / 300.15 / 343.15 / 398.15 K (out/research/explore/I5_1/start/records_{233,300,343,398}K; PSP103, 12-parameter pdk2 IHP box, polish from stock max_nfev 3000 irls 3). 11 Vb = 0 curves per DUT and temperature, pdk2 target-frozen inclusion as stored.",
+  "TU_Delft": "I6-1 TU Delft 40 nm, DEV split (45 devices in 7 geometry groups), stored starting-card records at 4.13-4.14 K and 295.0 K stage temperature (out/research/explore/I6_1/start/records_{4,295}K; BSIM4 CMOSedu card, 43-parameter set, temperature coefficients 0, one card per temperature).",
+  "TEST": "Not read. The IHP TEST DUTs (10) and the TU Delft TEST devices (24) stay unread (decision D1)."
+ },
+ "protocol": {
+  "held_out_record": "One (device, temperature) record. IHP: leave-one-DUT-out crossed with leave-one-temperature-out, training within class (LV / HV), as I5-1. TU Delft: leave-one-geometry-group-out crossed with leave-one-temperature-out, training on both polarities, as I6-1.",
+  "training_exclusion": "Every record of the held-out unit (IHP: the DUT at all temperatures; TU Delft: every device of the held-out geometry group at both temperatures) is excluded from training in every arm. Every record at the held-out temperature is excluded from training in every arm except M_bias_in. The code checks both (i11_2_temp.check_training) and raises on a violation.",
+  "held_out_card": "The device's own stored starting card at the held-out temperature, refit with g frozen in the loop: ngspice_fit.polish, max_nfev 400, irls_rounds 2, diff_step 0.01 (I3-2 / I5-1 / I6-1 settings), base box of the dataset. Score: strict paper RRMS of I_card x exp(g) on the record's included curves (e1_correction.score_device). For arms with a temperature input, g is evaluated at the record's measured temperature (bind).",
+  "C0_refit": "The stored I5-1 / I6-1 C0_refit rows (same refit without g; independent of any training set). Validity V1 reruns 6 of them.",
+  "temperature_feature": "t = ln(T / 300 K) with T the measured temperature (IHP temp_C + 273.15; TU Delft temp_stage_K), standardized with the training-point mean and standard deviation like the other inputs."
+ },
+ "arms": {
+  "M_bias_T": "4-16-16-1 tanh MLP on (is_pmos, |Vgs|/VDD, |Vds|/VDD, t), I3-2 M_bias recipe otherwise unchanged (E1 loss = mean paper per-record RRMS of I_sim x exp(g), L2 1e-4, Adam 3e-3, 2000 steps, 5 seeds 0-4, g = mean of OUT_SCALE x tanh over members); training records: other units x other temperatures. IHP only (primary). Each (record) counts once in the loss (equal weight per (device, temperature) record).",
+  "M_bias_pool": "I3-2 M_bias (3 inputs, no temperature) on the same training records as M_bias_T. IHP.",
+  "M_bias_near": "I3-2 M_bias trained on the other units at the training temperature nearest in ln T (233 -> 300, 300 -> 343, 343 -> 300, 398 -> 343). These g are the stored I5-1 fold corrections (lodo_300K for 233 / 343 K, lodo_343K for 300 / 398 K; the I5-1 fold excluded the held-out DUT and trained on its class at that temperature); no retraining. At 233 / 343 K the refit equals the stored I5-1 X300 refit (validity V2). IHP.",
+  "M_bias_X": "TU Delft: the stored I6-1 fold M_bias of the held-out group trained at the other temperature (with two temperatures M_bias_pool = M_bias_near = M_bias_X).",
+  "M_bias_in": "Reference only (oracle): M_bias_T trained on the other units at all temperatures including the held-out temperature (IHP: 4 temperatures; TU Delft: 2), evaluated at the held-out temperature.",
+  "M_bias_sameT": "Reference only: the stored I5-1 / I6-1 M_bias rows (trained on the other units at the held-out temperature only).",
+  "lin_T": "IHP secondary: g = tanh(c_p + a_p u + b_p v + d_p t) per polarity, standardized u, v, t (8 trained values), E1 loss, L2 1e-4 on non-constant coefficients, Adam 3e-3, 2000 steps (i4_1_baselines.fit_poly settings with a t term).",
+  "lin_pool": "IHP secondary: the I9-2 lin class (fit_poly degree 1, no temperature) on the M_bias_T training records."
+ },
+ "strata": {
+  "IHP_interpolation": [
+   300,
+   343
+  ],
+  "IHP_extrapolation": [
+   233,
+   398
+  ],
+  "TU_Delft": "4 K held out (trained at 295 K) and 295 K held out (trained at 4 K), reported separately; pure cross-temperature transfer (limitation L1)."
+ },
+ "statistic": {
+  "IHP": "Per DUT, the mean over the stratum's two temperatures of ln(RRMS arm / RRMS control) over finite positive pairs; GMR = exp(mean over DUTs); percentile bootstrap over DUTs (10000 resamples, numpy default_rng(0)).",
+  "TU_Delft": "Per device ln(RRMS arm / RRMS control) at the held-out temperature; GMR = exp(mean over devices); primary CI: cluster bootstrap over the 7 geometry groups (a resampled group contributes all its devices; 10000 resamples, seed 0); device bootstrap reported as secondary.",
+  "level": "Bonferroni over the 8 primary contrasts: two-sided percentile interval at 1 - 0.05/8 = 0.99375."
+ },
+ "primary_contrasts": [
+  "C1 IHP interpolation GMR(M_bias_T, C0_refit)",
+  "C2 IHP interpolation GMR(M_bias_T, M_bias_pool)",
+  "C3 IHP interpolation GMR(M_bias_T, M_bias_near)",
+  "C4 IHP extrapolation GMR(M_bias_T, C0_refit)",
+  "C5 IHP extrapolation GMR(M_bias_T, M_bias_pool)",
+  "C6 IHP extrapolation GMR(M_bias_T, M_bias_near)",
+  "C7 TU Delft 4 K held out GMR(M_bias_X, C0_refit), cluster bootstrap",
+  "C8 TU Delft 295 K held out GMR(M_bias_X, C0_refit), cluster bootstrap"
+ ],
+ "rule": {
+  "ci_label": "lower: CI upper < 1; higher: CI lower > 1; inconclusive otherwise.",
+  "IHP_stratum_label": "supported: GMR(M_bias_T, C0_refit), GMR(M_bias_T, M_bias_pool) and GMR(M_bias_T, M_bias_near) all lower; transfer without temperature input: GMR(M_bias_T, C0_refit) lower and not both of the other two lower; loss: GMR(M_bias_T, C0_refit) higher; no gain: otherwise.",
+  "TU_Delft_label": "transfer gain (lower), transfer loss (higher), inconclusive. Reported; does not enter the action (L1).",
+  "validity": "valid iff V1, V2, V3 and V5 hold (below).",
+  "decision": {
+   "invalid": "a validity condition fails -> stop: fix and re-register.",
+   "supported": "some IHP stratum label is 'supported' -> continue: pre-register the temperature-input correction on a second multi-temperature dataset.",
+   "transfer without temperature input": "no stratum 'supported' and some stratum 'transfer without temperature input' -> continue, reduced: the pooled correction without a temperature input is the cross-temperature form; no temperature-input work.",
+   "not supported": "otherwise -> stop: no cross-temperature work on the shared bias-only correction."
+  }
+ },
+ "validity": {
+  "V1": "Rerun of the stored C0_refit rows of 4 IHP records (hv_nmos_W0p3_L0p5 233 K, lv_pmos_W0p3_L10 398 K, lv_nmos_W0p15_L0p18 300 K, hv_pmos_W10_L0p35 343 K) and 2 TU Delft records (t40_nmos_W0p12_L0p04_d152 4 K, t40_pmos_W1_L1_d335 295 K): relative difference <= 1e-9 on all 6.",
+  "V2": "M_bias_near rows at 233 / 343 K equal the stored I5-1 X300 rows: max relative difference <= 1e-9 over the 36 records.",
+  "V3": "At most 2 failed (non-finite) records per primary arm per dataset (IHP 72 records: M_bias_T, M_bias_pool, M_bias_near; TU Delft 90 records: M_bias_X).",
+  "V4": "TU Delft simulator timeouts reported (no limit; a timeout that makes a record non-finite counts in V3).",
+  "V5": "Retraining the stored fold M_bias of 2 IHP folds (300 K, lv_nmos_W0p15_L0p18 and hv_pmos_W10_L0p35 held out) and 1 TU Delft fold (4 K, t40_nmos_W0p12_L0p04 held out) with the full recipe reproduces the stored corrections: max relative difference of g x I on one record <= 1e-9."
+ },
+ "secondary": [
+  "Per temperature (95%): GMR of every arm vs C0_refit; GMR(M_bias_T, M_bias_in); GMR(lin_T, lin_pool).",
+  "Per stratum (95%): M_bias_pool, M_bias_near, M_bias_in, M_bias_sameT, lin_T, lin_pool vs C0_refit; lin_T vs lin_pool; LV / HV split of GMR(M_bias_T, C0_refit).",
+  "TU Delft: device bootstrap at the primary level and at 95%; M_bias_X, M_bias_in, M_bias_sameT vs C0_refit with device and cluster bootstrap (95%).",
+  "Aggregates per temperature and arm: all-device mean, median, failed count.",
+  "Prediction scoring (below): number of correct predicted signs."
+ ],
+ "secondary_prediction": {
+  "order": "stats -> commit_prediction (prediction.json committed alone and pushed) -> lodo_ihp / lodo_tud. The lodo modes refuse unless prediction.json is tracked, unmodified and in an ancestor of HEAD.",
+  "S1_loto": "Per IHP fold, over the M_bias_pool training records: I7-1 S1 with the shared bin function (12 x 12 bins of (|Vgs|/VDD, |Vds|/VDD) per polarity, residual clip 1, M_bias loss weights) estimated without the scored record's temperature and without its DUT. Per held-out temperature: mean over the 18 folds.",
+  "S3_loto": "Per IHP fold and arm (M_bias_T, M_bias_pool): inner folds = each training temperature x 2 interleaved parts of the sorted training DUTs; g trained (1 seed, 500 steps) on the training records at the other training temperatures and the other part; value = mean ln(RRMS corrected / RRMS start) post hoc (no refit) on the scored records (M_bias_T evaluated at each scored record's temperature). Per held-out temperature: mean over folds.",
+  "predictions": "Per IHP held-out temperature (4): M_bias_T vs C0_refit gain iff S3_M_bias_T < 0; M_bias_pool vs C0_refit gain iff S3_M_bias_pool < 0; M_bias_pool vs C0_refit gain iff the frozen I7-1 rule y = 0.007619 - 0.485184 S1_loto < 0. Scored against the sign of the mean over DUTs of ln(arm / C0_refit) at that temperature; 12 predictions; reported as k of 12. No rule outcome depends on them.",
+  "TU_Delft": "No training-only cross-temperature statistic exists with one training temperature; no TU Delft prediction (L1)."
+ },
+ "decisions": [
+  {
+   "id": "D1",
+   "decision": "DEV devices only (IHP 18 DUTs, TU Delft 45 devices); TEST devices not read.",
+   "reason": "The user allowed all real devices as DEV (2026-10-21). Reading the IHP / TU Delft TEST devices would make the I8-2 TEST-sign predictions of those 6 dataset-temperatures uncheckable, and opening them cannot be undone; the DEV sets are large enough to run the rule. An all-device extension is an open question for the user, to be pre-registered separately."
+  },
+  {
+   "id": "D2",
+   "decision": "Crossed exclusion: the held-out unit at every temperature and the held-out temperature for every unit.",
+   "reason": "The question is transfer in temperature to an unseen device; keeping the held-out device at other temperatures in training would measure device-specific transfer."
+  },
+  {
+   "id": "D3",
+   "decision": "IHP unit = DUT (I5-1 LODO, training within class); TU Delft unit = geometry group (I6-1 LOGO).",
+   "reason": "Same folds as the stored runs, so C0_refit rows, M_bias_near / M_bias_X fold corrections and X300 rows are reused and checked (V1, V2, V5)."
+  },
+  {
+   "id": "D4",
+   "decision": "Temperature feature ln(T / 300 K), standardized.",
+   "reason": "Power-law temperature terms of compact models (mobility, UTE-type exponents) are linear in ln T; over 233-398 K ln T and 1/T are close to affine in each other, so the choice changes little on IHP; ln T keeps 4 K and 295 K at finite, ordered values for TU Delft M_bias_in."
+  },
+  {
+   "id": "D5",
+   "decision": "Primary function class mlp16 (M_bias recipe with a fourth input); lin_T / lin_pool secondary on IHP.",
+   "reason": "M_bias is the class of every earlier contrast; I9-2 / I10-2 show lin near C0_refit and mlp16 above it on IHP 300 K, so the linear pair is reported to separate the temperature input from the class; gam is not added (worst class on IHP 300 K, 1.471)."
+  },
+  {
+   "id": "D6",
+   "decision": "M_bias_near and TU Delft M_bias_X reuse the stored I5-1 / I6-1 fold corrections.",
+   "reason": "They are by construction the nearest-temperature corrections of the same folds; reuse saves compute and V2 / V5 check the identity."
+  },
+  {
+   "id": "D7",
+   "decision": "TU Delft has no M_bias_T arm; M_bias_X is its transfer arm and its labels do not enter the action.",
+   "reason": "With two temperatures the training set of a held-out temperature has one temperature, so a temperature input is constant in training and its value at the held-out temperature is an unconstrained extrapolation (L1)."
+  },
+  {
+   "id": "D8",
+   "decision": "Bonferroni over 8 primary contrasts, level 0.99375; TU Delft cluster bootstrap primary.",
+   "reason": "The TU Delft held-out unit is a geometry group; the cluster bootstrap matches it. With 7 groups the interval is wide (I10-2 amendment A1); the device bootstrap is reported."
+  },
+  {
+   "id": "D9",
+   "decision": "No clamp or projection of card parameters.",
+   "reason": "The I10-1 failure came from shifting cards by training-set medians, which moved effective BSIM4 values past their checks. Here no card is shifted: the held-out card is the device's own starting card, refit inside the same base box as the stored I5-1 / I6-1 refits, which had 0 failed records in every arm. V3 counts failures."
+  },
+  {
+   "id": "D10",
+   "decision": "Equal weight per (device, temperature) record in the training loss.",
+   "reason": "Unchanged E1 loss (mean per-record RRMS); every training temperature has the same records."
+  }
+ ],
+ "limitations": [
+  "L1 TU Delft has 2 temperatures: LOTO there is transfer 4 K <-> 295 K without a temperature input; it cannot test interpolation in temperature.",
+  "L2 IHP temperatures span 233-398 K (no cryogenic point); the IHP M_bias was above C0_refit at every temperature in I5-1, so a gain there needs the temperature input or the 3x larger training set to change that.",
+  "L3 18 IHP DUTs (2 classes, 10 / 8 DUTs); training sets of 21-27 records (M_bias_T) and 7-9 records (M_bias_near).",
+  "L4 The stored C0_refit and M_bias rows were seen before this file; the TU Delft M_bias_X fold corrections are stored I6-1 values, but their refits at the other temperature were never run."
+ ],
+ "compute": {
+  "smoke": "2 workers, reduced settings (1 seed, 200 steps, S3 50 steps, refit nfev 60 irls 1): validity 21.9 s, stats 3.6 s, lodo_ihp 26.7 s (4 folds x 6 arms), lodo_tud 33.6 s (2 devices x 2 temperatures x 2 arms), decide 0.1 s; total 86 s. Full-setting check: M_bias_near refits of 2 records equal the stored X300 rows (difference 0.0; smoke/v2_fullsettings_check.json).",
+  "estimate_6_workers": "validity 3-5 min (6 refits, 2 IHP + 1 TU Delft 5-seed retrainings); stats 3-5 min (864 inner trainings, 500 steps); lodo_ihp 25-40 min (954 training tasks, 432 refits); lodo_tud 15-25 min (35 training tasks on 74-86 records, 180 refits); decide < 1 min; total about 50-75 min."
+ },
+ "queue": [
+  "I11_2_validity",
+  "I11_2_stats",
+  "I11_2_commit_prediction",
+  "I11_2_lodo_ihp",
+  "I11_2_lodo_tud",
+  "I11_2_decide"
+ ],
+ "outputs": "out/research/explore/I11_2/{validity.json, prediction.json, lodo_ihp/, lodo_tud/, decision.json}"
+}
