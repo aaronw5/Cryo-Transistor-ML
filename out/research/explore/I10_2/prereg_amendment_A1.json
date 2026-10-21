@@ -1,0 +1,14 @@
+{
+ "id": "I10_2_amendment_A1",
+ "date": "2026-10-21",
+ "amends": "out/research/explore/I10_2/prereg.json (55c4cfc)",
+ "code_commit": "9cb5c9e",
+ "status": "IN FORCE (committed alone, before I10_2_decide runs and before any S_loss / S_refit outer result is computed or read)",
+ "change": "Adds a SECONDARY report of criterion C1 (every primary dataset: upper CI bound of GMR(S, C0_refit) <= 1.03) under (a) the TU Delft device bootstrap at the Bonferroni level, (b) 95% per-dataset CIs with the primary TU Delft cluster bootstrap, and (a+b) device bootstrap at 95%; for the 4 selectors and for fixed mlp16 (M_bias), and the primary C1 for fixed mlp16. decide prints the primary rule and the secondary report, each labelled; decide refuses unless this file is committed and unmodified.",
+ "unchanged": "The primary criteria C1 / C2, labels, 11 contrasts, Bonferroni level, margin 1.03, TU Delft cluster bootstrap in the primary analysis and the overall rule (overall_decision) are unchanged and remain the primary result.",
+ "reason": "TU Delft 4.13 K has 7 geometry groups; the primary per-dataset CI is a 7-cluster bootstrap at level 1 - 0.05/11, whose width (interim: S_gate 1.027 [0.911, 1.144], S_cv 0.939 [0.736, 1.164]) makes C1 fail on TU Delft for most selectors whatever their effect. Reporting C1 with the device bootstrap and at 95%, and for fixed mlp16 under the same criterion, shows the power of the criterion.",
+ "known_before_amendment": "Interim stored-row results (S_gate, S_cv; interim.json, commit b05acc4) and the S_loss selections on sky130 77 K printed in the I10_2_inner log (gam 10/12, mlp8 2/12; selections only, no outer score computed). No S_loss or S_refit outer score was computed or read.",
+ "limitation_nist_rt": "No new NIST room-temperature class runs in I10-2; the I9-1 NIST room-temperature secondary stays restricted to {none, poly3, mlp16} (no stored lin / gam / mlp8 rows).",
+ "test_planning": "DEV runs of the menu classes on the datasets I9-2 did not cover (IHP 233 / 343 / 398 K, TU Delft 295 K, NIST TEST counterparts) are left to the TEST-stage planning (December) and need their own pre-registration.",
+ "code": "scripts/research/explore/i10_2_select.py: C1_VARIANTS, amendment_c1, require_amendment; decision.json key amendment_A1_secondary_C1"
+}
