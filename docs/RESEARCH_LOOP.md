@@ -1584,7 +1584,8 @@ DEV-type ETest discovery that parses only DEV-type file names; RT restriction to
 ParameterBox local coordinates; ridge shift with inner leave-one-out lambda; GMR with a CI level),
 `scripts/research/explore/i10_1_rt4k.py` (modes data, smoke, start, lodo, decide; start, lodo and decide refuse outside
 --smoke unless prereg.json is tracked, unmodified, in an ancestor of HEAD and not DRAFT), `tests/test_i10_1_rt4k.py`
-(15 cases; 21 with the I10-1 pairing and I9-1 card tests).
+(12 cases; 15 with the I10-1 pairing test, 21 with the I9-1 card tests; the "21 unit tests" in the code commit and in
+prereg.json count all three files).
 DEV: NIST ETest nfet_g5v0d10v5 36 / pfet_g5v0d10v5 31 devices (61 geometry groups, 37 bin-stretched), 4 K paired with
 the google sky130 raw-data RT files, RT fit on |V| <= 3.3 V; 14 of 81 excluded (4 device checks; 10 with L 0.30-0.40 um
 whose stretched-bin stock card fails BSIM4 parameter checks at 30 C: Lpeb < -Leff, Pclm <= 0, Drout < 0). TU Delft I6-1
