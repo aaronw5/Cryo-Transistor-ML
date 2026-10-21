@@ -1535,3 +1535,40 @@ learning-curve class-vs-class values, the I-V figures.
 Site: new claim `i9-2` (verified; headline "Q1 class-dependent; Q2 smallest matching class mlp16_s1 (353 values); no
 class beats M_bias with fewer parameters") in the Exploration tab, status item and decision table. Site rebuilt, not
 published.
+
+## I10-2 pre-registration in force, interim stored-row selectors, queue (2026-10-21 09:50): class selection for the shared bias-only correction
+
+Question: can the class of g (menu none = C0_refit, lin, gam, mlp8, mlp16) be selected per dataset from training data
+only, so that the selected method is not worse than C0_refit on any dataset and close to the best fixed class?
+Retrospective DEV analysis on the stored I9-2 folds of sky130 77 K, NIST 4 K, TU Delft 4.13 K, IHP measured 300 K (menu,
+datasets, I9-2 rows and I8-2 S3 values seen before); prospective test at the December TEST stage (protocol in the prereg).
+Code d16c929 (`src/cryoml/explore/i10_2_select.py`, `scripts/research/explore/i10_2_select.py`, 19 unit tests, smoke 18 s
+on 2 sky130 folds, V_fold difference 0, decide path on synthetic rows only). Pre-registration
+`out/research/explore/I10_2/prereg.{json,md}` in force from 55c4cfc (committed alone).
+Decisions (reasons in the file): D1 menu M5 (0 / 6 / 66 / 565 / 1765 trained values), full 13-option menu for S_cv as a
+secondary; D2 selection per stored outer fold from that fold's training devices; D3 held-out score = stored I9-2 row of
+the selected class, no outer refit; D4 inner leave-one-group-out up to 12 groups (sky130, TU Delft, IHP), else 4 grouped
+folds (NIST); D5 inner MLP classes seed 0 only (I9-2 mlp16_s1 equivalent to mlp16); D6 S_loss = post hoc mean ln(RRMS
+corrected / RRMS start) on inner held-out starting records; D7 S_refit = inner held-out refits with g frozen (outer
+settings) vs the stored C0_refit, all inner devices except NIST (one inner fold of 4); D8 S_gate = fold-level S3_f < 0 ->
+mlp16; D9 S_cv = stored rows of the fold's training devices (not strictly nested: the fold's starting records are in the
+other folds' training sets); D10 argmin, tie 0.005 -> fewer trained values, failed inner value blocks the class; D11
+equal dataset weight, TU Delft cluster bootstrap; D12 11 contrasts at 1 - 0.05/11 (GMR vs C0_refit x 4, vs mlp16 x 4, vs
+S_gate x 3); D13 margin 1.03; D14 NIST room temperature (I9-1) secondary with menu {none, poly3, mlp16}; D15 oracle classes
+post hoc only. Rule: C1 = every dataset upper Bonferroni CI of GMR(S, C0_refit) <= 1.03; C2 = pooled upper CI of GMR(S,
+mlp16) <= 1.03; supported = C1 and C2; overall stop / continue (class selection adds to the gate if a supported
+multi-class selector has GMR(S, S_gate) upper < 1; else gate only; else multi-class selector).
+Interim (`--mode stored`, 1.4 s, `interim.json`; S_loss and S_refit pending, rule not applied):
+S_gate (selections mlp16 on sky130 12/12, NIST 53/53, TU Delft 5/7 groups; none on IHP 18/18): pooled GMR vs C0_refit
+0.893 [0.836, 0.951], vs mlp16 0.974 [0.885, 1.049]; per dataset vs C0_refit sky130 0.769 [0.623, 0.942], NIST 0.806 [0.740,
+0.896], TU Delft 1.027 [0.911, 1.144], IHP 1.000 [1.000, 1.000]; C1 fails on TU Delft, C2 fails; label not supported.
+S_cv (gam on sky130 12/12 and NIST 53/53; TU Delft gam 6/7, lin 1/7; IHP lin 10/18, none 8/18): pooled vs C0_refit 0.814
+[0.742, 0.888], vs mlp16 0.888 [0.797, 0.964] (beats mlp16), vs S_gate 0.912 [0.865, 0.948]; per dataset vs C0_refit
+sky130 0.727 [0.580, 0.911], NIST 0.670 [0.590, 0.767], TU Delft 0.939 [0.736, 1.164], IHP 0.962 [0.891, 1.009]; C1 fails on
+TU Delft only (7-group cluster bootstrap at the Bonferroni level; device bootstrap 95% 0.939 [0.825, 1.050]); label partly
+supported. Secondary: S_cv full menu 0.822 vs C0_refit; I8-2 dataset-level gate 0.873; NIST room temperature S_gate and
+S_cv both select mlp16 on 87/87 folds, GMR vs C0_refit 0.797 [0.749, 0.859]; post hoc S_cv vs per-dataset oracle 1.013
+[0.984, 1.052].
+Queue (after the runner was idle; started 09:47): I10_2_inner (about 45 min), I10_2_refit_{sky130_77K, ihp_meas_300K,
+tudelft_4K, nist_4K} (about 23 / 19 / 36 / 76 min), I10_2_decide; plan 3.73 CPU-h training + 13.15 CPU-h refits, about
+3.3 h wall on 6 workers.
