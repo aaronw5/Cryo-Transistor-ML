@@ -1,0 +1,4099 @@
+{
+ "prereg": "out/research/explore/I9_2/prereg.json",
+ "primary_datasets": [
+  "sky130_77K",
+  "nist_4K",
+  "tudelft_4K",
+  "ihp_meas_300K"
+ ],
+ "alpha_adjusted": 0.004545454545454546,
+ "margin": 1.03,
+ "replicate_vs_mlp16": {
+  "bonferroni": {
+   "ratio": 0.996718613901196,
+   "ci_low": 0.9818991452686443,
+   "ci_high": 1.0132555607493272,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 7,
+     "ratio": 1.0096669277811343,
+     "ci_low": 0.9709774165377113,
+     "ci_high": 1.0624072111292353
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 35,
+     "ratio": 0.9822312430267606,
+     "ci_low": 0.9585602379058081,
+     "ci_high": 1.0056962324390417
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.0033386129767208,
+     "ci_low": 0.9828612055625195,
+     "ci_high": 1.0278509388104933
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 21,
+     "ratio": 0.9918611372246409,
+     "ci_low": 0.9637605445387657,
+     "ci_high": 1.016713388256903
+    }
+   }
+  },
+  "ci95": {
+   "ratio": 0.996718613901196,
+   "ci_low": 0.9863866049835703,
+   "ci_high": 1.0080146378436685,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 7,
+     "ratio": 1.0096669277811343,
+     "ci_low": 0.9813108002023705,
+     "ci_high": 1.0445289576666603
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 35,
+     "ratio": 0.9822312430267606,
+     "ci_low": 0.9656960409209034,
+     "ci_high": 0.9983582635000127
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.0033386129767208,
+     "ci_low": 0.9885128858049127,
+     "ci_high": 1.0200815758149517
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 21,
+     "ratio": 0.9918611372246409,
+     "ci_low": 0.9729905169019963,
+     "ci_high": 1.009196494415916
+    }
+   }
+  }
+ },
+ "primary_vs_mlp16": {
+  "const": {
+   "ratio": 1.0950127828340235,
+   "ci_low": 0.9808030098554483,
+   "ci_high": 1.1982376084318669,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 9,
+     "ratio": 0.8237365509969162,
+     "ci_low": 0.5758638628699942,
+     "ci_high": 1.041297076258315
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 5,
+     "ratio": 1.2415188352808277,
+     "ci_low": 1.1181783147875903,
+     "ci_high": 1.35198967692599
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 1,
+     "ratio": 1.300595114314814,
+     "ci_low": 1.0615865635569834,
+     "ci_high": 1.6051844668292905
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 16,
+     "ratio": 1.0809185952089233,
+     "ci_low": 0.982358047026487,
+     "ci_high": 1.1913446151993763
+    }
+   }
+  },
+  "lin": {
+   "ratio": 1.0645292303823848,
+   "ci_low": 0.948238645509302,
+   "ci_high": 1.1689949239141282,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 0.8093750250393862,
+     "ci_low": 0.5398503295790618,
+     "ci_high": 1.0296205334870414
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 5,
+     "ratio": 1.237897138693482,
+     "ci_low": 1.1118828090958792,
+     "ci_high": 1.3510885024023611
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 1,
+     "ratio": 1.3041670390361713,
+     "ci_low": 1.0663665083359282,
+     "ci_high": 1.612115420964991
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 21,
+     "ratio": 0.9827946551318366,
+     "ci_low": 0.8875888176008149,
+     "ci_high": 1.0815661368675322
+    }
+   }
+  },
+  "poly2": {
+   "ratio": 1.1026661702993459,
+   "ci_low": 1.0409101558578215,
+   "ci_high": 1.1689059380279472,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 8,
+     "ratio": 0.9891702543961027,
+     "ci_low": 0.9167136721864152,
+     "ci_high": 1.057417048782466
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 4,
+     "ratio": 1.1653689777188438,
+     "ci_low": 1.1150209176901755,
+     "ci_high": 1.2146198557646235
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 1,
+     "ratio": 1.2680859598167071,
+     "ci_low": 1.0383352318229253,
+     "ci_high": 1.5709154781115517
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 19,
+     "ratio": 1.0113302729856393,
+     "ci_low": 0.9500121463787109,
+     "ci_high": 1.0776234285667834
+    }
+   }
+  },
+  "poly3": {
+   "ratio": 1.0862111016250529,
+   "ci_low": 1.0294441893317934,
+   "ci_high": 1.1497643941075948,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.1325891436583329,
+     "ci_low": 1.009959490756646,
+     "ci_high": 1.301234474001167
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 26,
+     "ratio": 1.0194505054568903,
+     "ci_low": 0.9917199909011343,
+     "ci_high": 1.0503984596746625
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 1,
+     "ratio": 1.1847920878030882,
+     "ci_low": 1.000296813609237,
+     "ci_high": 1.4152486043667079
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 16,
+     "ratio": 1.0175980440883132,
+     "ci_low": 0.9683790914802545,
+     "ci_high": 1.057784154279961
+    }
+   }
+  },
+  "poly4": {
+   "ratio": 1.060133116939049,
+   "ci_low": 1.0012222643173638,
+   "ci_high": 1.1311866908972852,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 7,
+     "ratio": 1.2466439767774053,
+     "ci_low": 1.0264898823103692,
+     "ci_high": 1.5896238978848323
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 40,
+     "ratio": 0.910813944215304,
+     "ci_low": 0.8630431586169999,
+     "ci_high": 0.9575569671111325
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 2,
+     "ratio": 1.1008360632003296,
+     "ci_low": 1.021295245114705,
+     "ci_high": 1.2273448639354463
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 18,
+     "ratio": 1.0105244902837573,
+     "ci_low": 0.9754417704463189,
+     "ci_high": 1.0455614890833975
+    }
+   }
+  },
+  "poly5": {
+   "ratio": 1.061534961722977,
+   "ci_low": 0.9781044203113849,
+   "ci_high": 1.154364209325593,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.4956510844393345,
+     "ci_low": 1.1108354072982114,
+     "ci_high": 2.0565058488396706
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 46,
+     "ratio": 0.8570592209047139,
+     "ci_low": 0.8087816079781847,
+     "ci_high": 0.9052489426996233
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 5,
+     "ratio": 1.0241682029781125,
+     "ci_low": 0.9371631123469947,
+     "ci_high": 1.1239087068052838
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 30,
+     "ratio": 0.9672189544848434,
+     "ci_low": 0.9067102872537411,
+     "ci_high": 1.0331974319553223
+    }
+   }
+  },
+  "gam": {
+   "ratio": 0.9702413760816286,
+   "ci_low": 0.9215142739737205,
+   "ci_high": 1.0304902724358296,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 5,
+     "ratio": 1.2109284351534793,
+     "ci_low": 1.0203275222809942,
+     "ci_high": 1.5094088358728597
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 48,
+     "ratio": 0.8311828500248675,
+     "ci_low": 0.7857714931255857,
+     "ci_high": 0.8775394234062818
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 9,
+     "ratio": 0.9455922141506017,
+     "ci_low": 0.8949705510818442,
+     "ci_high": 0.9991896375781104
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 37,
+     "ratio": 0.9311083601778342,
+     "ci_low": 0.8710685400026786,
+     "ci_high": 0.9821415464509266
+    }
+   }
+  },
+  "mlp8": {
+   "ratio": 0.9864036290880991,
+   "ci_low": 0.9660303620096139,
+   "ci_high": 1.005899858931505,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 8,
+     "ratio": 0.989464300759816,
+     "ci_low": 0.9320004470907007,
+     "ci_high": 1.0334036925012884
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 24,
+     "ratio": 0.9888310659897318,
+     "ci_low": 0.9633030997340476,
+     "ci_high": 1.012562090495941
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 0.9879581476459637,
+     "ci_low": 0.940740789609755,
+     "ci_high": 1.0434109803407416
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 30,
+     "ratio": 0.9793949639595441,
+     "ci_low": 0.9574387669707292,
+     "ci_high": 0.9990452418070332
+    }
+   }
+  },
+  "mlp16_s1": {
+   "ratio": 0.998746033936946,
+   "ci_low": 0.981626880194852,
+   "ci_high": 1.0152105702591308,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 11,
+     "ratio": 0.986563202844723,
+     "ci_low": 0.9395654365955773,
+     "ci_high": 1.0262338075435726
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 25,
+     "ratio": 1.0037116670110207,
+     "ci_low": 0.9734280923908302,
+     "ci_high": 1.0350906790600225
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 3,
+     "ratio": 1.012450730323099,
+     "ci_low": 0.9889112996557062,
+     "ci_high": 1.0415904154417044
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 22,
+     "ratio": 0.992458801495266,
+     "ci_low": 0.9566445700609865,
+     "ci_high": 1.0238284861219893
+    }
+   }
+  },
+  "mlp32": {
+   "ratio": 1.0027702586882465,
+   "ci_low": 0.9872378077556433,
+   "ci_high": 1.0192587975690852,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 8,
+     "ratio": 1.0005305345271371,
+     "ci_low": 0.9646848794591033,
+     "ci_high": 1.036252830707629
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 22,
+     "ratio": 1.001333747629894,
+     "ci_low": 0.9916252265825495,
+     "ci_high": 1.0107997918966698
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 4,
+     "ratio": 1.0110421819591062,
+     "ci_low": 0.9711513089006327,
+     "ci_high": 1.0623375852087853
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 17,
+     "ratio": 0.9982223812174507,
+     "ci_low": 0.9703714883998017,
+     "ci_high": 1.0165892343948322
+    }
+   }
+  },
+  "gp": {
+   "ratio": 1.4834278677740775,
+   "ci_low": 1.3186330203611891,
+   "ci_high": 1.6840379520649476,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.1662659877275914,
+     "ci_low": 0.9245344091639098,
+     "ci_high": 1.5932186017227514
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 29,
+     "ratio": 1.0473661682241349,
+     "ci_low": 0.9049850829124344,
+     "ci_high": 1.2393144785132453
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 0,
+     "ratio": 1.519741031659461,
+     "ci_low": 1.2557896589298143,
+     "ci_high": 1.8067559102727082
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 43,
+     "n_method_failed": 2,
+     "n_control_failed": 0,
+     "wins": 4,
+     "ratio": 2.608554969418829,
+     "ci_low": 1.9029405468744023,
+     "ci_high": 3.684596472544236
+    }
+   }
+  }
+ },
+ "rule": {
+  "labels": {
+   "const": "inconclusive",
+   "lin": "inconclusive",
+   "poly2": "worse",
+   "poly3": "worse",
+   "poly4": "worse",
+   "poly5": "inconclusive",
+   "gam": "inconclusive",
+   "mlp8": "non-inferior",
+   "mlp16_s1": "equivalent",
+   "mlp32": "equivalent",
+   "gp": "worse"
+  },
+  "notes": {},
+  "Q1": "class-dependent",
+  "Q2_smallest_matching_class": "mlp16_s1",
+  "Q2_candidates": [
+   "mlp16_s1",
+   "mlp8"
+  ],
+  "Q2_beats_with_fewer_parameters": false,
+  "margin": 1.03,
+  "per_dataset_max": 1.05,
+  "n_params": {
+   "const": 2,
+   "lin": 6,
+   "poly2": 12,
+   "poly3": 20,
+   "poly4": 30,
+   "poly5": 42,
+   "gam": 66,
+   "mlp8": 565,
+   "mlp16_s1": 353,
+   "mlp32": 6085,
+   "gp": 2006
+  },
+  "n_params_per_member": {
+   "const": 2,
+   "lin": 6,
+   "poly2": 12,
+   "poly3": 20,
+   "poly4": 30,
+   "poly5": 42,
+   "gam": 66,
+   "mlp8": 113,
+   "mlp16_s1": 353,
+   "mlp32": 1217,
+   "gp": 2006
+  },
+  "replicate": {
+   "ratio": 0.996718613901196,
+   "ci_low": 0.9818991452686443,
+   "ci_high": 1.0132555607493272,
+   "alpha": 0.004545454545454546,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 7,
+     "ratio": 1.0096669277811343,
+     "ci_low": 0.9709774165377113,
+     "ci_high": 1.0624072111292353
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 35,
+     "ratio": 0.9822312430267606,
+     "ci_low": 0.9585602379058081,
+     "ci_high": 1.0056962324390417
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.0033386129767208,
+     "ci_low": 0.9828612055625195,
+     "ci_high": 1.0278509388104933
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 21,
+     "ratio": 0.9918611372246409,
+     "ci_low": 0.9637605445387657,
+     "ci_high": 1.016713388256903
+    }
+   }
+  }
+ },
+ "primary_vs_C0_refit": {
+  "const": {
+   "ratio": 1.0037926269080983,
+   "ci_low": 1.0003910406194996,
+   "ci_high": 1.007585246825582,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 7,
+     "ratio": 1.0003633611974538,
+     "ci_low": 0.9997472176474272,
+     "ci_high": 1.0012983671538067
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 24,
+     "ratio": 1.0006785802946259,
+     "ci_low": 0.9958171457222103,
+     "ci_high": 1.0051963091951561
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 7,
+     "ratio": 0.999690384389126,
+     "ci_low": 0.9990855756823201,
+     "ci_high": 1.0000728319530605
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 14,
+     "ratio": 1.0145141524072756,
+     "ci_low": 1.0017495340543026,
+     "ci_high": 1.0291428298479084
+    }
+   }
+  },
+  "lin": {
+   "ratio": 0.9758485100241593,
+   "ci_low": 0.9580588976879889,
+   "ci_high": 0.9951445973441867,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 0.9829224155924395,
+     "ci_low": 0.9165968726628918,
+     "ci_high": 1.057920014447497
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 29,
+     "ratio": 0.9977594508410134,
+     "ci_low": 0.9927039044534196,
+     "ci_high": 1.0028684057691306
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 5,
+     "ratio": 1.0024359112317236,
+     "ci_low": 0.9982260297430745,
+     "ci_high": 1.0073298508428543
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 39,
+     "ratio": 0.922418293996285,
+     "ci_low": 0.9003969982970379,
+     "ci_high": 0.9446387613481994
+    }
+   }
+  },
+  "poly2": {
+   "ratio": 1.0108084481194988,
+   "ci_low": 0.9671741217494606,
+   "ci_high": 1.066047328830849,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 8,
+     "ratio": 1.2012696040823496,
+     "ci_low": 1.019417218131568,
+     "ci_high": 1.469951481541815
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 43,
+     "ratio": 0.9393009119183523,
+     "ci_low": 0.8999668694843236,
+     "ci_high": 0.9864202216779993
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 8,
+     "ratio": 0.9747025239868522,
+     "ci_low": 0.947692876908205,
+     "ci_high": 0.995477737364392
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 30,
+     "ratio": 0.9492008734510986,
+     "ci_low": 0.9141919617415131,
+     "ci_high": 0.9845176528418207
+    }
+   }
+  },
+  "poly3": {
+   "ratio": 0.9957241706850632,
+   "ci_low": 0.937690863458237,
+   "ci_high": 1.07238203628518,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.375440583806311,
+     "ci_low": 1.1079429324824814,
+     "ci_high": 1.817176546403763
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 47,
+     "ratio": 0.8216889309218467,
+     "ci_low": 0.7690834147565375,
+     "ci_high": 0.8861251611514886
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 11,
+     "ratio": 0.9106794609950916,
+     "ci_low": 0.8740475506651084,
+     "ci_high": 0.9486925232232166
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 28,
+     "ratio": 0.9550835944218512,
+     "ci_low": 0.9000531814184443,
+     "ci_high": 1.0142099593958895
+    }
+   }
+  },
+  "poly4": {
+   "ratio": 0.9718186152771308,
+   "ci_low": 0.9022363052514888,
+   "ci_high": 1.0574059608681157,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 5,
+     "ratio": 1.5139512230170231,
+     "ci_low": 1.177282918384728,
+     "ci_high": 2.0384198482073876
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 49,
+     "ratio": 0.7341266026010438,
+     "ci_low": 0.6746347422611016,
+     "ci_high": 0.8020548683275301
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 0.8461474405506422,
+     "ci_low": 0.7626165564212465,
+     "ci_high": 0.9474743606036465
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 28,
+     "ratio": 0.9484445926743152,
+     "ci_low": 0.8826976223614617,
+     "ci_high": 1.0196611808796914
+    }
+   }
+  },
+  "poly5": {
+   "ratio": 0.973103679232763,
+   "ci_low": 0.8829775561440004,
+   "ci_high": 1.079753006126508,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 7,
+     "ratio": 1.8163508031756026,
+     "ci_low": 1.3083517573636223,
+     "ci_high": 2.5943337520740752
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 49,
+     "ratio": 0.6907996721687686,
+     "ci_low": 0.6331556455457888,
+     "ci_high": 0.7587188458307765
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 0.7872174001312469,
+     "ci_low": 0.6748411618231765,
+     "ci_high": 0.9396870923507702
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 27,
+     "ratio": 0.9077994607094179,
+     "ci_low": 0.8271534085074336,
+     "ci_high": 0.994005013842464
+    }
+   }
+  },
+  "gam": {
+   "ratio": 0.8894153154187683,
+   "ci_low": 0.8191395979146404,
+   "ci_high": 0.9726251700920195,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.4705775021075183,
+     "ci_low": 1.141473335277081,
+     "ci_high": 1.986675944915782
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 50,
+     "ratio": 0.6699430171270714,
+     "ci_low": 0.6135992485837263,
+     "ci_high": 0.733787371418259
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 11,
+     "ratio": 0.7268206943385198,
+     "ci_low": 0.6219387019578907,
+     "ci_high": 0.8497998615840168
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 30,
+     "ratio": 0.8739072609279741,
+     "ci_low": 0.7944550195308744,
+     "ci_high": 0.9559827871852202
+    }
+   }
+  },
+  "mlp8": {
+   "ratio": 0.9042311702256225,
+   "ci_low": 0.8504932532768449,
+   "ci_high": 0.9663814344717262,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 1.2016267003024894,
+     "ci_low": 1.0049721343707374,
+     "ci_high": 1.4913338244031238
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 49,
+     "ratio": 0.7970093075889614,
+     "ci_low": 0.7462824461541705,
+     "ci_high": 0.8577552586467466
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 11,
+     "ratio": 0.7593848765923453,
+     "ci_low": 0.6635757149478035,
+     "ci_high": 0.8664683777808653
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 30,
+     "ratio": 0.9192274572178334,
+     "ci_low": 0.8628448426726719,
+     "ci_high": 0.9783943298133612
+    }
+   }
+  },
+  "mlp16": {
+   "ratio": 0.9166948940177333,
+   "ci_low": 0.8593410176929093,
+   "ci_high": 0.9855429480431424,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 9,
+     "ratio": 1.2144214797641033,
+     "ci_low": 1.0079523286327552,
+     "ci_high": 1.5388691936037615
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 48,
+     "ratio": 0.8060115979378399,
+     "ci_low": 0.7576303891635354,
+     "ci_high": 0.8654117385815455
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 11,
+     "ratio": 0.7686407348345207,
+     "ci_low": 0.6628731730995048,
+     "ci_high": 0.886805865699133
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 27,
+     "ratio": 0.9385666570119345,
+     "ci_low": 0.8767840328667809,
+     "ci_high": 1.0033472862022164
+    }
+   }
+  },
+  "mlp16_s1": {
+   "ratio": 0.9155453897304602,
+   "ci_low": 0.8569419640505683,
+   "ci_high": 0.9866335351145081,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 8,
+     "ratio": 1.1981035446795016,
+     "ci_low": 0.9986611193134459,
+     "ci_high": 1.5273581000612093
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 47,
+     "ratio": 0.8090032445964058,
+     "ci_low": 0.7539328035333441,
+     "ci_high": 0.8728778816894726
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 0.778210873339294,
+     "ci_low": 0.6651955296009083,
+     "ci_high": 0.9107766919445255
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 29,
+     "ratio": 0.9314887395414829,
+     "ci_low": 0.8732769383261626,
+     "ci_high": 0.99317486801785
+    }
+   }
+  },
+  "mlp32": {
+   "ratio": 0.919234376012357,
+   "ci_low": 0.8636393122637861,
+   "ci_high": 0.9863454742271399,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 8,
+     "ratio": 1.215065772289615,
+     "ci_low": 1.0150765504072767,
+     "ci_high": 1.529030979839058
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 49,
+     "ratio": 0.8070866139962566,
+     "ci_low": 0.7579019518849169,
+     "ci_high": 0.8668799131897978
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 0.7771282056897446,
+     "ci_low": 0.6778077683460001,
+     "ci_high": 0.8954813405566592
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 29,
+     "ratio": 0.9368982432937556,
+     "ci_low": 0.8747529279875277,
+     "ci_high": 1.001964921145521
+    }
+   }
+  },
+  "gp": {
+   "ratio": 1.3667974267074987,
+   "ci_low": 1.244830520901495,
+   "ci_high": 1.5046718143261864,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 6,
+     "ratio": 1.416338466614685,
+     "ci_low": 1.105551378789695,
+     "ci_high": 1.842796976548212
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 37,
+     "ratio": 0.8441892788763674,
+     "ci_low": 0.7316498384256606,
+     "ci_high": 0.9827015039965478
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 5,
+     "ratio": 1.1681348633329007,
+     "ci_low": 1.004467110859859,
+     "ci_high": 1.370406086623308
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 43,
+     "n_method_failed": 2,
+     "n_control_failed": 0,
+     "wins": 0,
+     "ratio": 2.498715100390384,
+     "ci_low": 2.0833308413222045,
+     "ci_high": 3.008952389503508
+    }
+   }
+  },
+  "mlp16_rep": {
+   "ratio": 0.9136868641356588,
+   "ci_low": 0.855489272143513,
+   "ci_high": 0.9837530154277487,
+   "alpha": 0.05,
+   "n_boot": 20000,
+   "n_datasets": 4,
+   "per_dataset": {
+    "ihp_meas_300K": {
+     "n": 18,
+     "n_used": 18,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 1.2261612045048411,
+     "ci_low": 1.0119901525536545,
+     "ci_high": 1.5547170314139238
+    },
+    "nist_4K": {
+     "n": 57,
+     "n_used": 53,
+     "n_method_failed": 4,
+     "n_control_failed": 4,
+     "wins": 49,
+     "ratio": 0.7916897737364701,
+     "ci_low": 0.7402960687496596,
+     "ci_high": 0.8526147514177688
+    },
+    "sky130_77K": {
+     "n": 12,
+     "n_used": 12,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 10,
+     "ratio": 0.7712069287662754,
+     "ci_low": 0.6662515377150956,
+     "ci_high": 0.8928283550684284
+    },
+    "tudelft_4K": {
+     "n": 45,
+     "n_used": 45,
+     "n_method_failed": 0,
+     "n_control_failed": 0,
+     "wins": 28,
+     "ratio": 0.9309277917849867,
+     "ci_low": 0.8687488960312586,
+     "ci_high": 0.9952311674750436
+    }
+   }
+  }
+ },
+ "learning_curve_classes": [
+  "mlp16",
+  "gam",
+  "mlp8"
+ ],
+ "secondary": {
+  "per_dataset_vs_mlp16_with_replicate": {
+   "sky130_77K": {
+    "const": {
+     "ratio": 1.300595114314814,
+     "ci_low": 1.1261263276584268,
+     "ci_high": 1.502890928284836,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 1,
+       "ratio": 1.300595114314814,
+       "ci_low": 1.1261263276584268,
+       "ci_high": 1.502890928284836
+      }
+     }
+    },
+    "lin": {
+     "ratio": 1.3041670390361713,
+     "ci_low": 1.129738926493903,
+     "ci_high": 1.5088954005153394,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 1,
+       "ratio": 1.3041670390361713,
+       "ci_low": 1.129738926493903,
+       "ci_high": 1.5088954005153394
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 1.2680859598167071,
+     "ci_low": 1.1013824126717888,
+     "ci_high": 1.4657532603409469,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 1,
+       "ratio": 1.2680859598167071,
+       "ci_low": 1.1013824126717888,
+       "ci_high": 1.4657532603409469
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 1.1847920878030882,
+     "ci_low": 1.0541742892966928,
+     "ci_high": 1.33556443579737,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 1,
+       "ratio": 1.1847920878030882,
+       "ci_low": 1.0541742892966928,
+       "ci_high": 1.33556443579737
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 1.1008360632003296,
+     "ci_low": 1.0398208153758624,
+     "ci_high": 1.1805741283250726,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 2,
+       "ratio": 1.1008360632003296,
+       "ci_low": 1.0398208153758624,
+       "ci_high": 1.1805741283250726
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 1.0241682029781125,
+     "ci_low": 0.9621233917493843,
+     "ci_high": 1.0921043720679764,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 5,
+       "ratio": 1.0241682029781125,
+       "ci_low": 0.9621233917493843,
+       "ci_high": 1.0921043720679764
+      }
+     }
+    },
+    "gam": {
+     "ratio": 0.9455922141506017,
+     "ci_low": 0.9094993071101048,
+     "ci_high": 0.9836234710084046,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 9,
+       "ratio": 0.9455922141506017,
+       "ci_low": 0.9094993071101048,
+       "ci_high": 0.9836234710084046
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 0.9879581476459637,
+     "ci_low": 0.954655261668657,
+     "ci_high": 1.0249839034814356,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 0.9879581476459637,
+       "ci_low": 0.954655261668657,
+       "ci_high": 1.0249839034814356
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 1.012450730323099,
+     "ci_low": 0.9953895426840398,
+     "ci_high": 1.031704488239038,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 3,
+       "ratio": 1.012450730323099,
+       "ci_low": 0.9953895426840398,
+       "ci_high": 1.031704488239038
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 1.0110421819591062,
+     "ci_low": 0.9820621331777567,
+     "ci_high": 1.044563076378591,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 4,
+       "ratio": 1.0110421819591062,
+       "ci_low": 0.9820621331777567,
+       "ci_high": 1.044563076378591
+      }
+     }
+    },
+    "gp": {
+     "ratio": 1.519741031659461,
+     "ci_low": 1.3289835875362865,
+     "ci_high": 1.7241348736146984,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 0,
+       "ratio": 1.519741031659461,
+       "ci_low": 1.3289835875362865,
+       "ci_high": 1.7241348736146984
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 1.0033386129767208,
+     "ci_low": 0.9882089935793827,
+     "ci_high": 1.0204418561953386,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 1.0033386129767208,
+       "ci_low": 0.9882089935793827,
+       "ci_high": 1.0204418561953386
+      }
+     }
+    }
+   },
+   "nist_4K": {
+    "const": {
+     "ratio": 1.2415188352808277,
+     "ci_low": 1.1565812216457012,
+     "ci_high": 1.3196417629369923,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 5,
+       "ratio": 1.2415188352808277,
+       "ci_low": 1.1565812216457012,
+       "ci_high": 1.3196417629369923
+      }
+     }
+    },
+    "lin": {
+     "ratio": 1.237897138693482,
+     "ci_low": 1.1516116259280678,
+     "ci_high": 1.3169420123299365,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 5,
+       "ratio": 1.237897138693482,
+       "ci_low": 1.1516116259280678,
+       "ci_high": 1.3169420123299365
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 1.1653689777188438,
+     "ci_low": 1.1311437199171426,
+     "ci_high": 1.1985074774814506,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 4,
+       "ratio": 1.1653689777188438,
+       "ci_low": 1.1311437199171426,
+       "ci_high": 1.1985074774814506
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 1.0194505054568903,
+     "ci_low": 0.9998013056997855,
+     "ci_high": 1.0404810827095603,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 26,
+       "ratio": 1.0194505054568903,
+       "ci_low": 0.9998013056997855,
+       "ci_high": 1.0404810827095603
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 0.910813944215304,
+     "ci_low": 0.8785347974834582,
+     "ci_high": 0.9430436585222823,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 40,
+       "ratio": 0.910813944215304,
+       "ci_low": 0.8785347974834582,
+       "ci_high": 0.9430436585222823
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 0.8570592209047139,
+     "ci_low": 0.823860286637652,
+     "ci_high": 0.8905679171773329,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 46,
+       "ratio": 0.8570592209047139,
+       "ci_low": 0.823860286637652,
+       "ci_high": 0.8905679171773329
+      }
+     }
+    },
+    "gam": {
+     "ratio": 0.8311828500248675,
+     "ci_low": 0.8003558220484962,
+     "ci_high": 0.8628318264557634,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 48,
+       "ratio": 0.8311828500248675,
+       "ci_low": 0.8003558220484962,
+       "ci_high": 0.8628318264557634
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 0.9888310659897318,
+     "ci_low": 0.9714024037457634,
+     "ci_high": 1.0058889649830274,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 24,
+       "ratio": 0.9888310659897318,
+       "ci_low": 0.9714024037457634,
+       "ci_high": 1.0058889649830274
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 1.0037116670110207,
+     "ci_low": 0.9826232265276483,
+     "ci_high": 1.0249104768483657,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 25,
+       "ratio": 1.0037116670110207,
+       "ci_low": 0.9826232265276483,
+       "ci_high": 1.0249104768483657
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 1.001333747629894,
+     "ci_low": 0.994861773286651,
+     "ci_high": 1.0078934658055225,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 22,
+       "ratio": 1.001333747629894,
+       "ci_low": 0.994861773286651,
+       "ci_high": 1.0078934658055225
+      }
+     }
+    },
+    "gp": {
+     "ratio": 1.0473661682241349,
+     "ci_low": 0.9425994475015883,
+     "ci_high": 1.1711400698371552,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 29,
+       "ratio": 1.0473661682241349,
+       "ci_low": 0.9425994475015883,
+       "ci_high": 1.1711400698371552
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 0.9822312430267606,
+     "ci_low": 0.9658034647620171,
+     "ci_high": 0.9986754092821477,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 35,
+       "ratio": 0.9822312430267606,
+       "ci_low": 0.9658034647620171,
+       "ci_high": 0.9986754092821477
+      }
+     }
+    }
+   },
+   "tudelft_4K": {
+    "const": {
+     "ratio": 1.0809185952089233,
+     "ci_low": 1.0100153466324138,
+     "ci_high": 1.1567678644282129,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 16,
+       "ratio": 1.0809185952089233,
+       "ci_low": 1.0100153466324138,
+       "ci_high": 1.1567678644282129
+      }
+     }
+    },
+    "lin": {
+     "ratio": 0.9827946551318366,
+     "ci_low": 0.9168909241455154,
+     "ci_high": 1.051765519582808,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 21,
+       "ratio": 0.9827946551318366,
+       "ci_low": 0.9168909241455154,
+       "ci_high": 1.051765519582808
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 1.0113302729856393,
+     "ci_low": 0.9676857919197531,
+     "ci_high": 1.0577797919568546,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 19,
+       "ratio": 1.0113302729856393,
+       "ci_low": 0.9676857919197531,
+       "ci_high": 1.0577797919568546
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 1.0175980440883132,
+     "ci_low": 0.9850092253621333,
+     "ci_high": 1.04667890131366,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 16,
+       "ratio": 1.0175980440883132,
+       "ci_low": 0.9850092253621333,
+       "ci_high": 1.04667890131366
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 1.0105244902837573,
+     "ci_low": 0.9858889503855787,
+     "ci_high": 1.0353932176169547,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 18,
+       "ratio": 1.0105244902837573,
+       "ci_low": 0.9858889503855787,
+       "ci_high": 1.0353932176169547
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 0.9672189544848434,
+     "ci_low": 0.9247294523518215,
+     "ci_high": 1.013139667330547,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 30,
+       "ratio": 0.9672189544848434,
+       "ci_low": 0.9247294523518215,
+       "ci_high": 1.013139667330547
+      }
+     }
+    },
+    "gam": {
+     "ratio": 0.9311083601778342,
+     "ci_low": 0.8903290274232384,
+     "ci_high": 0.9680339628318385,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 37,
+       "ratio": 0.9311083601778342,
+       "ci_low": 0.8903290274232384,
+       "ci_high": 0.9680339628318385
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 0.9793949639595441,
+     "ci_low": 0.964566886099361,
+     "ci_high": 0.993383446597839,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 30,
+       "ratio": 0.9793949639595441,
+       "ci_low": 0.964566886099361,
+       "ci_high": 0.993383446597839
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 0.992458801495266,
+     "ci_low": 0.9684941075119748,
+     "ci_high": 1.0155808842574152,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 22,
+       "ratio": 0.992458801495266,
+       "ci_low": 0.9684941075119748,
+       "ci_high": 1.0155808842574152
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 0.9982223812174507,
+     "ci_low": 0.9804314036472183,
+     "ci_high": 1.0121031283455864,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 17,
+       "ratio": 0.9982223812174507,
+       "ci_low": 0.9804314036472183,
+       "ci_high": 1.0121031283455864
+      }
+     }
+    },
+    "gp": {
+     "ratio": 2.608554969418829,
+     "ci_low": 2.0843720870506433,
+     "ci_high": 3.3153385683043286,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 43,
+       "n_method_failed": 2,
+       "n_control_failed": 0,
+       "wins": 4,
+       "ratio": 2.608554969418829,
+       "ci_low": 2.0843720870506433,
+       "ci_high": 3.3153385683043286
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 0.9918611372246409,
+     "ci_low": 0.9726560789383013,
+     "ci_high": 1.0093803477721868,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 21,
+       "ratio": 0.9918611372246409,
+       "ci_low": 0.9726560789383013,
+       "ci_high": 1.0093803477721868
+      }
+     }
+    }
+   },
+   "ihp_meas_300K": {
+    "const": {
+     "ratio": 0.8237365509969162,
+     "ci_low": 0.6502046102947453,
+     "ci_high": 0.9924383614043011,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 9,
+       "ratio": 0.8237365509969162,
+       "ci_low": 0.6502046102947453,
+       "ci_high": 0.9924383614043011
+      }
+     }
+    },
+    "lin": {
+     "ratio": 0.8093750250393862,
+     "ci_low": 0.6220692362473755,
+     "ci_high": 0.9824863775010769,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 0.8093750250393862,
+       "ci_low": 0.6220692362473755,
+       "ci_high": 0.9824863775010769
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 0.9891702543961027,
+     "ci_low": 0.940099131901452,
+     "ci_high": 1.036418961250595,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 8,
+       "ratio": 0.9891702543961027,
+       "ci_low": 0.940099131901452,
+       "ci_high": 1.036418961250595
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 1.1325891436583329,
+     "ci_low": 1.0417338439854043,
+     "ci_high": 1.243791417592117,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 1.1325891436583329,
+       "ci_low": 1.0417338439854043,
+       "ci_high": 1.243791417592117
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 1.2466439767774053,
+     "ci_low": 1.0769114910954916,
+     "ci_high": 1.4728981094885432,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 7,
+       "ratio": 1.2466439767774053,
+       "ci_low": 1.0769114910954916,
+       "ci_high": 1.4728981094885432
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 1.4956510844393345,
+     "ci_low": 1.2082224548484801,
+     "ci_high": 1.8660909113940096,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 1.4956510844393345,
+       "ci_low": 1.2082224548484801,
+       "ci_high": 1.8660909113940096
+      }
+     }
+    },
+    "gam": {
+     "ratio": 1.2109284351534793,
+     "ci_low": 1.0645134966449723,
+     "ci_high": 1.4042866109301073,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 5,
+       "ratio": 1.2109284351534793,
+       "ci_low": 1.0645134966449723,
+       "ci_high": 1.4042866109301073
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 0.989464300759816,
+     "ci_low": 0.9507720431385092,
+     "ci_high": 1.0219285060512064,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 8,
+       "ratio": 0.989464300759816,
+       "ci_low": 0.9507720431385092,
+       "ci_high": 1.0219285060512064
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 0.986563202844723,
+     "ci_low": 0.9556486137125216,
+     "ci_high": 1.015061583240588,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 11,
+       "ratio": 0.986563202844723,
+       "ci_low": 0.9556486137125216,
+       "ci_high": 1.015061583240588
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 1.0005305345271371,
+     "ci_low": 0.9765481892487345,
+     "ci_high": 1.025185325292891,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 8,
+       "ratio": 1.0005305345271371,
+       "ci_low": 0.9765481892487345,
+       "ci_high": 1.025185325292891
+      }
+     }
+    },
+    "gp": {
+     "ratio": 1.1662659877275914,
+     "ci_low": 0.9813097009377638,
+     "ci_high": 1.4328490097964617,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 1.1662659877275914,
+       "ci_low": 0.9813097009377638,
+       "ci_high": 1.4328490097964617
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 1.0096669277811343,
+     "ci_low": 0.9813108002023705,
+     "ci_high": 1.0445289576666603,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 7,
+       "ratio": 1.0096669277811343,
+       "ci_low": 0.9813108002023705,
+       "ci_high": 1.0445289576666603
+      }
+     }
+    }
+   }
+  },
+  "per_dataset_vs_C0_refit": {
+   "sky130_77K": {
+    "const": {
+     "ratio": 0.999690384389126,
+     "ci_low": 0.9990859034332973,
+     "ci_high": 1.000072768756629,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 7,
+       "ratio": 0.999690384389126,
+       "ci_low": 0.9990859034332973,
+       "ci_high": 1.000072768756629
+      }
+     }
+    },
+    "lin": {
+     "ratio": 1.0024359112317236,
+     "ci_low": 0.9982120218884539,
+     "ci_high": 1.0074925191886066,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 5,
+       "ratio": 1.0024359112317236,
+       "ci_low": 0.9982120218884539,
+       "ci_high": 1.0074925191886066
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 0.9747025239868522,
+     "ci_low": 0.948176555031268,
+     "ci_high": 0.9952200063769603,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 8,
+       "ratio": 0.9747025239868522,
+       "ci_low": 0.948176555031268,
+       "ci_high": 0.9952200063769603
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 0.9106794609950916,
+     "ci_low": 0.873834223859824,
+     "ci_high": 0.9483447995889822,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 11,
+       "ratio": 0.9106794609950916,
+       "ci_low": 0.873834223859824,
+       "ci_high": 0.9483447995889822
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 0.8461474405506422,
+     "ci_low": 0.762475868288664,
+     "ci_high": 0.9469529963568075,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 0.8461474405506422,
+       "ci_low": 0.762475868288664,
+       "ci_high": 0.9469529963568075
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 0.7872174001312469,
+     "ci_low": 0.6743280606787295,
+     "ci_high": 0.9358354901163285,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 0.7872174001312469,
+       "ci_low": 0.6743280606787295,
+       "ci_high": 0.9358354901163285
+      }
+     }
+    },
+    "gam": {
+     "ratio": 0.7268206943385198,
+     "ci_low": 0.6234597644903354,
+     "ci_high": 0.8496584783238513,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 11,
+       "ratio": 0.7268206943385198,
+       "ci_low": 0.6234597644903354,
+       "ci_high": 0.8496584783238513
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 0.7593848765923453,
+     "ci_low": 0.6648612972476725,
+     "ci_high": 0.8668427756020081,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 11,
+       "ratio": 0.7593848765923453,
+       "ci_low": 0.6648612972476725,
+       "ci_high": 0.8668427756020081
+      }
+     }
+    },
+    "mlp16": {
+     "ratio": 0.7686407348345207,
+     "ci_low": 0.6653257508593435,
+     "ci_high": 0.8874840617330361,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 11,
+       "ratio": 0.7686407348345207,
+       "ci_low": 0.6653257508593435,
+       "ci_high": 0.8874840617330361
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 0.778210873339294,
+     "ci_low": 0.6676634307963057,
+     "ci_high": 0.9117582759603062,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 0.778210873339294,
+       "ci_low": 0.6676634307963057,
+       "ci_high": 0.9117582759603062
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 0.7771282056897446,
+     "ci_low": 0.6786035096452199,
+     "ci_high": 0.8945927898288606,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 0.7771282056897446,
+       "ci_low": 0.6786035096452199,
+       "ci_high": 0.8945927898288606
+      }
+     }
+    },
+    "gp": {
+     "ratio": 1.1681348633329007,
+     "ci_low": 1.005029488891009,
+     "ci_high": 1.368849908901715,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 5,
+       "ratio": 1.1681348633329007,
+       "ci_low": 1.005029488891009,
+       "ci_high": 1.368849908901715
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 0.7712069287662754,
+     "ci_low": 0.667291161556112,
+     "ci_high": 0.8940951122771161,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "sky130_77K": {
+       "n": 12,
+       "n_used": 12,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 0.7712069287662754,
+       "ci_low": 0.667291161556112,
+       "ci_high": 0.8940951122771161
+      }
+     }
+    }
+   },
+   "nist_4K": {
+    "const": {
+     "ratio": 1.0006785802946259,
+     "ci_low": 0.9958902466450266,
+     "ci_high": 1.0051513287863432,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 24,
+       "ratio": 1.0006785802946259,
+       "ci_low": 0.9958902466450266,
+       "ci_high": 1.0051513287863432
+      }
+     }
+    },
+    "lin": {
+     "ratio": 0.9977594508410134,
+     "ci_low": 0.9927824632020656,
+     "ci_high": 1.0028931684192706,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 29,
+       "ratio": 0.9977594508410134,
+       "ci_low": 0.9927824632020656,
+       "ci_high": 1.0028931684192706
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 0.9393009119183523,
+     "ci_low": 0.9006089855411644,
+     "ci_high": 0.9870323135072958,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 43,
+       "ratio": 0.9393009119183523,
+       "ci_low": 0.9006089855411644,
+       "ci_high": 0.9870323135072958
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 0.8216889309218467,
+     "ci_low": 0.7690058413143791,
+     "ci_high": 0.886519018458097,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 47,
+       "ratio": 0.8216889309218467,
+       "ci_low": 0.7690058413143791,
+       "ci_high": 0.886519018458097
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 0.7341266026010438,
+     "ci_low": 0.6748333231509125,
+     "ci_high": 0.8034058282685786,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 49,
+       "ratio": 0.7341266026010438,
+       "ci_low": 0.6748333231509125,
+       "ci_high": 0.8034058282685786
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 0.6907996721687686,
+     "ci_low": 0.6335390665121444,
+     "ci_high": 0.7594173831906946,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 49,
+       "ratio": 0.6907996721687686,
+       "ci_low": 0.6335390665121444,
+       "ci_high": 0.7594173831906946
+      }
+     }
+    },
+    "gam": {
+     "ratio": 0.6699430171270714,
+     "ci_low": 0.6142766758556717,
+     "ci_high": 0.7344130128995942,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 50,
+       "ratio": 0.6699430171270714,
+       "ci_low": 0.6142766758556717,
+       "ci_high": 0.7344130128995942
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 0.7970093075889614,
+     "ci_low": 0.7463312467072986,
+     "ci_high": 0.8581138408565415,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 49,
+       "ratio": 0.7970093075889614,
+       "ci_low": 0.7463312467072986,
+       "ci_high": 0.8581138408565415
+      }
+     }
+    },
+    "mlp16": {
+     "ratio": 0.8060115979378399,
+     "ci_low": 0.7581744884561236,
+     "ci_high": 0.8652694221651873,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 48,
+       "ratio": 0.8060115979378399,
+       "ci_low": 0.7581744884561236,
+       "ci_high": 0.8652694221651873
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 0.8090032445964058,
+     "ci_low": 0.754569653784325,
+     "ci_high": 0.873377251622014,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 47,
+       "ratio": 0.8090032445964058,
+       "ci_low": 0.754569653784325,
+       "ci_high": 0.873377251622014
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 0.8070866139962566,
+     "ci_low": 0.7582286025448753,
+     "ci_high": 0.8666519658593296,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 49,
+       "ratio": 0.8070866139962566,
+       "ci_low": 0.7582286025448753,
+       "ci_high": 0.8666519658593296
+      }
+     }
+    },
+    "gp": {
+     "ratio": 0.8441892788763674,
+     "ci_low": 0.7312920755153524,
+     "ci_high": 0.9775412179186638,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 37,
+       "ratio": 0.8441892788763674,
+       "ci_low": 0.7312920755153524,
+       "ci_high": 0.9775412179186638
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 0.7916897737364701,
+     "ci_low": 0.74049294367177,
+     "ci_high": 0.8528915282237619,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "nist_4K": {
+       "n": 57,
+       "n_used": 53,
+       "n_method_failed": 4,
+       "n_control_failed": 4,
+       "wins": 49,
+       "ratio": 0.7916897737364701,
+       "ci_low": 0.74049294367177,
+       "ci_high": 0.8528915282237619
+      }
+     }
+    }
+   },
+   "tudelft_4K": {
+    "const": {
+     "ratio": 1.0145141524072756,
+     "ci_low": 1.00183878841803,
+     "ci_high": 1.029125317044648,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 14,
+       "ratio": 1.0145141524072756,
+       "ci_low": 1.00183878841803,
+       "ci_high": 1.029125317044648
+      }
+     }
+    },
+    "lin": {
+     "ratio": 0.922418293996285,
+     "ci_low": 0.9006365692381462,
+     "ci_high": 0.9443512729377254,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 39,
+       "ratio": 0.922418293996285,
+       "ci_low": 0.9006365692381462,
+       "ci_high": 0.9443512729377254
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 0.9492008734510986,
+     "ci_low": 0.9145498893993115,
+     "ci_high": 0.9844956252188212,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 30,
+       "ratio": 0.9492008734510986,
+       "ci_low": 0.9145498893993115,
+       "ci_high": 0.9844956252188212
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 0.9550835944218512,
+     "ci_low": 0.9011962570695667,
+     "ci_high": 1.0138778016185737,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 28,
+       "ratio": 0.9550835944218512,
+       "ci_low": 0.9011962570695667,
+       "ci_high": 1.0138778016185737
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 0.9484445926743152,
+     "ci_low": 0.8844378313771345,
+     "ci_high": 1.020699934506709,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 28,
+       "ratio": 0.9484445926743152,
+       "ci_low": 0.8844378313771345,
+       "ci_high": 1.020699934506709
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 0.9077994607094179,
+     "ci_low": 0.8274457141574114,
+     "ci_high": 0.9952494528490419,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 27,
+       "ratio": 0.9077994607094179,
+       "ci_low": 0.8274457141574114,
+       "ci_high": 0.9952494528490419
+      }
+     }
+    },
+    "gam": {
+     "ratio": 0.8739072609279741,
+     "ci_low": 0.7953942777753896,
+     "ci_high": 0.9585360249138597,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 30,
+       "ratio": 0.8739072609279741,
+       "ci_low": 0.7953942777753896,
+       "ci_high": 0.9585360249138597
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 0.9192274572178334,
+     "ci_low": 0.8636254033051141,
+     "ci_high": 0.9788093795074578,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 30,
+       "ratio": 0.9192274572178334,
+       "ci_low": 0.8636254033051141,
+       "ci_high": 0.9788093795074578
+      }
+     }
+    },
+    "mlp16": {
+     "ratio": 0.9385666570119345,
+     "ci_low": 0.8770836832934826,
+     "ci_high": 1.0042553538403436,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 27,
+       "ratio": 0.9385666570119345,
+       "ci_low": 0.8770836832934826,
+       "ci_high": 1.0042553538403436
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 0.9314887395414829,
+     "ci_low": 0.8751204073540035,
+     "ci_high": 0.9946905672505492,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 29,
+       "ratio": 0.9314887395414829,
+       "ci_low": 0.8751204073540035,
+       "ci_high": 0.9946905672505492
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 0.9368982432937556,
+     "ci_low": 0.8761785865171927,
+     "ci_high": 1.0037396566381847,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 29,
+       "ratio": 0.9368982432937556,
+       "ci_low": 0.8761785865171927,
+       "ci_high": 1.0037396566381847
+      }
+     }
+    },
+    "gp": {
+     "ratio": 2.498715100390384,
+     "ci_low": 2.08139642456848,
+     "ci_high": 3.0341644458583557,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 43,
+       "n_method_failed": 2,
+       "n_control_failed": 0,
+       "wins": 0,
+       "ratio": 2.498715100390384,
+       "ci_low": 2.08139642456848,
+       "ci_high": 3.0341644458583557
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 0.9309277917849867,
+     "ci_low": 0.8705932945584586,
+     "ci_high": 0.9961932722760578,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "tudelft_4K": {
+       "n": 45,
+       "n_used": 45,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 28,
+       "ratio": 0.9309277917849867,
+       "ci_low": 0.8705932945584586,
+       "ci_high": 0.9961932722760578
+      }
+     }
+    }
+   },
+   "ihp_meas_300K": {
+    "const": {
+     "ratio": 1.0003633611974538,
+     "ci_low": 0.9997472176474272,
+     "ci_high": 1.0012983671538067,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 7,
+       "ratio": 1.0003633611974538,
+       "ci_low": 0.9997472176474272,
+       "ci_high": 1.0012983671538067
+      }
+     }
+    },
+    "lin": {
+     "ratio": 0.9829224155924395,
+     "ci_low": 0.9165968726628918,
+     "ci_high": 1.057920014447497,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 0.9829224155924395,
+       "ci_low": 0.9165968726628918,
+       "ci_high": 1.057920014447497
+      }
+     }
+    },
+    "poly2": {
+     "ratio": 1.2012696040823496,
+     "ci_low": 1.019417218131568,
+     "ci_high": 1.469951481541815,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 8,
+       "ratio": 1.2012696040823496,
+       "ci_low": 1.019417218131568,
+       "ci_high": 1.469951481541815
+      }
+     }
+    },
+    "poly3": {
+     "ratio": 1.375440583806311,
+     "ci_low": 1.1079429324824814,
+     "ci_high": 1.817176546403763,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 1.375440583806311,
+       "ci_low": 1.1079429324824814,
+       "ci_high": 1.817176546403763
+      }
+     }
+    },
+    "poly4": {
+     "ratio": 1.5139512230170231,
+     "ci_low": 1.177282918384728,
+     "ci_high": 2.0384198482073876,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 5,
+       "ratio": 1.5139512230170231,
+       "ci_low": 1.177282918384728,
+       "ci_high": 2.0384198482073876
+      }
+     }
+    },
+    "poly5": {
+     "ratio": 1.8163508031756026,
+     "ci_low": 1.3083517573636223,
+     "ci_high": 2.5943337520740752,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 7,
+       "ratio": 1.8163508031756026,
+       "ci_low": 1.3083517573636223,
+       "ci_high": 2.5943337520740752
+      }
+     }
+    },
+    "gam": {
+     "ratio": 1.4705775021075183,
+     "ci_low": 1.141473335277081,
+     "ci_high": 1.986675944915782,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 1.4705775021075183,
+       "ci_low": 1.141473335277081,
+       "ci_high": 1.986675944915782
+      }
+     }
+    },
+    "mlp8": {
+     "ratio": 1.2016267003024894,
+     "ci_low": 1.0049721343707374,
+     "ci_high": 1.4913338244031238,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 1.2016267003024894,
+       "ci_low": 1.0049721343707374,
+       "ci_high": 1.4913338244031238
+      }
+     }
+    },
+    "mlp16": {
+     "ratio": 1.2144214797641033,
+     "ci_low": 1.0079523286327552,
+     "ci_high": 1.5388691936037615,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 9,
+       "ratio": 1.2144214797641033,
+       "ci_low": 1.0079523286327552,
+       "ci_high": 1.5388691936037615
+      }
+     }
+    },
+    "mlp16_s1": {
+     "ratio": 1.1981035446795016,
+     "ci_low": 0.9986611193134459,
+     "ci_high": 1.5273581000612093,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 8,
+       "ratio": 1.1981035446795016,
+       "ci_low": 0.9986611193134459,
+       "ci_high": 1.5273581000612093
+      }
+     }
+    },
+    "mlp32": {
+     "ratio": 1.215065772289615,
+     "ci_low": 1.0150765504072767,
+     "ci_high": 1.529030979839058,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 8,
+       "ratio": 1.215065772289615,
+       "ci_low": 1.0150765504072767,
+       "ci_high": 1.529030979839058
+      }
+     }
+    },
+    "gp": {
+     "ratio": 1.416338466614685,
+     "ci_low": 1.105551378789695,
+     "ci_high": 1.842796976548212,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 6,
+       "ratio": 1.416338466614685,
+       "ci_low": 1.105551378789695,
+       "ci_high": 1.842796976548212
+      }
+     }
+    },
+    "mlp16_rep": {
+     "ratio": 1.2261612045048411,
+     "ci_low": 1.0119901525536545,
+     "ci_high": 1.5547170314139238,
+     "alpha": 0.05,
+     "n_boot": 20000,
+     "n_datasets": 1,
+     "per_dataset": {
+      "ihp_meas_300K": {
+       "n": 18,
+       "n_used": 18,
+       "n_method_failed": 0,
+       "n_control_failed": 0,
+       "wins": 10,
+       "ratio": 1.2261612045048411,
+       "ci_low": 1.0119901525536545,
+       "ci_high": 1.5547170314139238
+      }
+     }
+    }
+   }
+  },
+  "primary_cluster_bootstrap": {
+   "const": {
+    "ratio": 1.0950127828340235,
+    "ci_low": 0.9779581253107854,
+    "ci_high": 1.217768059394072,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.8237365509969162,
+      "ci_low": 0.5758638628699942,
+      "ci_high": 1.041297076258315
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 5,
+      "ratio": 1.2415188352808277,
+      "ci_low": 1.1181783147875903,
+      "ci_high": 1.35198967692599
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 1,
+      "ratio": 1.300595114314814,
+      "ci_low": 1.0615865635569834,
+      "ci_high": 1.6051844668292905
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 16,
+      "ratio": 1.0809185952089233,
+      "ci_low": 0.8889963892176171,
+      "ci_high": 1.333454973011927
+     }
+    }
+   },
+   "lin": {
+    "ratio": 1.0645292303823848,
+    "ci_low": 0.9408801298137205,
+    "ci_high": 1.1874631115507603,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 10,
+      "ratio": 0.8093750250393862,
+      "ci_low": 0.5398503295790618,
+      "ci_high": 1.0296205334870414
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 5,
+      "ratio": 1.237897138693482,
+      "ci_low": 1.1118828090958792,
+      "ci_high": 1.3510885024023611
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 1,
+      "ratio": 1.3041670390361713,
+      "ci_low": 1.0663665083359282,
+      "ci_high": 1.612115420964991
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 21,
+      "ratio": 0.9827946551318366,
+      "ci_low": 0.785701347682615,
+      "ci_high": 1.2108388186084682
+     }
+    }
+   },
+   "poly2": {
+    "ratio": 1.1026661702993459,
+    "ci_low": 1.0333974275906737,
+    "ci_high": 1.1784798959561054,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.9891702543961027,
+      "ci_low": 0.9167136721864152,
+      "ci_high": 1.057417048782466
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 4,
+      "ratio": 1.1653689777188438,
+      "ci_low": 1.1150209176901755,
+      "ci_high": 1.2146198557646235
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 1,
+      "ratio": 1.2680859598167071,
+      "ci_low": 1.0383352318229253,
+      "ci_high": 1.5709154781115517
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 19,
+      "ratio": 1.0113302729856393,
+      "ci_low": 0.8832203005654645,
+      "ci_high": 1.158943248994033
+     }
+    }
+   },
+   "poly3": {
+    "ratio": 1.0862111016250529,
+    "ci_low": 1.0292374121998051,
+    "ci_high": 1.1502212016149238,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.1325891436583329,
+      "ci_low": 1.009959490756646,
+      "ci_high": 1.301234474001167
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 26,
+      "ratio": 1.0194505054568903,
+      "ci_low": 0.9917199909011343,
+      "ci_high": 1.0503984596746625
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 1,
+      "ratio": 1.1847920878030882,
+      "ci_low": 1.000296813609237,
+      "ci_high": 1.4152486043667079
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 16,
+      "ratio": 1.0175980440883132,
+      "ci_low": 0.9765010015982242,
+      "ci_high": 1.0603120284783207
+     }
+    }
+   },
+   "poly4": {
+    "ratio": 1.060133116939049,
+    "ci_low": 0.9996414545355187,
+    "ci_high": 1.133667490342454,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 7,
+      "ratio": 1.2466439767774053,
+      "ci_low": 1.0264898823103692,
+      "ci_high": 1.5896238978848323
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 40,
+      "ratio": 0.910813944215304,
+      "ci_low": 0.8630431586169999,
+      "ci_high": 0.9575569671111325
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 2,
+      "ratio": 1.1008360632003296,
+      "ci_low": 1.021295245114705,
+      "ci_high": 1.2273448639354463
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 18,
+      "ratio": 1.0105244902837573,
+      "ci_low": 0.9599023575886853,
+      "ci_high": 1.076584071388896
+     }
+    }
+   },
+   "poly5": {
+    "ratio": 1.061534961722977,
+    "ci_low": 0.9683130804406065,
+    "ci_high": 1.166107300042463,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.4956510844393345,
+      "ci_low": 1.1108354072982114,
+      "ci_high": 2.0565058488396706
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 46,
+      "ratio": 0.8570592209047139,
+      "ci_low": 0.8087816079781847,
+      "ci_high": 0.9052489426996233
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 1.0241682029781125,
+      "ci_low": 0.9371631123469947,
+      "ci_high": 1.1239087068052838
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 30,
+      "ratio": 0.9672189544848434,
+      "ci_low": 0.834119097482902,
+      "ci_high": 1.1050622804347159
+     }
+    }
+   },
+   "gam": {
+    "ratio": 0.9702413760816286,
+    "ci_low": 0.9198255034715298,
+    "ci_high": 1.033227652536269,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 5,
+      "ratio": 1.2109284351534793,
+      "ci_low": 1.0203275222809942,
+      "ci_high": 1.5094088358728597
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 48,
+      "ratio": 0.8311828500248675,
+      "ci_low": 0.7857714931255857,
+      "ci_high": 0.8775394234062818
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 9,
+      "ratio": 0.9455922141506017,
+      "ci_low": 0.8949705510818442,
+      "ci_high": 0.9991896375781104
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 37,
+      "ratio": 0.9311083601778342,
+      "ci_low": 0.8603208123755454,
+      "ci_high": 1.0236454554452121
+     }
+    }
+   },
+   "mlp8": {
+    "ratio": 0.9864036290880991,
+    "ci_low": 0.9654272402989605,
+    "ci_high": 1.0070006338373654,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 0.989464300759816,
+      "ci_low": 0.9320004470907007,
+      "ci_high": 1.0334036925012884
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 24,
+      "ratio": 0.9888310659897318,
+      "ci_low": 0.9633030997340476,
+      "ci_high": 1.012562090495941
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 0.9879581476459637,
+      "ci_low": 0.940740789609755,
+      "ci_high": 1.0434109803407416
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 30,
+      "ratio": 0.9793949639595441,
+      "ci_low": 0.9497291001629538,
+      "ci_high": 1.0059351652558801
+     }
+    }
+   },
+   "mlp16_s1": {
+    "ratio": 0.998746033936946,
+    "ci_low": 0.9808331309551478,
+    "ci_high": 1.0149233513275966,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 11,
+      "ratio": 0.986563202844723,
+      "ci_low": 0.9395654365955773,
+      "ci_high": 1.0262338075435726
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 25,
+      "ratio": 1.0037116670110207,
+      "ci_low": 0.9734280923908302,
+      "ci_high": 1.0350906790600225
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 3,
+      "ratio": 1.012450730323099,
+      "ci_low": 0.9889112996557062,
+      "ci_high": 1.0415904154417044
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 22,
+      "ratio": 0.992458801495266,
+      "ci_low": 0.9555361973818265,
+      "ci_high": 1.0199433272456462
+     }
+    }
+   },
+   "mlp32": {
+    "ratio": 1.0027702586882465,
+    "ci_low": 0.9878291471423851,
+    "ci_high": 1.019053326090247,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 8,
+      "ratio": 1.0005305345271371,
+      "ci_low": 0.9646848794591033,
+      "ci_high": 1.036252830707629
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 22,
+      "ratio": 1.001333747629894,
+      "ci_low": 0.9916252265825495,
+      "ci_high": 1.0107997918966698
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 4,
+      "ratio": 1.0110421819591062,
+      "ci_low": 0.9711513089006327,
+      "ci_high": 1.0623375852087853
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 17,
+      "ratio": 0.9982223812174507,
+      "ci_low": 0.9792321829842667,
+      "ci_high": 1.010104293141336
+     }
+    }
+   },
+   "gp": {
+    "ratio": 1.4834278677740775,
+    "ci_low": 1.2366695627168884,
+    "ci_high": 1.821438026456704,
+    "alpha": 0.004545454545454546,
+    "n_boot": 20000,
+    "n_datasets": 4,
+    "per_dataset": {
+     "ihp_meas_300K": {
+      "n": 18,
+      "n_used": 18,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 6,
+      "ratio": 1.1662659877275914,
+      "ci_low": 0.9245344091639098,
+      "ci_high": 1.5932186017227514
+     },
+     "nist_4K": {
+      "n": 57,
+      "n_used": 53,
+      "n_method_failed": 4,
+      "n_control_failed": 4,
+      "wins": 29,
+      "ratio": 1.0473661682241349,
+      "ci_low": 0.9049850829124344,
+      "ci_high": 1.2393144785132453
+     },
+     "sky130_77K": {
+      "n": 12,
+      "n_used": 12,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 0,
+      "ratio": 1.519741031659461,
+      "ci_low": 1.2557896589298143,
+      "ci_high": 1.8067559102727082
+     },
+     "tudelft_4K": {
+      "n": 45,
+      "n_used": 43,
+      "n_method_failed": 2,
+      "n_control_failed": 0,
+      "wins": 4,
+      "ratio": 2.608554969418829,
+      "ci_low": 1.38856661477099,
+      "ci_high": 5.369419291954254
+     }
+    }
+   }
+  },
+  "margin_sensitivity": {
+   "1.02": {
+    "const": "inconclusive",
+    "lin": "inconclusive",
+    "poly2": "worse",
+    "poly3": "worse",
+    "poly4": "worse",
+    "poly5": "inconclusive",
+    "gam": "inconclusive",
+    "mlp8": "non-inferior",
+    "mlp16_s1": "equivalent",
+    "mlp32": "equivalent",
+    "gp": "worse"
+   },
+   "1.05": {
+    "const": "inconclusive",
+    "lin": "inconclusive",
+    "poly2": "worse",
+    "poly3": "worse",
+    "poly4": "worse",
+    "poly5": "inconclusive",
+    "gam": "non-inferior",
+    "mlp8": "equivalent",
+    "mlp16_s1": "equivalent",
+    "mlp32": "equivalent",
+    "gp": "worse"
+   }
+  },
+  "fraction_of_mlp16_log_gain": {
+   "sky130_77K": {
+    "const": 0.0011768390704497542,
+    "lin": -0.009246130744698279,
+    "poly2": 0.09737696954341836,
+    "poly3": 0.3555798558612034,
+    "poly4": 0.6348977193177713,
+    "poly5": 0.9092439922453817,
+    "gam": 1.2126079322431094,
+    "mlp8": 1.046041382532684,
+    "mlp16": 1.0,
+    "mlp16_s1": 0.9529746437139527,
+    "mlp32": 0.9582655141859616,
+    "gp": -0.5906107090464943,
+    "mlp16_rep": 0.9873331362048925
+   },
+   "nist_4K": {
+    "const": -0.003145502814590184,
+    "lin": 0.010401060086289179,
+    "poly2": 0.290365480493964,
+    "poly3": 0.910674131346653,
+    "poly4": 1.4331719876719586,
+    "poly5": 1.7152476154358551,
+    "gam": 1.8574047960172968,
+    "mlp8": 1.0520816261113999,
+    "mlp16": 1.0,
+    "mlp16_s1": 0.9828208996433959,
+    "mlp32": 0.9938195464576385,
+    "gp": 0.7854065944627605,
+    "mlp16_rep": 1.083134349567084
+   }
+  },
+  "final_training_loss_mean_over_folds": {
+   "sky130_77K": {
+    "const": 0.10728220840305051,
+    "lin": 0.10719372516224616,
+    "poly4": 0.08578657816400968,
+    "poly5": 0.07867193006776442,
+    "gam": 0.07667021860228344
+   },
+   "nist_4K": {
+    "gp": 1.269753777496814,
+    "mlp32": 0.0338107801327279,
+    "mlp8": 0.03342737831240303,
+    "const": 0.041120167121944114,
+    "lin": 0.041085562107470094,
+    "poly2": 0.037235062168818826,
+    "poly4": 0.030486935350387597,
+    "poly5": 0.029497289189870202,
+    "gam": 0.028374669302156083
+   },
+   "tudelft_4K": {
+    "gp": 3.9127929365762486,
+    "mlp32": 0.05138791633390042,
+    "mlp8": 0.05149189462844509,
+    "const": 0.0629812364660126,
+    "lin": 0.06049161094676615,
+    "poly2": 0.05739167040384612,
+    "poly4": 0.051157270068752196,
+    "poly5": 0.05171359527763073,
+    "gam": 0.04983884244408733
+   },
+   "ihp_meas_300K": {
+    "gp": 0.02537993416134146,
+    "mlp32": 0.02002090512095149,
+    "mlp8": 0.020113182377981154,
+    "const": 0.02177302735381151,
+    "lin": 0.02149719887386904,
+    "poly2": 0.0208788464914372,
+    "poly4": 0.020251168973965575,
+    "poly5": 0.02305982651483889,
+    "gam": 0.018688796345958783
+   }
+  }
+ }
+}
