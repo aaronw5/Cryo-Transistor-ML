@@ -1,0 +1,514 @@
+{
+ "id": "I9-2",
+ "status": "IN FORCE (this file committed alone, before any I9-2 held-out result)",
+ "date": "2026-10-21",
+ "code_commit": "dea00cc",
+ "draft": "prereg_draft.json / prereg_draft.md (commit a96ba07); superseded by this file where they differ",
+ "title": "Function-class ablation for the shared bias-only correction g in I = I_card x exp(g)",
+ "questions": {
+  "Q1": "Does the held-out gain of the shared bias-only correction depend on the function class of g?",
+  "Q2": "Is there a class with fewer trained values than M_bias (1765) whose held-out RRMS is not higher than M_bias by more than the margin, and does it have a lower RRMS?",
+  "Q3 (secondary)": "How does the held-out gain of the reference and the two best classes change with the number of training devices (2, 4, 8, all) on the two largest datasets (TU Delft 4.13 K, NIST 4 K)?"
+ },
+ "decisions": [
+  {
+   "id": "D1",
+   "decision": "Primary pool = the 4 measured datasets: sky130 77 K (12), NIST 4 K (57, 53 finite), TU Delft 4.13 K (45), IHP measured 300 K (18). Only the primary pool is run under this pre-registration. Simulated tier c and the other temperatures are a later, separately pre-registered run if the primary result calls for it; tier b is dropped; the I7-1 simulated datasets are excluded.",
+   "reason": "The question concerns measured devices; the tier c truths contain generator-specific error terms (an extrinsic resistance of the B2 form); the other temperatures share devices with a primary dataset; tier b (no shared error) would cost about 21.6 CPU-h; the full 12-dataset plan was about 70 CPU-h."
+  },
+  {
+   "id": "D2",
+   "decision": "Margin 1.03 on GMR(X, mlp16); per-dataset limit 1.05 for Q2.",
+   "reason": "Kept from the draft: ln 1.03 is 11% (sky130 77 K) and 14% (NIST 4 K) of the stored M_bias log gain; 1.05 limits the loss on any single dataset."
+  },
+  {
+   "id": "D3",
+   "decision": "Reference replicate mlp16_rep (M_bias recipe, seeds 5-9) on the primary pool. GMR(mlp16_rep, mlp16) is reported as the seed-noise reference next to every class result (pooled at the Bonferroni level and per dataset at 95%). A class labelled 'beats' or 'worse' whose pooled GMR lies inside the replicate's Bonferroni CI is reported with the note 'within the seed-noise range of the reference'; the label is unchanged.",
+   "reason": "The I3-2 F2 seed sets alone gave GMR vs the I3-2 M_bias of 0.988-1.083 on sky130 77 K, the same size as the class effects under test."
+  },
+  {
+   "id": "D4",
+   "decision": "The rule counts trained values summed over all ensemble members (mlp16 1765); per-member counts are reported beside them.",
+   "reason": "The exported g (Verilog-A) evaluates every member, so the total is the size of the deployed function."
+  },
+  {
+   "id": "D5",
+   "decision": "gam as drafted (8 cubic B-splines per input, rank-1 interaction, L2 1e-4, no smoothness penalty).",
+   "reason": "Kept from the draft."
+  },
+  {
+   "id": "D6",
+   "decision": "poly4 and poly5 use the Legendre product basis on the standardized inputs with 2000 steps; poly2 and poly3 stay the stored I4-1 B3 monomial fits. The final training loss (E1 loss without penalty) is reported for every class and fold, with the penalized objective every 250 steps for every newly trained class.",
+   "reason": "Monomials up to degree 5 in standardized inputs are poorly conditioned for a fixed number of Adam steps; poly2 / poly3 stay monomial so the stored B3 rows are reused unchanged; the loss record shows whether 2000 steps converge."
+  },
+  {
+   "id": "D7",
+   "decision": "mlp64 dropped; mlp8, mlp16, mlp32 (5 seeds) and mlp16_s1 kept.",
+   "reason": "Cost: 5-seed mlp64 training was about 8.7 CPU-h of the primary pool in the draft estimate; on sky130 77 K width 32 already gave GMR vs C0_refit 0.777 against 0.769 for width 16 (F2)."
+  },
+  {
+   "id": "D8",
+   "decision": "Learning curve classes: mlp16 always, plus the two classes with the lowest pooled GMR(X, C0_refit) (ties within 0.005 to fewer trained values; mlp16_rep not a candidate); 2 or 3 classes; TU Delft 4.13 K and NIST 4 K.",
+   "reason": "The data dependence of the reference is needed to read the data dependence of the other classes."
+  },
+  {
+   "id": "D9",
+   "decision": "Equal dataset weight in the pooled statistic.",
+   "reason": "Device-count weights would give NIST (53) and TU Delft (45) about 77% of the weight and sky130 77 K (12) 9%."
+  }
+ ],
+ "background": [
+  "I3-2 GMR(M_bias, C0_refit): sky130 77 K 0.769 [0.666, 0.886]; GF180 c 0.880 [0.837, 0.921]; IHP c 0.885 [0.789, 1.005].",
+  "I4-1 GMR(M_bias, X) on sky130 77 K: B3_d2 0.789, B3_d3 0.844 [0.751, 0.949], B4 0.658; GF180 / IHP c: B3_d2 0.994 / 0.986, B3_d3 0.997 / 0.985, B4 0.954 / 0.848.",
+  "I3-2 F2 on sky130 77 K, GMR vs C0_refit: width 8 0.759, width 32 0.777, 3-16-1 0.770, seed sets 5-9 / 10-14 / 15-19 0.771 / 0.779 / 0.771; GMR vs the I3-2 M_bias 0.988-1.083, every CI includes 1.",
+  "I5-1 IHP measured 300 K: GMR(M_bias, C0_refit) 1.214 [1.008, 1.537]; means M_bias 0.0203, B3_d3 0.0214.",
+  "I6-1 TU Delft: 4.13 K GMR(M_bias, C0_refit) 0.939 [0.877, 1.004], GMR(M_bias, B3_d3) 0.983 [0.956, 1.015]; 295.0 K 0.797 [0.688, 0.935].",
+  "I8-1 NIST 4 K: GMR(M_bias, C0_refit) 0.806 [0.758, 0.864]; GMR(M_bias, B3_d3) 0.981 [0.961, 1.000] (27/53); B3_d3 gives 91% of the M_bias log gain.",
+  "The poly2, poly3 and gp contrasts are known on the datasets where they are stored (retrospective part); the const, lin, poly4, poly5, gam, mlp8 (except sky130), mlp16_s1, mlp32 (except sky130), mlp64 results are not known. All datasets are development sets; no TEST split is loaded."
+ ],
+ "datasets": {
+  "sky130_77K": {
+   "n_records": 12,
+   "n_finite": 12,
+   "excluded": [],
+   "n_folds": 12,
+   "n_heldout": 12,
+   "train_points_per_fold": {
+    "min": 14945,
+    "max": 15670,
+    "mean": 15290.9
+   },
+   "stored_classes": [
+    "gp",
+    "mlp16",
+    "mlp16_rep",
+    "mlp32",
+    "mlp8",
+    "poly2",
+    "poly3"
+   ],
+   "new_classes_trained": [
+    "const",
+    "lin",
+    "poly4",
+    "poly5",
+    "gam"
+   ],
+   "classes_from_stored_M_bias": [
+    "mlp16_s1"
+   ],
+   "n_new_refits": 72,
+   "source": "sky130 77 K REAL_DEV (paper data), 12 devices, leave-one-device-out, 43-parameter card from direct43_r3_fd, ngspice-41 arm64",
+   "stored_rows_reused": "C0_refit, mlp16 (= M_bias), T1_inloop: I3_2/real_dev; poly2, poly3, gp: I4_1/real_dev (B3_d2, B3_d3, B4); mlp8, mlp32: I3_2/followup/f2_real (b_width8, b_width32, seeds 0-4, starting-card training records); mlp16_rep: I3_2/followup/f2_real (a_seeds_5_9)"
+  },
+  "nist_4K": {
+   "n_records": 57,
+   "n_finite": 53,
+   "excluded": [
+    "nfet_01v8_lvt_W0p55_L0p25_m20p7",
+    "nfet_01v8_lvt_W3p01_L0p15_m25p1",
+    "nfet_01v8_lvt_W7_L0p15_m26p2",
+    "nfet_01v8_lvt_W7_L2_m26p7"
+   ],
+   "n_folds": 53,
+   "n_heldout": 53,
+   "train_points_per_fold": {
+    "min": 25366,
+    "max": 25829,
+    "mean": 25486.9
+   },
+   "stored_classes": [
+    "mlp16",
+    "poly3"
+   ],
+   "new_classes_trained": [
+    "const",
+    "lin",
+    "poly2",
+    "poly4",
+    "poly5",
+    "gam",
+    "mlp8",
+    "mlp32",
+    "gp"
+   ],
+   "classes_from_stored_M_bias": [
+    "mlp16_s1"
+   ],
+   "n_new_refits": 530,
+   "source": "NIST mds2-2997 sky130 4 K DEV, 57 devices (53 finite starting records, amendment A1), leave-one-device-out, 77 K card deck, ngspice-41 arm64",
+   "stored_rows_reused": "C0_refit, mlp16, T1_inloop: I8_1/lodo; poly3: I8_1/baselines (B3_d3)"
+  },
+  "tudelft_4K": {
+   "n_records": 45,
+   "n_finite": 45,
+   "excluded": [],
+   "n_folds": 7,
+   "n_heldout": 45,
+   "train_points_per_fold": {
+    "min": 94305,
+    "max": 109628,
+    "mean": 98339.1
+   },
+   "stored_classes": [
+    "mlp16",
+    "poly3"
+   ],
+   "new_classes_trained": [
+    "const",
+    "lin",
+    "poly2",
+    "poly4",
+    "poly5",
+    "gam",
+    "mlp8",
+    "mlp32",
+    "gp"
+   ],
+   "classes_from_stored_M_bias": [
+    "mlp16_s1"
+   ],
+   "n_new_refits": 450,
+   "source": "TU Delft 40 nm 4.13 K DEV, 45 devices in 7 geometry groups, leave-one-group-out, CMOSedu BSIM4 card, ngspice-41 arm64",
+   "stored_rows_reused": "C0_refit, mlp16, T1_inloop, poly3: I6_1/lodo_4K"
+  },
+  "ihp_meas_300K": {
+   "n_records": 18,
+   "n_finite": 18,
+   "excluded": [],
+   "n_folds": 18,
+   "n_heldout": 18,
+   "train_points_per_fold": {
+    "min": 1785,
+    "max": 2891,
+    "mean": 2250.2
+   },
+   "stored_classes": [
+    "mlp16",
+    "poly3"
+   ],
+   "new_classes_trained": [
+    "const",
+    "lin",
+    "poly2",
+    "poly4",
+    "poly5",
+    "gam",
+    "mlp8",
+    "mlp32",
+    "gp"
+   ],
+   "classes_from_stored_M_bias": [
+    "mlp16_s1"
+   ],
+   "n_new_refits": 180,
+   "source": "IHP SG13G2 measured 300 K DEV, 18 DUTs, leave-one-device-out within class (LV / HV), PSP 103, ngspice-46 + OSDI",
+   "stored_rows_reused": "C0_refit, mlp16, T1_inloop, poly3: I5_1/lodo_300K"
+  }
+ },
+ "classes": {
+  "const": {
+   "form": "g = tanh(c_pol); fit_poly degree 0",
+   "n_params_total": 2,
+   "n_params_per_member": 2
+  },
+  "lin": {
+   "form": "g = tanh(c0 + c1 u' + c2 v') per polarity; fit_poly degree 1",
+   "n_params_total": 6,
+   "n_params_per_member": 6
+  },
+  "poly2": {
+   "form": "monomials of total degree 2 in standardized u', v' per polarity; = I4-1 B3_d2 (stored on sky130, new elsewhere, same fit_poly)",
+   "n_params_total": 12,
+   "n_params_per_member": 12
+  },
+  "poly3": {
+   "form": "monomials of total degree 3; = I4-1 B3_d3 (stored on all four datasets)",
+   "n_params_total": 20,
+   "n_params_per_member": 20
+  },
+  "poly4": {
+   "form": "Legendre product basis P_i(u') P_j(v'), i + j <= 4, on the training-standardized inputs, per polarity; fit_legendre",
+   "n_params_total": 30,
+   "n_params_per_member": 30
+  },
+  "poly5": {
+   "form": "Legendre product basis, i + j <= 5; fit_legendre",
+   "n_params_total": 42,
+   "n_params_per_member": 42
+  },
+  "gam": {
+   "form": "tanh(c + B(u) a + B(v) b + (B(u) p)(B(v) q)) per polarity; 8 cubic B-splines per input, uniform interior knots on the training range, inputs clipped; rank-1 interaction; L2 1e-4 on a, b, p, q; p starts at N(0, 0.1^2) (torch generator seed 0), others at 0; fit_gam",
+   "n_params_total": 66,
+   "n_params_per_member": 66
+  },
+  "mlp8": {
+   "form": "mean of 5 members tanh(MLP 3-8-8-1), seeds 0-4 (stored on sky130: I3-2 F2 b_width8)",
+   "n_params_total": 565,
+   "n_params_per_member": 113
+  },
+  "mlp16": {
+   "form": "M_bias, mean of 5 members tanh(MLP 3-16-16-1), seeds 0-4; reference; stored on all four datasets",
+   "n_params_total": 1765,
+   "n_params_per_member": 353
+  },
+  "mlp16_s1": {
+   "form": "member 0 (seed 0) of the stored M_bias fold model; refit only",
+   "n_params_total": 353,
+   "n_params_per_member": 353
+  },
+  "mlp32": {
+   "form": "mean of 5 members tanh(MLP 3-32-32-1), seeds 0-4 (stored on sky130: I3-2 F2 b_width32)",
+   "n_params_total": 6085,
+   "n_params_per_member": 1217
+  },
+  "gp": {
+   "form": "I4-1 B4: GP posterior mean of ln|I_meas / I_sim| on (is_pmos, u, v), ARD squared exponential + white noise, constant mean, type-II ML, 2000 points per fold (stored on sky130)",
+   "n_params_total": 2006,
+   "n_params_per_member": 2006
+  },
+  "mlp16_rep": {
+   "form": "reference replicate: M_bias recipe with seeds 5-9 (stored on sky130: I3-2 F2 a_seeds_5_9); not a contrast",
+   "n_params_total": 1765,
+   "n_params_per_member": 353
+  }
+ },
+ "reference": "mlp16 (stored M_bias)",
+ "replicate": "mlp16_rep",
+ "contrasts": [
+  "const",
+  "lin",
+  "poly2",
+  "poly3",
+  "poly4",
+  "poly5",
+  "gam",
+  "mlp8",
+  "mlp16_s1",
+  "mlp32",
+  "gp"
+ ],
+ "controls_reported": [
+  "C0_refit (stored)",
+  "T1_inloop (stored)"
+ ],
+ "protocol": {
+  "folds": "as the stored runs: sky130 77 K, NIST and IHP measured leave-one-device-out (IHP measured trains within class LV / HV); TU Delft leave-one-group-out (7 groups)",
+  "training_records": "the stored starting-card records of the fold's training devices, in the stored training order (load order; NIST sorted by tag); NIST records with non-finite simulated points excluded (amendment A1 of I8-1) and scored as failed in every class",
+  "training": "E1 loss (mean over devices of the paper per-device RRMS of I_sim x exp(g)) + L2 1e-4 on non-intercept coefficients / weight matrices; Adam lr 3e-3, 2000 full-batch steps, float64, 1 torch thread; zero-initialized output (poly, gam: zero coefficients; MLP: zero last layer); GP: type-II ML (I4-1 B4 settings)",
+  "heldout_refit": "ngspice_fit.polish from the stored starting card, max_nfev 400, irls_rounds 2, diff_step 0.01, g frozen in the loop, through the dataset driver's own refit function (I4-1 refit_task for sky130 and pdk2, I5-1 / I6-1 / I8-1 refit_task otherwise)",
+  "score": "strict paper RRMS of I_card x exp(g) with the frozen inclusion stored on the record; a non-finite included curve scores NaN (failed)",
+  "simulators": "ngspice-41 arm64 (sky130, NIST, TU Delft); Homebrew ngspice-46 + PSP 103 OSDI (IHP measured), as in the stored runs",
+  "training_record": "penalized objective every 250 steps (trace) for every newly trained class and member; final E1 training loss without penalty for every class and fold, including the stored corrections (validity job)"
+ },
+ "reuse_plan": [
+  "Starting-card records: E1 real_dev (+ direct43_r3_fd params), E1 {gf180,ihp}_c_set{0,1,2}, I3_2/followup/f2_{gf180,ihp}_b/records, I5_1/start/records_{T}K, I6_1/start/records_{T}K, I8_1/start/records. No starting fit is rerun.",
+  "Stored per-device rows (listed per dataset) enter the statistics unchanged.",
+  "mlp16_s1: member 0 of the stored M_bias fold model (corrections.json key 'M_bias|<fold>'); only its held-out refits are new.",
+  "New work per dataset: training of the classes without stored rows on each fold, and one held-out refit per class and held-out device.",
+  "Starting-card records: E1 real_dev (+ direct43_r3_fd params), I8_1/start/records, I6_1/start/records_4K, I5_1/start/records_300K.",
+  "mlp16_rep on sky130 77 K: the stored I3-2 F2 a_seeds_5_9 rows; new on the other three datasets.",
+  "V1 (validity job, first): poly3 retrained and refit on the first 2 held-out devices (sorted tags) of each dataset; max |RRMS - stored B3_d3| <= 1e-9 required; the run, replicate and lc modes refuse a dataset without a V1 pass in validity.json."
+ ],
+ "statistics": {
+  "per_dataset": "GMR(X, Y) = exp(mean over held-out devices of ln(RRMS_X / RRMS_Y)) over devices with both values finite (failures counted separately); 95% percentile CI from 20000 device-bootstrap resamples (default_rng(0)); geometry / group cluster bootstrap reported for tier b / c and TU Delft",
+  "pooled": "equal-weight pooled GMR over the primary datasets: exp(mean over datasets of the per-dataset mean log ratio); CI from 20000 stratified resamples (devices resampled within each dataset)",
+  "multiplicity": "11 primary contrasts GMR(X, mlp16), X in {const, lin, poly2, poly3, poly4, poly5, gam, mlp8, mlp16_s1, mlp32, gp}; Bonferroni: two-sided percentile CI at level 1 - 0.05/11 (tails 0.227%). The replicate GMR(mlp16_rep, mlp16) is computed at the same level (and at 95%). Every other interval is a 95% interval, labelled descriptive.",
+  "primary_datasets": [
+   "sky130_77K",
+   "nist_4K",
+   "tudelft_4K",
+   "ihp_meas_300K"
+  ],
+  "weights": "equal dataset weight (D9)"
+ },
+ "decision_rule": {
+  "margin": 1.03,
+  "per_dataset_max": 1.05,
+  "labels": "from the Bonferroni CI of the pooled GMR(X, mlp16): 'beats' if upper < 1; 'worse' if lower > 1; 'equivalent' if the CI lies in [1/1.03, 1.03]; 'non-inferior' if upper <= 1.03; else 'inconclusive'",
+  "replicate_note": "a class labelled 'beats' or 'worse' whose pooled GMR(X, mlp16) lies inside the Bonferroni CI of the pooled GMR(mlp16_rep, mlp16) is reported with the note 'within the seed-noise range of the reference'; the label is unchanged (D3)",
+  "Q1": "'class-dependent' if at least one of the 11 classes is 'beats' or 'worse'; 'no class dependence detected' if all 11 are 'equivalent'; else 'inconclusive'",
+  "Q2": "candidates: classes labelled 'beats', 'equivalent' or 'non-inferior' with fewer trained values (total over members) than mlp16 (1765), point GMR(X, mlp16) <= 1.05 on every primary dataset, and no more failed devices than mlp16 on any primary dataset. Answer: the candidate with the fewest trained values (tie: lower pooled GMR), or 'none'; 'beats with fewer parameters' if that candidate is labelled 'beats'.",
+  "capacity_curve": "pooled GMR(X, C0_refit) (95%) against the number of trained values, every class",
+  "code": "cryoml.explore.i9_2_classes.decide / label_class / pooled_ratio; driver --mode decide"
+ },
+ "secondary": [
+  "S2: per-dataset GMR(X, mlp16) with GMR(mlp16_rep, mlp16) beside it, and GMR(X, C0_refit), every class (95%).",
+  "S3: cluster bootstrap of the primary pool (TU Delft groups).",
+  "S4: margin sensitivity: labels at margins 1.02 and 1.05.",
+  "S5: fraction of the M_bias log gain retained, ln GMR(X, C0_refit) / ln GMR(mlp16, C0_refit), on datasets where the GMR(mlp16, C0_refit) CI upper bound is < 1.",
+  "S7: final training loss per class and fold (mean over folds in decision.json); objective traces in the run outputs."
+ ],
+ "learning_curve": {
+  "datasets": [
+   "tudelft_4K (45 devices, 7 folds)",
+   "nist_4K (53 finite devices, 53 folds)"
+  ],
+  "classes": "mlp16 plus the two classes with the lowest pooled GMR(X, C0_refit) on the primary pool (ties within 0.005 to fewer trained values; mlp16_rep excluded); 2 or 3 classes (D8); chosen by decision.json before the lc jobs",
+  "sizes": "n_train in {2, 4, 8} plus 'all' (the main-run rows)",
+  "subsets": "per fold, 3 subsets of the fold's training devices; polarity-stratified (n/2 nMOS, n/2 pMOS; shortfall filled from the other polarity); default_rng([20261021, n, r, fold index]) on the sorted tags (training_subsets)",
+  "statistic": "per held-out device, exp(mean over the 3 subsets of ln RRMS); per dataset GMR(X_n, C0_refit) and GMR(X_n, X_all) with 95% device-bootstrap CIs; GMR(class A_n, class B_n) per n. Descriptive; no decision.",
+  "refits": {
+   "tudelft_4K": "405 per class",
+   "nist_4K": "477 per class"
+  }
+ },
+ "validity": {
+  "V2": "failed devices per class and dataset reported; a class with more failed devices than mlp16 on a primary dataset is not a Q2 candidate",
+  "V3": "simulator timeouts per job reported (I6-1 10 s per process, I8-1 timeout handling unchanged)",
+  "V4": "the stored rows used are exactly the stored values (read, not recomputed); mlp16_s1 g equals member 0 of the stored model",
+  "V1": "poly3 rerun on 2 held-out devices per dataset: max |RRMS - stored| <= 1e-9; a dataset failing V1 is excluded and reported (the run mode refuses it)"
+ },
+ "compute": {
+  "method": "Refit CPU-s = n_heldout x (number of new refit classes) x mean single-process runtime of the stored M_bias held-out refits of the dataset (GP refits: stored I4-1 B4 mean, else corrected refit + 30 s), + 2 reproduction refits. Training CPU-s = sum over folds of (seconds per training point per Adam step per member, cost_basis.json, measured in the first smoke (a96ba07) on the sky130 77 K training sets; Legendre fits take the monomial costs) x training points of the fold x 2000 steps x members; GP 30 s per fold (I4-1 timing, 2000 points, 200 L-BFGS-B iterations). Wall time on 6 workers at 85% efficiency. Calibration: the smoke cost of the 16-wide MLP (0.33 us per point-step) gives 10 s (sky130), 17 s (NIST), 52 s (GF180 c) and 64 s (TU Delft) per seed task; the stored I3-2 / I8-1 / I6-1 pool timings give about 10, 15, 55 and 51 s.",
+  "per_dataset": {
+   "sky130_77K": {
+    "new_refits": 72,
+    "refit_cpu_h": 0.27,
+    "train_cpu_h": 0.04,
+    "train_cpu_h_by_class": {
+     "const": 0.0,
+     "lin": 0.0,
+     "poly4": 0.01,
+     "poly5": 0.01,
+     "gam": 0.01
+    },
+    "cpu_h": 0.31,
+    "wall_min_6_workers": 3.6
+   },
+   "nist_4K": {
+    "new_refits": 530,
+    "refit_cpu_h": 1.69,
+    "train_cpu_h": 3.89,
+    "train_cpu_h_by_class": {
+     "const": 0.03,
+     "lin": 0.03,
+     "poly2": 0.04,
+     "poly4": 0.06,
+     "poly5": 0.05,
+     "gam": 0.09,
+     "mlp8": 0.74,
+     "mlp32": 2.41,
+     "gp": 0.44
+    },
+    "cpu_h": 5.58,
+    "wall_min_6_workers": 65.6
+   },
+   "tudelft_4K": {
+    "new_refits": 450,
+    "refit_cpu_h": 1.64,
+    "train_cpu_h": 1.82,
+    "train_cpu_h_by_class": {
+     "const": 0.01,
+     "lin": 0.02,
+     "poly2": 0.02,
+     "poly4": 0.03,
+     "poly5": 0.02,
+     "gam": 0.05,
+     "mlp8": 0.38,
+     "mlp32": 1.23,
+     "gp": 0.06
+    },
+    "cpu_h": 3.45,
+    "wall_min_6_workers": 40.6
+   },
+   "ihp_meas_300K": {
+    "new_refits": 180,
+    "refit_cpu_h": 0.66,
+    "train_cpu_h": 0.23,
+    "train_cpu_h_by_class": {
+     "const": 0.0,
+     "lin": 0.0,
+     "poly2": 0.0,
+     "poly4": 0.0,
+     "poly5": 0.0,
+     "gam": 0.0,
+     "mlp8": 0.02,
+     "mlp32": 0.07,
+     "gp": 0.13
+    },
+    "cpu_h": 0.89,
+    "wall_min_6_workers": 10.5
+   }
+  },
+  "jobs": {
+   "validity": {
+    "cpu_s": 247.4,
+    "cpu_h": 0.07,
+    "wall_min": 0.8
+   },
+   "run_all_4": {
+    "cpu_s": 36828.4,
+    "cpu_h": 10.23,
+    "wall_min": 120.4
+   },
+   "replicate": {
+    "cpu_s": 7908.6,
+    "cpu_h": 2.2,
+    "wall_min": 25.8
+   },
+   "learning_curve": {
+    "tudelft_4K": {
+     "refits_per_class": 405,
+     "trainings_per_class": 63,
+     "low_cheap_classes": {
+      "cpu_s": 15072.2,
+      "cpu_h": 4.19,
+      "wall_min": 49.3
+     },
+     "high_mlp32_gp": {
+      "cpu_s": 33887.0,
+      "cpu_h": 9.41,
+      "wall_min": 110.7
+     }
+    },
+    "nist_4K": {
+     "refits_per_class": 477,
+     "trainings_per_class": 477,
+     "low_cheap_classes": {
+      "cpu_s": 16045.4,
+      "cpu_h": 4.46,
+      "wall_min": 52.4
+     },
+     "high_mlp32_gp": {
+      "cpu_s": 46847.0,
+      "cpu_h": 13.01,
+      "wall_min": 153.1
+     }
+    }
+   }
+  },
+  "total_without_learning_curve": {
+   "cpu_s": 44984.5,
+   "cpu_h": 12.5,
+   "wall_min": 147.0
+  },
+  "notes": [
+   "Training dominates on NIST (53 folds) and TU Delft for the 5-seed MLP classes and gp; refits dominate on sky130 77 K and IHP 300 K.",
+   "Learning curve range: low = mlp16 + two cheap classes; high = mlp16 + mlp32 + gp (GP refits about 30 s slower than other refits)."
+  ]
+ },
+ "smoke": {
+  "first": "commit a96ba07 (all 13 draft classes, 30 s, 4 workers)",
+  "second": "commit dea00cc: smoke rerun with the in-force classes (52 s, 2 workers, while I9_1_start ran); reduced validity check of the sky130 / NIST / TU Delft / IHP refit adapters, 1 device each, 50 steps, nfev 10 (7.5 s; smoke_validity.json). Code checks only."
+ },
+ "code": {
+  "module": "src/cryoml/explore/i9_2_classes.py",
+  "driver": "scripts/research/explore/i9_2_classes.py",
+  "tests": "tests/test_i9_2_classes.py (22 tests)",
+  "cost_basis": "out/research/explore/I9_2/cost_basis.json",
+  "plan": "out/research/explore/I9_2/plan.json"
+ },
+ "queue": [
+  "I9_2_validity",
+  "I9_2_run_sky130_77K",
+  "I9_2_run_nist_4K",
+  "I9_2_run_tudelft_4K",
+  "I9_2_run_ihp_meas_300K",
+  "I9_2_replicate",
+  "I9_2_decide",
+  "I9_2_lc_tudelft_4K",
+  "I9_2_lc_nist_4K",
+  "I9_2_figs"
+ ]
+}
