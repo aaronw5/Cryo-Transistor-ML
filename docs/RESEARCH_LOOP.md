@@ -1419,3 +1419,23 @@ secondaries S_B3 = GMR(M_bias, B3_d3) with CI, S_transfer = arm M_bias_lvt; V2 m
 questions: deck temperature 30 C (tnom) vs 27 C, the D12 exclusion, S3 cost, the transfer arm, V2 threshold, P_a
 outside the I7-1 calibration range (S1_lodo -0.379 to 0.504). Compute estimate about 2.3 h wall on 6 workers (S3
 about 75 min). Not queued.
+
+## I9-2 pre-registration in force, queue (2026-10-21 01:25)
+
+Pre-registration `out/research/explore/I9_2/prereg.json` / `.md` in force (commit 02c6996, committed alone before any I9-2
+held-out result; code commit dea00cc). Decisions on the draft questions (each with its reason in the file): D1 primary
+pool only (sky130 77 K, NIST 4 K, TU Delft 4.13 K, IHP measured 300 K); tier c and other temperatures would be a later,
+separately pre-registered run; tier b dropped; I7-1 datasets excluded. D2 margin 1.03, per-dataset limit 1.05. D3
+reference replicate mlp16_rep (M_bias recipe, seeds 5-9; stored F2 a_seeds_5_9 rows on sky130), GMR(mlp16_rep, mlp16)
+reported beside every class; a 'beats' / 'worse' class whose pooled GMR lies inside the replicate's CI gets a note,
+label unchanged. D4 parameter count = total over members, per-member count reported. D5 gam unchanged. D6 poly4 / poly5
+in the Legendre product basis on the standardized inputs (poly2 / poly3 stay the stored B3 monomial fits); final
+training loss for every class and fold, objective trace every 250 steps (new optional `trace` argument of fit_bias /
+fit_poly; no numerical change, unit-tested). D7 mlp64 dropped. D8 learning curve = mlp16 + the two best classes. D9
+equal dataset weight. 11 contrasts, Bonferroni level 1 - 0.05/11.
+Code checks: smoke rerun (52 s, 2 workers, while I9_1_start ran); reduced validity run through the sky130 / NIST / TU
+Delft / IHP refit adapters (7.5 s); decide and figs run on synthetic inputs; 22 unit tests.
+Compute estimate (`plan.json`, 6 workers): validity 1 min; run jobs sky130 4 min, NIST 66 min, TU Delft 41 min, IHP 10
+min (10.2 CPU-h); replicate 26 min (2.2 CPU-h); learning curve 1.7-4.4 h wall depending on the selected classes
+(8.7-22.4 CPU-h). Queue (after the I9-1 jobs): I9_2_validity, I9_2_run_{sky130_77K, nist_4K, tudelft_4K,
+ihp_meas_300K}, I9_2_replicate, I9_2_decide, I9_2_lc_tudelft_4K, I9_2_lc_nist_4K, I9_2_figs.
