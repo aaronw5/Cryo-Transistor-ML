@@ -12,8 +12,18 @@ Modes:
           Writes out/research/explore/I8_2/prereg_test_predictions.{json,md}.
           Reads only DEV records, stored DEV statistics and the split tag lists;
           every loaded record tag is checked against the DEV and TEST lists.
+  gate    Part B (retrospective; outcomes already seen).  Gated method G: on a
+          dataset D apply M_bias if S3(D) < 0, else C0_refit (one decision per
+          dataset from training-device statistics); G1: the same with the
+          frozen I7-1 S1_lodo rule.  Evaluated on the 11 stored and the 20 I7-1
+          simulated datasets from the stored per-device log ratios
+          ln(RRMS_M_bias / RRMS_C0_refit); no new fits or simulations.
+          Diagnostic: fold-level gates (decision per outer fold from that
+          fold's training-set S3_f / S1_lodo_f, which exclude the scored
+          device).  Writes out/research/explore/I8_2/gate_results.json.
 
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i8_2_gate.py --mode prereg
+  PYTHONPATH=src .venv/bin/python scripts/research/explore/i8_2_gate.py --mode gate
 """
 from __future__ import annotations
 
@@ -393,11 +403,251 @@ def write_md(body: dict) -> None:
     (OUT / "prereg_test_predictions.md").write_text("\n".join(lines))
 
 
+# ===========================================================================
+# Part B: gate (retrospective)
+# ===========================================================================
+LOSS_TOL = 0.02          # "G loses to C0_refit by > 2 %": GMR(G, C0_refit) > 1.02
+NEAR_S3 = 0.01           # post-hoc cut for datasets near the gate threshold (leakage check)
+
+
+def _fold_rows_new(key: str, s3_new: dict) -> tuple[list[dict], dict]:
+    pdk, rep, lam = key.split("|")
+    path = r71.new_dir(pdk, int(rep), float(lam)) / "results.json"
+    res = read_json(path)
+    rows = []
+    for r in res["per_fold"]:
+        rows.append({"fold": r["fold"], "held": r["held"], "log_ratios": r["log_ratios"],
+                     "S1_lodo": r["S1_lodo"], "S3": s3_new[f"new:{key}"].get(r["fold"], np.nan)})
+    return rows, res
+
+
+def _check_retro_ratios(name: str, rows: list[dict]) -> float:
+    """Max |stored fold log ratio - ln(M_bias / C0_refit) from per-device RRMS|."""
+    spec = next(s for s in r71.retro_specs() if s["name"] == name)
+    FILES_READ.append(rel(spec["results"]))
+    m, c0 = r71.load_outcomes(spec)
+    diff = 0.0
+    for r in rows:
+        for t, v in zip(r["held"], r["log_ratios"]):
+            a, b = m.get(t, np.nan), c0.get(t, np.nan)
+            ref = math.log(a / b) if (np.isfinite(a) and np.isfinite(b) and a > 0 and b > 0) \
+                else float("nan")
+            if np.isfinite(ref) or np.isfinite(v):
+                diff = max(diff, abs(ref - v))
+    return diff
+
+
+def _wmean(rows: list[dict], key: str) -> float:
+    w = np.array([len(r["held"]) for r in rows], float)
+    v = np.array([r[key] for r in rows], float)
+    ok = np.isfinite(v)
+    return float(np.sum(w[ok] * v[ok]) / np.sum(w[ok]))
+
+
+def _gate_eval(rows: list[dict], choose_m) -> dict:
+    """choose_m(row) -> True: M_bias for the held devices of that fold."""
+    lg, n_m, n = [], 0, 0
+    for r in rows:
+        c = bool(choose_m(r))
+        for v in r["log_ratios"]:
+            if not np.isfinite(v):
+                continue
+            lg.append(v if c else 0.0)
+            n_m += c
+            n += 1
+    lg = np.array(lg)
+    return {"ln_gmr_vs_C0": float(lg.mean()), "n_devices": n, "n_devices_M_bias": int(n_m)}
+
+
+def gate(args) -> int:
+    amend = read_json(I7 / "prereg_amendment_2026-10-20.json")["frozen_rule"]
+    retro = read_json(I7 / "retro/results.json")
+    dec = read_json(I7 / "decision.json")
+    s3_new = read_json(I7 / "new/s3.json")["per_fold"]
+    datasets = []
+    for name, st in retro["datasets"].items():
+        rows = retro["per_fold"][name]
+        diff = _check_retro_ratios(name, rows)
+        datasets.append({"name": name, "group": "stored", "label": name, "rows": rows,
+                         "S3": st["S3"], "S1_lodo": st["S1_lodo"], "y": st["y"],
+                         "check_log_ratio_max_abs_diff": diff})
+    for key, st in dec["datasets"].items():
+        rows, res = _fold_rows_new(key, s3_new)
+        datasets.append({"name": key, "group": "new", "label": key, "rows": rows, "S3": st["S3"],
+                         "S1_lodo": st["S1_lodo"], "y": st["y"],
+                         "check_log_ratio_max_abs_diff": abs(math.log(
+                             res["M_bias"]["vs_C0_refit"]["ratio"]) - st["y"])})
+    out_ds = {}
+    for d in datasets:
+        rows = d["rows"]
+        lr = np.array([v for r in rows for v in r["log_ratios"]], float)
+        y = float(np.nanmean(lr))
+        s3c, s1c = _wmean(rows, "S3"), _wmean(rows, "S1_lodo")
+        chk = {"y_abs_diff": abs(y - d["y"]), "S3_abs_diff": abs(s3c - d["S3"]),
+               "S1_lodo_abs_diff": abs(s1c - d["S1_lodo"]),
+               "log_ratio_vs_per_device_max_abs_diff": d["check_log_ratio_max_abs_diff"]}
+        if max(chk.values()) > 1e-9:
+            raise RuntimeError(f"{d['name']}: stored values not reproduced {chk}")
+        rule_y = rule_predict(amend, d["S1_lodo"])
+        g_m, g1_m = d["S3"] < 0, rule_y < 0
+        ln_g = y if g_m else 0.0
+        ln_g1 = y if g1_m else 0.0
+        fold_g = _gate_eval(rows, lambda r: r["S3"] < 0)
+        fold_g1 = _gate_eval(rows, lambda r: rule_predict(amend, r["S1_lodo"]) < 0)
+        n_fold_dis_g = sum(1 for r in rows if (r["S3"] < 0) != g_m)
+        n_fold_dis_g1 = sum(1 for r in rows if (rule_predict(amend, r["S1_lodo"]) < 0) != g1_m)
+        s3f = np.array([r["S3"] for r in rows], float)
+        out_ds[d["name"]] = {
+            "group": d["group"], "n_folds": len(rows), "n_devices": int(np.isfinite(lr).sum()),
+            "S3": d["S3"], "S1_lodo": d["S1_lodo"], "rule_y": rule_y,
+            "y_M_bias_vs_C0": y, "gmr_M_bias_vs_C0": math.exp(y),
+            "G": {"choice": "M_bias" if g_m else "C0_refit", "ln_gmr_vs_C0": ln_g,
+                  "gmr_vs_C0": math.exp(ln_g), "ln_gmr_vs_M_bias": ln_g - y,
+                  "gmr_vs_M_bias": math.exp(ln_g - y)},
+            "G1": {"choice": "M_bias" if g1_m else "C0_refit", "ln_gmr_vs_C0": ln_g1,
+                   "gmr_vs_C0": math.exp(ln_g1), "ln_gmr_vs_M_bias": ln_g1 - y,
+                   "gmr_vs_M_bias": math.exp(ln_g1 - y)},
+            "oracle_reference": {"ln_gmr_vs_C0": min(y, 0.0),
+                                 "note": "dataset-level choice with the outcome known; reference "
+                                         "only, not a method"},
+            "diagnostic_fold_gate_S3": {**fold_g, "gmr_vs_C0": math.exp(fold_g["ln_gmr_vs_C0"]),
+                                        "n_folds_decision_differs_from_dataset_gate": n_fold_dis_g},
+            "diagnostic_fold_gate_S1": {**fold_g1, "gmr_vs_C0": math.exp(fold_g1["ln_gmr_vs_C0"]),
+                                        "n_folds_decision_differs_from_dataset_gate":
+                                            n_fold_dis_g1},
+            "S3_fold_min": float(np.nanmin(s3f)), "S3_fold_max": float(np.nanmax(s3f)),
+            "checks": chk}
+
+    def pooled(names: list[str]) -> dict:
+        out = {"n_datasets": len(names)}
+        for arm in ("G", "G1", "M_bias", "C0_refit", "oracle_reference",
+                    "diagnostic_fold_gate_S3", "diagnostic_fold_gate_S1"):
+            if arm == "M_bias":
+                lv = [out_ds[n]["y_M_bias_vs_C0"] for n in names]
+            elif arm == "C0_refit":
+                lv = [0.0 for n in names]
+            else:
+                lv = [out_ds[n][arm]["ln_gmr_vs_C0"] for n in names]
+            ys = [out_ds[n]["y_M_bias_vs_C0"] for n in names]
+            lm = [a - y for a, y in zip(lv, ys)]
+            iw = int(np.argmax(lv))
+            iwm = int(np.argmax(lm))
+            out[arm] = {
+                "mean_ln_gmr_vs_C0": float(np.mean(lv)), "gmr_of_mean_vs_C0": math.exp(np.mean(lv)),
+                "worst_vs_C0": {"dataset": names[iw], "gmr": math.exp(lv[iw])},
+                "n_lose_to_C0_gt_2pct": int(sum(math.exp(v) > 1 + LOSS_TOL for v in lv)),
+                "mean_ln_gmr_vs_M_bias": float(np.mean(lm)),
+                "worst_vs_M_bias": {"dataset": names[iwm], "gmr": math.exp(lm[iwm])},
+                "n_lose_to_M_bias_gt_2pct": int(sum(math.exp(v) > 1 + LOSS_TOL for v in lm))}
+            if arm in ("G", "G1"):
+                out[arm]["n_choose_M_bias"] = int(sum(out_ds[n][arm]["choice"] == "M_bias"
+                                                      for n in names))
+                out[arm]["n_correct_choice"] = int(sum(
+                    (out_ds[n][arm]["choice"] == "M_bias") == (out_ds[n]["y_M_bias_vs_C0"] < 0)
+                    for n in names))
+        return out
+
+    stored = [n for n in out_ds if out_ds[n]["group"] == "stored"]
+    new = [n for n in out_ds if out_ds[n]["group"] == "new"]
+    measured = [n for n in stored if n.startswith(("sky130", "ihp_meas", "tudelft"))]
+    body = {
+        "id": "I8_2_partB",
+        "label": "retrospective: every outcome used here was known before the gate was defined",
+        "written": _dt.date.today().isoformat(),
+        "code": {"git_head_at_run": git_head(), "script_sha256": sha256(Path(__file__).resolve()),
+                 "command": "PYTHONPATH=src .venv/bin/python scripts/research/explore/"
+                            "i8_2_gate.py --mode gate"},
+        "definitions": {
+            "G": "on dataset D: M_bias for every held-out device if S3(D) < 0, else C0_refit; "
+                 "S3(D) = stored dataset-level S3 (mean over outer folds of the inner "
+                 "leave-one-group-out post-hoc gain on each fold's training devices, weighted by "
+                 "held-out devices per fold)",
+            "G1": "the same with the frozen I7-1 rule: M_bias iff 0.007619 - 0.485184 * S1_lodo(D) "
+                  "< 0 (S1_lodo(D) > 0.0157)",
+            "ln_gmr": "ln GMR(G, C0_refit) = mean over held-out devices of ln(RRMS_G / "
+                      "RRMS_C0_refit) = y_D if G chooses M_bias, else 0; ln GMR(G, M_bias) = "
+                      "ln GMR(G, C0_refit) - y_D",
+            "pooled": "mean over datasets (equal weight) of ln GMR; worst dataset = largest GMR; "
+                      "n_lose_to_C0_gt_2pct = datasets with GMR(G, C0_refit) > 1.02",
+            "diagnostic_fold_gate": "per outer fold: M_bias for the fold's held-out devices if the "
+                                    "fold's training-set S3_f < 0 (resp. frozen rule on S1_lodo_f); "
+                                    "these statistics exclude the scored devices",
+            "oracle_reference": "min(y_D, 0): the dataset-level choice made with the outcome; a "
+                                "reference bound, not a method",
+            "not_best_of": "G and G1 make one choice per dataset from training-device statistics; "
+                           "no per-device selection by outcome",
+        },
+        "leakage": {
+            "where": "S3(D) and S1_lodo(D) are means over the outer folds of statistics computed "
+                     "on each fold's training devices. A device d is in the training set of "
+                     "every fold except its own, so d's starting-card record (its measured or "
+                     "truth I-V and its starting-card simulation) enters S3(D) through the other "
+                     "folds, and G's decision for d uses d's own record. The scored outcome of d "
+                     "(held-out refit with and without M_bias) is not used by S3 or S1_lodo",
+            "size": "d contributes to about (n_folds - 1) of n_folds fold values with weight "
+                    "about 1 / n_train each, i.e. about 1 / n_devices of S3(D) (1/12 sky130, 1/9 "
+                    "or 1/10 IHP measured within a class, 1/45 TU Delft, 1/48 or 1/16 simulated). "
+                    "The leak can change d's decision only if S3(D) is within that share of 0",
+            "check": "the fold-level gate (diagnostic_fold_gate_S3) uses S3_f of d's own fold, "
+                     "which excludes d; where every fold's decision equals the dataset decision "
+                     "the leak has no effect on the scored values",
+            "at_TEST": "on TEST the gate uses S3 of the DEV devices only and the TEST devices are "
+                       "not in it: no leakage of this kind",
+        },
+        "stored_S3_note": "S3 on the 11 stored datasets was computed after their outcomes were "
+                          "known (I7-1 S3 job); the S3 sign agreement 9/11 and 19/20 was seen "
+                          "before G was defined. The threshold 0 is the sign of the pre-registered "
+                          "S3, not a fitted value. G1's rule was fit on the 11 stored datasets "
+                          "(in-sample there) and frozen before the 20 new datasets were generated",
+        "datasets": out_ds,
+        "pooled": {"stored_11": pooled(stored), "measured_7": pooled(measured),
+                   "new_20": pooled(new), "all_31": pooled(stored + new)},
+        "files_read": sorted(set(FILES_READ)),
+    }
+    lk = {}
+    for grp, names in (("stored_11", stored), ("new_20", new)):
+        dif = [n for n in names if out_ds[n]["diagnostic_fold_gate_S3"][
+            "n_folds_decision_differs_from_dataset_gate"] > 0]
+        lk[grp] = {"datasets_with_any_fold_decision_different": dif,
+                   "max_abs_ln_gmr_difference_dataset_vs_fold_gate": float(max(
+                       abs(out_ds[n]["G"]["ln_gmr_vs_C0"]
+                           - out_ds[n]["diagnostic_fold_gate_S3"]["ln_gmr_vs_C0"])
+                       for n in names))}
+    near = {n: {"S3": out_ds[n]["S3"], "abs_y": abs(out_ds[n]["y_M_bias_vs_C0"]),
+                "n_devices": out_ds[n]["n_devices"]}
+            for n in out_ds if abs(out_ds[n]["S3"]) < NEAR_S3}
+    lk["near_threshold"] = {
+        "definition": f"datasets with |S3(D)| < {NEAR_S3} (cut chosen post hoc): the datasets "
+                      "whose decision is closest to the threshold; per-device inner values are "
+                      "not stored, so the exact share of one device is not computed. If the leak "
+                      "flipped the decision of a dataset, ln GMR(G, C0_refit) of the dataset changes by at most |y_D|",
+        "datasets": near,
+        "max_abs_y": float(max(v["abs_y"] for v in near.values())) if near else 0.0}
+    lk["note"] = ("the fold-level gate differs from G by leakage and by the fold-level variability "
+                  "of S3_f (S3_f uses one group fewer, and within a dataset S3_f and y_f have the "
+                  "opposite rank relation, I7-1); its difference from G is not a pure leakage "
+                  "estimate")
+    body["leakage"]["observed"] = lk
+    OUT.mkdir(parents=True, exist_ok=True)
+    (OUT / "gate_results.json").write_text(json.dumps(body, indent=1) + "\n")
+    for n, v in out_ds.items():
+        print(f"{n:16s} S3 {v['S3']:+.4f} S1 {v['S1_lodo']:+.4f} GMR(M,C0) {v['gmr_M_bias_vs_C0']:.3f}"
+              f"  G {v['G']['choice']:8s} {v['G']['gmr_vs_C0']:.3f}/{v['G']['gmr_vs_M_bias']:.3f}"
+              f"  G1 {v['G1']['choice']:8s} {v['G1']['gmr_vs_C0']:.3f}/{v['G1']['gmr_vs_M_bias']:.3f}"
+              f"  foldG {v['diagnostic_fold_gate_S3']['gmr_vs_C0']:.3f}"
+              f" ({v['diagnostic_fold_gate_S3']['n_folds_decision_differs_from_dataset_gate']})")
+    for g, p in body["pooled"].items():
+        print(g, json.dumps({a: (round(x["gmr_of_mean_vs_C0"], 4), x["worst_vs_C0"]["gmr"].__round__(4),
+                                 x["n_lose_to_C0_gt_2pct"]) for a, x in p.items() if isinstance(x, dict)}))
+    print(json.dumps(lk, indent=1))
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=("prereg",), required=True)
+    ap.add_argument("--mode", choices=("prereg", "gate"), required=True)
     args = ap.parse_args()
-    return {"prereg": prereg}[args.mode](args)
+    return {"prereg": prereg, "gate": gate}[args.mode](args)
 
 
 if __name__ == "__main__":

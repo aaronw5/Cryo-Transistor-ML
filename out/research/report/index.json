@@ -1,6 +1,23 @@
 [
  {
   "date": "2026-10-20",
+  "topic": "i8_2",
+  "folder": "2026-10-20_i8_2",
+  "pngs": [
+   "01_table_i8_2_test_predictions.png",
+   "02_table_i8_2_gate_datasets.png",
+   "03_table_i8_2_gate_pooled.png",
+   "04_i8_2_gate_per_dataset.png"
+  ],
+  "summary": [
+   "I8-2 Part A (pre-registered before TEST, git 3543948): predicted sign of ln GMR(M_bias, C0_refit) on TEST: sky130 77 K gain, IHP 233/300/343/398 K loss, TU Delft 4.13/295 K gain; S1_lodo (frozen rule) and S3 agree on all 7.",
+   "I8-2 Part B (retrospective), all 31 datasets: G (S3 gate) exp(mean ln GMR vs C0_refit) 0.695, > 1.02 on 0/31; G1 0.697, 0/31; M_bias always 0.710, 6/31.",
+   "vs M_bias: G worst 1.130 (IHP tier c), G1 worst 1.140 (IHP r1 lambda 0)."
+  ],
+  "generated": "2026-10-20T22:42:22"
+ },
+ {
+  "date": "2026-10-20",
   "topic": "i7_2",
   "folder": "2026-10-20_i7_2",
   "pngs": [
@@ -22,7 +39,7 @@
    "Not in the rule: GMR(c_hier, e_crossinterp) sky130 1.036 [0.831, 1.314] 5/10, IHP 300 K 1.102 [0.931, 1.332] 9/18, TU Delft 4.13 K 1.397 [1.287, 1.518] 3/45, TU Delft 295 K 1.125 [1.033, 1.227] 17/45; GMR(c_hier, c_ml) sky130 1.126 [1.046, 1.213] 3/11, IHP 300 K 0.930 [0.818, 1.040] 6/18, TU Delft 4.13 K 1.005 [0.960, 1.061] 28/45, TU Delft 295 K 1.065 [1.023, 1.109] 14/45.",
    "Selected mu = inf (delta = prior mean) in sky130 44/48, IHP 300 K 0/66, TU Delft 4.13 K 26/180, TU Delft 295 K 0/180 splits."
   ],
-  "generated": "2026-10-20T19:41:48"
+  "generated": "2026-10-20T19:49:59"
  },
  {
   "date": "2026-10-20",

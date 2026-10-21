@@ -314,6 +314,20 @@
       ]
      },
      {
+      "text": "I8-2 (in progress): TEST predictions pre-registered before the TEST run (git 08d23e3): sky130 77 K gain, IHP SG13G2 233/300/343/398 K loss, TU Delft 4.13/295 K gain (S1_lodo frozen rule and S3 agree on 7/7). Retrospective S3 gate G (M_bias iff S3 < 0, else C0_refit) over 31 stored and simulated datasets: exp(mean ln GMR(G, C0_refit)) 0.695, 0/31 above 1.02 (M_bias on every dataset 0.710, 6/31); worst GMR(G, M_bias) 1.130 (IHP tier c).",
+      "source": [
+       "out/research/explore/I8_2/prereg_test_predictions.json",
+       "out/research/explore/I8_2/gate_results.json"
+      ],
+      "claim": "i8-2"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-20_i8_2",
+      "table": "I8-2 Part A",
+      "caption": "I8-2 pre-registered TEST predictions of the sign of ln GMR(M_bias, C0_refit)"
+     },
+     {
       "text": "I7-2 (sky130 77 K, IHP 300 K, TU Delft 4.13 K / 295 K; K = 2 / 4 adaptation curves per held-out device): rule output inconclusive. GMR(c_hier, b_shared) 0.992 / 0.904 / 0.912 / 0.939 (CI upper < 1 on 2/4, C1 needs 3); GMR(c_hier, a_C0) CI upper < 1 on 3/4 (IHP 1.025); GMR(c_hier, d_scratch) 0.912 / 1.253 / 1.153 / 1.121 (C3 1/4). Not in the rule: GMR(c_hier, e_crossinterp) 1.036 / 1.102 / 1.397 / 1.125; GMR(c_hier, c_ml) 1.126 / 0.930 / 1.005 / 1.065. c_hier is ahead of d_scratch at K = 2 on 3/4 datasets and behind at K = 4 on 3/4.",
       "source": [
        "out/research/explore/I7_2/decision.json"
@@ -4945,6 +4959,115 @@
     "out/research/explore/I3_2/gf180_c_logo/corrections.json",
     "out/research/explore/I3_2/ihp_c_logo/corrections.json",
     "scripts/research/plot_explore_i4.py"
+   ],
+   "updated": "2026-10-20"
+  },
+  {
+   "id": "i8-2",
+   "tab": "explore",
+   "statement": "I8-2: pre-registered predictions of the sign of ln GMR(M_bias, C0_refit) on the 7 TEST datasets (written before any TEST curve was loaded): sky130 77 K gain, IHP SG13G2 233/300/343/398 K loss, TU Delft 4.13/295 K gain, from the DEV S1_lodo (frozen I7-1 rule) and the DEV S3, which agree on all 7. Retrospective (outcomes already seen): the dataset-level S3 gate G (M_bias iff S3 < 0, else C0_refit) has GMR(G, C0_refit) <= 1 on all 31 stored and simulated datasets.",
+   "status": "in_progress",
+   "headline": {
+    "value": "TEST predictions committed (git 08d23e3); retrospective gate G vs C0_refit: exp(mean ln GMR) 0.695, 0/31 datasets above 1.02 (M_bias always 0.710, 6/31)",
+    "convention": "y = ln GMR(M_bias, C0_refit) over the held-out devices (strict paper RRMS after the held-out card refit); gate = one choice per dataset from training-device statistics; pooled = equal weight per dataset; retrospective"
+   },
+   "numbers": [
+    {
+     "label": "Part A: TEST predictions (S1_lodo frozen rule; S3)",
+     "value": "sky130 77 K REAL_TEST: rule y -0.148 (gain), S3 -0.1126 (gain); IHP SG13G2 TEST 233 K: rule y +0.160 (loss), S3 +0.2545 (loss); IHP SG13G2 TEST 300 K: rule y +0.116 (loss), S3 +0.3662 (loss); IHP SG13G2 TEST 343 K: rule y +0.168 (loss), S3 +0.3749 (loss); IHP SG13G2 TEST 398 K: rule y +0.191 (loss), S3 +0.3945 (loss); TU Delft TEST 4.13 K: rule y -0.237 (gain), S3 -0.0329 (gain); TU Delft TEST 295 K: rule y -0.149 (gain), S3 -0.0409 (gain)",
+     "convention": "primary S = stored dataset-level DEV values (I7-1 retro); gain = predicted ln GMR(M_bias, C0_refit) < 0 on the TEST devices; TEST run about 2026-12-10",
+     "source": "out/research/explore/I8_2/prereg_test_predictions.json"
+    },
+    {
+     "label": "Part A: secondary S1_lodo on the TEST training set",
+     "value": "sky130 77 K REAL_TEST +0.337; IHP SG13G2 TEST 233 K -0.246; IHP SG13G2 TEST 300 K -0.189; IHP SG13G2 TEST 343 K -0.266; IHP SG13G2 TEST 398 K -0.290; TU Delft TEST 4.13 K +0.505; TU Delft TEST 295 K +0.304; same sign as the primary value on 7/7",
+     "convention": "all DEV devices (IHP per class, weighted 6 LV / 4 HV TEST DUTs); reported, not the prediction",
+     "source": "out/research/explore/I8_2/prereg_test_predictions.json"
+    },
+    {
+     "label": "Part B, 11 stored datasets: G / G1 / M_bias always vs C0_refit",
+     "value": "exp(mean ln GMR) 0.939 / 0.928 / 0.989; datasets above 1.02: 0 / 0 / 4 of 11; worst 1.000 / 1.000 / 1.272",
+     "convention": "retrospective; dataset oracle (reference) 0.928",
+     "source": "out/research/explore/I8_2/gate_results.json"
+    },
+    {
+     "label": "Part B, 7 measured datasets: G / G1 / M_bias always vs C0_refit",
+     "value": "exp(mean ln GMR) 0.924 / 0.924 / 1.022; datasets above 1.02: 0 / 0 / 4 of 7; worst 1.000 / 1.000 / 1.272",
+     "convention": "retrospective; dataset oracle (reference) 0.924",
+     "source": "out/research/explore/I8_2/gate_results.json"
+    },
+    {
+     "label": "Part B, 20 I7-1 simulated datasets: G / G1 / M_bias always vs C0_refit",
+     "value": "exp(mean ln GMR) 0.590 / 0.596 / 0.591; datasets above 1.02: 0 / 0 / 2 of 20; worst 1.000 / 1.000 / 1.073",
+     "convention": "retrospective; dataset oracle (reference) 0.588",
+     "source": "out/research/explore/I8_2/gate_results.json"
+    },
+    {
+     "label": "Part B, all 31 datasets: G / G1 / M_bias always vs C0_refit",
+     "value": "exp(mean ln GMR) 0.695 / 0.697 / 0.710; datasets above 1.02: 0 / 0 / 6 of 31; worst 1.000 / 1.000 / 1.272",
+     "convention": "retrospective; dataset oracle (reference) 0.692",
+     "source": "out/research/explore/I8_2/gate_results.json"
+    },
+    {
+     "label": "Part B: G and G1 vs M_bias, all 31",
+     "value": "G worst 1.130 (IHP tier c, S3 +0.037, GMR(M_bias, C0_refit) 0.885), above 1.02 on 2/31; G1 worst 1.140 (IHP r1 lambda 0), above 1.02 on 4/31",
+     "convention": "GMR(G, M_bias) > 1 where the gate chooses C0_refit on a dataset where M_bias has a gain",
+     "source": "out/research/explore/I8_2/gate_results.json"
+    },
+    {
+     "label": "Part B: leakage check (fold-level S3 gate, diagnostic)",
+     "value": "fold decisions differ from G in 4/11 stored and 4/20 simulated datasets; fold-level gate all 31 exp(mean) 0.712, above 1.02 on 5/31; |S3(D)| < 0.01 on 4 datasets with |y_D| <= 0.045",
+     "convention": "the fold-level gate uses S3_f of the scored device's own fold (excludes the device); its difference from G contains fold-level variability as well as leakage",
+     "source": "out/research/explore/I8_2/gate_results.json"
+    }
+   ],
+   "what": [
+    "Part A: write down, before the final TEST run, the sign of ln GMR(M_bias, C0_refit) that the I7-1 statistics predict on each TEST dataset, and how TEST is scored.",
+    "Part B: define a gated method that applies M_bias on a dataset only when the training-device statistic predicts a gain, and evaluate it on the datasets whose outcomes are stored."
+   ],
+   "did": [
+    "`scripts/research/explore/i8_2_gate.py --mode prereg` (code commit 3543948): stored DEV S1_lodo and S3 of the 7 datasets (I7-1 retro/results.json, retro/s3.json; recomputed from the DEV records and checked, difference 0), frozen I7-1 rule, secondary S1_lodo on the TEST training set; every loaded record checked to be in the DEV list of its split file. Output `out/research/explore/I8_2/prereg_test_predictions.{json,md}` committed alone (08d23e3).",
+    "`--mode gate`: G (S3 < 0) and G1 (frozen S1_lodo rule) per dataset from the stored per-device log ratios of the 11 stored and 20 simulated datasets (checked against the per-device RRMS files and the stored y, S3, S1_lodo); pooled mean ln GMR, worst dataset, datasets above 1.02; fold-level gates as a leakage diagnostic. No NGSpice runs, no training.",
+    "Report `scripts/research/plot_explore_i8_2.py` (batch 2026-10-20_i8_2) recomputes 146 stored gate values and checks them."
+   ],
+   "result": {
+    "text": [
+     "Part A: S1_lodo (frozen rule) and S3 give the same predicted sign on all 7 TEST datasets: gain on sky130 77 K and TU Delft 4.13 / 295 K, loss on IHP SG13G2 at all 4 temperatures. These are the same signs as the DEV outcomes.",
+     "Part B (retrospective): G and G1 never choose M_bias on a dataset where M_bias is worse than C0_refit; GMR(G, C0_refit) <= 1 on 31/31 datasets, against 6/31 above 1.02 for M_bias on every dataset. On the 7 measured datasets G and G1 make the same choices as the dataset oracle (exp(mean) 0.924).",
+     "The cost of the gate is on datasets where M_bias has a gain and the statistic predicts none: G on IHP tier c (GMR(G, M_bias) 1.130) and GF180 r0 lambda 0 (1.046); G1 on IHP r1 lambda 0 (1.140), GF180 r0 lambda 0 (1.046), GF180 r1 lambda 0.25 (1.040) and IHP r1 lambda 0.25 (1.037)."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-20_i8_2",
+      "file": "01_table_i8_2_test_predictions.png"
+     },
+     {
+      "batch": "2026-10-20_i8_2",
+      "file": "02_table_i8_2_gate_datasets.png"
+     },
+     {
+      "batch": "2026-10-20_i8_2",
+      "file": "03_table_i8_2_gate_pooled.png"
+     },
+     {
+      "batch": "2026-10-20_i8_2",
+      "file": "04_i8_2_gate_per_dataset.png"
+     }
+    ]
+   },
+   "caveats": [
+    "Part B is retrospective: all outcomes were known before G and G1 were defined. S3 on the 11 stored datasets was computed after their outcomes were known, and its sign agreement with y (9/11, 19/20) was seen in I7-1. G1's rule was fitted on the 11 stored datasets (in-sample there).",
+    "Leakage: S3(D) and S1_lodo(D) are means over all outer folds, so each scored device's own starting-card record enters the decision used for it (about 1/n_devices of the value); the held-out refit outcomes do not. On TEST the statistics use DEV devices only.",
+    "The 4 IHP temperatures share DUTs and the 2 TU Delft temperatures share devices: the 7 measured datasets come from 3 device sets, and so do the 7 TEST datasets.",
+    "The 20 simulated datasets have an injected error of the shared-plus-device form that S1_lodo and S3 measure (I7-1 caveat)."
+   ],
+   "sources": [
+    "out/research/explore/I8_2/prereg_test_predictions.json",
+    "out/research/explore/I8_2/prereg_test_predictions.md",
+    "out/research/explore/I8_2/gate_results.json",
+    "scripts/research/explore/i8_2_gate.py",
+    "scripts/research/plot_explore_i8_2.py",
+    "commits 3543948 (Part A code), 08d23e3 (Part A predictions)"
    ],
    "updated": "2026-10-20"
   },

@@ -1216,3 +1216,47 @@ status block: iteration 7 complete, I7-2 item and the I7-2 decision table. Site 
 ### I7-2 example I-V curves (2026-10-20 19:50)
 
 Queue jobs I7_2_examples (6 s) and I7_2_figs (6 s), script scripts/research/explore/i7_2_examples.py (commit dd55131). The 8 example device/draw pairs in figures 08-11 of batch 2026-10-20_i7_2 are re-simulated with NGSpice from each arm's stored final card (sky130 ngspice-41 arm64, IHP ngspice-46 + psp103.osdi, TU Delft ngspice-41 arm64); corrections are applied in Python to the NGSpice output (b, c, c_ml, d: x exp(g); e: + crossing residual). d's per-device MLP is refit with the run's seeds and gives the stored result exactly. Held-out and adaptation RRMS recomputed from these curves match results.json with relative difference 0 for every arm. Figures 08-11 now show the arm curves.
+
+## I8-2 TEST predictions (pre-registered) and S3 gate (retrospective) (2026-10-20 22:45)
+
+Part A, pre-registration (commits 3543948 code, 08d23e3 predictions; pushed before Part B):
+`out/research/explore/I8_2/prereg_test_predictions.{json,md}` from `scripts/research/explore/i8_2_gate.py --mode
+prereg`. Predicted sign of ln GMR(M_bias, C0_refit) on the 7 TEST datasets (final TEST run about 2026-12-10) from
+the stored dataset-level DEV statistics: frozen I7-1 rule y = 0.007619 - 0.485184 S1_lodo and S3 < 0. sky130 77 K
+REAL_TEST (6 devices): S1_lodo +0.3216, rule y -0.148 (gain), S3 -0.113 (gain). IHP SG13G2 TEST (10 DUTs) 233 /
+300 / 343 / 398 K: rule y +0.160 / +0.116 / +0.168 / +0.191 (loss), S3 +0.254 / +0.366 / +0.375 / +0.395 (loss).
+TU Delft TEST (24 devices) 4.13 / 295 K: rule y -0.237 / -0.149 (gain), S3 -0.033 / -0.041 (gain). S1_lodo and S3
+agree on 7/7; the signs equal the DEV outcomes. Secondary S1_lodo on the TEST run's training set (all DEV devices;
+IHP per class) has the same sign on 7/7. TEST scoring written down: M_bias (I3-2 recipe, 5 seeds, 2000 steps)
+trained on all DEV starting-card records (IHP: same class and temperature), TEST starting cards (sky130: stored
+43-parameter direct-fit cards; IHP / TU Delft: polish from stock, max_nfev 3000, irls 3), held-out refit with and
+without M_bias (max_nfev 400, irls 2, diff_step 0.01), strict paper RRMS, y = mean ln ratio over TEST devices. No
+TEST mode exists in the code yet. TEST data were not opened: the script reads DEV records, stored DEV statistics and
+the split tag lists; every loaded record tag is in the DEV list (checked); stored S1_lodo and S3 reproduced with
+difference 0.
+
+Part B, retrospective (outcomes known before the gates were defined): `--mode gate`,
+`out/research/explore/I8_2/gate_results.json`. G: on a dataset, M_bias iff S3(D) < 0, else C0_refit (one choice
+per dataset from training-device statistics, not a per-device best-of); G1: the same with the frozen S1_lodo rule.
+Evaluated from the stored per-device log ratios (checked against the per-device RRMS files and stored y, S3,
+S1_lodo); no NGSpice, no training. exp(mean ln GMR vs C0_refit) (datasets above 1.02, worst):
+11 stored: G 0.939 (0 above 1.02, worst 1.000), G1 0.928 (0, 1.000), M_bias always 0.989 (4, 1.272), dataset oracle 0.928.
+7 measured: G 0.924 (0 above 1.02, worst 1.000), G1 0.924 (0, 1.000), M_bias always 1.022 (4, 1.272), dataset oracle 0.924.
+20 simulated: G 0.590 (0 above 1.02, worst 1.000), G1 0.596 (0, 1.000), M_bias always 0.591 (2, 1.073), dataset oracle 0.588.
+All 31: G 0.695 (0 above 1.02, worst 1.000), G1 0.697 (0, 1.000), M_bias always 0.710 (6, 1.272), dataset oracle 0.692.
+G and G1 do not choose M_bias on any dataset where M_bias is worse than C0_refit. Versus M_bias always, G is worse
+by more than 2% on 2/31 (IHP tier c 1.130, GF180 r0 lambda 0 1.046) and G1 on
+4/31 (IHP r1 lambda 0 1.140, GF180 r0 lambda 0 1.046, GF180 r1 lambda 0.25 1.040, IHP r1 lambda 0.25
+1.037). S3 on the stored datasets was computed with outcomes known; G1's rule was fitted on the 11 stored datasets.
+Leakage: S3(D) averages S3_f over all outer folds, so a scored device's own starting-card record enters G's
+decision through the folds where it is a training device (about 1/n_devices of S3(D)); the held-out refit outcomes
+are not used. Diagnostic fold-level S3 gate (decision from S3_f of the device's own fold, which excludes it):
+decisions differ from G in 4/11 stored (tudelft_4K, tudelft_295K, ihp_c, gf180_b) and 4/20 simulated
+datasets; all 31 exp(mean) 0.712, 5/31 above 1.02 (the fold-level difference also contains
+fold-level variability of S3_f; within a dataset S3_f and y_f have the opposite rank relation, I7-1). Datasets with
+|S3(D)| < 0.01 (cut chosen post hoc): GF180 tier b, IHP tier b, GF180 r0 lambda 0, IHP r1 lambda 0.25; a flipped
+decision there changes the dataset ln GMR by at most |y_D| <= 0.045. On TEST the gate uses DEV devices only.
+Report batch `out/research/report/2026-10-20_i8_2/` (`scripts/research/plot_explore_i8_2.py`, stored files only,
+146 values recomputed and checked): table 01 TEST predictions, table 02 gate per dataset, table 03 pooled, figure
+04 per-dataset GMR(., C0_refit). Site: new claim `i8-2` (in progress) in the Exploration tab, status item and the
+Part A table. Site rebuilt, not published.

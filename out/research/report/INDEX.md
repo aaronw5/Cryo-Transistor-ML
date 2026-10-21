@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-20 · i8_2
+
+Folder: [2026-10-20_i8_2/](2026-10-20_i8_2/) · [tables.md](2026-10-20_i8_2/tables.md) · [README.md](2026-10-20_i8_2/README.md)
+
+- I8-2 Part A (pre-registered before TEST, git 3543948): predicted sign of ln GMR(M_bias, C0_refit) on TEST: sky130 77 K gain, IHP 233/300/343/398 K loss, TU Delft 4.13/295 K gain; S1_lodo (frozen rule) and S3 agree on all 7.
+- I8-2 Part B (retrospective), all 31 datasets: G (S3 gate) exp(mean ln GMR vs C0_refit) 0.695, > 1.02 on 0/31; G1 0.697, 0/31; M_bias always 0.710, 6/31.
+- vs M_bias: G worst 1.130 (IHP tier c), G1 worst 1.140 (IHP r1 lambda 0).
+
+Figures and tables: [01_table_i8_2_test_predictions.png](2026-10-20_i8_2/01_table_i8_2_test_predictions.png) · [02_table_i8_2_gate_datasets.png](2026-10-20_i8_2/02_table_i8_2_gate_datasets.png) · [03_table_i8_2_gate_pooled.png](2026-10-20_i8_2/03_table_i8_2_gate_pooled.png) · [04_i8_2_gate_per_dataset.png](2026-10-20_i8_2/04_i8_2_gate_per_dataset.png)
+
 ## 2026-10-20 · i7_2
 
 Folder: [2026-10-20_i7_2/](2026-10-20_i7_2/) · [tables.md](2026-10-20_i7_2/tables.md) · [README.md](2026-10-20_i7_2/README.md)
