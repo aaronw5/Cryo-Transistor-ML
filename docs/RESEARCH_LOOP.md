@@ -1260,3 +1260,31 @@ Report batch `out/research/report/2026-10-20_i8_2/` (`scripts/research/plot_expl
 146 values recomputed and checked): table 01 TEST predictions, table 02 gate per dataset, table 03 pooled, figure
 04 per-dataset GMR(., C0_refit). Site: new claim `i8-2` (in progress) in the Exploration tab, status item and the
 Part A table. Site rebuilt, not published.
+
+## I8-1 ingest, split, smoke and pre-registration draft (2026-10-20 23:00): NIST mds2-2997 sky130 at 4 K
+
+Data: NIST mds2-2997 (doi:10.18434/mds2-2997, record version 1.1.2), `MPW-5 Test Tile.zip` (39,471,626 bytes) and
+`ETest Tile.zip` (3,807,177 bytes), sha256 equal to the NIST metadata values (`out/research/explore/I8_1/data/
+sources.json`); local copies and extracted files under `out/research/data_raw/nist_mds2_2997/` (gitignored), read
+as MDM text and as xlsx XML (stdlib reader; openpyxl is not installed in .venv) under `python -I`.
+Code: `src/cryoml/explore/i8_1_nist.py`, `scripts/research/explore/i8_1_nist.py` (modes sources, inventory, data,
+split, smoke), `tests/test_i8_1_nist.py` (5 cases).
+Inventory (`inventory.json`, `inventory.md`): MPW-5 287 transistors (nfet_01v8 80, pfet_01v8 71, nfet_01v8_lvt 56,
+pfet_01v8_lvt 40, nfet_03v3_nvt 40), one device per W/L within each type; ETest 114 devices. MPW-5 1.8 V types:
+Id-Vg at |Vd| 0.1 and 1.8 V, 5 Vb values, 181 points; Id-Vd at |Vg| 0-1.8 V in 0.3 V steps, Vb 0 and 1 V magnitude,
+91 points. Readme flags: nthin_lvt 23_4 "Issue" (gate-control ratio 12.1, excluded), pthin 17_6 "gate not
+connected" (no files). No non-finite values, no all-zero curve, no drain-compliance hit, no identical current data.
+Families: nfet_01v8_lvt and pfet_01v8_lvt, the device types of the 77 K paper cards (the nMOS card is the lvt type).
+The pruned 77 K cards cover 21 of 56 nMOS and 22 of 40 pMOS geometries; the others need a bin choice (draft: forced
+nearest bin; forcing the native bin reproduces native selection exactly).
+Split (`split.json`, seed 20261021, strata family x bin coverage, blocks of 5 by (L, W), 3 DEV / 2 TEST): DEV 57
+(nMOS 33, pMOS 24), TEST 38 (22, 16), excluded 1. Measured-rule inclusion on DEV: 198 nMOS curves (6 per device),
+102 pMOS curves (2-6).
+Smoke (`smoke/smoke.json`; stock 77 K card, no fit, no RRMS): one DEV device per family with its native bin and one
+with the forced nearest bin, deck at 77 K and 4.2 K: 9 of 9 curves finite with the measured array shapes and
+current sign; 0.023-0.025 s per simulation. At 4.2 K the stock-card subthreshold currents drop to the 1.8e-12 A
+GMIN floor.
+Pre-registration draft (`prereg.json`, `prereg.md`; not in force, not queued): P_a frozen I7-1 rule on DEV S1_lodo
+(starting-card records), P_b GMR(M_bias, C0_refit) CI upper < 1 with R2 / R3, P_c sign(S3_D); prediction.json
+committed before the LODO job; 11 open questions (card bins, deck temperature, inclusion rule, box, curve set,
+baselines, VDD, S1 records). Compute estimate 4-9 CPU-h, about 45-90 min on 6 workers.

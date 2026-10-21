@@ -1,0 +1,339 @@
+{
+ "id": "I8_1_smoke",
+ "simulator": "/Users/anrunw/cryo-ng41/arm64/bin/ngspice",
+ "note": "stock 77 K paper card, no fit, no RRMS; shape, finiteness, sign and timing only",
+ "runs": [
+  {
+   "device": "nfet_01v8_lvt_W1p65_L1_m23p6",
+   "how": "native_bin",
+   "bin": 3,
+   "deck_temp_K": 77.0,
+   "seconds": 0.044,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    0.000153769015,
+    0.000538083045,
+    1.80209896e-12,
+    1.80336231e-12,
+    6.64371579e-07,
+    8.15230821e-05,
+    0.000222705693,
+    0.00037748066,
+    0.000538083045
+   ],
+   "meas_last_A": [
+    0.00010773,
+    0.00044159,
+    -5.4e-13,
+    -5.4e-13,
+    1.2288e-10,
+    4.469e-05,
+    0.00015945,
+    0.00029865,
+    0.00044156
+   ]
+  },
+  {
+   "device": "nfet_01v8_lvt_W1p65_L1_m23p6",
+   "how": "native_bin",
+   "bin": 3,
+   "deck_temp_K": 4.2,
+   "seconds": 0.039,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    0.00015353188,
+    0.000535748016,
+    1.79957225e-12,
+    1.79957225e-12,
+    1.79957225e-12,
+    7.97642086e-05,
+    0.000220669065,
+    0.000375277435,
+    0.000535748016
+   ],
+   "meas_last_A": [
+    0.00010773,
+    0.00044159,
+    -5.4e-13,
+    -5.4e-13,
+    1.2288e-10,
+    4.469e-05,
+    0.00015945,
+    0.00029865,
+    0.00044156
+   ]
+  },
+  {
+   "device": "nfet_01v8_lvt_W5_L0p25_m25p4",
+   "how": "forced_nearest_bin",
+   "bin": 1,
+   "deck_temp_K": 77.0,
+   "seconds": 0.023,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    0.000838422896,
+    0.00301262984,
+    1.80172199e-12,
+    2.19221423e-12,
+    2.70885335e-06,
+    0.000457010285,
+    0.00129639412,
+    0.00216144785,
+    0.00301262984
+   ],
+   "meas_last_A": [
+    0.00082612,
+    0.0027364,
+    -5.7e-13,
+    -5.7e-13,
+    4.5e-13,
+    0.00037652,
+    0.0011767,
+    0.0019771,
+    0.0027371
+   ]
+  },
+  {
+   "device": "nfet_01v8_lvt_W5_L0p25_m25p4",
+   "how": "forced_nearest_bin",
+   "bin": 1,
+   "deck_temp_K": 4.2,
+   "seconds": 0.023,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    0.000836829688,
+    0.00299885097,
+    1.79406528e-12,
+    1.79406528e-12,
+    1.79406528e-12,
+    0.000446542519,
+    0.00128439932,
+    0.00214843235,
+    0.00299885097
+   ],
+   "meas_last_A": [
+    0.00082612,
+    0.0027364,
+    -5.7e-13,
+    -5.7e-13,
+    4.5e-13,
+    0.00037652,
+    0.0011767,
+    0.0019771,
+    0.0027371
+   ]
+  },
+  {
+   "device": "pfet_01v8_lvt_W3_L2_m29p8",
+   "how": "native_bin",
+   "bin": 11,
+   "deck_temp_K": 77.0,
+   "seconds": 0.025,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    2.13719566e-05,
+    0.000111827122,
+    1.83137427e-12,
+    5.46754484e-12,
+    3.89511933e-10,
+    3.76149333e-08,
+    2.69203815e-06,
+    4.33712493e-05,
+    0.000111827122
+   ],
+   "meas_last_A": [
+    2.1348e-05,
+    0.00011813,
+    -5e-14,
+    -7e-14,
+    -7e-14,
+    3.1e-13,
+    2.3881e-09,
+    3.6525e-05,
+    0.00011811
+   ]
+  },
+  {
+   "device": "pfet_01v8_lvt_W3_L2_m29p8",
+   "how": "native_bin",
+   "bin": 11,
+   "deck_temp_K": 4.2,
+   "seconds": 0.024,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    2.14752601e-05,
+    0.00011416566,
+    1.80151311e-12,
+    1.80151311e-12,
+    1.80151311e-12,
+    1.80151311e-12,
+    9.73263216e-06,
+    5.91505793e-05,
+    0.00011416566
+   ],
+   "meas_last_A": [
+    2.1348e-05,
+    0.00011813,
+    -5e-14,
+    -7e-14,
+    -7e-14,
+    3.1e-13,
+    2.3881e-09,
+    3.6525e-05,
+    0.00011811
+   ]
+  },
+  {
+   "device": "pfet_01v8_lvt_W7_L1p5_m31p5",
+   "how": "forced_nearest_bin",
+   "bin": 11,
+   "deck_temp_K": 77.0,
+   "seconds": 0.023,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    5.15031856e-05,
+    0.000261035062,
+    1.90504953e-12,
+    1.25815593e-11,
+    1.1434662e-09,
+    1.11738681e-07,
+    6.95112526e-06,
+    9.73903004e-05,
+    0.000261035062
+   ],
+   "meas_last_A": [
+    7.1375e-05,
+    0.00041635,
+    -9e-14,
+    -7e-14,
+    -1.4e-13,
+    2.15e-12,
+    7.8862e-09,
+    0.00014608,
+    0.00041846
+   ]
+  },
+  {
+   "device": "pfet_01v8_lvt_W7_L1p5_m31p5",
+   "how": "forced_nearest_bin",
+   "bin": 11,
+   "deck_temp_K": 4.2,
+   "seconds": 0.023,
+   "n_curves": 9,
+   "shapes_equal": true,
+   "n_nonfinite_curves": 0,
+   "sign_agrees_at_max_bias": [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "sim_last_A": [
+    5.17673839e-05,
+    0.000268289322,
+    1.79249597e-12,
+    1.79249597e-12,
+    1.79249597e-12,
+    1.79249597e-12,
+    2.03010201e-05,
+    0.000137029122,
+    0.000268289322
+   ],
+   "meas_last_A": [
+    7.1375e-05,
+    0.00041635,
+    -9e-14,
+    -7e-14,
+    -1.4e-13,
+    2.15e-12,
+    7.8862e-09,
+    0.00014608,
+    0.00041846
+   ]
+  }
+ ],
+ "force_check": [
+  {
+   "device": "nfet_01v8_lvt_W1p65_L1_m23p6",
+   "native_bin": 3,
+   "max_rel_diff_forced_same_bin": 0.0,
+   "other_bin": 0,
+   "max_rel_diff_forced_other_bin": 253527.9149945694
+  },
+  {
+   "device": "pfet_01v8_lvt_W3_L2_m29p8",
+   "native_bin": 11,
+   "max_rel_diff_forced_same_bin": 0.0,
+   "other_bin": 0,
+   "max_rel_diff_forced_other_bin": 0.9052522743286529
+  }
+ ]
+}

@@ -1,0 +1,356 @@
+{
+ "id": "I8_1_split",
+ "seed": 20261021,
+ "rule": "exclude devices with a readme flag or a bad check; strata = family x 77 K card bin coverage (covered: the geometry lies in a bin of the 77 K card); per stratum devices sorted by (L, W), consecutive blocks of 5, seeded permutation puts 3 of 5 in DEV (short last block: round(0.6 n)); numpy.random.default_rng(seed), strata in sorted order (cryoml.explore.i8_1_nist.make_split). Uses geometry, flags and bin coverage only; no current value enters the assignment except through the inventory bad checks",
+ "excluded": {
+  "nfet_01v8_lvt_W1p65_L0p25_m23p4": [
+   "gate_control 12.1 < 100",
+   "readme: Issue"
+  ]
+ },
+ "DEV": [
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+  "nfet_01v8_lvt_W0p55_L0p15_m20p6",
+  "nfet_01v8_lvt_W0p55_L0p25_m20p7",
+  "nfet_01v8_lvt_W0p55_L1_m20p8",
+  "nfet_01v8_lvt_W0p64_L0p15_m21p2",
+  "nfet_01v8_lvt_W0p64_L0p18_m21p3",
+  "nfet_01v8_lvt_W0p64_L0p25_m21p4",
+  "nfet_01v8_lvt_W0p64_L1_m21p6",
+  "nfet_01v8_lvt_W1_L0p15_m22p2",
+  "nfet_01v8_lvt_W1_L0p18_m22p3",
+  "nfet_01v8_lvt_W1_L1_m22p6",
+  "nfet_01v8_lvt_W1_L4_m22p8",
+  "nfet_01v8_lvt_W1_L8_m23p1",
+  "nfet_01v8_lvt_W1p65_L0p18_m23p3",
+  "nfet_01v8_lvt_W1p65_L1_m23p6",
+  "nfet_01v8_lvt_W1p65_L2_m23p7",
+  "nfet_01v8_lvt_W1p65_L8_m23p8",
+  "nfet_01v8_lvt_W3_L0p18_m24p2",
+  "nfet_01v8_lvt_W3_L0p25_m24p3",
+  "nfet_01v8_lvt_W3_L0p5_m24p4",
+  "nfet_01v8_lvt_W3_L2_m24p6",
+  "nfet_01v8_lvt_W3_L8_m24p8",
+  "nfet_01v8_lvt_W3p01_L0p15_m25p1",
+  "nfet_01v8_lvt_W5_L0p25_m25p4",
+  "nfet_01v8_lvt_W5_L0p5_m25p5",
+  "nfet_01v8_lvt_W5_L1_m25p6",
+  "nfet_01v8_lvt_W5_L2_m25p7",
+  "nfet_01v8_lvt_W5_L4_m25p8",
+  "nfet_01v8_lvt_W5_L8_m26p1",
+  "nfet_01v8_lvt_W7_L0p15_m26p2",
+  "nfet_01v8_lvt_W7_L0p25_m26p4",
+  "nfet_01v8_lvt_W7_L2_m26p7",
+  "nfet_01v8_lvt_W7_L8_m26p8",
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+  "pfet_01v8_lvt_W0p42_L20_m27p7",
+  "pfet_01v8_lvt_W0p42_L4_m27p5",
+  "pfet_01v8_lvt_W0p55_L0p5_m28p1",
+  "pfet_01v8_lvt_W0p55_L1_m28p2",
+  "pfet_01v8_lvt_W0p55_L2_m28p3",
+  "pfet_01v8_lvt_W0p55_L4_m28p4",
+  "pfet_01v8_lvt_W0p55_L8_m28p5",
+  "pfet_01v8_lvt_W1_L0p35_m28p6",
+  "pfet_01v8_lvt_W1_L20_m29p4",
+  "pfet_01v8_lvt_W1_L2_m29p1",
+  "pfet_01v8_lvt_W1_L4_m29p2",
+  "pfet_01v8_lvt_W3_L0p35_m29p5",
+  "pfet_01v8_lvt_W3_L1_m29p6",
+  "pfet_01v8_lvt_W3_L1p5_m29p7",
+  "pfet_01v8_lvt_W3_L2_m29p8",
+  "pfet_01v8_lvt_W3_L4_m30p1",
+  "pfet_01v8_lvt_W5_L0p35_m30p3",
+  "pfet_01v8_lvt_W5_L1_m30p5",
+  "pfet_01v8_lvt_W5_L1p5_m30p6",
+  "pfet_01v8_lvt_W5_L4_m30p8",
+  "pfet_01v8_lvt_W7_L0p35_m31p2",
+  "pfet_01v8_lvt_W7_L1p5_m31p5",
+  "pfet_01v8_lvt_W7_L8_m31p7"
+ ],
+ "TEST": [
+  "nfet_01v8_lvt_W0p42_L0p18_m20p2",
+  "nfet_01v8_lvt_W0p42_L0p25_m20p3",
+  "nfet_01v8_lvt_W0p42_L1_m20p4",
+  "nfet_01v8_lvt_W0p42_L8_m20p5",
+  "nfet_01v8_lvt_W0p55_L8_m21p1",
+  "nfet_01v8_lvt_W0p64_L0p5_m21p5",
+  "nfet_01v8_lvt_W0p64_L2_m21p7",
+  "nfet_01v8_lvt_W0p64_L8_m21p8",
+  "nfet_01v8_lvt_W0p84_L0p15_m22p1",
+  "nfet_01v8_lvt_W1_L0p25_m22p4",
+  "nfet_01v8_lvt_W1_L0p5_m22p5",
+  "nfet_01v8_lvt_W1_L2_m22p7",
+  "nfet_01v8_lvt_W1p65_L0p15_m23p2",
+  "nfet_01v8_lvt_W1p65_L0p5_m23p5",
+  "nfet_01v8_lvt_W3_L0p15_m24p1",
+  "nfet_01v8_lvt_W3_L1_m24p5",
+  "nfet_01v8_lvt_W3_L4_m24p7",
+  "nfet_01v8_lvt_W5_L0p15_m25p2",
+  "nfet_01v8_lvt_W5_L0p18_m25p3",
+  "nfet_01v8_lvt_W7_L0p18_m26p3",
+  "nfet_01v8_lvt_W7_L0p5_m26p5",
+  "nfet_01v8_lvt_W7_L1_m26p6",
+  "pfet_01v8_lvt_W0p42_L0p35_m27p1",
+  "pfet_01v8_lvt_W0p42_L1_m27p3",
+  "pfet_01v8_lvt_W0p42_L2_m27p4",
+  "pfet_01v8_lvt_W0p42_L8_m27p6",
+  "pfet_01v8_lvt_W0p55_L0p35_m27p8",
+  "pfet_01v8_lvt_W1_L0p5_m28p7",
+  "pfet_01v8_lvt_W1_L1_m28p8",
+  "pfet_01v8_lvt_W1_L8_m29p3",
+  "pfet_01v8_lvt_W3_L8_m30p2",
+  "pfet_01v8_lvt_W5_L0p5_m30p4",
+  "pfet_01v8_lvt_W5_L2_m30p7",
+  "pfet_01v8_lvt_W5_L8_m31p1",
+  "pfet_01v8_lvt_W7_L0p5_m31p3",
+  "pfet_01v8_lvt_W7_L1_m31p4",
+  "pfet_01v8_lvt_W7_L20_m31p8",
+  "pfet_01v8_lvt_W7_L2_m31p6"
+ ],
+ "n_dev": 57,
+ "n_test": 38,
+ "counts": {
+  "nfet_01v8_lvt|uncovered": {
+   "DEV": 21,
+   "TEST": 14
+  },
+  "nfet_01v8_lvt|covered": {
+   "DEV": 12,
+   "TEST": 8
+  },
+  "pfet_01v8_lvt|covered": {
+   "DEV": 13,
+   "TEST": 9
+  },
+  "pfet_01v8_lvt|uncovered": {
+   "DEV": 11,
+   "TEST": 7
+  }
+ },
+ "blocks": {
+  "nfet_01v8_lvt|covered": [
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W1_L0p15_m22p2",
+     "nfet_01v8_lvt_W1_L0p18_m22p3",
+     "nfet_01v8_lvt_W1p65_L0p18_m23p3"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W1p65_L0p15_m23p2",
+     "nfet_01v8_lvt_W7_L0p18_m26p3"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W1_L1_m22p6",
+     "nfet_01v8_lvt_W3_L0p5_m24p4",
+     "nfet_01v8_lvt_W7_L0p25_m26p4"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W1_L0p25_m22p4",
+     "nfet_01v8_lvt_W1p65_L0p5_m23p5"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W1_L4_m22p8",
+     "nfet_01v8_lvt_W1p65_L1_m23p6",
+     "nfet_01v8_lvt_W1p65_L2_m23p7"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W1_L2_m22p7",
+     "nfet_01v8_lvt_W3_L1_m24p5"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W1_L8_m23p1",
+     "nfet_01v8_lvt_W1p65_L8_m23p8",
+     "nfet_01v8_lvt_W7_L8_m26p8"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p55_L8_m21p1",
+     "nfet_01v8_lvt_W0p64_L8_m21p8"
+    ]
+   }
+  ],
+  "nfet_01v8_lvt|uncovered": [
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+     "nfet_01v8_lvt_W0p55_L0p15_m20p6",
+     "nfet_01v8_lvt_W0p64_L0p15_m21p2"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p84_L0p15_m22p1",
+     "nfet_01v8_lvt_W3_L0p15_m24p1"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W0p64_L0p18_m21p3",
+     "nfet_01v8_lvt_W3p01_L0p15_m25p1",
+     "nfet_01v8_lvt_W7_L0p15_m26p2"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p42_L0p18_m20p2",
+     "nfet_01v8_lvt_W5_L0p15_m25p2"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W0p55_L0p25_m20p7",
+     "nfet_01v8_lvt_W0p64_L0p25_m21p4",
+     "nfet_01v8_lvt_W3_L0p18_m24p2"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p42_L0p25_m20p3",
+     "nfet_01v8_lvt_W5_L0p18_m25p3"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W3_L0p25_m24p3",
+     "nfet_01v8_lvt_W5_L0p25_m25p4",
+     "nfet_01v8_lvt_W5_L0p5_m25p5"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p64_L0p5_m21p5",
+     "nfet_01v8_lvt_W1_L0p5_m22p5"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W0p55_L1_m20p8",
+     "nfet_01v8_lvt_W0p64_L1_m21p6",
+     "nfet_01v8_lvt_W5_L1_m25p6"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p42_L1_m20p4",
+     "nfet_01v8_lvt_W7_L0p5_m26p5"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W3_L2_m24p6",
+     "nfet_01v8_lvt_W5_L2_m25p7",
+     "nfet_01v8_lvt_W7_L2_m26p7"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p64_L2_m21p7",
+     "nfet_01v8_lvt_W7_L1_m26p6"
+    ]
+   },
+   {
+    "DEV": [
+     "nfet_01v8_lvt_W3_L8_m24p8",
+     "nfet_01v8_lvt_W5_L4_m25p8",
+     "nfet_01v8_lvt_W5_L8_m26p1"
+    ],
+    "TEST": [
+     "nfet_01v8_lvt_W0p42_L8_m20p5",
+     "nfet_01v8_lvt_W3_L4_m24p7"
+    ]
+   }
+  ],
+  "pfet_01v8_lvt|covered": [
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W1_L0p35_m28p6",
+     "pfet_01v8_lvt_W3_L0p35_m29p5",
+     "pfet_01v8_lvt_W5_L0p35_m30p3"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W0p42_L0p35_m27p1",
+     "pfet_01v8_lvt_W0p55_L0p35_m27p8"
+    ]
+   },
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+     "pfet_01v8_lvt_W0p55_L0p5_m28p1",
+     "pfet_01v8_lvt_W0p55_L1_m28p2"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W1_L0p5_m28p7",
+     "pfet_01v8_lvt_W5_L0p5_m30p4"
+    ]
+   },
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W0p55_L4_m28p4",
+     "pfet_01v8_lvt_W1_L4_m29p2",
+     "pfet_01v8_lvt_W3_L2_m29p8"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W1_L1_m28p8",
+     "pfet_01v8_lvt_W5_L2_m30p7"
+    ]
+   },
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W0p55_L8_m28p5",
+     "pfet_01v8_lvt_W3_L4_m30p1",
+     "pfet_01v8_lvt_W5_L4_m30p8"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W1_L8_m29p3",
+     "pfet_01v8_lvt_W3_L8_m30p2"
+    ]
+   },
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W7_L8_m31p7"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W5_L8_m31p1"
+    ]
+   }
+  ],
+  "pfet_01v8_lvt|uncovered": [
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W3_L1_m29p6",
+     "pfet_01v8_lvt_W5_L1_m30p5",
+     "pfet_01v8_lvt_W7_L0p35_m31p2"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W0p42_L1_m27p3",
+     "pfet_01v8_lvt_W7_L0p5_m31p3"
+    ]
+   },
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W3_L1p5_m29p7",
+     "pfet_01v8_lvt_W5_L1p5_m30p6",
+     "pfet_01v8_lvt_W7_L1p5_m31p5"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W0p42_L2_m27p4",
+     "pfet_01v8_lvt_W7_L1_m31p4"
+    ]
+   },
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W0p42_L4_m27p5",
+     "pfet_01v8_lvt_W0p55_L2_m28p3",
+     "pfet_01v8_lvt_W1_L2_m29p1"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W0p42_L8_m27p6",
+     "pfet_01v8_lvt_W7_L2_m31p6"
+    ]
+   },
+   {
+    "DEV": [
+     "pfet_01v8_lvt_W0p42_L20_m27p7",
+     "pfet_01v8_lvt_W1_L20_m29p4"
+    ],
+    "TEST": [
+     "pfet_01v8_lvt_W7_L20_m31p8"
+    ]
+   }
+  ]
+ },
+ "TEST_policy": "TEST arrays are not loaded by any later I8-1 mode before the December TEST run (dev_devices() loads DEV tags only)"
+}
