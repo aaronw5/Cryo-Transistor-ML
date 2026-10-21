@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-21 · i11_2
+
+Folder: [2026-10-21_i11_2/](2026-10-21_i11_2/) · [tables.md](2026-10-21_i11_2/tables.md) · [README.md](2026-10-21_i11_2/README.md)
+
+- I11-2 temperature-input bias-only correction, held-out temperature (IHP 18 DUTs x 4 T, TU Delft 45 x 2): INVALID (V2), stopped by rule.
+- V2 cause: decide compared 398 K M_bias_near rows (343 K fold g) with X300 rows (300 K fold g); 233 / 343 K 36/36 equal; arm rows unaffected.
+- Descriptive: IHP M_bias_T vs C0_refit interp. 1.121, extrap. 1.209; prediction 12/12.
+
+Figures and tables: [01_table_i11_2_decision.png](2026-10-21_i11_2/01_table_i11_2_decision.png) · [02_i11_2_forest.png](2026-10-21_i11_2/02_i11_2_forest.png) · [03_table_i11_2_primary.png](2026-10-21_i11_2/03_table_i11_2_primary.png) · [04_table_i11_2_ihp_per_temperature.png](2026-10-21_i11_2/04_table_i11_2_ihp_per_temperature.png) · [05_i11_2_ihp_per_temperature.png](2026-10-21_i11_2/05_i11_2_ihp_per_temperature.png) · [06_table_i11_2_tud.png](2026-10-21_i11_2/06_table_i11_2_tud.png) · [07_table_i11_2_prediction.png](2026-10-21_i11_2/07_table_i11_2_prediction.png) · [08_table_i11_2_v2_diagnosis.png](2026-10-21_i11_2/08_table_i11_2_v2_diagnosis.png) · [09_i11_2_v2_near_vs_x300.png](2026-10-21_i11_2/09_i11_2_v2_near_vs_x300.png)
+
 ## 2026-10-21 · i11_1
 
 Folder: [2026-10-21_i11_1/](2026-10-21_i11_1/) · [tables.md](2026-10-21_i11_1/tables.md) · [README.md](2026-10-21_i11_1/README.md)

@@ -1858,3 +1858,38 @@ only (correction inside a Verilog-A BSIM4); training penalty on negative gm / gd
 as |dI| <= 1e-6 |I| + 1e-13 A. Report batch `out/research/report/2026-10-21_i11_1/`
 (`scripts/research/plot_explore_i11_1.py`); site claims `i11-1` (refuted) and `i3-2-all18` (the all-18 LODO result,
 verified, not pre-registered).
+
+## I11-2 outcome (2026-10-21): temperature-input bias-only correction, held-out temperature, invalid run (V2), stopped by rule
+
+Queue (6 workers): validity 109 s (V1 6/6 stored C0_refit rows, difference 0; V5 3/3 stored fold corrections,
+difference 0), stats and commit_prediction (812d14c, before any held-out refit), lodo_ihp 1754 s (306 trained
+corrections, 432 refits), lodo_tud 1454 s (180 refits, 0 timeouts), decide. 0 failed records in every arm.
+Outcome (rule): **invalid**, action 'stop: fix and re-register'. V2 failed: the decide check compared 54 M_bias_near
+rows with stored I5-1 X300 rows, max relative difference 0.263.
+Diagnosis (post hoc, `scripts/research/explore/i11_2_v2_diagnosis.py` -> `out/research/explore/I11_2/v2_diagnosis.json`):
+prereg.json states V2 over the 36 records at 233 / 343 K. `run_decide` selected every M_bias_near row whose key exists
+in the stored X300 rows; I5-1 stored X300 rows at 233, 343 and 398 K, so the 18 rows at 398 K entered. At 398 K
+M_bias_near uses the I5-1 lodo_343K fold correction (398 -> 343 by the prereg definition) and X300 the lodo_300K one,
+so the two are different refits. 233 / 343 K: 36/36 rows equal (difference 0). All 72 M_bias_near rows use the
+stored fold correction of the prereg mapping (233->300, 300->343, 343->300, 398->343). Two single-record refits of
+hv_pmos_W0p3_L10 at 398 K (largest difference, 28 s): lodo_343K correction 0.006829 = stored M_bias_near, lodo_300K
+correction 0.009270 = stored X300 (both differences 0). The smoke run passed V2 because it used only 233 / 343 K.
+Affected: the validity flag only. The near-arm records are the pre-registered arm; no arm row and no contrast uses
+X300, so the contrasts vs C0_refit, vs M_bias_pool and vs M_bias_near are computed from correct rows (descriptive
+because the run is invalid). With V2 as written in prereg.json the rule would give 'not supported' (stop: no
+cross-temperature work on the shared bias-only correction); post hoc, the recorded outcome stays invalid.
+Descriptive primary contrasts (Bonferroni CI, level 0.99375): IHP interpolation (300, 343 K) M_bias_T vs C0_refit
+1.121 [0.928, 1.477], vs M_bias_pool 1.008 [0.990, 1.029], vs M_bias_near 0.923 [0.846, 0.989]; extrapolation (233,
+398 K) 1.209 [0.968, 1.614], 1.008 [0.964, 1.053], 1.010 [0.954, 1.062]; TU Delft M_bias_X vs C0_refit 4.13 K held
+out 0.978 [0.885, 1.128], 295 K held out 1.460 [0.669, 2.631] (cluster bootstrap). Labels: no gain / no gain /
+inconclusive / inconclusive. Per IHP temperature (95%): M_bias_T vs C0_refit 1.154 / 1.133 / 1.110 / 1.267 at 233 /
+300 / 343 / 398 K; lin_pool 1.000 / 0.960 / 0.960 / 0.997. TU Delft mean RRMS C0_refit / M_bias_X / M_bias_sameT:
+4.13 K 0.0575 / 0.0558 / 0.0533, 295 K 0.0255 / 0.0353 / 0.0196.
+Secondary prediction: 12 of 12 predicted signs correct (all 'no gain'; observed ln GMR vs C0_refit +0.090 to +0.237).
+Recommendation: stop I11-2 without re-registration. A re-registration would change only the V2 row selection (restrict
+to temperatures whose nearest training temperature is 300 K), reuse the same arm rows, and give 'not supported'; the
+rows are no longer unseen, and the descriptive values (M_bias_T above C0_refit at every IHP temperature, equal to
+M_bias_pool within 1%) and the committed prediction agree. If the decide code is reused, the V2 selection should be
+fixed and covered by a unit test. Report batch `out/research/report/2026-10-21_i11_2/`
+(`scripts/research/plot_explore_i11_2.py`); site claim `i11-2` (invalid). `lodo_ihp/corrections.json` stored gzipped
+(`corrections.json.gz`, 4.2 MB).

@@ -328,6 +328,21 @@
       "caption": "I11-1 pre-registered checks and outcome"
      },
      {
+      "text": "I11-2 (shared bias-only correction with a temperature input, held-out temperature; IHP SG13G2 DEV 18 DUTs at 233 / 300 / 343 / 398 K, TU Delft 40 nm DEV 45 devices at 4.13 / 295 K): invalid run, stopped by rule. V2 failed because the decide check compared the 398 K M_bias_near rows (343 K fold correction) with X300 rows (300 K fold correction); the 36 rows named in prereg.json are equal and the arm rows are correct. Descriptive: M_bias_T vs C0_refit 1.121 (interpolation) and 1.209 (extrapolation), vs M_bias_pool 1.008 / 1.008; TU Delft M_bias_X 0.978 / 1.460; 12/12 predictions 'no gain' correct. Recommendation: stop without re-registration.",
+      "source": [
+       "out/research/explore/I11_2/decision.json",
+       "out/research/explore/I11_2/v2_diagnosis.json"
+      ],
+      "claim": "i11-2",
+      "queue_match": "^I11_2_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i11_2",
+      "table": "I11-2 INVALID RUN",
+      "caption": "I11-2 validity, labels (descriptive) and the outcome"
+     },
+     {
       "text": "sky130 77 K all 18 devices (REAL_TEST opened by user decision, 2026-10-21), I3-2 recipe leave-one-device-out: RRMS published 0.2751, C0_refit 0.1043, T1_inloop 0.0744, M_bias 0.0732; M_bias vs C0_refit 0.755 [0.673, 0.852], 16/18. Not pre-registered.",
       "source": [
        "out/research/explore/I3_2/all18/results.json"
@@ -5857,6 +5872,122 @@
     "out/research/explore/I11_1/runs/full/diagnosis.json",
     "src/cryoml/explore/i11_1_deploy.py",
     "scripts/research/explore/i11_1_deploy.py"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
+   "id": "i11-2",
+   "tab": "explore",
+   "statement": "I11-2: the pre-registered test of a shared bias-only correction with a temperature input at a held-out temperature (IHP SG13G2 DEV 18 DUTs at 4 temperatures, TU Delft 40 nm DEV 45 devices at 2) is invalid: validity V2 failed because the decide code compared the 398 K M_bias_near rows, which use the 343 K fold correction, with stored X300 rows, which use the 300 K one; the arm rows are correct and no label is a decision.",
+   "status": "invalid",
+   "headline": {
+    "value": "invalid run (V2: max relative difference 0.263 over 54 rows; 233 / 343 K 36/36 equal); stopped by rule. Descriptive: IHP M_bias_T vs C0_refit interpolation 1.121, extrapolation 1.209; prediction 12/12 'no gain' correct",
+    "convention": "strict paper RRMS of I_card x exp(g) after the held-out refit with g frozen in the loop; GMR, IHP device bootstrap, TU Delft 7-group cluster bootstrap, Bonferroni level 0.99375 over 8; all values descriptive"
+   },
+   "numbers": [
+    {
+     "label": "validity",
+     "value": "V1 6/6 stored C0_refit rows reproduced (difference 0); V2 failed (54 rows compared, max 0.263; as written in prereg.json, 233 / 343 K, 36 rows, max 0); V3 0 failed records in every primary arm; V4 0 TU Delft timeouts; V5 3/3 fold corrections reproduced (difference 0)",
+     "convention": "pre-registered validity conditions; the 36-row value is post hoc",
+     "source": "out/research/explore/I11_2/decision.json"
+    },
+    {
+     "label": "V2 cause (post hoc)",
+     "value": "run_decide selected M_bias_near rows by 'key in stored X300 rows'; X300 rows exist at 233, 343 and 398 K. At 398 K M_bias_near uses the I5-1 lodo_343K fold correction (398 -> 343 by definition), X300 the lodo_300K one. 72/72 M_bias_near rows use the prereg mapping; refits of hv_pmos_W0p3_L10 at 398 K with each correction reproduce the stored M_bias_near (0.006829) and X300 (0.009270) values, difference 0",
+     "convention": "two single-record refits at the held-out settings",
+     "source": "out/research/explore/I11_2/v2_diagnosis.json"
+    },
+    {
+     "label": "IHP primary contrasts (descriptive)",
+     "value": "interpolation (300, 343 K) M_bias_T vs C0_refit 1.121 [0.928, 1.477], vs M_bias_pool 1.008 [0.990, 1.029], vs M_bias_near 0.923 [0.846, 0.989]; extrapolation (233, 398 K) 1.209 [0.968, 1.614], 1.008 [0.964, 1.053], 1.010 [0.954, 1.062]; labels no gain / no gain",
+     "convention": "18 DUTs, per DUT the mean over the stratum's two temperatures; Bonferroni CI",
+     "source": "out/research/explore/I11_2/decision.json"
+    },
+    {
+     "label": "TU Delft primary contrasts (descriptive)",
+     "value": "M_bias_X vs C0_refit: 4.13 K held out 0.978 [0.885, 1.128], 295 K held out 1.460 [0.669, 2.631]; labels inconclusive / inconclusive (not in the action)",
+     "convention": "45 devices, 7-group cluster bootstrap, Bonferroni CI",
+     "source": "out/research/explore/I11_2/decision.json"
+    },
+    {
+     "label": "IHP mean RRMS per held-out temperature (C0_refit / M_bias_T / M_bias_pool / lin_pool)",
+     "value": "233 K 0.0273 / 0.0275 / 0.0286 / 0.0277; 300 K 0.0191 / 0.0196 / 0.0197 / 0.0189; 343 K 0.0190 / 0.0190 / 0.0191 / 0.0189; 398 K (see report table 04)",
+     "convention": "18 DUTs, 0 failed records",
+     "source": "out/research/explore/I11_2/decision.json"
+    },
+    {
+     "label": "secondary prediction",
+     "value": "12 of 12 predicted signs correct (all 'no gain'; observed ln GMR vs C0_refit +0.090 to +0.237)",
+     "convention": "committed in 812d14c before any held-out refit",
+     "source": "out/research/explore/I11_2/prediction.json"
+    }
+   ],
+   "what": [
+    "Question: does a shared bias-only correction g(is_pmos, |Vgs|/VDD, |Vds|/VDD, T) trained on other devices at other temperatures lower the held-out RRMS of a device at a temperature absent from training, compared with the refit card without g (C0_refit) and with the same correction without the temperature input?",
+    "Pre-registered (in force from 964a828; code 02df93c): DEV only; held-out (device, temperature) record, training excludes the held-out unit at every temperature and every record at the held-out temperature. Arms M_bias_T (4-16-16-1 MLP with t = ln(T/300 K)), M_bias_pool, M_bias_near (stored I5-1 fold correction of the nearest training temperature), TU Delft M_bias_X. Primary contrasts C1-C8, Bonferroni over 8. Validity V1, V2, V3, V5; invalid -> 'stop: fix and re-register'."
+   ],
+   "did": [
+    "Queue: validity 109 s, stats, commit_prediction, lodo_ihp 1754 s (306 trained corrections, 432 refits), lodo_tud 1454 s (180 refits), decide. Decision: outcome 'invalid', action 'stop: fix and re-register'.",
+    "Diagnosis (post hoc, `scripts/research/explore/i11_2_v2_diagnosis.py`): correction source of each M_bias_near row, V2 per held-out temperature, two single-record refits (28 s).",
+    "Report `scripts/research/plot_explore_i11_2.py` (batch 2026-10-21_i11_2) recomputes the primary contrasts, labels, outcome, V2 values, per-temperature contrasts, aggregates and prediction scoring from the per-record RRMS and checks them against decision.json."
+   ],
+   "result": {
+    "text": [
+     "Invalid run. V2 failed (max relative difference 0.263 over 54 rows). Cause: the decide code compared every M_bias_near row that has a stored X300 key; the stored X300 rows include 398 K, where M_bias_near uses the 343 K fold correction by definition. prereg.json states V2 over the 36 records at 233 / 343 K; those 36 rows are equal (difference 0). The defect is in the validity check only; no arm row and no contrast uses X300.",
+     "With V2 as written in prereg.json the rule would give 'not supported' (stop: no cross-temperature work on the shared bias-only correction). Post hoc; the recorded outcome stays invalid.",
+     "Descriptive values: M_bias_T is above C0_refit in both IHP strata (1.121 interpolation, 1.209 extrapolation) and at every held-out temperature (1.110-1.267, 95% CI); it is equal to M_bias_pool within 1% (temperature input adds nothing measurable); it is below M_bias_near in interpolation (0.923). The linear correction lin_pool is the only arm at or below C0_refit (interpolation 0.960 [0.915, 1.000], 95%). TU Delft: M_bias_X 0.978 at 4.13 K and 1.460 at 295 K held out (both inconclusive under the cluster bootstrap).",
+     "Recommendation (RESEARCH_LOOP 'I11-2 outcome'): stop I11-2 without re-registration. A re-registration would change only the V2 row selection; all arm rows are already seen, the corrected check gives 'not supported', and 12 of 12 committed predictions ('no gain') match the observed signs."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "01_table_i11_2_decision.png"
+     },
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "02_i11_2_forest.png"
+     },
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "04_table_i11_2_ihp_per_temperature.png"
+     },
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "05_i11_2_ihp_per_temperature.png"
+     },
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "06_table_i11_2_tud.png"
+     },
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "07_table_i11_2_prediction.png"
+     },
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "08_table_i11_2_v2_diagnosis.png"
+     },
+     {
+      "batch": "2026-10-21_i11_2",
+      "file": "09_i11_2_v2_near_vs_x300.png"
+     }
+    ]
+   },
+   "caveats": [
+    "All contrasts are descriptive because the run is invalid.",
+    "IHP spans 233-398 K; same-temperature M_bias was above C0_refit at every IHP temperature in I5-1 (known before the pre-registration).",
+    "TU Delft has two temperatures, so it tests transfer only (no temperature-input arm).",
+    "Stored C0_refit and M_bias rows were seen before the pre-registration (L4)."
+   ],
+   "sources": [
+    "out/research/explore/I11_2/prereg.md",
+    "out/research/explore/I11_2/prereg.json",
+    "out/research/explore/I11_2/prediction.json",
+    "out/research/explore/I11_2/decision.json",
+    "out/research/explore/I11_2/v2_diagnosis.json",
+    "src/cryoml/explore/i11_2_temp.py",
+    "scripts/research/explore/i11_2_temp.py",
+    "scripts/research/explore/i11_2_v2_diagnosis.py"
    ],
    "updated": "2026-10-21"
   },

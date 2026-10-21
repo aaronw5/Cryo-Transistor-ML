@@ -1,0 +1,86 @@
+{
+ "iteration": "I11-2",
+ "post_hoc": true,
+ "what": "diagnosis of V2 after the decision (decision.json unchanged): which M_bias_near rows the decide check compared with the stored X300 rows, which stored fold correction each M_bias_near row used, V2 restricted to the prereg temperatures, and two single-record refits",
+ "per_temperature": {
+  "233": {
+   "n_records": 18,
+   "nearest_K_prereg": 300,
+   "correction_source_counts": {
+    "300": 18
+   },
+   "stored_X300_rows": 18,
+   "n_equal_X300": 18,
+   "max_rel_diff_vs_X300": 0.0,
+   "in_decide_V2": true,
+   "in_prereg_V2": true
+  },
+  "300": {
+   "n_records": 18,
+   "nearest_K_prereg": 343,
+   "correction_source_counts": {
+    "343": 18
+   },
+   "stored_X300_rows": 0,
+   "n_equal_X300": 0,
+   "max_rel_diff_vs_X300": null,
+   "in_decide_V2": false,
+   "in_prereg_V2": false
+  },
+  "343": {
+   "n_records": 18,
+   "nearest_K_prereg": 300,
+   "correction_source_counts": {
+    "300": 18
+   },
+   "stored_X300_rows": 18,
+   "n_equal_X300": 18,
+   "max_rel_diff_vs_X300": 0.0,
+   "in_decide_V2": true,
+   "in_prereg_V2": true
+  },
+  "398": {
+   "n_records": 18,
+   "nearest_K_prereg": 343,
+   "correction_source_counts": {
+    "343": 18
+   },
+   "stored_X300_rows": 18,
+   "n_equal_X300": 0,
+   "max_rel_diff_vs_X300": 0.26333282249182216,
+   "in_decide_V2": true,
+   "in_prereg_V2": false
+  }
+ },
+ "V2_as_decided": {
+  "temperatures": [
+   233,
+   343,
+   398
+  ],
+  "n": 54,
+  "max_rel_diff": 0.26333282249182216
+ },
+ "V2_as_prereg_text": {
+  "temperatures": [
+   233,
+   343
+  ],
+  "n": 36,
+  "max_rel_diff": 0.0,
+  "ok": true
+ },
+ "cause": "run_decide selects M_bias_near rows by 'key in stored X300 rows'; the stored I5-1 X300 rows exist at 233, 343 and 398 K, so the 18 rows at 398 K entered the check. At 398 K M_bias_near uses the lodo_343K fold correction (prereg 398 -> 343) and X300 uses the lodo_300K fold correction, so they are different refits by definition.",
+ "rerun": {
+  "record": "hv_pmos_W0p3_L10|398",
+  "stored_M_bias_near": 0.006828884843672003,
+  "stored_X300": 0.009269972997536183,
+  "refit_with_I5_1_lodo_343K": 0.006828884843672003,
+  "refit_with_I5_1_lodo_343K_runtime_s": 14.17,
+  "refit_with_I5_1_lodo_300K": 0.009269972997536183,
+  "refit_with_I5_1_lodo_300K_runtime_s": 14.14,
+  "rel_diff_343K_refit_vs_stored_near": 0.0,
+  "rel_diff_300K_refit_vs_stored_X300": 0.0
+ },
+ "runtime_s": 29.5
+}
