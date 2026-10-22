@@ -33,11 +33,16 @@ OUT = ROOT / "out/research/explore/E1"
 VDD_SKY130 = 1.85
 
 
-def collect(tag: str, params: dict) -> DeviceRec:
+def collect(tag: str, params: dict, bsim4_state: str = "clamped") -> DeviceRec:
+    """Record of ``params`` on the measured grid.  ``bsim4_state``: BSIM4
+    model-check clamp state (``spice_pdk.BSIM4_STATES``; I13-1: "clamped",
+    every curve in the fresh-process state; "legacy" reproduces the records
+    stored before I13-1)."""
     device = device_by_tag(tag)
     curves = load_device_curves(device)
     sims = simulate_pdk(device.dev_type, device.L_um, device.W_um, curves,
-                        params=params, bin_index=device_bins()[tag])
+                        params=params, bin_index=device_bins()[tag],
+                        bsim4_state=bsim4_state)
     index = {id(c): i for i, c in enumerate(curves)}
     frozen = include_tags(tag)
     rec = DeviceRec(tag, "pmos" if device.dev_type == "pmos" else "nmos",

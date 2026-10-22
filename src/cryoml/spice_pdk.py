@@ -274,15 +274,117 @@ def _instance_line(dev_type: str, L_um: float, W_um: float,
         f"mult={m} m={m}\n") + ext
 
 
+# ---------------------------------------------------------------------------
+# BSIM4 model-check clamp state (I13-1)
+# ---------------------------------------------------------------------------
+# ngspice-41 ``b4check.c`` (BSIM4checkModel) runs once per process per model
+# name (static ``modname``) and clamps size-dependent parameters, e.g.
+# A2 > 1 -> A2 = 1 and A1 = 0, A2 < 0.01 -> A2 = 0.01.  ``b4temp.c`` rebuilds the
+# size-dependent parameters at every analysis.  In a deck with one BSIM4
+# model and several analyses, the first analysis therefore runs with the
+# clamped values and every later analysis with the card values.
+#
+# ``bsim4_state`` of ``simulate_pdk``:
+#   "clamped"    (default) the clamp that ngspice applies in a fresh
+#                single-analysis process is written into the card, so every
+#                curve is simulated in that state.  Cards that the check
+#                does not clamp are written unchanged (identical deck text).
+#   "legacy"     the deck as used before I13-1 (first curve clamped, later
+#                curves with the card values).  Reproduction only.
+#   "unclamped"  a warm-up ``op`` runs before the curves, so every curve is
+#                simulated with the card values.  Audit only.
+BSIM4_STATES = ("clamped", "legacy", "unclamped")
+_A2_LOW, _A2_HIGH = 0.01, 1.0
+_SIZE_TERMS = ("la1", "wa1", "pa1", "la2", "wa2", "pa2")
+
+
+def _bin_text(dev_type: str, bin_index: int) -> str:
+    base = (PDK77K_DIR / _CORNER_BASENAME[dev_type]).read_text(errors="replace")
+    for idx, s, e in _bin_spans(base, dev_type):
+        if idx == bin_index:
+            return base[s:e]
+    raise ValueError(f"bin {bin_index} not found for {dev_type}")
+
+
+def _bin_value(span: str, key: str) -> str | None:
+    m = re.search(rf"^\+\s*{re.escape(key)}\s*=\s*([^\s]+)", span,
+                  re.IGNORECASE | re.MULTILINE)
+    return m.group(1) if m else None
+
+
+def bsim4_clamp_params(dev_type: str, bin_index: int,
+                       params: dict[str, float] | None) -> tuple[dict, dict]:
+    """Return (params with the b4check.c A1/A2 clamp written explicitly,
+    applied changes).  The effective size-dependent A2 equals the bin's a2
+    because the 77 K bins have no la2/wa2/pa2/la1/wa1/pa1 terms (checked);
+    the clamp is written only when it changes a value, so an unclamped card
+    returns ``params`` unchanged and an empty change dict."""
+    params = dict(params or {})
+    span = _bin_text(dev_type, bin_index)
+    for key in _SIZE_TERMS:
+        if _bin_value(span, key) is not None or key in params:
+            raise NotImplementedError(f"{key} present: effective A1/A2 is size dependent")
+    a2 = float(params["a2"]) if "a2" in params else float(_bin_value(span, "a2") or 1.0)
+    a1_raw = params.get("a1", _bin_value(span, "a1"))
+    a1 = float(a1_raw) if a1_raw is not None else 0.0
+    changes = {}
+    if a2 > _A2_HIGH:
+        changes = {"a2": (a2, _A2_HIGH)}
+        params["a2"] = _A2_HIGH
+        if a1 != 0.0:
+            changes["a1"] = (a1, 0.0)
+            params["a1"] = 0.0
+    elif a2 < _A2_LOW:
+        changes = {"a2": (a2, _A2_LOW)}
+        params["a2"] = _A2_LOW
+    return params, changes
+
+
+def bsim4_check_messages(dev_type: str, L_um: float, W_um: float,
+                         params: dict[str, float] | None = None,
+                         bin_index: int | None = None,
+                         temp_K: float = 77.0) -> list[str]:
+    """Warning / fatal lines printed by the BSIM4 model check (b4check.c) for
+    the card, from one ``op`` in a fresh process (no clamp written)."""
+    err = ensure_pdk77k()
+    if err:
+        raise RuntimeError(err)
+    with tempfile.TemporaryDirectory(prefix="cryoml_b4check_") as td_s:
+        td = Path(td_s)
+        lib_path = LIB_FILE
+        if params:
+            bin_idx = bin_index if bin_index is not None else find_bin_index(dev_type, L_um, W_um)
+            base = PDK77K_DIR / _CORNER_BASENAME[dev_type]
+            corner = td / _CORNER_BASENAME[dev_type]
+            corner.write_text(_patch_params_in_bin(base.read_text(errors="replace"),
+                                                   dev_type, bin_idx, params))
+            lib_path = td / "lib77k.spice"
+            lib_path.write_text(LIB_FILE.read_text().replace(base.as_posix(), corner.as_posix()))
+        deck = td / "check.sp"
+        deck.write_text(
+            "* BSIM4 model check\n.options scale=1.0\n"
+            f".options temp={temp_K - 273.15:.4f}\n"
+            f'.lib "{lib_path.as_posix()}" tt_77k\n'
+            + _instance_line(dev_type, L_um, W_um)
+            + "VG ng 0 DC 0\nVD nd 0 DC 0\n.control\nop\nquit\n.endc\n.end\n")
+        proc = subprocess.run([_NGSPICE_BIN, "-b", str(deck)], cwd=str(td),
+                              capture_output=True, timeout=_DEFAULT_TIMEOUT_S,
+                              text=True, check=False)
+    lines = (proc.stdout + "\n" + proc.stderr).splitlines()
+    return [ln.strip() for ln in lines
+            if ln.strip().lower().startswith(("warning:", "fatal:"))]
+
+
 def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
                 lib_path: Path, raw_dir: Path, temp_K: float,
                 temps_K: list[float] | None = None,
-                rs_ext_ohm: float = 0.0) -> str:
+                rs_ext_ohm: float = 0.0, warmup_op: bool = False) -> str:
     """One deck that runs every curve's DC sweep in a single ngspice process.
 
     With ``temps_K`` the sweeps repeat at each temperature (``option temp``
     inside the control block re-evaluates ``temper`` expressions); outputs are
-    ``raw_t{j}_{i}.dat``."""
+    ``raw_t{j}_{i}.dat``.  ``warmup_op`` runs one ``op`` before the sweeps
+    (``bsim4_state="unclamped"``)."""
     instance = _instance_line(dev_type, L_um, W_um, rs_ext_ohm)
     lines = [
         "* corrected-repository batched DC sweeps\n",
@@ -297,6 +399,8 @@ def _batch_deck(dev_type: str, L_um: float, W_um: float, curves: list[Curve],
         ".control\n",
         "set filetype=ascii\n",
     ]
+    if warmup_op:
+        lines.append("op\n")
     if temps_K:
         for j, t in enumerate(temps_K):
             lines.append(f"option temp={t - 273.15:.4f}\n")
@@ -345,6 +449,7 @@ def simulate_pdk(
     library_path: Path | None = None,
     temps_K: list[float] | None = None,
     rs_ext_ohm: float = 0.0,
+    bsim4_state: str = "clamped",
 ) -> list[np.ndarray]:
     """Simulate measured-bias curves with the corrected-repository deck.
 
@@ -353,7 +458,12 @@ def simulate_pdk(
     card and cannot be combined with parameter injection. NGSpice always
     performs native L/W bin selection.  ``rs_ext_ohm`` > 0 adds equal
     extrinsic drain and source resistors outside the card (``_instance_line``).
+    ``bsim4_state`` selects the BSIM4 model-check clamp state of the curves
+    (``BSIM4_STATES``; default "clamped": every curve in the state of a fresh
+    single-analysis process).
     """
+    if bsim4_state not in BSIM4_STATES:
+        raise ValueError(f"bsim4_state {bsim4_state!r} not in {BSIM4_STATES}")
     err = ensure_pdk77k()
     if err:
         raise RuntimeError(err)
@@ -370,6 +480,8 @@ def simulate_pdk(
                 bin_idx = find_bin_index(dev_type, L_um, W_um)
             if bin_idx is None:
                 raise ValueError(f"no bin for {dev_type} L={L_um} W={W_um}")
+            if bsim4_state == "clamped":
+                params, _ = bsim4_clamp_params(dev_type, bin_idx, params)
             base = PDK77K_DIR / _CORNER_BASENAME[dev_type]
             patched = base.read_text(errors="replace")
             patched = _patch_params_in_bin(patched, dev_type, bin_idx, params)
@@ -383,7 +495,7 @@ def simulate_pdk(
         deck_path = td / "deck_batch.sp"
         deck_path.write_text(
             _batch_deck(dev_type, L_um, W_um, curves, lib_path, td, temp_K,
-                        temps_K, rs_ext_ohm))
+                        temps_K, rs_ext_ohm, warmup_op=bsim4_state == "unclamped"))
         try:
             proc = subprocess.run([_NGSPICE_BIN, "-b", str(deck_path)],
                                   cwd=str(td), capture_output=True,

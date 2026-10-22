@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from multiprocessing import get_context
@@ -44,7 +45,8 @@ from cryoml.explore import i11_1_deploy as m1  # noqa: E402
 from cryoml.explore import i12_1_symm as m  # noqa: E402
 
 EXP = ROOT / "out/research/explore"
-ALL18 = EXP / "I3_2/all18"
+# I13-1: CRYOML_I3_2_ALL18 points the stored v1 / C0_refit / T1_inloop rows at a rerun
+ALL18 = Path(os.environ.get("CRYOML_I3_2_ALL18", str(EXP / "I3_2/all18")))
 OUT = EXP / "I12_1"
 PREREG = OUT / "prereg.json"
 START = ROOT / "out/research/polished/direct43_r3_fd/real/summary.json"
@@ -797,13 +799,14 @@ def main() -> int:
                     choices=("grids", "calib", "validity", "lodo", "deploy", "compile", "refit",
                              "q12", "q3", "report", "decide"))
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--lodo-dir", default="", help="lodo output directory (default <base>/lodo)")
     ap.add_argument("--smoke", action="store_true",
                     help="2 folds, 1 seed, 200 steps, refit max_nfev 20; part B on 2 devices "
                          "(code check; not used for decisions)")
     args = ap.parse_args()
     base = OUT / "smoke" if args.smoke else OUT
     smoke_tags = ["nmos_L1_W1p6", "pmos_L2_W5"]
-    rd_lodo = base / "lodo"
+    rd_lodo = Path(args.lodo_dir).resolve() if args.lodo_dir else base / "lodo"
     rd_dep = base / "deploy"
     timing = {}
     t0 = time.time()

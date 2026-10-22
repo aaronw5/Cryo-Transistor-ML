@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from multiprocessing import get_context
@@ -95,7 +96,8 @@ def load_records_all18():
     from cryoml.explore.e1_correction import load_devices
     split = json.loads((ROOT / "out/research/explore/real_split.json").read_text())
     tags = sorted(split["REAL_DEV"] + split["REAL_TEST"])
-    recs = load_devices(E1 / "real_dev") + load_devices(E1 / "real_test")
+    rec_dir = Path(os.environ.get("CRYOML_E1_RECORDS", str(E1)))   # I13-1: state-C records
+    recs = load_devices(rec_dir / "real_dev") + load_devices(rec_dir / "real_test")
     if sorted(r.tag for r in recs) != tags or len(tags) != 18:
         raise RuntimeError("all18 records differ from REAL_DEV + REAL_TEST")
     cards = json.loads((ROOT / "out/research/polished/direct43_r3_fd/real/summary.json")
@@ -201,6 +203,7 @@ def main() -> int:
     ap.add_argument("--m-seeds", default="", help="smoke override of seeds")
     ap.add_argument("--m-steps", type=int, default=0, help="smoke override of steps")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--out-dir", default="", help="output directory (default I3_2/<name>)")
     ap.add_argument("--corrections", default="", help="export: corrections json")
     ap.add_argument("--key", default="full|M_bias", help="export: entry in corrections json")
     ap.add_argument("--vdd", type=float, default=1.85, help="export: VDD")
@@ -351,7 +354,7 @@ def main() -> int:
             "ratio": c["ratio"], "n_failed": summary["M_bias"]["n_failed"],
             "pass_this_pdk": bool(c["ratio"] <= PDK_RATIO
                                   and summary["M_bias"]["n_failed"] == 0)}
-    target = OUT / args.name
+    target = Path(args.out_dir).resolve() if args.out_dir else OUT / args.name
     target.mkdir(parents=True, exist_ok=True)
     if all18:
         result["note"] = ("all 18 sky130 77 K devices; the 6 REAL_TEST devices were opened on "
