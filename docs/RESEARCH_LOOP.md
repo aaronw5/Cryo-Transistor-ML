@@ -2196,3 +2196,39 @@ inner held-out refits, lambda* = argmin mean ln RRMS (ties to the larger lambda)
 the sym_e1_l{lambda*_h} LODO row. Primary GMR(selected, M_bias v1), device bootstrap, non-inferiority margin 1.05.
 Negative gm / gds grid fractions for every variant. Code d9e79ac (8 unit tests); smoke (2 folds, 200 steps, not used
 for decisions) ran all stages; queue: I15_2_validity, six lodo variants, I15_2_inner (about 2 h), I15_2_decide.
+
+## I15-2 outcome (2026-10-22 07:23): which g v2 change costs accuracy; nested lambda selection non-inferior to M_bias v1 (pre-registered rule)
+
+Queue: I15_2_validity 110 s (V1 seed 0 of fold pmos_L2_W5 reproduces the stored member 0 for the g v2 and v1 recipes,
+max weight difference 0; V2 refit of the stored g v2 fold corrections of nmos_L1_W1p6 and pmos_L2_W5, difference 0);
+LODO variants 453-456 s (lambda 0) and 2010-2131 s (lambda > 0); I15_2_inner 8990 s (285 single-member trainings
+3183 s, 1620 inner refits 5807 s, complete); I15_2_decide 38 s. Valid.
+Variants, all-device / combined / median, GMR vs M_bias v1 [95% CI] (devices lower): v1 0.0735 / 0.0695 / 0.0637;
+sym_e0_l0 0.0740 / 0.0700 / 0.0636, 1.006 [0.997, 1.015] (3); sym_e1_l0 0.0736 / 0.0696 / 0.0624, 0.999 [0.985, 1.013]
+(7); sym_e0_l10 0.0775 / 0.0735 / 0.0557, 1.055 [0.970, 1.135] (3); sym_e1_l1 0.0731 / 0.0692 / 0.0554, 0.985 [0.948,
+1.019] (8); sym_e1_l2 0.0726 / 0.0688 / 0.0549, 0.973 [0.931, 1.013] (9); sym_e1_l5 0.0734 / 0.0696 / 0.0549, 0.984
+[0.926, 1.041] (8); g v2 = sym_e1_l10 0.0772 / 0.0732 / 0.0544, 1.053 [0.966, 1.137] (4); C0_refit 0.1051 / 0.0984.
+Contrasts (labels by rule): input form abs -> sym 1.006 [0.997, 1.015] no cost beyond the margin; EPS 0 -> 0.01 0.994
+[0.982, 1.003] (lambda 0) and 0.998 [0.978, 1.018] (lambda 10), no cost beyond the margin; penalty 0 -> 10 V 1.049
+[0.963, 1.130] (EPS 0) and 1.054 [0.968, 1.136] (EPS 0.01), inconclusive. No change is named as costing accuracy
+(no CI lower bound above 1); the point estimates place the g v2 difference in the lambda = 10 V penalty; lambda 1-5 V
+give GMR vs v1 0.973-0.985.
+Selection: lambda* = 1 V on 10 folds, 2 V on 6, 0 V on pmos_L4_W7, 10 V on pmos_L8_W5; full-data lambda* 1 V.
+Primary GMR(selected, v1) **0.997 [0.962, 1.027]**, 7/18 lower: **selected variant non-inferior to M_bias v1**
+(CI upper <= 1.05; not below 1). Selected all-device / combined / median 0.0739 / 0.0700 / 0.0550; GMR(selected,
+C0_refit) 0.743 [0.654, 0.855] 17/18; GMR(selected, g v2) 0.947 [0.885, 1.023] 13/18.
+Negative corrected gds / gm on the penalty grids (% of points; fold models on the held-out starting-card grid, mean
+over folds): v1 11.5 / 0.19; lambda 0 11.4 / 0.19; lambda 1 4.4 / 0.14; 2 3.5 / 0.13; 5 1.4 / 0.12; 10 1.3 / 0.11;
+selected 4.7 / 0.14; on the training grids 8.1 (v1), 1.9 (lambda 1), 0.27 (lambda 10), selected 1.9; card only gds 0,
+gm 0.13. Deployment of a lambda = 1 V model was not tested (I15-1 tested lambda 10 V; at lambda 10 V the two gds
+sign changes of I15-1 come from g). Report batch `out/research/report/2026-10-22_i15_2/`
+(`scripts/research/plot_explore_i15_2.py`, 12 PNGs; I-V figures re-simulate the held-out cards of C0_refit, v1,
+lambda 0, g v2 and the selected variant, RRMS checked against the stored rows); site claim `i15-2`.
+
+## M_bias deck training-trace fix (2026-10-22 02:16)
+
+The deck's training-trace slide re-ran the fold pmos_L2_W5 training with its own loop over tag-sorted records
+(max |g - stored fold g| 1.8e-3). `scripts/research/explore/mbias_method_plots.py` now calls the trainer of the
+stored model (`i3_2_bias.fit_bias`, new per-step `trace_cb`, update sequence unchanged; 36 I12-1 / I15-2 unit tests
+pass) with the training records in load order: max |g - stored g| 0, max weight difference 0 (72 s). Deck regenerated
+(43 slides), commit e92946a.

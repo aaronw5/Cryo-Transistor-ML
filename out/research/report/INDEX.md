@@ -2,6 +2,15 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i15_2
+
+Folder: [2026-10-22_i15_2/](2026-10-22_i15_2/) · [tables.md](2026-10-22_i15_2/tables.md) · [README.md](2026-10-22_i15_2/README.md)
+
+- I15-2 ablation of the g v2 training changes and nested lambda selection: selected variant non-inferior to M_bias v1 (pre-registered rule); GMR(selected, v1) 0.997 [0.962, 1.027].
+- Changes named as costing accuracy: none.
+
+Figures and tables: [01_table_i15_2_primary.png](2026-10-22_i15_2/01_table_i15_2_primary.png) · [02_table_i15_2_variants.png](2026-10-22_i15_2/02_table_i15_2_variants.png) · [03_table_i15_2_contrasts.png](2026-10-22_i15_2/03_table_i15_2_contrasts.png) · [04_table_i15_2_negative.png](2026-10-22_i15_2/04_table_i15_2_negative.png) · [05_table_i15_2_validity.png](2026-10-22_i15_2/05_table_i15_2_validity.png) · [06_i15_2_lambda.png](2026-10-22_i15_2/06_i15_2_lambda.png) · [07_i15_2_per_device.png](2026-10-22_i15_2/07_i15_2_per_device.png) · [08_i15_2_inner_scores.png](2026-10-22_i15_2/08_i15_2_inner_scores.png) · [09_i15_2_iv_nmos_L1_W1p6.png](2026-10-22_i15_2/09_i15_2_iv_nmos_L1_W1p6.png) · [10_i15_2_iv_pmos_L0p35_W1p6.png](2026-10-22_i15_2/10_i15_2_iv_pmos_L0p35_W1p6.png) · [11_i15_2_iv_pmos_L8_W1p6.png](2026-10-22_i15_2/11_i15_2_iv_pmos_L8_W1p6.png) · [12_i15_2_iv_pmos_L2_W5.png](2026-10-22_i15_2/12_i15_2_iv_pmos_L2_W5.png)
+
 ## 2026-10-22 · i15_1
 
 Folder: [2026-10-22_i15_1/](2026-10-22_i15_1/) · [tables.md](2026-10-22_i15_1/tables.md) · [README.md](2026-10-22_i15_1/README.md)
