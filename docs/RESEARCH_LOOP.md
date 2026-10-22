@@ -1943,3 +1943,6 @@ any LODO output): every training set in load order (`fold_train_tags`, unit-test
 rerun with the rules unchanged. Run-1 validity kept in `validity_run1_invalid/`.
 Queue (runner restarted): I12_1_validity (about 1 min), I12_1_lodo (95 seed tasks at about 100 s plus 18 refits on 6
 workers, about 30 min), I12_1_deploy (about 10 min), I12_1_decide.
+Run 2 (after A2): I12_1_validity 49 s, V1 max |g_new - g_stored| 0.0 on both folds, V2 |RRMS difference| 0.0 on both
+devices (valid so far; V3 is checked on the LODO rows). I12_1_lodo started 22:08:44. (Correction to A2: lodo run 1 ran
+22:05:24-22:06:45.)
