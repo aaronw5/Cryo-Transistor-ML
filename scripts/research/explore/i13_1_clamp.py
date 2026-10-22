@@ -248,6 +248,7 @@ def stage_records(workers: int) -> dict:
             res[o.tag] = {"split": split, "max_rel_sim_diff": d, "max_abs_target_diff": tgt,
                           "rrms_c0_old": score_device(o, [c.sim for c in o.curves])["rrms"],
                           "rrms_c0_new": score_device(n, [c.sim for c in n.curves])["rrms"]}
+        (OUT / "records").mkdir(parents=True, exist_ok=True)
         save_devices(OUT / "records" / split, new)
     out = {"devices": res, "changed": sorted(t for t, v in res.items() if v["max_rel_sim_diff"] > 0),
            "wall_s": round(time.time() - t0, 1)}
