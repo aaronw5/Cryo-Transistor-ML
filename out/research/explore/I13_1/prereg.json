@@ -1,0 +1,80 @@
+{
+ "id": "I13-1",
+ "status": "in force",
+ "date": "2026-10-21",
+ "title": "BSIM4 A2 clamp state of the 43-parameter cards: audit and fix, sky130 77 K, 18 devices",
+ "done_before": [
+  "code draft spice_pdk.bsim4_state / bsim4_clamp_params / bsim4_check_messages",
+  "mechanism check nmos_L0p19_W7 and nmos_L1_W1p6 start cards (C curve1 == L curve1, U curves2-11 == L curves2-11, exact)",
+  "listing of stored a2 values: a2 > 1 on nmos_L0p19_W7, nmos_L0p25_W1p6, nmos_L20_W0p64, nmos_L8_W1p6, pmos_L0p35_W1p6 in every 43-parameter arm; none < 0.01"
+ ],
+ "states": {
+  "L": "legacy batch deck: first curve clamped, later curves card value",
+  "C": "clamp written into the card (a2>1 -> a2=1, a1=0; a2<0.01 -> 0.01): every curve in the fresh-process state",
+  "U": "warm-up op before the curves: every curve card value (audit only)"
+ },
+ "fix_rule": {
+  "valid_card": "every curve evaluated in one clamp state",
+  "option": "b",
+  "state": "C",
+  "default": "simulate_pdk(bsim4_state='clamped')",
+  "invariance_required": "published cards and every card with 0.01 <= a2 <= 1: C score == L score, difference 0 (unit-tested)",
+  "other_clamps": "listed with bsim4_check_messages; any hit on a stored card -> amendment extending the fix before the reruns"
+ },
+ "audit": {
+  "arms": [
+   "published",
+   "start",
+   "C0_refit",
+   "T1_inloop",
+   "M_bias_v1",
+   "M_bias_v2"
+  ],
+  "states": [
+   "L",
+   "C",
+   "U"
+  ],
+  "quantities": [
+   "per-device strict paper RRMS",
+   "C-L and U-L per device",
+   "all-device mean",
+   "combined",
+   "median"
+  ],
+  "t1_tables": "refitted from stored E1 records per fold (deterministic)",
+  "validity": {
+   "V1": "L reproduces stored rows, max |diff| <= 1e-12",
+   "V2": "C == L == U exactly for unclamped cards",
+   "V3": "18 rows per arm and state"
+  }
+ },
+ "rerun_state_C": {
+  "records": "E1 real_dev + real_test start-card records re-collected -> I13_1/records; unclamped devices identical to stored",
+  "start_cards": "not refit",
+  "i3_2_all18": "recipe unchanged -> I13_1/all18",
+  "i12_1_lodo": "recipe unchanged, stored penalty grids (single nested dc, already state C) -> I13_1/lodo"
+ },
+ "reported": {
+  "table": [
+   "published",
+   "start",
+   "C0_refit",
+   "T1_inloop",
+   "M_bias_v1",
+   "M_bias_v2"
+  ],
+  "aggregates": [
+   "all_device_mean",
+   "combined",
+   "median"
+  ],
+  "gmr": [
+   "M_bias_v1 vs C0_refit",
+   "M_bias_v2 vs C0_refit (A1, CI upper < 1)",
+   "M_bias_v2 vs M_bias_v1 (A2, CI upper <= 1.05)"
+  ],
+  "bootstrap": "device, 10000 resamples, i3_2_bias.paired_ratio"
+ },
+ "metric": "strict paper RRMS, inclusion frozen to the published card; not redefined"
+}

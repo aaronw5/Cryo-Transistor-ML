@@ -2011,3 +2011,17 @@ conductance; (c) scale only the channel current: sense I_ds of the replica witho
 combined with the drain-terminal current), then rerun Part B; A2 (accuracy cost 1.042 vs v1) stays as measured.
 Report batch `out/research/report/2026-10-21_i12_1/` (`scripts/research/plot_explore_i12_1.py`; 9 PNGs; the I-V figures
 re-simulate the stored held-out cards and reproduce the stored LODO rows); site claim `i12-1` (refuted).
+
+## I13-1 pre-registration in force (2026-10-21 23:59): BSIM4 A2 clamp state of the 43-parameter cards, audit and fix
+
+Pre-registration `out/research/explore/I13_1/prereg.md` / `prereg.json`, committed alone. Clamp states: L (legacy
+batch deck, first curve with A2 = 1, later curves with the card a2), C (the b4check.c clamp written into the card:
+a2 > 1 -> a2 = 1, a1 = 0; every curve in the fresh-process state), U (warm-up op, every curve with the card a2; audit
+only). Fix rule: a card is valid only if every curve is evaluated in one clamp state; option (b), state C, as the new
+`simulate_pdk` default. Required: published cards and cards with 0.01 <= a2 <= 1 give identical scores in C and L
+(difference 0, unit-tested). Audit: the six stored arms (published, start, C0_refit, T1_inloop, M_bias v1, M_bias v2)
+rescored in L, C and U, per device and all-device / combined / median; validity V1 (L reproduces stored rows), V2
+(C = L = U for unclamped cards), V3 (18 rows). Other b4check.c clamps on size-dependent parameters listed per stored
+card. Rerun in state C: start-card records, I3-2 all18 recipe, I12-1 LODO recipe; start cards not refit. Before
+registration: code draft and a mechanism check on two start cards; stored a2 > 1 on 5 devices (nmos_L0p19_W7,
+nmos_L0p25_W1p6, nmos_L20_W0p64, nmos_L8_W1p6, pmos_L0p35_W1p6) in every 43-parameter arm.
