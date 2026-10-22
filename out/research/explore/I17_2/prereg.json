@@ -1,0 +1,104 @@
+{
+ "id": "I17-2",
+ "status": "in force",
+ "date": "2026-10-22",
+ "title": "Second-PDK replication of the selected g v2 recipe on measured IHP SG13G2 MOSFETs (PSP103), 300 K, 18 DEV DUTs, LODO within class; accuracy only, Part B not run",
+ "not_done_before": [
+  "any I17-2 run, training, refit or penalty-grid simulation",
+  "only pre-check: re-simulation of stored starting-card curves of 3 DEV DUTs (max relative difference 0)"
+ ],
+ "dataset": {
+  "chosen": "IHP SG13G2 (I5-1 data), 300 K, DEV 18 DUTs from I5_1/split.json; TEST locked",
+  "why": "only measured dataset with a non-sky130 foundry PDK card; GF180 has no measured data; TU Delft uses a generic example card",
+  "candidates": {
+   "IHP": "measured, PSP103 OSDI 0.4, ngspice-46",
+   "TU_Delft": "measured, BSIM4 CMOSedu example card, ngspice-41",
+   "GF180": "simulated only"
+  }
+ },
+ "inputs": {
+  "split": "out/research/explore/I5_1/split.json",
+  "start_records": "out/research/explore/I5_1/start/records_300K",
+  "stored_rows": "out/research/explore/I5_1/lodo_300K/results.json per_device C0_refit, M_bias",
+  "simulator": "Homebrew ngspice-46 + data/raw/pdk2/ihp_sg13g2/osdi/psp103.osdi (I5-1)",
+  "bsim4_clamp": "not applicable (PSP103)"
+ },
+ "folds": "leave-one-DUT-out within class (LV 9 / HV 7 training DUTs), record load order",
+ "refit": {
+  "heldout_nfev": 400,
+  "heldout_irls": 2,
+  "diff_step": 0.01,
+  "start": "I5-1 starting card"
+ },
+ "arms": {
+  "C0_refit": "g = 0",
+  "M_bias_v1": "fit_bias I3-2 recipe, abs inputs / class VDD, 5 seeds, 2000 steps",
+  "sym_e1_l{0,1,2,5,10}": "fit_v2, sym_v2 inputs, EPS 0.01 V, vdd = class VDD (1.2 LV, 3.3 HV), lambda in V, 5 seeds",
+  "selected": "per outer fold the sym_e1_l{lambda*_h} row"
+ },
+ "penalty_grid": {
+  "axes": "u_g, u_d in {0, VDD/74, ..., VDD} (75 x 75), forward quadrant, Vb = 0, 300 K, starting card",
+  "floor_A": 1e-09
+ },
+ "selection": {
+  "inner_folds": "training DUTs sorted by (pmos, tag), i mod 3",
+  "members": "seed 0",
+  "lambda_grid": [
+   0,
+   1,
+   2,
+   5,
+   10
+  ],
+  "score": "mean ln RRMS of inner held-out refits (non-finite -> 0)",
+  "ties": "larger lambda within 1e-12",
+  "full_data_model": "not trained (Part B not run)"
+ },
+ "rules": {
+  "primary": {
+   "stat": "GMR(selected, C0_refit), device bootstrap 10000, 95% CI",
+   "gain over C0_refit replicated": "CI upper < 1 and 0 failed DUTs in selected and C0_refit",
+   "worse than C0_refit": "CI lower > 1",
+   "inconclusive": "otherwise"
+  },
+  "secondary": {
+   "stat": "GMR(selected, M_bias v1)",
+   "non-inferior": "CI upper <= 1.05",
+   "not shown non-inferior": "otherwise"
+  }
+ },
+ "predictions": {
+  "ln GMR(selected, C0_refit)": "> 0",
+  "ln GMR(selected, M_bias v1)": "< 0",
+  "ln GMR(M_bias v1, C0_refit)": "> 0"
+ },
+ "reported": [
+  "aggregates of every arm",
+  "GMR of every arm vs C0_refit and v1",
+  "geometry-cluster bootstrap CIs",
+  "LV / HV split",
+  "lambda* counts",
+  "negative corrected gm / gds fractions on penalty grids",
+  "I5-1 stored rows"
+ ],
+ "part_B": {
+  "status": "not run",
+  "reasons": [
+   "BSIM4 channel replica does not apply; PSP103 replica needs SWIGATE=SWIMPACT=SWGIDL=SWJUNCAP=0, zero overlap/fringe charge parameters, VCCS for the DI-BP and SI-BP gmin conductances",
+   "PSP103 intrinsic charges Qg, Qb, Qd are contributed unconditionally (PSP103_module.include 1788-1790): the sensed replica current includes displacement current, the Q2 capacitance check fails by construction; needs an edited PSP103 Verilog-A, a different element",
+   "ngspice-41 OSDI build loads OSDI 0.3 only; psp103.osdi is OSDI 0.4",
+   "Q3 circuits are sky130 netlists"
+  ]
+ },
+ "validity": {
+  "V1": "C0_refit and M_bias v1 rerun rows reproduce I5-1 lodo_300K rows, max |diff| <= 1e-9 on 18 DUTs each",
+  "V2": "unit tests tests.test_i17_2_ihp, tests.test_i12_1_symm, tests.test_i15_2_ablate pass",
+  "V3": "18 rows in every arm; inner complete (18 x 3 x 5 trained, every inner held-out DUT scored)",
+  "V4": "18 penalty grids 75 x 75 finite; forward current > 0 at u_g = u_d = VDD"
+ },
+ "decision": {
+  "invalid": "any validity fail -> stop: fix and re-register",
+  "valid": "primary label + secondary label; Part B not run"
+ },
+ "order": "prereg (alone) -> code + unit tests -> smoke (lv_nmos_W0p15_L0p18, hv_nmos_W0p3_L0p5; 200 steps, 1 seed, refit max_nfev 20) -> queue I17_2_pens, I17_2_base, I17_2_lodo_l{0,1,2,5,10}, I17_2_inner, I17_2_decide"
+}
