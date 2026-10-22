@@ -1,0 +1,334 @@
+{
+ "prereg": "out/research/explore/I17_1/prereg.json",
+ "note": "the V(d,s) = 0 check was re-registered after the observed I16-1 failure; the I16-1 outcome stays 'not deployable'",
+ "validity": {
+  "valid": true,
+  "fails": []
+ },
+ "deploy_sel": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "deploy_sel_under_I16_1_rule": {
+  "deploy": "not deployable",
+  "core_fail": [
+   "Q1 I_D at Vds = 0"
+  ],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "outcome": "deployable",
+ "label": "deployable with restrictions",
+ "restrictions": [
+  "default tolerance above 1e-3",
+  "gds sign changes introduced",
+  "runtime overhead > 2x"
+ ],
+ "action": "the I15-2 selected variant is the deployable add-on candidate (the V(d,s) = 0 check was re-registered after an observed failure); report restrictions",
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 1.0005821249746958e-12,
+  "g_text_max": 2.7755575615628914e-16,
+  "g_sym_text_max": 1.6653345369377348e-16,
+  "swap_asym_max": 2.2488865258042023e-05,
+  "q2_ac_max": 1.0761894252140564e-05,
+  "cap_max": 3.341945613128845e-14,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.001841924455513541,
+  "q2_gds_sign": 6,
+  "runtime_ratio_max": 4.603598196237997
+ },
+ "values_I17_1_rule": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 4.868953199094263e-17,
+  "g_text_max": 2.7755575615628914e-16,
+  "g_sym_text_max": 1.6653345369377348e-16,
+  "swap_asym_max": 2.2488865258042023e-05,
+  "q2_ac_max": 1.0761894252140564e-05,
+  "cap_max": 3.341945613128845e-14,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.001841924455513541,
+  "q2_gds_sign": 6,
+  "runtime_ratio_max": 4.603598196237997
+ },
+ "vds0": {
+  "default": {
+   "elem_max": 1.0005821249746958e-12,
+   "at": [
+    "pmos_L8_W0p84",
+    0.825
+   ],
+   "card_rep_max": 2.5577107619568654e-13,
+   "n_above": 1,
+   "n_points": 1350,
+   "n_nonfinite": 0
+  },
+  "r4": {
+   "elem_max": 9.280204543610004e-13,
+   "at": [
+    "nmos_L1_W3",
+    0.525
+   ],
+   "card_rep_max": 2.5577107619568654e-13,
+   "n_above": 0,
+   "n_points": 1350,
+   "n_nonfinite": 0
+  },
+  "tight": {
+   "elem_max": 4.868953199094263e-17,
+   "at": [
+    "nmos_L0p19_W7",
+    1.825
+   ],
+   "card_rep_max": 4.659184004006748e-17,
+   "n_above": 0,
+   "n_points": 1350,
+   "n_nonfinite": 0
+  }
+ },
+ "thresholds": {
+  "q1_default_rel": 0.001,
+  "q1_vds0_abs": 1e-12,
+  "q2_ac": 0.001,
+  "cap": 0.001,
+  "swap_asym": 0.001,
+  "g_text": 1e-09,
+  "g_sym_text": 1e-12,
+  "runtime_ratio": 2.0,
+  "ro_min_periods": 5,
+  "v1_g": 1e-09,
+  "v2_rrms": 1e-09
+ },
+ "runtime_grid": {
+  "nmos_L0p15_W1p6": 1.9269870502765778,
+  "nmos_L0p19_W7": 2.0380536016288167,
+  "nmos_L0p25_W1p6": 2.0116148493766697,
+  "nmos_L100_W100": 2.0292204256400534,
+  "nmos_L1_W1p6": 1.871984305039406,
+  "nmos_L1_W3": 1.9511801649577336,
+  "nmos_L20_W0p64": 1.9699744870945763,
+  "nmos_L8_W1p6": 1.987400776650936,
+  "pmos_L0p35_W0p55": 1.8425161337397498,
+  "pmos_L0p35_W1p6": 1.902772696184828,
+  "pmos_L0p35_W5": 2.0130448840955117,
+  "pmos_L0p5_W0p42": 2.0414716518500824,
+  "pmos_L0p5_W0p64": 1.8474435752448395,
+  "pmos_L2_W5": 1.900134439422818,
+  "pmos_L4_W7": 1.9063298817166856,
+  "pmos_L8_W0p84": 2.066004879817034,
+  "pmos_L8_W1p6": 1.8640232727035262,
+  "pmos_L8_W5": 1.9024410806159304
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": 1.7593860255601568,
+  "inv_B_vtc": 1.750076534351798,
+  "ro5_A": 4.603598196237997,
+  "mirror_n": 1.204644163832667,
+  "mirror_p": 1.2880651686449835
+ },
+ "refit_in_sample": {
+  "mean_rrms_M2_python": 0.06963984064377987,
+  "mean_rrms_M2_python_channel": 0.06962035144846707,
+  "mean_rrms_M2_native": 0.06962439186214715,
+  "mean_rrms_M2_card_only": 0.10834820665459605,
+  "n_failed": 0
+ },
+ "restriction_totals": {
+  "sel": {
+   "label": "I16-1 selected (full|sym_e1_l1)",
+   "n_gds_curves_introduced": 6,
+   "n_gm_curves_introduced": 0,
+   "n_gds_neg_points_elem": 2564,
+   "n_gds_neg_points_python": 2544,
+   "n_gds_neg_points_card": 112,
+   "n_gm_neg_points_elem_si": 316,
+   "n_gm_neg_points_card_si": 315,
+   "n_gm_neg_points_python_si": 316,
+   "devices_with_gds_introduced": [
+    "pmos_L2_W5",
+    "pmos_L8_W0p84",
+    "pmos_L8_W1p6",
+    "pmos_L8_W5"
+   ],
+   "devices_with_gm_introduced": []
+  },
+  "ref_v2_I15_1": {
+   "label": "I15-1 g v2 (full|M_bias_v2, lambda 10 V), stored arrays",
+   "n_gds_curves_introduced": 2,
+   "n_gm_curves_introduced": 0,
+   "n_gds_neg_points_elem": 1725,
+   "n_gds_neg_points_python": 1464,
+   "n_gds_neg_points_card": 399,
+   "n_gm_neg_points_elem_si": 177,
+   "n_gm_neg_points_card_si": 320,
+   "n_gm_neg_points_python_si": 177,
+   "devices_with_gds_introduced": [
+    "pmos_L8_W0p84",
+    "pmos_L8_W1p6"
+   ],
+   "devices_with_gm_introduced": []
+  }
+ },
+ "accuracy_I15_2_fixed": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 7,
+  "ties": 0,
+  "ratio": 0.9967569285041975,
+  "resample_unit": "device",
+  "ci_low": 0.9621486848363566,
+  "ci_high": 1.0270759831566654,
+  "n_boot": 10000
+ },
+ "element_deck_accuracy": {
+  "summary_native": {
+   "n": 18,
+   "n_failed": 0,
+   "all_device_mean": 0.07389910617996791,
+   "valid_only_mean": 0.07389910617996791,
+   "median": 0.055030453027089796,
+   "combined": 0.06995627241078464
+  },
+  "summary_stored": {
+   "n": 18,
+   "n_failed": 0,
+   "all_device_mean": 0.07391491050547516,
+   "valid_only_mean": 0.07391491050547516,
+   "median": 0.05503598595285653,
+   "combined": 0.06997488123543293
+  },
+  "summary_reference": {
+   "v1_stored": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.0734762121773837,
+    "valid_only_mean": 0.0734762121773837,
+    "median": 0.06370324632784027,
+    "combined": 0.06952762824478365
+   },
+   "C0_refit": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.10509068785072648,
+    "valid_only_mean": 0.10509068785072648,
+    "median": 0.08197973624689832,
+    "combined": 0.09838954780911988
+   },
+   "v2_element_I15_1": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07713708641451414,
+    "valid_only_mean": 0.07713708641451414,
+    "median": 0.054280776159076234,
+    "combined": 0.07321007229348396
+   },
+   "v1_element_I15_1": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07346220282654897,
+    "valid_only_mean": 0.07346220282654897,
+    "median": 0.06357856998469669,
+    "combined": 0.06951085499735082
+   }
+  },
+  "gmr_native": {
+   "sel_native_vs_v1_stored": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 7,
+    "ties": 0,
+    "ratio": 0.9964922476838586,
+    "resample_unit": "device",
+    "ci_low": 0.9619875995981261,
+    "ci_high": 1.0267829499752321,
+    "n_boot": 10000
+   },
+   "sel_native_vs_C0_refit": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 17,
+    "ties": 0,
+    "ratio": 0.742819987754914,
+    "resample_unit": "device",
+    "ci_low": 0.654286665556342,
+    "ci_high": 0.8549911838562686,
+    "n_boot": 10000
+   },
+   "sel_native_vs_v2_element_I15_1": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 13,
+    "ties": 1,
+    "ratio": 0.9467088591151346,
+    "resample_unit": "device",
+    "ci_low": 0.8852202663318472,
+    "ci_high": 1.0234632616982093,
+    "n_boot": 10000
+   },
+   "sel_native_vs_v1_element_I15_1": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 7,
+    "ties": 0,
+    "ratio": 0.9966942619472227,
+    "resample_unit": "device",
+    "ci_low": 0.9620408849225898,
+    "ci_high": 1.0269834283829016,
+    "n_boot": 10000
+   }
+  },
+  "max_abs_native_minus_stored": 0.00020140883632216444,
+  "max_abs_python_rerun_minus_stored": 0.0,
+  "max_native_vs_channel_ratio": 1.0001048682064777,
+  "n_msgs": 0
+ },
+ "I16_1": {
+  "outcome": "not deployable",
+  "deploy_sel": {
+   "deploy": "not deployable",
+   "core_fail": [
+    "Q1 I_D at Vds = 0"
+   ],
+   "restrictions": [
+    "default tolerance above 1e-3",
+    "gds sign changes introduced",
+    "runtime overhead > 2x"
+   ]
+  },
+  "values_differing_from_I17_1_run": {
+   "runtime_ratio_max": [
+    4.560637531286811,
+    4.603598196237997
+   ]
+  },
+  "refit_in_sample": {
+   "mean_rrms_M2_python": 0.06963984064377987,
+   "mean_rrms_M2_python_channel": 0.06962035144846707,
+   "mean_rrms_M2_native": 0.06962439186214715,
+   "mean_rrms_M2_card_only": 0.10834820665459605,
+   "n_failed": 0
+  }
+ }
+}
