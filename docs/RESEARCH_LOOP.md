@@ -1930,3 +1930,16 @@ full model 0.00049 /V (negative corrected gds on 0.35% of grid points). Amendmen
 before any full run): ro5_B fails at card level (C0_refit and M2_card 'timestep too small'; the M2_full run reaches the
 120 s timeout), so the Q4 circuit ratio uses only circuits where both M2_card and M2_full pass, and repeats after a
 failed run are skipped.
+
+## I12-1 validity run 1 invalid (V1), amendment A2 and requeue (2026-10-21 22:20)
+
+Queue run 1: I12_1_grids 1 s, I12_1_validity 49 s: V1 failed (max |g_new - g_stored| 1.85e-3 on M_bias|nmos_L0p15_W1p6,
+1.17e-3 on M_bias|pmos_L2_W5; threshold 1e-9), V2 passed (difference 0.0 on both devices). Outcome by rule: invalid,
+action 'stop: fix and re-register'. I12_1_lodo was stopped by hand during training; it wrote no output. Cause: the
+driver built the training sets in sorted tag order, the stored all-18 corrections used the record load order (REAL_DEV,
+then REAL_TEST); the order sets the summation order of the loss. In load order the trainer reproduces stored members
+exactly (4 single-seed checks, max |dW| 0). Amendment A2 (`prereg_amendment_A2.json`, committed with the fix and before
+any LODO output): every training set in load order (`fold_train_tags`, unit-tested); validity, lodo, deploy and decide
+rerun with the rules unchanged. Run-1 validity kept in `validity_run1_invalid/`.
+Queue (runner restarted): I12_1_validity (about 1 min), I12_1_lodo (95 seed tasks at about 100 s plus 18 refits on 6
+workers, about 30 min), I12_1_deploy (about 10 min), I12_1_decide.

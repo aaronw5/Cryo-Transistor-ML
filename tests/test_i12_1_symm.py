@@ -342,5 +342,26 @@ class TestQ3Selections(unittest.TestCase):
         self.assertAlmostEqual(r["a"], 2.5)
 
 
+class TestFoldOrder(unittest.TestCase):
+    def test_load_order_kept(self):
+        order = ["nmos_b", "pmos_a", "nmos_a", "pmos_c"]      # not sorted
+        self.assertEqual(m.fold_train_tags(order, "pmos_a"), ["nmos_b", "nmos_a", "pmos_c"])
+        self.assertEqual(m.fold_train_tags(order, None), order)
+        with self.assertRaises(KeyError):
+            m.fold_train_tags(order, "x")
+        with self.assertRaises(ValueError):
+            m.fold_train_tags(order + ["nmos_b"], None)
+
+    def test_order_changes_training(self):
+        """A different record order gives a different (not bitwise equal)
+        correction: the order is part of the reproduction."""
+        devs = synth_devices(3)
+        hyper = {"steps": 40, "seeds": (0,)}
+        a = m.fit_v2(devs, None, 0.0, hyper=hyper, inputs="abs_v1")
+        b = m.fit_v2(devs[::-1], None, 0.0, hyper=hyper, inputs="abs_v1")
+        x = m.batch_inputs(devs, "abs_v1")
+        self.assertFalse(np.array_equal(a.g_x(x), b.g_x(x)))
+
+
 if __name__ == "__main__":
     unittest.main()

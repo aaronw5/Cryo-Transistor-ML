@@ -382,8 +382,8 @@ def fit_v2(train: list[DeviceRec], pens: Sequence[dict] | None, lam: float,
             value.backward()
             opt.step()
             if trace is not None and (step + 1) % 250 == 0:
-                trace.append((int(seed), step + 1, float(value),
-                              None if pval is None else float(pval)))
+                trace.append((int(seed), step + 1, float(value.detach()),
+                              None if pval is None else float(pval.detach())))
         nets.append([(mm.weight.detach().numpy().T.copy(), mm.bias.detach().numpy().copy())
                      for mm in mods])
     return SymCorrection(arm, mu, sd, nets=nets, inputs=inputs, eps=eps)
@@ -899,3 +899,15 @@ def circuit_runtime_ratios(rows: dict, circuits: Sequence[str]) -> dict:
     where both runs pass."""
     return {n: float(np.median(rows[f"{n}|M2_full"]["wall"]) / np.median(rows[f"{n}|M2_card"]["wall"]))
             for n in circuits if rows[f"{n}|M2_full"]["ok"] and rows[f"{n}|M2_card"]["ok"]}
+
+
+def fold_train_tags(load_order: Sequence[str], held: str | None) -> list[str]:
+    """Training records of a fold in the record load order (REAL_DEV records,
+    then REAL_TEST, as the I3-2 all-18 run; amendment A2): every tag except
+    ``held`` (None: all).  The order fixes the floating-point summation order
+    of the loss, so a sorted order does not reproduce the stored corrections."""
+    if held is not None and held not in load_order:
+        raise KeyError(held)
+    if len(set(load_order)) != len(load_order):
+        raise ValueError("duplicate tags in the load order")
+    return [t for t in load_order if t != held]

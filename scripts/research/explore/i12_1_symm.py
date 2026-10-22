@@ -159,6 +159,13 @@ def load_records() -> dict:
     return {r.tag: r for r in recs}
 
 
+def load_order() -> list[str]:
+    """Tags in the record load order of ``load_records_all18`` (amendment A2)."""
+    from i3_2_bias import load_records_all18
+    recs, _ = load_records_all18()
+    return [r.tag for r in recs]
+
+
 def stored_v1(key: str):
     from cryoml.explore.i3_2_bias import correction_from_json
     return correction_from_json(jload(ALL18 / "corrections.json")[key])
@@ -181,7 +188,7 @@ def train_task(task):
     t0 = time.time()
     corr = m.fit_v2(train, pens, lam, hyper={**hyper, "seeds": (seed,)}, inputs=inputs,
                     threads=1, trace=trace)
-    return name, seed, corr, trace, round(time.time() - t0, 1)
+    return name, seed, corr, trace, round(time.time() - t0, 1), list(train_tags)
 
 
 def heldout(task):
@@ -194,7 +201,7 @@ def merge(results, names) -> dict:
     by = {n: [] for n in names}
     traces = {n: {} for n in names}
     secs = {n: [] for n in names}
-    for name, seed, corr, trace, sec in sorted(results, key=lambda r: (r[0], r[1])):
+    for name, seed, corr, trace, sec, _ in sorted(results, key=lambda r: (r[0], r[1])):
         by[name].append(corr)
         traces[name][seed] = trace
         secs[name].append(sec)
@@ -207,11 +214,11 @@ def merge(results, names) -> dict:
 def stage_validity(workers: int, rd: Path, smoke: bool) -> dict:
     from cryoml.explore.e1_correction import make_batch
     recs = load_records()
-    tags = sorted(recs)
+    order = load_order()
     keys = m.select_v1_keys(list(jload(ALL18 / "corrections.json")))
     hyper = {"steps": 200} if smoke else {}
     seeds = (0,) if smoke else m.HYPER_V2["seeds"]
-    tasks = [(k, [t for t in tags if t != k.split("|", 1)[1]], s, hyper, 0.0, "abs_v1")
+    tasks = [(k, m.fold_train_tags(order, k.split("|", 1)[1]), s, hyper, 0.0, "abs_v1")
              for k in keys for s in seeds]
     v2_rows = m.select_v2_rows(stored_rows()["M_bias"])
     t0 = time.time()
@@ -225,7 +232,7 @@ def stage_validity(workers: int, rd: Path, smoke: bool) -> dict:
     v1 = {}
     for k in keys:
         held = k.split("|", 1)[1]
-        train = [recs[t] for t in tags if t != held]
+        train = [recs[t] for t in m.fold_train_tags(order, held)]
         phi = make_batch(train).phi
         g_old = stored_v1(k).g(phi)
         g_new = corrs[k].g_x(m.batch_inputs(train, "abs_v1"))
@@ -256,8 +263,9 @@ def stage_lodo(workers: int, rd: Path, smoke: bool, folds: list[str] | None = No
     seeds = (0,) if smoke else m.HYPER_V2["seeds"]
     opts = dict(REFIT_OPTS, heldout_nfev=20) if smoke else dict(REFIT_OPTS)
     names = [f"M_bias_v2|{t}" for t in folds] + ["full|M_bias_v2"]
-    train_of = {f"M_bias_v2|{t}": [u for u in tags if u != t] for t in folds}
-    train_of["full|M_bias_v2"] = list(tags)
+    order = load_order()
+    train_of = {f"M_bias_v2|{t}": m.fold_train_tags(order, t) for t in folds}
+    train_of["full|M_bias_v2"] = m.fold_train_tags(order, None)
     tasks = [(n, train_of[n], s, hyper, m.LAMBDA, "sym_v2") for n in names for s in seeds]
     t0 = time.time()
     with get_context("spawn").Pool(workers) as pool:
@@ -299,7 +307,7 @@ def stage_lodo(workers: int, rd: Path, smoke: bool, folds: list[str] | None = No
     posthoc = {t: corrected_score(corrs[f"M_bias_v2|{t}"], recs[t]) for t in folds}
     result = {"smoke": smoke, "preregistered_config": bool(full18), "prereg": str(PREREG.relative_to(ROOT)),
               "lambda": m.LAMBDA, "eps": m.EPS, "hyper": m.HYPER_V2, "hyper_overrides": hyper,
-              "seeds": list(seeds), "opts": opts, "folds": folds,
+              "seeds": list(seeds), "opts": opts, "folds": folds, "train_order": train_of,
               "summary": summary, "comparisons": comparisons, "n_failed_M_bias_v2": n_failed,
               "per_device": sel, "posthoc_no_refit": posthoc, "penalty": pen_stats,
               "heldout_rows": {r["tag"]: {k: v for k, v in r.items() if k != "params"} for r in rows},
