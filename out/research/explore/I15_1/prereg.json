@@ -1,0 +1,184 @@
+{
+ "id": "I15-1",
+ "status": "in force",
+ "date": "2026-10-22",
+ "title": "Re-registration of the I14-1 Part B deployment test of g v2 with the Q1 grid swept in serpentine order; I14-1 replica, module, references, checks, thresholds and label unchanged; sky130 77 K, 18 devices",
+ "reregisters": "I14-1 (failed core check: Q1 runs, 2 gmin-stepping warning lines in 1 of 126 element decks, nmos_L8_W1p6 exchanged tight)",
+ "done_before": {
+  "location": "warnings only at the restart of the inner sweep at V(g) = 1.85 V (V(d) +1.85 -> -1.85 V); isolated op at (1.85, -1.85) V and sweeps starting there print none; itl2 100/200/500 and itl1 500 leave the warnings unchanged",
+  "replica_variants_864_decks": {
+   "I14-1": 0,
+   "Is x 1e-20": 1,
+   "Is x 1e-10": 1,
+   "Is x 1": 1,
+   "rbodymod 0": "3 of 1008 incl. AC"
+  },
+  "replica_variants_nmos_L8_W1p6_M2": {
+   "I14-1": "warnings",
+   "Is x 1e-20": "none",
+   "Is x 1e-60": "warnings",
+   "rbodymod 0": "none"
+  },
+  "compensation": {
+   "none": "sensed current contains forward-biased drain-junction current in the reverse quadrant, up to 0.039 A; forward quadrant equal to I14-1",
+   "junction_only_replica_CCCS": "exact to 5.7e-5 of the Q1 tolerance (exchanged bench); forward tight card + replica run aborts on nmos_L8_W1p6 M2 (timestep too small at V(d) = -1.825 V)",
+   "body_current_routing": "warnings on nmos_L8_W1p6 M2 forward decks"
+  },
+  "conclusion": "no tested replica change keeps convergence unchanged on the other devices; replica kept as I14-1",
+  "serpentine_precheck": {
+   "file": "precheck/precheck.json",
+   "decks_per_order": 1296,
+   "warnings_nested": 0,
+   "warnings_serp": 0,
+   "nmos_L8_W1p6_M2_disclosed": "nested 2 decks with warnings, serpentine 0",
+   "tight_serp_minus_nested_eq_ratio_max": {
+    "card": 1.6942437536998183,
+    "card_rep": 1.6942437536998183,
+    "sense": 1.739435187532352,
+    "elem": 2.10297995913528
+   },
+   "max_rel_1nA_elem": {
+    "tight": 3.427116029025288e-05,
+    "r4": 0.001013735454532771,
+    "default": 0.0019846416759801036
+   },
+   "wall_ratio_serp_nested_card_default_median": 1.1243016134164163
+  },
+  "runtime_decomposition_ro5_A_I14_M2": {
+   "wall_s": {
+    "card": 0.24,
+    "card_rep": 0.48,
+    "elem": 1.13,
+    "elem_trivial_module": 0.52,
+    "elem_gate_body_copies_removed": 1.1,
+    "card_rep_rbodymod0": 0.449,
+    "elem_tanh_exp_form": 1.09
+   },
+   "rusage_load_s": {
+    "card": 0.12,
+    "card_rep": 0.27,
+    "elem": 0.88
+   },
+   "openvaf_target_cpu": "crashes",
+   "runtime_variant": "none registered (largest replica-side reduction without new warnings: ratio 4.7 -> 4.6)"
+  },
+  "code_draft": [
+   "src/cryoml/explore/i15_1_serp.py",
+   "scripts/research/explore/i15_1_chan.py",
+   "tests/test_i15_1_serp.py"
+  ]
+ },
+ "not_done_before": [
+  "Part B runs on M2 cards other than nmos_L8_W1p6 (precheck, disclosed)",
+  "any M2 refit",
+  "any accuracy run",
+  "any training"
+ ],
+ "inputs": {
+  "records": "out/research/explore/I13_1/records",
+  "v2": {
+   "fold": "I13_1/lodo/corrections.json M_bias_v2|<tag>",
+   "full": "I13_1/lodo/corrections.json full|M_bias_v2",
+   "heldout_cards": "I13_1/lodo/heldout_cards.json",
+   "rows": "I13_1/lodo/results.json per_device.M_bias_v2"
+  },
+  "v1_reference": {
+   "fold": "I13_1/all18/corrections.json M_bias|<tag>",
+   "full": "I13_1/all18/corrections.json full|M_bias",
+   "heldout_cards": "I13_1/all18/heldout_cards.json M_bias",
+   "rows": "I13_1/all18/results.json per_device.M_bias"
+  },
+  "C0_refit_cards": "I13_1/all18/heldout_cards.json C0_refit"
+ },
+ "change": {
+  "procedure": "every Q1 grid deck (card, card_rep, elem; forward and exchanged; default, r4, tight; incl. the Q4 default grid): one dc VD per V(g) line (V(g) 0 -> +-1.85 V, 25 mV), V(d) ascending on even lines and descending on odd lines, wrdata appended (set appendwrite), rows put back in nested order by i15_1_serp.grid_rows (rejects missing or duplicated grid values); a grid run with row count != 11175 is a failed run",
+  "unchanged": "grid points, benches, tolerances, replica (I14-1 REPLICA_CHAN + gmin VCCS), module text, references, thresholds, label; AC, dense, measured-curve and circuit decks",
+  "justification": "warnings located at the 3.7 V restart jump of the nested sweep at tight tolerance; the bias point converges when reached from a neighbouring point",
+  "limitation_reported": "a nested sweep with the restart jump at tight tolerance can print gmin-stepping warnings for the element deck (I14-1: 1 of 126 element decks, 1 of 108 card + replica decks)"
+ },
+ "part_B": {
+  "cards": "M2: refit from direct43_r3_fd with the arm's full-data g frozen in the loop (TRF, max_nfev 400, irls 2, diff_step 0.01, state C)",
+  "q1_reference": {
+   "forward": "I_card + (exp(g) - 1) I_rep",
+   "exchanged": "I_card(nd) - (exp(g) - 1) I_rep"
+  },
+  "eq_criterion": {
+   "rel": 1e-06,
+   "abs_A": 1e-13
+  },
+  "thresholds": {
+   "q1_default_rel": 0.001,
+   "q1_vds0_abs": 1e-12,
+   "q2_ac": 0.001,
+   "cap": 0.001,
+   "swap_asym": 0.001,
+   "g_text": 1e-09,
+   "g_sym_text": 1e-12,
+   "runtime_ratio": 2.0,
+   "ro_min_periods": 5,
+   "v1_g": 1e-09,
+   "v2_rrms": 1e-09
+  },
+  "core": [
+   "Q1 equivalence (tight, both benches) 0 violations",
+   "Q1 runs 0 messages / non-finite",
+   "Q1 Vds=0 <= 1e-12 A",
+   "Verilog-A g <= 1e-9 and exchanged <= 1e-12",
+   "exchange asymmetry <= 1e-3",
+   "Q2 derivatives <= 1e-3 (element-identity reference)",
+   "Q2 capacitances <= 1e-3",
+   "Q2 gm sign 0 of 54",
+   "Q3 0 circuits failing only with the element"
+  ],
+  "restrictions": [
+   "default tolerance > 1e-3",
+   ">= 1 gds curve (of 90) with an introduced sign change",
+   "wall-time ratio > 2"
+  ],
+  "label": "any core fail -> not deployable; core pass and >= 1 restriction -> deployable with restrictions; else deployable (simulator-level)",
+  "amendment_A1_of_I12_1": "applies (circuit runtime ratio over circuits where M2_card and M2_full pass; no repeats after a failed run)",
+  "reference_arm_v1": "same stages with full|M_bias (inputs is_pmos, |V(g,s)|/VDD, |V(d,s)|/VDD; module i14_1_bias_corr_v1); label reported, not the outcome; exchanged-terminal Verilog-A check expected to fail",
+  "m2_cards_reported": "max relative parameter difference vs I14-1 M2 cards (expected 0)",
+  "q1_runs_scope": "every element deck: grids (serpentine), AC, dense; grid row count != 11175 counts as a failed run"
+ },
+ "restriction_items_reported": [
+  "Q1 max relative difference at |I_py| > 1 nA per device, default / r4 / tight",
+  "gds curves with an introduced sign change: points with dI/dV(d,s) < 0 for element, card, I_card exp(g); g range",
+  "runtime: grid and circuit ratios; ro5_A decomposition (card, card_rep, elem; wall and rusage load time) on I15-1 M2 cards"
+ ],
+ "accuracy": {
+  "registered_flags_from_I13_1": {
+   "A1": {
+    "gmr": 0.7849,
+    "ci": [
+     0.6928,
+     0.8965
+    ],
+    "wins": 16,
+    "pass": true
+   },
+   "A2": {
+    "gmr": 1.0529,
+    "ci": [
+     0.9664,
+     1.1372
+    ],
+    "margin": 1.05,
+    "pass": false
+   }
+  },
+  "element_deck": "reported, no rule: native RRMS of the held-out pairs (v2 and v1), Python and channel-model Python RRMS, differences to the I13-1 rows, all-device / combined / median, GMR(native v2, C0_refit), GMR(native v2, stored v1), GMR(native v2, native v1), GMR(native v1, C0_refit)"
+ },
+ "validity": {
+  "V1": "card-only library deck (OSDI build, clamp written) x exp(fold g) reproduces the 36 I13-1 rows (v2, v1): max |diff| <= 1e-9",
+  "V2": "unit tests of I14-1 plus tests.test_i15_1_serp pass",
+  "V3": "18 element-deck accuracy rows per arm; 0 failed M2 refits per arm"
+ },
+ "decision": {
+  "invalid": "any validity fail -> stop: fix and re-register",
+  "not deployable": "Part B (v2) not deployable -> stop; diagnose the failed core checks",
+  "deployable, accuracy below v1 (not non-inferior)": "Part B (v2) deployable with restrictions or deployable (simulator-level) -> stop v2; report the accuracy cost of the deployment constraints",
+  "note": "A1 pass / A2 fail fixed by I13-1; element-deck accuracy and the reference arm do not change the outcome"
+ },
+ "order": "prereg commit (alone) -> code + unit tests commit -> smoke (2 devices, refit max_nfev 20) -> queue: I15_1_validity, I15_1_accuracy, I15_1_deploy_v2, I15_1_deploy_v1, I15_1_restrict, I15_1_decide"
+}
