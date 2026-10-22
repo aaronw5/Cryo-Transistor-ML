@@ -422,11 +422,17 @@ def mirror_control(out: Path) -> list[str]:
 # ---------------------------------------------------------------------------
 # ngspice and library (I/O)
 # ---------------------------------------------------------------------------
-def patched_library(td: Path, cards: dict) -> Path:
+def patched_library(td: Path, cards: dict, bsim4_state: str = "clamped") -> Path:
     """77 K library with, per polarity, one bin patched: ``cards`` maps
     dev_type -> list of (bin_index, params) (params None = published card).
-    Two patches of the same bin must be identical."""
+    Two patches of the same bin must be identical.  ``bsim4_state``
+    "clamped" (default, I14-1) writes the b4check.c A1/A2 clamp into each
+    patched card (``spice_pdk.bsim4_clamp_params``), so every analysis of a
+    multi-analysis deck runs in the fresh-process state; "legacy" writes the
+    cards unchanged (decks made before I14-1)."""
     from .. import spice_pdk as sp
+    if bsim4_state not in ("clamped", "legacy"):
+        raise ValueError(f"bsim4_state {bsim4_state!r} not in ('clamped', 'legacy')")
     err = sp.ensure_pdk77k()
     if err:
         raise RuntimeError(err)
@@ -436,6 +442,8 @@ def patched_library(td: Path, cards: dict) -> Path:
         patches = [(b, p) for b, p in patches if p]
         if not patches:
             continue
+        if bsim4_state == "clamped":
+            patches = [(b, sp.bsim4_clamp_params(dev_type, b, p)[0]) for b, p in patches]
         base = sp.PDK77K_DIR / sp._CORNER_BASENAME[dev_type]
         text = base.read_text(errors="replace")
         seen = {}

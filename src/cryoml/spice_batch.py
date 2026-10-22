@@ -36,6 +36,14 @@ maximum); sub-``abstol`` off-state points differ more.  Any failed or
 incomplete sweep makes the whole batch fall back to ``altermod``.
 
 ``method="separate"`` loops over ``simulate_pdk`` (the reference).
+
+BSIM4 model-check clamp state (I14-1): ``bsim4_state="clamped"`` (default)
+writes the ``b4check.c`` A1/A2 clamp into every card
+(``spice_pdk.bsim4_clamp_params``) before any method runs, so every curve of
+every card is simulated in the fresh-process state, as
+``simulate_pdk(..., bsim4_state="clamped")``.  ``"legacy"`` reproduces the
+decks used before I14-1 (altermod: the first curve of each card after the
+check reset clamped, later curves with the card values).
 """
 
 from __future__ import annotations
@@ -57,7 +65,8 @@ from .spice_pdk import (_CORNER_BASENAME, _DEFAULT_TIMEOUT_S, _MODEL,
                         _NGSPICE_BIN, _SUBCKT, LIB_FILE, PDK77K_DIR,
                         _batch_deck, _bin_spans, _instance_line,
                         _patch_params_in_bin, _read_curves, _sweep_lines,
-                        ensure_pdk77k, find_bin_index, simulate_pdk)
+                        bsim4_clamp_params, ensure_pdk77k, find_bin_index,
+                        simulate_pdk)
 
 _FATAL_TEXT = "could not find a valid modelname"
 _NUM_RE = re.compile(r"([+-]?)(\d*)(?:\.(\d*))?(?:[eE]([+-]?\d+))?")
@@ -333,21 +342,27 @@ def simulate_pdk_multi(
     method: str = "altermod",
     temp_K: float = TEMP_K,
     workers: int = 1,
+    bsim4_state: str = "clamped",
 ) -> list[list[np.ndarray]]:
-    """``[simulate_pdk(..., params=p, bin_index=bin_index) for p in params_list]``
-    with many cards per NGSpice process.
+    """``[simulate_pdk(..., params=p, bin_index=bin_index,
+    bsim4_state=bsim4_state) for p in params_list]`` with many cards per
+    NGSpice process.
 
     ``method``: ``"altermod"`` (bit-identical, default), ``"parallel"``
     (near-exact, faster; falls back to altermod on any failure) or
     ``"separate"`` (one process per card).  ``timeout_s`` is per card.
     ``workers`` > 1 splits the cards into contiguous chunks run as concurrent
     NGSpice processes (threads; each chunk is independent).
+    ``bsim4_state``: "clamped" (default; the b4check.c clamp written into
+    every card) or "legacy" (no clamp written; reproduction only).
     """
     err = ensure_pdk77k()
     if err:
         raise RuntimeError(err)
     if method not in ("altermod", "parallel", "separate"):
         raise ValueError(f"unknown method {method!r}")
+    if bsim4_state not in ("clamped", "legacy"):
+        raise ValueError(f"bsim4_state {bsim4_state!r} not in ('clamped', 'legacy')")
     curves = list(curves)
     params_list = [dict(p) if p else None for p in params_list]
     if not params_list:
@@ -358,11 +373,15 @@ def simulate_pdk_multi(
         bin_idx = find_bin_index(dev_type, L_um, W_um)
         if bin_idx is None:
             raise ValueError(f"no bin for {dev_type} L={L_um} W={W_um}")
+    if bsim4_state == "clamped":
+        params_list = [bsim4_clamp_params(dev_type, bin_idx, p)[0] if p else None
+                       for p in params_list]
 
     def separate(index: int) -> list[np.ndarray]:
         return simulate_pdk(dev_type, L_um, W_um, curves,
                             params=params_list[index], temp_K=temp_K,
-                            timeout_s=timeout_s, bin_index=bin_idx)
+                            timeout_s=timeout_s, bin_index=bin_idx,
+                            bsim4_state=bsim4_state)
 
     def run_chunk(indices: list[int]) -> list[list[np.ndarray]]:
         chunk = [params_list[i] for i in indices]
@@ -411,6 +430,7 @@ def ngspice_jacobian(
     timeout_s: float = _DEFAULT_TIMEOUT_S,
     temp_K: float = TEMP_K,
     full_output: bool = False,
+    bsim4_state: str = "clamped",
 ):
     """Finite-difference Jacobian d(I-V points)/d(card parameters) via NGSpice.
 
@@ -427,6 +447,8 @@ def ngspice_jacobian(
 
     Returns ``J`` (n_points x n_names), or ``(J, f0, steps)`` with
     ``full_output=True``.  Failed simulations give NaN entries.
+    ``bsim4_state`` as ``simulate_pdk_multi`` (default "clamped": a column of
+    a parameter that the clamp overrides, e.g. a2 > 1, is 0).
     """
     if scheme not in ("forward", "central"):
         raise ValueError(f"unknown scheme {scheme!r}")
@@ -457,7 +479,8 @@ def ngspice_jacobian(
         steps.append(p_hi - p_lo)
     sims = simulate_pdk_multi(dev.dev_type, dev.L_um, dev.W_um, curves, cards,
                               bin_index=bin_index, timeout_s=timeout_s,
-                              method=method, temp_K=temp_K, workers=workers)
+                              method=method, temp_K=temp_K, workers=workers,
+                              bsim4_state=bsim4_state)
     flat = [np.concatenate([np.asarray(c, dtype=np.float64) for c in s])
             for s in sims]
     f0 = flat[0]

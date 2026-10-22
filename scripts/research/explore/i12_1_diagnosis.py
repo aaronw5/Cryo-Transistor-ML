@@ -66,7 +66,8 @@ def ops_twice(dev, params, vg: float, vd: float) -> list[float]:
     """Card-only deck, tight tolerance: op at (vg, vd) twice in one process."""
     with tempfile.TemporaryDirectory(prefix="cryoml_i12d_") as t:
         td = Path(t)
-        lib = m.patched_library_v2(td, {dev.dev_type: [(dev.bin, params)]} if params else {})
+        lib = m.patched_library_v2(td, {dev.dev_type: [(dev.bin, params)]} if params else {},
+                                   bsim4_state="legacy")   # I14-1: decks as diagnosed
         p = [f"alter VG dc = {vg:.6g}", f"alter VD dc = {vd:.6g}", "op", "print -i(VD)"]
         r = m1.run_deck(m.deck_v2("ops", lib, m.device_body_v2(dev, False), p + p, None, m1.TIGHT), td, "ops.sp")
     return [float(ln.split("=")[1]) for ln in r["text"].splitlines() if "i(vd) =" in ln.lower()]
@@ -115,7 +116,7 @@ def matched_ac(dev, params, pts) -> dict:
     res = {}
     with tempfile.TemporaryDirectory(prefix="cryoml_i12d_") as t:
         td = Path(t)
-        lib = m.patched_library_v2(td, {dev.dev_type: [(dev.bin, params)]})
+        lib = m.patched_library_v2(td, {dev.dev_type: [(dev.bin, params)]}, bsim4_state="legacy")
         for ex in ("VG", "VD"):
             r = m1.run_deck(m.deck_v2(f"m_{ex}", lib, matched_body(dev), matched_ac_control(pts, ex), None,
                                       m1.TIGHT), td, f"m_{ex}.sp")
@@ -172,7 +173,8 @@ def freq_test(dev, params, vg: float, vd: float) -> dict:
     for lab, extra in (("rbodymod_1_card", {}), ("rbodymod_0", {"rbodymod": 0})):
         with tempfile.TemporaryDirectory(prefix="cryoml_i12d_") as t:
             td = Path(t)
-            lib = m.patched_library_v2(td, {dev.dev_type: [(dev.bin, {**params, **extra})]})
+            lib = m.patched_library_v2(td, {dev.dev_type: [(dev.bin, {**params, **extra})]},
+                                       bsim4_state="legacy")
             c = ["alter VG ac = 1", f"alter VG dc = {vg:.6g}", f"alter VD dc = {vd:.6g}", "op"]
             freqs = (1e2, 1e3, 1e4, 1e5, 1e6)
             for f in freqs:

@@ -175,15 +175,20 @@ def compile_va(text: str, va: Path, osdi: Path, openvaf: Path | str = OPENVAF_R,
 def simulate_sky130(dev_type: str, L_um: float, W_um: float, curves: Iterable,
                     params: dict | None, bin_index: int | None, ngspice_bin: str,
                     osdi: Path | None = None, vdd: float = 1.85, options: str = "",
-                    timeout_s: float = 120.0, pmos_param: str = "pmos") -> tuple[list[np.ndarray], list[str]]:
+                    timeout_s: float = 120.0, pmos_param: str = "pmos",
+                    bsim4_state: str = "clamped") -> tuple[list[np.ndarray], list[str]]:
     """``spice_pdk.simulate_pdk`` (same deck, card patching and read-back)
     with an explicit ngspice binary and, when ``osdi`` is given, the
     correction inserted by ``insert_correction``.  ``options`` (e.g.
     ``"reltol=1e-6 abstol=1e-15"``) adds one ``.options`` line after the
     deck's ``.options scale=1.0`` (diagnostic runs only; empty = the
     canonical deck).  Returns the currents (measured-grid order of
-    ``curves``) and the convergence messages."""
+    ``curves``) and the convergence messages.  ``bsim4_state`` "clamped"
+    (default, I14-1) writes the b4check.c A1/A2 clamp into the card, as
+    ``simulate_pdk``; "legacy" writes it unchanged (runs made before I14-1)."""
     from .. import spice_pdk as sp
+    if bsim4_state not in ("clamped", "legacy"):
+        raise ValueError(f"bsim4_state {bsim4_state!r} not in ('clamped', 'legacy')")
     err = sp.ensure_pdk77k()
     if err:
         raise RuntimeError(err)
@@ -194,6 +199,8 @@ def simulate_sky130(dev_type: str, L_um: float, W_um: float, curves: Iterable,
         if params:
             bin_idx = bin_index if bin_index is not None else sp.find_bin_index(
                 dev_type, L_um, W_um)
+            if bsim4_state == "clamped":
+                params, _ = sp.bsim4_clamp_params(dev_type, bin_idx, params)
             base = sp.PDK77K_DIR / sp._CORNER_BASENAME[dev_type]
             patched = sp._patch_params_in_bin(base.read_text(errors="replace"), dev_type,
                                               bin_idx, params)

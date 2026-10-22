@@ -18,6 +18,11 @@ With ``rs_ext_ohm == 0`` and ``curve_params is None`` the deck is the
 result equals ``simulate_pdk`` with the same ``params`` and ``bin_index``
 (checked by ``tests/test_sky130_misspec.py``).  ``spice_pdk`` is imported,
 never edited.
+
+BSIM4 model-check clamp state (I14-1): ``bsim4_state="clamped"`` (default)
+writes the ``b4check.c`` A1/A2 clamp into the card
+(``spice_pdk.bsim4_clamp_params``), as ``simulate_pdk``; "legacy" writes the
+card unchanged (reproduction of decks made before I14-1).
 """
 
 from __future__ import annotations
@@ -32,7 +37,8 @@ import numpy as np
 
 from .spice_pdk import (LIB_FILE, PDK77K_DIR, _CORNER_BASENAME, _NGSPICE_BIN,
                         _bin_spans, _instance_line, _patch_params_in_bin,
-                        _read_curves, _sweep_lines, device_mult, ensure_pdk77k)
+                        _read_curves, _sweep_lines, bsim4_clamp_params,
+                        device_mult, ensure_pdk77k)
 
 TEMP_K = 77.0
 STOCK_PREFIX = "Xm1 nd ng 0 0 "
@@ -83,12 +89,16 @@ def truth_deck(dev_type: str, L_um: float, W_um: float, curves: list,
 
 def _run(dev_type: str, L_um: float, W_um: float, curves: list,
          params: Mapping[str, float], bin_index: int, rs_ext_ohm: float,
-         timeout_s: float) -> list[np.ndarray]:
+         timeout_s: float, bsim4_state: str = "clamped") -> list[np.ndarray]:
     """One ngspice process for ``curves`` (mirrors ``simulate_pdk``)."""
+    if bsim4_state not in ("clamped", "legacy"):
+        raise ValueError(f"bsim4_state {bsim4_state!r} not in ('clamped', 'legacy')")
     with tempfile.TemporaryDirectory(prefix="cryoml_sky130c_") as td_s:
         td = Path(td_s)
         lib_path = LIB_FILE
         if params:
+            if bsim4_state == "clamped":
+                params, _ = bsim4_clamp_params(dev_type, bin_index, dict(params))
             base = PDK77K_DIR / _CORNER_BASENAME[dev_type]
             patched = _patch_params_in_bin(base.read_text(errors="replace"),
                                            dev_type, bin_index, dict(params))
@@ -119,9 +129,11 @@ def simulate_truth(dev_type: str, L_um: float, W_um: float,
                    curves: Iterable, params: Mapping[str, float] | None, *,
                    bin_index: int, rs_ext_ohm: float = 0.0,
                    curve_params: Sequence[Mapping[str, float] | None] | None = None,
-                   timeout_s: float = 20.0) -> list[np.ndarray]:
+                   timeout_s: float = 20.0,
+                   bsim4_state: str = "clamped") -> list[np.ndarray]:
     """Simulated currents per curve (``simulate_pdk`` sign convention and
-    resampling).  A failed or timed-out process gives NaN curves."""
+    resampling).  A failed or timed-out process gives NaN curves.
+    ``bsim4_state``: "clamped" (default) or "legacy" (module docstring)."""
     err = ensure_pdk77k()
     if err:
         raise RuntimeError(err)
@@ -129,7 +141,7 @@ def simulate_truth(dev_type: str, L_um: float, W_um: float,
     base = dict(params or {})
     if curve_params is None:
         return _run(dev_type, L_um, W_um, curves, base, bin_index,
-                    rs_ext_ohm, timeout_s)
+                    rs_ext_ohm, timeout_s, bsim4_state)
     if len(curve_params) != len(curves):
         raise ValueError("curve_params needs one entry per curve")
     cards = [{**base, **dict(extra or {})} for extra in curve_params]
@@ -139,7 +151,7 @@ def simulate_truth(dev_type: str, L_um: float, W_um: float,
     out: list[np.ndarray | None] = [None] * len(curves)
     for indices in groups.values():
         sims = _run(dev_type, L_um, W_um, [curves[i] for i in indices],
-                    cards[indices[0]], bin_index, rs_ext_ohm, timeout_s)
+                    cards[indices[0]], bin_index, rs_ext_ohm, timeout_s, bsim4_state)
         for index, sim in zip(indices, sims):
             out[index] = sim
     return out  # type: ignore[return-value]

@@ -261,6 +261,8 @@ def simulate_truth_at(tag: str, truth: dict, temp_K: float,
     err = ensure_pdk77k()
     if err:
         raise RuntimeError(err)
+    from ..spice_pdk import bsim4_clamp_params
+    params, _ = bsim4_clamp_params(device.dev_type, bin_index, params)   # I14-1: state C
     with tempfile.TemporaryDirectory(prefix="cryoml_e3_") as td_s:
         td = Path(td_s)
         base = PDK77K_DIR / _CORNER_BASENAME[device.dev_type]

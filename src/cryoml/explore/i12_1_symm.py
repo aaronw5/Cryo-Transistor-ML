@@ -776,14 +776,17 @@ def instance_dev(name: str, dev, d: str, g: str, s: str, b: str, corr: bool) -> 
                        sp._SUBCKT[dev.dev_type], dev.dev_type, d, g, s, b, corr)
 
 
-def patched_library_v2(td: Path, cards: dict) -> Path:
+def patched_library_v2(td: Path, cards: dict, bsim4_state: str = "clamped") -> Path:
     """``i11_1_deploy.patched_library`` plus, for both polarities, the
     charge-free replica of the (patched or base) corner text, included in
-    the tt_77k section.  Raises if a replica bin lacks a REPLICA_ZERO value."""
+    the tt_77k section.  Raises if a replica bin lacks a REPLICA_ZERO value.
+    ``bsim4_state`` as ``patched_library`` (default "clamped", I14-1: the
+    card and its replica carry the b4check.c clamp; "legacy" reproduces the
+    I12-1 decks)."""
     from .. import spice_pdk as sp
     from .i11_1_deploy import patched_library
     td = Path(td)
-    lib = patched_library(td, cards)
+    lib = patched_library(td, cards, bsim4_state)
     text = lib.read_text()
     adds = []
     for dev_type in ("nmos", "pmos"):
