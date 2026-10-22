@@ -1,0 +1,275 @@
+{
+ "prereg": "out/research/explore/I14_1/prereg.json",
+ "validity": {
+  "valid": true,
+  "fails": []
+ },
+ "accuracy_I13_1": {
+  "A1_gain_vs_C0_refit": true,
+  "A2_noninferior_vs_v1": false
+ },
+ "deploy_v2": {
+  "deploy": "not deployable",
+  "core_fail": [
+   "Q1 convergence / non-finite"
+  ],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "outcome": "not deployable",
+ "action": "stop; diagnose the failed core checks",
+ "A1": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 16,
+  "ties": 0,
+  "ratio": 0.7848602919739102,
+  "resample_unit": "device",
+  "ci_low": 0.6928491904556094,
+  "ci_high": 0.8964741968266031,
+  "n_boot": 10000
+ },
+ "A2": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 4,
+  "ties": 0,
+  "ratio": 1.0528892724477141,
+  "resample_unit": "device",
+  "ci_low": 0.9664287777478355,
+  "ci_high": 1.1371512941027175,
+  "n_boot": 10000
+ },
+ "reference_arm_v1_deploy": {
+  "deploy": "not deployable",
+  "core_fail": [
+   "Q1 I_D at Vds = 0",
+   "Verilog-A g not d/s symmetric",
+   "terminal-exchange asymmetry > 1e-3",
+   "Q2 derivative agreement",
+   "Q2 gm sign change in strong inversion"
+  ],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "element_deck_accuracy": {
+  "v2": {
+   "max_abs_native_minus_stored": 0.00018196413120011995,
+   "max_abs_python_rerun_minus_stored": 0.0,
+   "max_native_vs_channel_ratio": 0.996125429953875,
+   "n_msgs": 0,
+   "summary_native": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07713708641451414,
+    "valid_only_mean": 0.07713708641451414,
+    "median": 0.054280776159076234,
+    "combined": 0.07321007229348396
+   },
+   "summary_stored": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07715554613226162,
+    "valid_only_mean": 0.07715554613226162,
+    "median": 0.05436676937867882,
+    "combined": 0.07323125483040499
+   }
+  },
+  "v1": {
+   "max_abs_native_minus_stored": 0.00025103799921860626,
+   "max_abs_python_rerun_minus_stored": 0.0,
+   "max_native_vs_channel_ratio": 1.000701206171958,
+   "n_msgs": 0,
+   "summary_native": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07346220282654897,
+    "valid_only_mean": 0.07346220282654897,
+    "median": 0.06357856998469669,
+    "combined": 0.06951085499735082
+   },
+   "summary_stored": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.0734762121773837,
+    "valid_only_mean": 0.0734762121773837,
+    "median": 0.06370324632784027,
+    "combined": 0.06952762824478365
+   }
+  }
+ },
+ "element_deck_gmr": {
+  "v2_native_vs_C0_refit": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 16,
+   "ties": 0,
+   "ratio": 0.7846340304126967,
+   "resample_unit": "device",
+   "ci_low": 0.6927472429897964,
+   "ci_high": 0.8961462116145849,
+   "n_boot": 10000
+  },
+  "v2_native_vs_v1_stored": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 4,
+   "ties": 0,
+   "ratio": 1.0525857427966347,
+   "resample_unit": "device",
+   "ci_low": 0.9663049074488637,
+   "ci_high": 1.1367972221372382,
+   "n_boot": 10000
+  },
+  "v2_native_vs_v1_native": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 4,
+   "ties": 0,
+   "ratio": 1.052799128634761,
+   "resample_unit": "device",
+   "ci_low": 0.9663157327866376,
+   "ci_high": 1.1370034578908763,
+   "n_boot": 10000
+  },
+  "v1_native_vs_C0_refit": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 17,
+   "ties": 0,
+   "ratio": 0.745283700443585,
+   "resample_unit": "device",
+   "ci_low": 0.6594490156936732,
+   "ci_high": 0.849662530669149,
+   "n_boot": 10000
+  }
+ },
+ "i13_1_table": {
+  "published": {
+   "new": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.2750531309922495,
+    "valid_only_mean": 0.2750531309922495,
+    "median": 0.2304317505747112,
+    "combined": 0.2595303215565659
+   },
+   "old": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.2750531309922495,
+    "valid_only_mean": 0.2750531309922495,
+    "median": 0.2304317505747112,
+    "combined": 0.2595303215565659
+   }
+  },
+  "start": {
+   "new": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.11087432603285996,
+    "valid_only_mean": 0.11087432603285996,
+    "median": 0.08232558182629934,
+    "combined": 0.10488396234291178
+   },
+   "old": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.10437237482918767,
+    "valid_only_mean": 0.10437237482918767,
+    "median": 0.08225956154010419,
+    "combined": 0.09756926728336886
+   }
+  },
+  "C0_refit": {
+   "new": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.10509068785072648,
+    "valid_only_mean": 0.10509068785072648,
+    "median": 0.08197973624689832,
+    "combined": 0.09838954780911988
+   },
+   "old": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.10427533896799393,
+    "valid_only_mean": 0.10427533896799393,
+    "median": 0.08197973624689832,
+    "combined": 0.09747228035981803
+   }
+  },
+  "T1_inloop": {
+   "new": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.0753283859139286,
+    "valid_only_mean": 0.0753283859139286,
+    "median": 0.06796013175061266,
+    "combined": 0.07130920323947457
+   },
+   "old": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.0744060406798039,
+    "valid_only_mean": 0.0744060406798039,
+    "median": 0.06719404562871739,
+    "combined": 0.07026664021375681
+   }
+  },
+  "M_bias_v1": {
+   "new": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.0734762121773837,
+    "valid_only_mean": 0.0734762121773837,
+    "median": 0.06370324632784027,
+    "combined": 0.06952762824478365
+   },
+   "old": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07316345449986766,
+    "valid_only_mean": 0.07316345449986766,
+    "median": 0.06430640784463298,
+    "combined": 0.06911020463438923
+   }
+  },
+  "M_bias_v2": {
+   "new": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07715554613226162,
+    "valid_only_mean": 0.07715554613226162,
+    "median": 0.05436676937867882,
+    "combined": 0.07323125483040499
+   },
+   "old": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07736659448852706,
+    "valid_only_mean": 0.07736659448852706,
+    "median": 0.05337976894959779,
+    "combined": 0.0731572452265722
+   }
+  }
+ }
+}

@@ -1,0 +1,122 @@
+{
+ "compile": [
+  {
+   "arm": "v2",
+   "tag": "nmos_L1_W1p6",
+   "sha256": "8fc201dcdf5f0cac51b96664ea784523a25e383cbbcd1587982e5febf809a4b8",
+   "compiled": true
+  },
+  {
+   "arm": "v2",
+   "tag": "pmos_L2_W5",
+   "sha256": "ad50790cd130ee357eb98871bc630f6ed3eac796efa5d89e3ef972aae0c369a3",
+   "compiled": true
+  },
+  {
+   "arm": "v1",
+   "tag": "nmos_L1_W1p6",
+   "sha256": "51137ffce7322b06f93938cc9269960bbf43748aaa2ca1063145fe635c250e5c",
+   "compiled": true
+  },
+  {
+   "arm": "v1",
+   "tag": "pmos_L2_W5",
+   "sha256": "5720bafedf546d5e3a733e678259052d2ca7998b454edfba0e7caaae554f4e7e",
+   "compiled": true
+  }
+ ],
+ "compile_s": 1.2,
+ "rows": {
+  "v2|nmos_L1_W1p6": {
+   "arm": "v2",
+   "tag": "nmos_L1_W1p6",
+   "rrms_native": 0.031206286358672963,
+   "rrms_python": 0.031210328812083993,
+   "rrms_python_channel": 0.031210328757959132,
+   "rrms_card_only": 0.041575867236812364,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.8144178087751375,
+   "card_nonchannel_share_max": 1.0016803352031467,
+   "msgs": [],
+   "stored_python": 0.031210328812083993,
+   "native_minus_stored": -4.0424534110301835e-06
+  },
+  "v2|pmos_L2_W5": {
+   "arm": "v2",
+   "tag": "pmos_L2_W5",
+   "rrms_native": 0.0497004581982217,
+   "rrms_python": 0.049689384715130326,
+   "rrms_python_channel": 0.04968938366673712,
+   "rrms_card_only": 0.08060021811052664,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.9502245454792972,
+   "card_nonchannel_share_max": 0.9999712430497675,
+   "msgs": [],
+   "stored_python": 0.049689384715130326,
+   "native_minus_stored": 1.1073483091372793e-05
+  },
+  "v1|nmos_L1_W1p6": {
+   "arm": "v1",
+   "tag": "nmos_L1_W1p6",
+   "rrms_native": 0.0261584905672538,
+   "rrms_python": 0.026153095156125617,
+   "rrms_python_channel": 0.02615309511555844,
+   "rrms_card_only": 0.03958105294366076,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.8726151395980275,
+   "card_nonchannel_share_max": 1.0016488681578097,
+   "msgs": [],
+   "stored_python": 0.026153095156125617,
+   "native_minus_stored": 5.395411128181898e-06
+  },
+  "v1|pmos_L2_W5": {
+   "arm": "v1",
+   "tag": "pmos_L2_W5",
+   "rrms_native": 0.070087581259712,
+   "rrms_python": 0.07007917960991018,
+   "rrms_python_channel": 0.0700791781674334,
+   "rrms_card_only": 0.0813834918972483,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.9886355443835563,
+   "card_nonchannel_share_max": 0.9999736907529033,
+   "msgs": [],
+   "stored_python": 0.07007917960991018,
+   "native_minus_stored": 8.401649801814681e-06
+  }
+ },
+ "per_arm": {
+  "v2": {
+   "native": {
+    "nmos_L1_W1p6": 0.031206286358672963,
+    "pmos_L2_W5": 0.0497004581982217
+   },
+   "python_rerun": {
+    "nmos_L1_W1p6": 0.031210328812083993,
+    "pmos_L2_W5": 0.049689384715130326
+   },
+   "python_channel": {
+    "nmos_L1_W1p6": 0.031210328757959132,
+    "pmos_L2_W5": 0.04968938366673712
+   },
+   "max_abs_native_minus_stored": 1.1073483091372793e-05,
+   "max_abs_python_rerun_minus_stored": 0.0,
+   "max_native_vs_channel_ratio": 0.9502245454792972,
+   "n_msgs": 0
+  },
+  "v1": {
+   "native": {
+    "nmos_L1_W1p6": 0.0261584905672538,
+    "pmos_L2_W5": 0.070087581259712
+   },
+   "python_rerun": {
+    "nmos_L1_W1p6": 0.026153095156125617,
+    "pmos_L2_W5": 0.07007917960991018
+   },
+   "python_channel": {
+    "nmos_L1_W1p6": 0.02615309511555844,
+    "pmos_L2_W5": 0.0700791781674334
+   },
+   "max_abs_native_minus_stored": 8.401649801814681e-06,
+   "max_abs_python_rerun_minus_stored": 0.0,
+   "max_native_vs_channel_ratio": 0.9886355443835563,
+   "n_msgs": 0
+  }
+ },
+ "wall_s": 1.6
+}

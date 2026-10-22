@@ -9,8 +9,8 @@
  },
  "site": {
   "title": "Cryo-ML Research Results",
-  "eyebrow": "cryo-ml \u00b7 results ledger \u00b7 branch widened-43-parameter-extraction",
-  "run_header": "T = 77 K \u00b7 18 measured SkyWater devices (8 nMOS, 10 pMOS), 11 I\u2013V curves each \u00b7 ngspice-41 (native arm64 build) \u00b7 metric: paper RRMS (port of upstream rrmsCalc.py)",
+  "eyebrow": "cryo-ml · results ledger · branch widened-43-parameter-extraction",
+  "run_header": "T = 77 K · 18 measured SkyWater devices (8 nMOS, 10 pMOS), 11 I–V curves each · ngspice-41 (native arm64 build) · metric: paper RRMS (port of upstream rrmsCalc.py)",
   "conventions": [
    "RRMS is the paper metric with the published-baseline curve inclusion frozen, scored on a fresh NGSpice re-simulation of the card, unless a claim says otherwise.",
    "all-device = mean over the 18 devices. combined = mean of the nMOS (8) and pMOS (10) family means. The paper's headline 0.2038 (43 parameters) and 0.2284 (seven parameters) are all-device values.",
@@ -51,7 +51,7 @@
     "question": "Does a trust-region fit that uses a neural surrogate as its model, corrected at each centre with the NGSpice value and Jacobian, reach direct-NGSpice accuracy with fewer NGSpice calls? Thesis under test: neural surrogates do not rank candidate cards in the order NGSpice ranks them, and inverse networks trained on simulations have large errors on measured devices (model misspecification).",
     "answer": [
      {
-      "text": "Same search with NGSpice in place of the surrogate, 43 parameters, round 1: all-device RRMS 0.2382 \u2192 0.1125 (combined 0.2289 \u2192 0.1053). The pipeline value is from its final selection rerun with the same surrogate and the rule that rejects candidates with failed included curves; 18 of 18 devices are valid. Before the fix the stored pipeline value was 0.2375, with 1 failed device (0.2395 over the 17 valid devices, 0.2920 penalized).",
+      "text": "Same search with NGSpice in place of the surrogate, 43 parameters, round 1: all-device RRMS 0.2382 → 0.1125 (combined 0.2289 → 0.1053). The pipeline value is from its final selection rerun with the same surrogate and the rule that rejects candidates with failed included curves; 18 of 18 devices are valid. Before the fix the stored pipeline value was 0.2375, with 1 failed device (0.2395 over the 17 valid devices, 0.2920 penalized).",
       "source": [
        "out/research/pipe_fixed/full_r1/summary.md",
        "out/research/swap_search/full_round_1/summary.json",
@@ -68,7 +68,7 @@
       "claim": "icml-misrank"
      },
      {
-      "text": "Six surrogate architectures in the same search, 43 parameters, round 1: end-to-end all-device RRMS 0.2274\u20130.2549 vs 0.1125 with NGSpice in place of the surrogate; the lowest test loss (FNO) has the highest end-to-end RRMS. Diagnostic ablation on the measured devices, not used for method selection.",
+      "text": "Six surrogate architectures in the same search, 43 parameters, round 1: end-to-end all-device RRMS 0.2274–0.2549 vs 0.1125 with NGSpice in place of the surrogate; the lowest test loss (FNO) has the highest end-to-end RRMS. Diagnostic ablation on the measured devices, not used for method selection.",
       "source": [
        "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
        "out/research/surrogate_arch/full_round_1/paper_mlp_wide_f1.json",
@@ -81,7 +81,7 @@
       "claim": "arch-ablation"
      },
      {
-      "text": "Learning curves, paper MLP / DeepONet / FNO at 10,732 \u2192 85,853 training samples: test loss 4.8\u20135.4\u00d7 lower; end-to-end all-device 0.2588 \u2192 0.2348, 0.2581 \u2192 0.2274, 0.2494 \u2192 0.2549 (combined 0.2483 \u2192 0.2248, 0.2477 \u2192 0.2193, 0.2397 \u2192 0.2448); NGSpice swap 0.1125. Diagnostic ablation.",
+      "text": "Learning curves, paper MLP / DeepONet / FNO at 10,732 → 85,853 training samples: test loss 4.8–5.4× lower; end-to-end all-device 0.2588 → 0.2348, 0.2581 → 0.2274, 0.2494 → 0.2549 (combined 0.2483 → 0.2248, 0.2477 → 0.2193, 0.2397 → 0.2448); NGSpice swap 0.1125. Diagnostic ablation.",
       "source": [
        "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
        "out/research/surrogate_arch/full_round_1/deeponet_f1.json",
@@ -100,7 +100,7 @@
       "claim": "icml-inverse"
      },
      {
-      "text": "Hybrid trust-region fit: DEV results at 500\u20135000 calls on 36 targets are in [dev-iter1](#claim-dev-iter1).",
+      "text": "Hybrid trust-region fit: DEV results at 500–5000 calls on 36 targets are in [dev-iter1](#claim-dev-iter1).",
       "source": [
        "out/research/dev/compare.json"
       ],
@@ -160,7 +160,7 @@
        "type": "nodes",
        "items": [
         {
-         "name": "n1a \u00b7 sketched Jacobians",
+         "name": "n1a · sketched Jacobians",
          "method": "At each trust-region centre, k = 8 directional NGSpice probes (Gauss-Newton step, top singular vectors of the transported prior, one Gaussian direction) plus secant and Broyden updates replace the 43-call FD Jacobian; a full FD Jacobian at the first centre, on refresh, and on prior mismatch. Control: the same code with no surrogate.",
          "code": [
           "scripts/research/sketch_tr.py",
@@ -178,7 +178,7 @@
          "chip": "running"
         },
         {
-         "name": "n1c \u00b7 CMA-ES call-trace baseline",
+         "name": "n1c · CMA-ES call-trace baseline",
          "method": "CMA-ES (sigma0 0.3, popsize 15) then bounded TRF, and lq-CMA-ES, on the same oracle, bank start, objective and call accounting as the trust-region arms, with an exact trace of best RRMS against cumulative NGSpice calls.",
          "code": [
           "scripts/research/cmaes_trace.py",
@@ -188,7 +188,7 @@
          "chip": "done"
         },
         {
-         "name": "n1b \u00b7 anytime racing",
+         "name": "n1b · anytime racing",
          "method": "Eight zero-call surrogate presearch starts, racing of trust-region runs by predicted reduction per NGSpice call, optimistic-bound drops, surrogate-proposed restarts.",
          "code": [
           "scripts/research/anytime_tr.py",
@@ -301,7 +301,7 @@
    "id": "explore",
    "kind": "paper",
    "label": "Exploration",
-   "title": "Exploration phase: directions E1\u2013E5 and iteration 2",
+   "title": "Exploration phase: directions E1–E5 and iteration 2",
    "subtitle": "Each direction has a cheap probe and a pre-registered continue or kill rule, judged on REAL_DEV (12 measured devices) and simulated sets; REAL_TEST is not loaded. Directions to continue are chosen by about 2026-11-15.",
    "state": "active",
    "status": {
@@ -728,7 +728,7 @@
       "claim": "cryo-seven-floor"
      },
      {
-      "text": "Simulated 77\u2013300 K benchmark, held-out temperatures, all-device after FD: pipeline search on NGSpice 0.0004, paper-MLP surrogate search 0.0007, direct NGSpice 0.0117.",
+      "text": "Simulated 77–300 K benchmark, held-out temperatures, all-device after FD: pipeline search on NGSpice 0.0004, paper-MLP surrogate search 0.0007, direct NGSpice 0.0117.",
       "source": [
        "out/research/report/2026-10-16_baseline_results/tables.md"
       ],
@@ -744,7 +744,7 @@
       ]
      },
      {
-      "text": "Physicality check of fitted cards with parameters at the box edges (for example rdsw up to \u00d72\u00b710^4 of released) before any card is presented. Not queued.",
+      "text": "Physicality check of fitted cards with parameters at the box edges (for example rdsw up to ×2·10^4 of released) before any card is presented. Not queued.",
       "source": [
        "docs/RESEARCH_LOOP.md"
       ]
@@ -767,8 +767,8 @@
       {
        "type": "list",
        "items": [
-        "Simulator: a native arm64 build of the ngspice-41 release (`~/cryo-ng41/arm64/bin/ngspice`); the x86_64 conda-forge build no longer runs on macOS 27. It reproduces the reference scores exactly, and `verify_simulator.py` agrees with the upstream sweeps to \u22641e-11 A.",
-        "Cold start: round 1 is centred on the multiplier-free card and searched log-uniformly: vth0 within \u00d73, the other six paper parameters within \u00d7100, the remaining sensitivity-screened parameters within \u00d73. Each later round re-centres every device's box on its selected NGSpice-validated card; interior coordinates halve their log width, edge coordinates keep it.",
+        "Simulator: a native arm64 build of the ngspice-41 release (`~/cryo-ng41/arm64/bin/ngspice`); the x86_64 conda-forge build no longer runs on macOS 27. It reproduces the reference scores exactly, and `verify_simulator.py` agrees with the upstream sweeps to ≤1e-11 A.",
+        "Cold start: round 1 is centred on the multiplier-free card and searched log-uniformly: vth0 within ×3, the other six paper parameters within ×100, the remaining sensitivity-screened parameters within ×3. Each later round re-centres every device's box on its selected NGSpice-validated card; interior coordinates halve their log width, edge coordinates keep it.",
         "Surrogates are always trained from random initialization."
        ],
        "source": [
@@ -817,7 +817,7 @@
     "question": "Can the fitting problems built for this project be released as a benchmark with fixed targets, budgets and scoring?",
     "answer": [
      {
-      "text": "Five problem sets exist or have generators: SkyWater 77 K measured (18 devices), SkyWater held-out simulated (3 sets \u00d7 18), simulated temperature 77\u2013300 K (3 sets \u00d7 18), GF180MCU (16 devices, tiers a/b/c) and IHP SG13G2 (16 devices, tiers a/b/c).",
+      "text": "Five problem sets exist or have generators: SkyWater 77 K measured (18 devices), SkyWater held-out simulated (3 sets × 18), simulated temperature 77–300 K (3 sets × 18), GF180MCU (16 devices, tiers a/b/c) and IHP SG13G2 (16 devices, tiers a/b/c).",
       "source": [
        "scripts/research/make_sim_targets.py",
        "scripts/research/temp_bank.py",
@@ -883,7 +883,7 @@
          "SkyWater 77 K, measured",
          "ngspice-41 (arm64), BSIM4, SkyWater sky130 card with `tnom = -196.15`",
          "18 (8 nMOS, 10 pMOS), 11 curves each",
-         "measured I\u2013V",
+         "measured I–V",
          "7 or 43",
          "in use"
         ],
@@ -896,7 +896,7 @@
          "in use (DEV: sets 0, 1; TEST: set 2)"
         ],
         [
-         "Simulated temperature 77\u2013300 K",
+         "Simulated temperature 77–300 K",
          "ngspice-41, BSIM4, `tnom = 27 C` card with temperature expressions",
          "18 per set",
          "3 sets; observed 77, 150, 225, 300 K; held out 110, 190, 260 K",
@@ -907,7 +907,7 @@
          "GF180MCU",
          "ngspice-41, BSIM4 bins, 3.3 V",
          "16",
-         "tiers a, b, c; 3 sets \u00d7 16",
+         "tiers a, b, c; 3 sets × 16",
          "7 (seven) or 21 (wide)",
          "generator built; truths and banks queued"
         ],
@@ -915,7 +915,7 @@
          "IHP SG13G2",
          "Homebrew ngspice-46, PSP 103.6 via OSDI (prebuilt macOS OpenVAF-Reloaded), 1.2 V",
          "16",
-         "tiers a, b, c; 3 sets \u00d7 16",
+         "tiers a, b, c; 3 sets × 16",
          "7 (seven) or 12 (wide)",
          "generator built; truths and banks queued"
         ]
@@ -940,16 +940,16 @@
        "type": "facts",
        "items": [
         {
-         "label": "a \u00b7 well-specified",
+         "label": "a · well-specified",
          "value": "The seven fitted parameters drawn uniformly in the device's seven-parameter box; every other card value stock; 27 C; no noise."
         },
         {
-         "label": "b \u00b7 mildly misspecified",
-         "value": "A fresh in-box draw, plus every non-fitted misspecification parameter scaled by a log-uniform factor in [1/(1+w), 1+w] (w = 0.2 GF180, 0.05 IHP); extrinsic drain and source resistors outside the card (GF180 r ~ U(25, 100) ohm\u00b7\u00b5m / W; IHP r = k \u00d7 RSW1, k ~ U(0.1, 0.4)); multiplicative Gaussian noise \u03c3 = 0.01."
+         "label": "b · mildly misspecified",
+         "value": "A fresh in-box draw, plus every non-fitted misspecification parameter scaled by a log-uniform factor in [1/(1+w), 1+w] (w = 0.2 GF180, 0.05 IHP); extrinsic drain and source resistors outside the card (GF180 r ~ U(25, 100) ohm·µm / W; IHP r = k × RSW1, k ~ U(0.1, 0.4)); multiplicative Gaussian noise σ = 0.01."
         },
         {
-         "label": "c \u00b7 strongly misspecified",
-         "value": "A fresh in-box draw, plus non-fitted parameters with width 0.5; extrinsic resistors r = k \u00d7 the card's own per-side series resistance, k ~ U(1, 2); self-heating-like heating, curve i at 27 C + \u0394T_max \u00b7 P_i / max P with \u0394T_max ~ U(20, 40) K; bias-dependent noise \u03c3(1 + |Vd|/VDD) with \u03c3 = 0.01; per-curve gain error 1 + N(0, 0.01)."
+         "label": "c · strongly misspecified",
+         "value": "A fresh in-box draw, plus non-fitted parameters with width 0.5; extrinsic resistors r = k × the card's own per-side series resistance, k ~ U(1, 2); self-heating-like heating, curve i at 27 C + ΔT_max · P_i / max P with ΔT_max ~ U(20, 40) K; bias-dependent noise σ(1 + |Vd|/VDD) with σ = 0.01; per-curve gain error 1 + N(0, 0.01)."
         }
        ]
       },
@@ -1009,7 +1009,7 @@
     {
      "question": "Cap u0 below the BSIM4 u0 > 1 unit switch?",
      "decision": "No. The u0 range of the cold boxes stays unchanged.",
-     "context": "BSIM4 divides u0 by 1e4 when u0 > 1; the cold round-1 box (u0 \u00d7100) crosses that value for about 14% of nMOS samples. The trust-region arms use a 1e-3 Jacobian step and a cliff guard.",
+     "context": "BSIM4 divides u0 by 1e4 when u0 > 1; the cold round-1 box (u0 ×100) crosses that value for about 14% of nMOS samples. The trust-region arms use a 1e-3 Jacobian step and a cliff guard.",
      "recorded": "2026-10-16",
      "source": [
       "docs/RESEARCH_LOOP.md",
@@ -1026,13 +1026,13 @@
    "statement": "Replacing the surrogate with NGSpice in the same search lowers the round-1 43-parameter all-device RRMS from 0.2382 to 0.1125, with the pipeline value taken from its final selection rerun with failed-curve rejection (18 of 18 devices valid).",
    "status": "verified",
    "headline": {
-    "value": "0.2382 \u2192 0.1125",
-    "convention": "all-device, raw, 43 parameters, round 1 (combined 0.2289 \u2192 0.1053); pipeline final selection rerun with failed-curve rejection, 18 of 18 devices valid; stored before the fix: 0.2375"
+    "value": "0.2382 → 0.1125",
+    "convention": "all-device, raw, 43 parameters, round 1 (combined 0.2289 → 0.1053); pipeline final selection rerun with failed-curve rejection, 18 of 18 devices valid; stored before the fix: 0.2375"
    },
    "numbers": [
     {
      "label": "Pipeline 43, round 1 (surrogate search), raw",
-     "value": "0.2382 (0.2289); 18 of 18 devices valid; `nmos_L0p15_W1p6` 0.2035 \u2192 0.2159",
+     "value": "0.2382 (0.2289); 18 of 18 devices valid; `nmos_L0p15_W1p6` 0.2035 → 0.2159",
      "convention": "all-device (combined); final selection rerun with failed-curve rejection",
      "source": "out/research/pipe_fixed/full_r1/summary.md"
     },
@@ -1055,8 +1055,8 @@
      "source": "out/research/polished/swap_full_r1_fd/real/summary.json"
     },
     {
-     "label": "Pipeline 7 \u2192 NGSpice swap 7, round 1, raw",
-     "value": "0.2367 \u2192 0.1887",
+     "label": "Pipeline 7 → NGSpice swap 7, round 1, raw",
+     "value": "0.2367 → 0.1887",
      "convention": "all-device",
      "source": "out/research/swap_search/seven_round_1/summary.json"
     },
@@ -1079,14 +1079,14 @@
    ],
    "what": [
     "Question: how much of the paper pipeline's error at 43 parameters comes from the surrogate rather than from the search procedure?",
-    "Paper pipeline (cold, round 1): a 10k-card Latin-hypercube bank per device in the round-1 box, simulated in NGSpice; a forward surrogate (parameters \u2192 I\u2013V) trained on it from random initialization; 8 diverse bank starts; bounded TRF least squares on the surrogate with 2-point FD (max_nfev 100, diff_step 0.02, regularization 1e-4); NGSpice validation of the top 4 endpoints, the 4 starts and the fallback.",
-    "Swap control: the same `finite_difference_surrogate_extract` code with an NGSpice evaluator in place of the surrogate. Nothing else changes. Failed NGSpice points are penalized at curve RRMS 10. Round trip against the bank \u22645e-6 relative.",
-    "Box: cold round-1 box (vth0 \u00d73, the other six paper parameters \u00d7100, the remaining screened parameters \u00d73, log-uniform). Devices: the 18 measured 77 K devices."
+    "Paper pipeline (cold, round 1): a 10k-card Latin-hypercube bank per device in the round-1 box, simulated in NGSpice; a forward surrogate (parameters → I–V) trained on it from random initialization; 8 diverse bank starts; bounded TRF least squares on the surrogate with 2-point FD (max_nfev 100, diff_step 0.02, regularization 1e-4); NGSpice validation of the top 4 endpoints, the 4 starts and the fallback.",
+    "Swap control: the same `finite_difference_surrogate_extract` code with an NGSpice evaluator in place of the surrogate. Nothing else changes. Failed NGSpice points are penalized at curve RRMS 10. Round trip against the bank ≤5e-6 relative.",
+    "Box: cold round-1 box (vth0 ×3, the other six paper parameters ×100, the remaining screened parameters ×3, log-uniform). Devices: the 18 measured 77 K devices."
    ],
    "did": [
     "`swap_seven_r1` and `swap_full_r1`: `scripts/research/swap_search.py` on `out/cold_loop/{seven,full}/round_1` with bank `data/processed/cold_loop/{seven,full}_r1`; ended 2026-10-16 05:43 (245 s) and 06:16 (1,948 s).",
     "`fd_swap_full_r1` (70 s) and `fd_pipe43_r1_real` (32 s): `scripts/research/polish_cards.py`, max_nfev 400, diff_step 0.01, irls 2. `fd_pipe43_r1_real` polished the card selected before the fix and is superseded by `fd_pipe43_r1_fixed` (32 s, 2026-10-17 07:13) on the corrected card.",
-    "Pipeline 43 round 1: `scripts/research/cold_loop.py --set full` (rounds 1\u20134 finished 2026-10-16 05:39, 12.4 h).",
+    "Pipeline 43 round 1: `scripts/research/cold_loop.py --set full` (rounds 1–4 finished 2026-10-16 05:39, 12.4 h).",
     "Final selection rerun for round 1 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r1`, with the round-1 surrogate (forward-model checksum identical to `out/cold_loop/full/round_1/extract/forward_model.pt`) and the rule that rejects candidates with failed included curves (commit a0e1e97). Only `nmos_L0p15_W1p6` changes: its selected card changes from an FD endpoint (0.2035, 1 of 10 included curves failed) to a bank start (0.2159). The other 17 devices keep the same card and score."
    ],
    "result": {
@@ -1162,7 +1162,7 @@
     ]
    },
    "caveats": [
-    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2\u20133 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
     "Values before the fix, pipeline 43 round 1, all-device (combined): raw stored 0.2375 (0.2281), valid-only 0.2395 (0.2238) over 17 devices, penalized 0.2920 (0.2894); + FD stored 0.1824 (0.1730), valid-only 0.1853 (0.1698), penalized 0.2373 (0.2347); 1 failed device (`nmos_L0p15_W1p6`). NGSpice swap over the same 17 devices: 0.1176. Difference from the swap, raw: 0.1250 stored, 0.1219 over the 17 valid devices (`out/research/audit/failed_curves.json`).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "Not a matched-budget comparison: the swap uses 19,854 NGSpice calls per device in this run against 10,009 for the pipeline (bank and validation). Matched-budget curves come from the DEV comparison.",
@@ -1239,7 +1239,7 @@
     "Two card sets per device are scored by the frozen round-1 surrogate and by NGSpice: the pipeline's final picks, and the cold direct NGSpice 43-parameter fits (CMA-ES + TRF, `full_r1_direct_cold`) in the same box. Paper RRMS, frozen inclusion, mean over the 18 measured devices."
    ],
    "did": [
-    "`scripts/research/surrogate_gap.py` (inference only; NGSpice scores taken from the existing summaries) \u2192 `out/research/surrogate_gap_full_round_1.json`.",
+    "`scripts/research/surrogate_gap.py` (inference only; NGSpice scores taken from the existing summaries) → `out/research/surrogate_gap_full_round_1.json`.",
     "Figure from `scripts/research/report_figs.py --topic baseline_results --date 2026-10-16`.",
     "Corrected picks: `methods.surrogate_fd.surrogate_rrms` and `rrms` in `out/research/pipe_fixed/full_r1/ml_<device>.json`, scored by the same round-1 surrogate; direct-fit values from `out/research/surrogate_gap_full_round_1.json`. For the 17 unchanged picks the surrogate values agree with the gap file to within 3e-6."
    ],
@@ -1288,9 +1288,9 @@
     ]
    },
    "caveats": [
-    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2\u20133 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
     "Before the fix, with the picks then stored: 17 of 18 devices with opposite ordering; picks surrogate 0.2034, NGSpice 0.2375 stored, which includes 1 device with a failed included curve (`nmos_L0p15_W1p6`; valid-only 0.2395 over 17).",
-    "The direct-fit cards sit on the box faces (max |local| \u2248 1), where the Latin-hypercube bank is sparse and about 40% of round-1 bank samples did not converge.",
+    "The direct-fit cards sit on the box faces (max |local| ≈ 1), where the Latin-hypercube bank is sparse and about 40% of round-1 bank samples did not converge.",
     "At seven parameters the surrogate's prediction for its own picks matched NGSpice (0.235 vs 0.2367); the swap shows that this did not hold for the cards it did not pick.",
     "Larger surrogates and neural operators: `arch_full_r1` finished; with six architectures the surrogate ranks the direct-fit card better on 5 to 8 of 18 devices ([arch-ablation](#claim-arch-ablation)). Learning curves (`archlc_full_r1`): [arch-lc](#claim-arch-lc)."
    ],
@@ -1310,7 +1310,7 @@
    "statement": "With six surrogate architectures trained on the same round-1 43-parameter cache and used in the same search, the end-to-end all-device RRMS on the 18 measured devices is 0.2274 to 0.2549; the same search with NGSpice in place of the surrogate gives 0.1125.",
    "status": "verified",
    "headline": {
-    "value": "0.2274\u20130.2549 vs 0.1125",
+    "value": "0.2274–0.2549 vs 0.1125",
     "convention": "all-device, raw; end-to-end search with each of 6 surrogate architectures vs the same search with NGSpice in place of the surrogate; 43 parameters, round-1 box, 18 measured devices; diagnostic ablation, not used for method selection"
    },
    "numbers": [
@@ -1383,7 +1383,7 @@
     {
      "label": "Mean absolute score error at the reference cards",
      "value": "0.2427 (FNO) to 0.3429 (large ResMLP)",
-     "convention": "|surrogate-predicted RRMS \u2212 NGSpice RRMS|, 18 devices \u00d7 3 card sets",
+     "convention": "|surrogate-predicted RRMS − NGSpice RRMS|, 18 devices × 3 card sets",
      "source": [
       "out/research/surrogate_arch/full_round_1/paper_mlp_f1.json",
       "out/research/surrogate_arch/full_round_1/paper_mlp_wide_f1.json",
@@ -1423,7 +1423,7 @@
    ],
    "what": [
     "Question: does a different or larger surrogate architecture, trained on the same data with the same recipe, change the end-to-end result of the pipeline's search on the measured devices?",
-    "Architectures (`src/cryoml/operators.py`): paper MLP (4 \u00d7 1024 hidden, 5.3M trainable parameters), wide MLP (6 \u00d7 2048, 25.3M), residual MLP (27.3M), large residual MLP (138.6M), DeepONet (branch residual MLP, trunk over the bias point, 25.8M) and an FNO conditioned along each curve's sweep axis (4.1M).",
+    "Architectures (`src/cryoml/operators.py`): paper MLP (4 × 1024 hidden, 5.3M trainable parameters), wide MLP (6 × 2048, 25.3M), residual MLP (27.3M), large residual MLP (138.6M), DeepONet (branch residual MLP, trunk over the bias point, 25.8M) and an FNO conditioned along each curve's sweep axis (4.1M).",
     "Fixed across architectures: the round-1 43-parameter cache (`out/cold_loop/full/round_1/cache`); the per-device train/validation/test split of the pipeline (seed 20260818, 85,853 training samples); the loss (standardized signed-log MSE + curve-normalized linear Huber); the recipe (AdamW, cosine schedule, early stopping on validation loss, at most 200 epochs, FNO at most 80); and the search (`fps.finite_difference_surrogate_extract`: 8 starts, TRF max_nfev 100, diff_step 0.02, regularization 1e-4, NGSpice validation of the top 4 endpoints, the first 4 starts and the published fallback).",
     "Measured per architecture: test loss and curve NRMSE on held-out bank samples; surrogate-predicted and NGSpice RRMS of three reference card sets (the stored pipeline r1 picks, direct NGSpice cold, direct NGSpice seeded); and the end-to-end search on the 18 measured devices, each selected card re-simulated in NGSpice.",
     "Reference: the same search code with NGSpice as the evaluator (`scripts/research/swap_search.py`, `out/research/swap_search/full_round_1`)."
@@ -1431,7 +1431,7 @@
    "did": [
     "`arch_full_r1`: `scripts/research/surrogate_arch_study.py` on the round-1 cache and bank (`out/cold_loop/full/round_1`, `data/processed/cold_loop/full_r1`), six architectures, training then the end-to-end search for each; 2026-10-16 22:26 to 2026-10-17 07:12 (31,596 s).",
     "Report batch `2026-10-17_arch_study`: `scripts/research/report_figs.py --topic arch_study --date 2026-10-17` (topic `arch*` added to the script for this batch).",
-    "Failed-curve check: the end-to-end records store rrms without per_curve. The run started after commit a0e1e97 (2026-10-16 21:52), with which `metrics.device_rrms_new` returns NaN for a device with a non-finite or missing included curve, so a finite stored rrms is a valid device. All 108 records (6 architectures \u00d7 18 devices) are finite."
+    "Failed-curve check: the end-to-end records store rrms without per_curve. The run started after commit a0e1e97 (2026-10-16 21:52), with which `metrics.device_rrms_new` returns NaN for a device with a non-finite or missing included curve, so a finite stored rrms is a valid device. All 108 records (6 architectures × 18 devices) are finite."
    ],
    "result": {
     "text": [
@@ -1440,7 +1440,7 @@
      "Each architecture ranks the direct-fit card better than the stored pipeline pick on 5 to 8 of 18 devices; NGSpice ranks it better on 18 of 18. The pipeline's own round-1 surrogate does so on 1 of 18 (stored picks) and 2 of 18 (corrected picks).",
      "Median curve NRMSE on held-out bank samples: 0.0911 (DeepONet) to 0.1283 (large ResMLP). Mean curve NRMSE: 3,409 (paper MLP) to 282,767 (FNO).",
      "The selected card is a bank start, not an FD endpoint, on 8 to 16 of 18 devices (FNO: 16). The NGSpice swap selects an FD endpoint on 18 of 18.",
-     "Paper MLP retrained in this study (4 \u00d7 1024 hidden): 0.2348. The pipeline's own round-1 surrogate (4 \u00d7 1024 hidden, trained in the cold loop, same split and seed): 0.2382 with the corrected selection, 0.2375 stored."
+     "Paper MLP retrained in this study (4 × 1024 hidden): 0.2348. The pipeline's own round-1 surrogate (4 × 1024 hidden, trained in the cold loop, same split and seed): 0.2382 with the corrected selection, 0.2375 stored."
     ],
     "tables": [
      {
@@ -1489,16 +1489,16 @@
   {
    "id": "arch-lc",
    "tab": "icml",
-   "statement": "Learning curves (paper MLP, DeepONet, FNO at 1/8, 1/4, 1/2 and all of 85,853 training samples): test loss falls 4.8\u20135.4\u00d7 from the smallest to the full set, while end-to-end all-device RRMS on the 18 measured devices moves from 0.249\u20130.259 to 0.227\u20130.255; the same search with NGSpice gives 0.1125.",
+   "statement": "Learning curves (paper MLP, DeepONet, FNO at 1/8, 1/4, 1/2 and all of 85,853 training samples): test loss falls 4.8–5.4× from the smallest to the full set, while end-to-end all-device RRMS on the 18 measured devices moves from 0.249–0.259 to 0.227–0.255; the same search with NGSpice gives 0.1125.",
    "status": "verified",
    "headline": {
-    "value": "0.2274\u20130.2549 at 85,853 samples; 0.2494\u20130.2588 at 10,732",
+    "value": "0.2274–0.2549 at 85,853 samples; 0.2494–0.2588 at 10,732",
     "convention": "all-device, end-to-end search with each surrogate, selected card re-simulated in NGSpice; NGSpice in place of the surrogate 0.1125; diagnostic ablation"
    },
    "numbers": [
     {
-     "label": "Test loss, 10,732 \u2192 85,853 samples",
-     "value": "paper MLP 0.1579 \u2192 0.0331; DeepONet 0.1683 \u2192 0.0326; FNO 0.1394 \u2192 0.0259",
+     "label": "Test loss, 10,732 → 85,853 samples",
+     "value": "paper MLP 0.1579 → 0.0331; DeepONet 0.1683 → 0.0326; FNO 0.1394 → 0.0259",
      "convention": "pipeline forward loss on held-out bank samples",
      "source": [
       "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
@@ -1560,7 +1560,7 @@
      "source": "out/research/swap_search/full_round_1/summary.json"
     },
     {
-     "label": "Devices where the selected card is a bank start, fractions 1/8 \u2192 1",
+     "label": "Devices where the selected card is a bank start, fractions 1/8 → 1",
      "value": "paper MLP 17, 18, 13, 11; DeepONet 17, 15, 13, 9; FNO 15, 16, 15, 16",
      "convention": "of 18; selected_candidate_kind lhc_start",
      "source": [
@@ -1579,9 +1579,9 @@
      ]
     },
     {
-     "label": "Mean absolute score error at the reference cards, 1/8 \u2192 1",
-     "value": "paper MLP 1.099 \u2192 0.288; DeepONet 1.057 \u2192 0.252; FNO 0.918 \u2192 0.243",
-     "convention": "|surrogate-predicted \u2212 NGSpice RRMS|, 18 devices \u00d7 3 card sets",
+     "label": "Mean absolute score error at the reference cards, 1/8 → 1",
+     "value": "paper MLP 1.099 → 0.288; DeepONet 1.057 → 0.252; FNO 0.918 → 0.243",
+     "convention": "|surrogate-predicted − NGSpice RRMS|, 18 devices × 3 card sets",
      "source": [
       "out/research/surrogate_arch/full_round_1/paper_mlp_f0.125.json",
       "out/research/surrogate_arch/full_round_1/paper_mlp_f0.25.json",
@@ -1600,7 +1600,7 @@
    ],
    "what": [
     "Question: does more training data for the forward surrogate change the end-to-end result of the pipeline's search on the measured devices?",
-    "Same cache, split (seed 20260818), loss, recipe and search as [arch-ablation](#claim-arch-ablation). The training subset at fraction f is the first round(f \u00d7 85,853) indices of one fixed permutation of the training split; validation and test splits are unchanged."
+    "Same cache, split (seed 20260818), loss, recipe and search as [arch-ablation](#claim-arch-ablation). The training subset at fraction f is the first round(f × 85,853) indices of one fixed permutation of the training split; validation and test splits are unchanged."
    ],
    "did": [
     "`archlc_full_r1`: `scripts/research/surrogate_arch_study.py` with architectures paper_mlp, deeponet, fno and train fractions 0.125, 0.25, 0.5 on `out/cold_loop/full/round_1` and `data/processed/cold_loop/full_r1` (arguments read from the report files and the log; the queue line is not kept after a job finishes). First attempt 2026-10-18 03:38, killed (rc 143) after 10,138 s; restarted 2026-10-19 09:01, finished 10:05 (3,878 s); the restart skipped the eight finished reports and trained `fno_f0.5`.",
@@ -1609,8 +1609,8 @@
    ],
    "result": {
     "text": [
-     "Test loss decreases monotonically with training-set size for all three architectures. End-to-end all-device RRMS decreases for paper MLP (0.2588 \u2192 0.2348) and DeepONet (0.2581 \u2192 0.2274) and does not decrease for FNO (0.2494 \u2192 0.2549). At every size the end-to-end RRMS is 0.11\u20130.15 above the NGSpice swap (0.1125).",
-     "The number of devices whose selected card is a bank start, not an FD endpoint, falls with data for paper MLP (17 \u2192 11) and DeepONet (17 \u2192 9) and stays at 15\u201316 for FNO. A selected bank start is the same card for every surrogate."
+     "Test loss decreases monotonically with training-set size for all three architectures. End-to-end all-device RRMS decreases for paper MLP (0.2588 → 0.2348) and DeepONet (0.2581 → 0.2274) and does not decrease for FNO (0.2494 → 0.2549). At every size the end-to-end RRMS is 0.11–0.15 above the NGSpice swap (0.1125).",
+     "The number of devices whose selected card is a bank start, not an FD endpoint, falls with data for paper MLP (17 → 11) and DeepONet (17 → 9) and stays at 15–16 for FNO. A selected bank start is the same card for every surrogate."
     ],
     "figures": [
      {
@@ -1680,7 +1680,7 @@
      "source": "docs/RESEARCH_LOOP.md"
     },
     {
-     "label": "B flow pooled r1\u20134, best of 256, + FD: real all-device / sim median",
+     "label": "B flow pooled r1–4, best of 256, + FD: real all-device / sim median",
      "value": "0.1728 / 0.0001",
      "convention": "after uniform FD",
      "source": "docs/RESEARCH_LOOP.md"
@@ -1693,13 +1693,13 @@
     }
    ],
    "what": [
-    "Question: do inverse networks (I\u2013V \u2192 parameters) trained on simulated curves transfer to measured curves?",
+    "Question: do inverse networks (I–V → parameters) trained on simulated curves transfer to measured curves?",
     "Held-out simulated devices: three sets, one card per paper device drawn log-uniformly from the round-4 seven-parameter box (clipped into the round-1 box), simulated on that device's measured bias grid. No bank contains them. A true card scores exactly 0; a true card scores a median RRMS of about 0.45 against the real device it imitates. `CRYOML_TARGET_OVERRIDE` substitutes them for the measurements; bias grids, frozen inclusion and the metric are unchanged.",
-    "A: tandem autoencoder (`inverse_autoencoder`), run in every cold round. B: conditional flow-matching posterior and a 16-head winner-takes-all model in a round-independent log-multiplier coordinate, trained with discrepancy-transfer augmentation (another device's measured-vs-closest-simulation signed-log gap). B evaluation: K samples \u2192 NGSpice \u2192 best \u2192 optional NGSpice polish."
+    "A: tandem autoencoder (`inverse_autoencoder`), run in every cold round. B: conditional flow-matching posterior and a 16-head winner-takes-all model in a round-independent log-multiplier coordinate, trained with discrepancy-transfer augmentation (another device's measured-vs-closest-simulation signed-log gap). B evaluation: K samples → NGSpice → best → optional NGSpice polish."
    ],
    "did": [
     "`scripts/research/posterior_study.py` (B), `scripts/research/cold_loop.py` (A), `scripts/research/make_sim_targets.py` (targets), `scripts/research/simgap_table.py` (table), 2026-10-15.",
-    "Uniform FD for every method: `scripts/research/polish_cards.py` (about 250\u2013300 NGSpice calls per device), 2026-10-15 17:30 onward."
+    "Uniform FD for every method: `scripts/research/polish_cards.py` (about 250–300 NGSpice calls per device), 2026-10-15 17:30 onward."
    ],
    "result": {
     "tables": [
@@ -1722,7 +1722,7 @@
         "0.1585",
         "0.0157",
         "0.0141",
-        "\u00d71.04"
+        "×1.04"
        ],
        [
         "A: tandem autoencoder, round 4",
@@ -1731,7 +1731,7 @@
         "0.6344",
         "32.41*",
         "0.0258",
-        "\u00d71.05"
+        "×1.05"
        ],
        [
         "direct NGSpice, seven, round-1 box",
@@ -1740,7 +1740,7 @@
         "0.1460",
         "0.0191",
         "0.0000",
-        "\u00d71.00"
+        "×1.00"
        ],
        [
         "B: flow r1, best of 256 + polish",
@@ -1749,7 +1749,7 @@
         "0.2670",
         "0.3812",
         "0.1839",
-        "\u00d71.91"
+        "×1.91"
        ],
        [
         "B: WTA r1, best of 16 + polish",
@@ -1758,11 +1758,11 @@
         "0.3509",
         "0.6932",
         "0.2468",
-        "\u00d72.09"
+        "×2.09"
        ]
       ],
       "notes": [
-       "* one device (nmos L1/W3) reaches RRMS 500\u20131200 in two sets; the median device is not affected."
+       "* one device (nmos L1/W3) reaches RRMS 500–1200 in two sets; the median device is not affected."
       ],
       "source": [
        "docs/RESEARCH_LOOP.md"
@@ -1781,7 +1781,7 @@
       ],
       "rows": [
        [
-        "B flow pooled r1\u20134, best of 256",
+        "B flow pooled r1–4, best of 256",
         "0.1728",
         "0.1632",
         "0.1662",
@@ -1836,7 +1836,7 @@
     ]
    },
    "caveats": [
-    "B's round-1 flow does not invert the \u00d7100 round-1 prior on simulated devices either (sim median 0.1839); pooling rounds 1\u20134 and FD bring its sim median to 0.0001.",
+    "B's round-1 flow does not invert the ×100 round-1 prior on simulated devices either (sim median 0.1839); pooling rounds 1–4 and FD bring its sim median to 0.0001.",
     "B evaluation spends NGSpice calls (about 700 per device for best of 256 + polish); it is not a single forward pass.",
     "The pipeline's simulated column reuses its round-4 surrogate and bank, centred on the real-device fits, with targets drawn in that box; it is optimistic relative to a full four-round run per target."
    ],
@@ -1887,17 +1887,17 @@
      "text": "r_c(z) = r_s(z) + [r_f(z_c) - r_s(z_c)] + [J_f(z_c) - J_s(z_c)] (z - z_c)",
      "source": "scripts/research/hybrid_tr.py"
     },
-    "r_s, J_s: frozen round surrogate and its forward-mode Jacobian. r_f: one NGSpice call per trial point. J_f: forward differences in local coordinates, step 1e-3, from one batched NGSpice process; a probe that fails or exceeds 2\u00d7 the centre's RRMS + 0.05 is retried with the opposite step. Objective: the pipeline's per-curve normalized residuals plus prior rows (reg 1e-4); its sum of squares is mean(curve RRMS\u00b2). `--model none` sets r_s = 0: Gauss-Newton trust region on NGSpice, the no-ML control.",
+    "r_s, J_s: frozen round surrogate and its forward-mode Jacobian. r_f: one NGSpice call per trial point. J_f: forward differences in local coordinates, step 1e-3, from one batched NGSpice process; a probe that fails or exceeds 2× the centre's RRMS + 0.05 is retried with the opposite step. Objective: the pipeline's per-curve normalized residuals plus prior rows (reg 1e-4); its sum of squares is mean(curve RRMS²). `--model none` sets r_s = 0: Gauss-Newton trust region on NGSpice, the no-ML control.",
     "Budget accounting: every NGSpice call counts, Jacobian probes included; the search stops at the budget; the final card is scored by one fresh simulation. Starts: 4 diverse bank starts, equal share of the remaining calls each (or successive halving). Box: full round-1 43-parameter box."
    ],
    "did": [
-    "Smoke runs 2026-10-16 14:46\u201314:58 under `out/research/dev/smoke/`, on two DEV targets from simulated set 0, at budgets of 300 and 1000 calls.",
+    "Smoke runs 2026-10-16 14:46–14:58 under `out/research/dev/smoke/`, on two DEV targets from simulated set 0, at budgets of 300 and 1000 calls.",
     "Full runs queued: `hybrid_tr_full_r1_surrogate`, `hybrid_tr_full_r1_none`, `hybrid_tr_full_r4_surrogate`, `hybrid_tr_full_r4_none`, and the two successive-halving runs on round 1.",
     {
      "type": "queue",
      "match": "^hybrid_tr_"
     },
-    "DEV results for `hybrid_surrogate` and `hybrid_none` at 500\u20135000 calls on all 36 targets: see [dev-iter1](#claim-dev-iter1)."
+    "DEV results for `hybrid_surrogate` and `hybrid_none` at 500–5000 calls on all 36 targets: see [dev-iter1](#claim-dev-iter1)."
    ],
    "result": {
     "tables": [
@@ -1925,7 +1925,7 @@
        [
         "bank oracle",
         "reference",
-        "\u2013",
+        "–",
         "0",
         "0 / 0",
         "0.1124",
@@ -2017,9 +2017,9 @@
         "n1b",
         "surrogate",
         "300",
-        "285 / \u2013",
+        "285 / –",
         "0.0402",
-        "\u2013"
+        "–"
        ],
        [
         "anytime, racing",
@@ -2035,18 +2035,18 @@
         "n1c",
         "none",
         "300",
-        "286 / \u2013",
+        "286 / –",
         "0.0326",
-        "\u2013"
+        "–"
        ],
        [
         "lq-CMA-ES",
         "n1c",
         "none",
         "200",
-        "200 / \u2013",
+        "200 / –",
         "0.1914",
-        "\u2013"
+        "–"
        ]
       ],
       "source": [
@@ -2081,7 +2081,7 @@
    "statement": "On the 36 simulated DEV targets, the sketched-Jacobian trust region (n1a) reaches pooled all-device RRMS 0.0313 with the surrogate and 0.0370 without it at 500 NGSpice calls per target, and 0.0091 and 0.0021 at 5000.",
    "status": "in_progress",
    "headline": {
-    "value": "B500 0.0313 / 0.0370 \u00b7 B5000 0.0091 / 0.0021",
+    "value": "B500 0.0313 / 0.0370 · B5000 0.0091 / 0.0021",
     "convention": "pooled all-device mean paper RRMS, 36 DEV targets, sketch_surrogate_k8 / sketch_none_k8"
    },
    "numbers": [
@@ -2141,31 +2141,31 @@
     },
     {
      "label": "hybrid_surrogate / hybrid_none (hybrid TR, full FD Jacobian)",
-     "value": "0.0463 / 0.0313 / 0.0193 / 0.0114 \u00b7 0.0579 / 0.0316 / 0.0169 / 0.0058",
+     "value": "0.0463 / 0.0313 / 0.0193 / 0.0114 · 0.0579 / 0.0316 / 0.0169 / 0.0058",
      "convention": "B500 / B1000 / B2000 / B5000 each",
      "source": "out/research/dev/compare.json"
     },
     {
-     "label": "Paired sketch_surrogate_k8 \u2212 sketch_none_k8",
+     "label": "Paired sketch_surrogate_k8 − sketch_none_k8",
      "value": "B500 -0.0058 [-0.0126, 0.0003], win rate 0.67 [0.50, 0.81]; B1000 0.0028 [-0.0027, 0.0085], win rate 0.53 [0.36, 0.69]; B5000 0.0069 [0.0024, 0.0133], win rate 0.25 [0.11, 0.39]",
      "convention": "mean difference [bootstrap 95% CI], win rate of the surrogate arm [95% CI]",
      "source": "out/research/report/2026-10-16_dev_iteration1/tables.md"
     },
     {
-     "label": "Paired hybrid_surrogate \u2212 hybrid_none",
+     "label": "Paired hybrid_surrogate − hybrid_none",
      "value": "B500 -0.0116 [-0.0230, -0.0024], win rate 0.64 [0.47, 0.78]; B1000 -0.0003 [-0.0129, 0.0138], win rate 0.64 [0.47, 0.78]; B5000 0.0056 [0.0018, 0.0112], win rate 0.28 [0.14, 0.44]",
      "convention": "mean difference [95% CI], win rate [95% CI]",
      "source": "out/research/report/2026-10-16_dev_iteration1/tables.md"
     },
     {
-     "label": "Paired anytime_sur_presearch_race \u2212 anytime_none_race",
+     "label": "Paired anytime_sur_presearch_race − anytime_none_race",
      "value": "B500 -0.0141 [-0.0258, -0.0045], win rate 0.78 [0.64, 0.92]; B5000 -0.0012 [-0.0056, 0.0025], win rate 0.47 [0.31, 0.64]",
      "convention": "mean difference [95% CI], win rate [95% CI]",
      "source": "out/research/report/2026-10-16_dev_iteration1/tables.md"
     },
     {
      "label": "References: bank oracle / pipeline r1 / pipeline r1 + FD",
-     "value": "0.2046 at 0 mean NGSpice calls \u00b7 0.1590 at 9 mean NGSpice calls (2 failed targets; valid-only 0.1554 over 34, penalized 0.2109) \u00b7 0.0802 at 376 mean NGSpice calls (2 failed targets; valid-only 0.0775 over 34, penalized 0.1326)",
+     "value": "0.2046 at 0 mean NGSpice calls · 0.1590 at 9 mean NGSpice calls (2 failed targets; valid-only 0.1554 over 34, penalized 0.2109) · 0.0802 at 376 mean NGSpice calls (2 failed targets; valid-only 0.0775 over 34, penalized 0.1326)",
      "convention": "pooled all-device mean, 36 targets",
      "source": "out/research/dev/compare.json"
     }
@@ -2176,7 +2176,7 @@
     "n1b, anytime racing (`scripts/research/anytime_tr.py`, `src/cryoml/racing.py`): `anytime_sur_presearch_equal` runs 8 zero-call surrogate TRF presearches from bank starts, validates them with 8 NGSpice calls, and splits the budget equally over the 2 best endpoints and 2 bank starts without restarts; `anytime_sur_presearch_race` uses the presearch starts, allocates calls by predicted reduction per NGSpice call, drops runs by an optimistic bound and restarts from surrogate-proposed points; `anytime_none_race` uses 4 bank starts, Gauss-Newton trust regions, the same racing and drops, and bank-start restarts, with no presearch.",
     "n1c, CMA-ES call-trace baselines (`scripts/research/cmaes_trace.py`): `cmaes_trf` (CMA-ES with sigma0 0.3 for 60% of the budget, then bounded TRF with diff_step 1e-3 and regularization 1e-4) and `lq_cmaes` (lq-CMA-ES, 9 restarts), on the same oracle, bank start, objective and call accounting as the trust-region arms.",
     "Earlier arms in the same table: `hybrid_surrogate` and `hybrid_none` (`scripts/research/hybrid_tr.py`, full FD Jacobian at every centre, subproblem max_nfev 100; see [icml-hybrid](#claim-icml-hybrid)).",
-    "DEV protocol: 36 targets, `set_0` and `set_1` \u00d7 18 devices. Each target is the NGSpice I\u2013V of one seven-parameter card per device, drawn log-uniformly from the seven-parameter round-4 box and clipped into the round-1 box (seed 777001), simulated on the device's measured bias grid with no noise, so a zero-residual card exists in the fitted box (well-specified). Every arm fits in the full round-1 43-parameter box. Every NGSpice call counts, Jacobian probes included; each budget (500, 1000, 2000, 5000 calls per target) is a separate run; the final card is scored by one fresh NGSpice simulation. `dev_compare.py` checks 18 records per set, calls within budget, fresh RRMS equal to the trace value, `target_override` and the bank-oracle identity of each set; it takes no minimum over arms."
+    "DEV protocol: 36 targets, `set_0` and `set_1` × 18 devices. Each target is the NGSpice I–V of one seven-parameter card per device, drawn log-uniformly from the seven-parameter round-4 box and clipped into the round-1 box (seed 777001), simulated on the device's measured bias grid with no noise, so a zero-residual card exists in the fitted box (well-specified). Every arm fits in the full round-1 43-parameter box. Every NGSpice call counts, Jacobian probes included; each budget (500, 1000, 2000, 5000 calls per target) is a separate run; the final card is scored by one fresh NGSpice simulation. `dev_compare.py` checks 18 records per set, calls within budget, fresh RRMS equal to the trace value, `target_override` and the bank-oracle identity of each set; it takes no minimum over arms."
    ],
    "did": [
     "86 queue jobs `dev_*` from 2026-10-16 16:26 to 22:06 (`out/research/done.txt`): the round-1 pipeline and its FD polish on both sets, every registered arm at its budgets on set_0 and set_1, the retries listed below and the `dev_compare` runs.",
@@ -2218,7 +2218,7 @@
     "The bootstrap resamples the 36 targets; each device geometry appears once in each of the two sets.",
     "These are DEV results only; no TEST run (the 18 measured devices, `set_2`) of these arms is reported.",
     "01_compare_curves.png draws the first 8 arms only; 05_dev_families.png shows the surrogate and NGSpice-only arms of each family with CMA-ES + TRF.",
-    "Iteration 2 (seed replicates, \u03bb arms, DFO-LS-style baseline, tier c misspecified targets) is reported as an ablation in [dev-iter2](#claim-dev-iter2)."
+    "Iteration 2 (seed replicates, λ arms, DFO-LS-style baseline, tier c misspecified targets) is reported as an ablation in [dev-iter2](#claim-dev-iter2)."
    ],
    "sources": [
     "scripts/research/sketch_tr.py",
@@ -2241,64 +2241,64 @@
   {
    "id": "dev-iter2",
    "tab": "icml",
-   "statement": "Ablation, DEV iteration 2: on 36 well-specified (tier a) and 36 misspecified sky130c (tier c) simulated targets, no \u03bb-weighted surrogate arm met the pre-registered rules A1-A4, so the n2b \u03bb decision is negative and no TEST run follows; at 5000 NGSpice calls the NGSpice-only sketched trust region has the lowest pooled value on both tiers (tier a RRMS 0.0024, tier c excess over floor 0.0022).",
+   "statement": "Ablation, DEV iteration 2: on 36 well-specified (tier a) and 36 misspecified sky130c (tier c) simulated targets, no λ-weighted surrogate arm met the pre-registered rules A1-A4, so the n2b λ decision is negative and no TEST run follows; at 5000 NGSpice calls the NGSpice-only sketched trust region has the lowest pooled value on both tiers (tier a RRMS 0.0024, tier c excess over floor 0.0022).",
    "status": "verified",
    "headline": {
-    "value": "\u03bb decision negative \u00b7 B5000 sketch_none_k8 0.0024 (a) / 0.0022 (c)",
-    "convention": "ablation; pooled mean over 36 DEV targets, seed mean per target; tier a strict paper RRMS, tier c RRMS \u2212 per-target floor"
+    "value": "λ decision negative · B5000 sketch_none_k8 0.0024 (a) / 0.0022 (c)",
+    "convention": "ablation; pooled mean over 36 DEV targets, seed mean per target; tier a strict paper RRMS, tier c RRMS − per-target floor"
    },
    "numbers": [
     {
      "label": "tier a, sketch_surrogate_k8 / sketch_none_k8 / lam_curve_k8",
-     "value": "B500 0.0334 / 0.0367 / 0.0317 \u00b7 B5000 0.0082 / 0.0024 / 0.0062",
+     "value": "B500 0.0334 / 0.0367 / 0.0317 · B5000 0.0082 / 0.0024 / 0.0062",
      "convention": "pooled mean strict RRMS, 3 seeds each",
      "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
     },
     {
      "label": "tier a, hybrid_surrogate / hybrid_none / hyb_lam_curve",
-     "value": "B500 0.0463 / 0.0579 / 0.0447 \u00b7 B5000 0.0114 / 0.0058 / 0.0050",
+     "value": "B500 0.0463 / 0.0579 / 0.0447 · B5000 0.0114 / 0.0058 / 0.0050",
      "convention": "pooled mean strict RRMS, 1 seed",
      "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
     },
     {
      "label": "tier a, dfols_style / dfols_style_1start / cmaes_trf",
-     "value": "B500 0.0579 / 0.0461 / 0.0565 \u00b7 B5000 0.0076 / 0.0056 / 0.0109",
+     "value": "B500 0.0579 / 0.0461 / 0.0565 · B5000 0.0076 / 0.0056 / 0.0109",
      "convention": "pooled mean strict RRMS",
      "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
     },
     {
      "label": "tier c, sketch_surrogate_k8 / sketch_none_k8 / lam_curve_k8",
-     "value": "B500 0.0221 / 0.0225 / 0.0200 \u00b7 B5000 0.0047 / 0.0022 / 0.0039",
+     "value": "B500 0.0221 / 0.0225 / 0.0200 · B5000 0.0047 / 0.0022 / 0.0039",
      "convention": "pooled mean excess over floor (mean floor 0.0478), 3 seeds each",
      "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
     },
     {
      "label": "tier c, hybrid_surrogate / hybrid_none / hyb_lam_curve",
-     "value": "B500 0.0304 / 0.0401 / 0.0303 \u00b7 B5000 0.0064 / 0.0041 / 0.0054",
+     "value": "B500 0.0304 / 0.0401 / 0.0303 · B5000 0.0064 / 0.0041 / 0.0054",
      "convention": "pooled mean excess over floor",
      "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
     },
     {
      "label": "tier c, dfols_style / dfols_style_1start / cmaes_trf",
-     "value": "B500 0.0406 / 0.0329 / 0.0388 \u00b7 B5000 0.0062 / 0.0055 / 0.0151",
+     "value": "B500 0.0406 / 0.0329 / 0.0388 · B5000 0.0062 / 0.0055 / 0.0151",
      "convention": "pooled mean excess over floor",
      "source": "out/research/report/2026-10-19_dev_iteration2_ablation/tables.md"
     },
     {
-     "label": "n2b \u03bb decision",
+     "label": "n2b λ decision",
      "value": "negative; frozen candidate per family: sketch none, hybrid none; TEST run: none (negative result)",
      "convention": "pre-registered rules A1-A4 (lambda_tr.py PRE_REGISTERED), geometry-clustered 95% CI",
      "source": "out/research/dev/lambda_decision.json"
     },
     {
-     "label": "Pre-registered C1-C6 with Holm p \u2264 0.05",
+     "label": "Pre-registered C1-C6 with Holm p ≤ 0.05",
      "value": "C1_a_B5000, C2_a_B500, C3_a_B5000, C5_a_B500, C5_a_B2000, C5_a_B5000, C5_c_B500, C5_c_B2000, C5_c_B5000, C6_a_B500, C6_c_B500, C6_c_B2000",
      "convention": "36 tests, Holm at 0.05 on the geometry-level Wilcoxon p",
      "source": "out/research/dev/stats_iter2/stats.json"
     }
    ],
    "what": [
-    "Question: does a per-curve or adaptive surrogate weight \u03bb (n2b: `lam_curve_k8`, `lam_scalar_k8`, `lam_cusum_k8`, `lam_radius_k8`, `hyb_lam_curve`) lower the paper RRMS at a fixed NGSpice budget compared with \u03bb = 0 (NGSpice only) and \u03bb = 1 (full surrogate term), on well-specified and on misspecified targets; and how the named DFO-LS-style baseline (`dfols_style`) compares.",
+    "Question: does a per-curve or adaptive surrogate weight λ (n2b: `lam_curve_k8`, `lam_scalar_k8`, `lam_cusum_k8`, `lam_radius_k8`, `hyb_lam_curve`) lower the paper RRMS at a fixed NGSpice budget compared with λ = 0 (NGSpice only) and λ = 1 (full surrogate term), on well-specified and on misspecified targets; and how the named DFO-LS-style baseline (`dfols_style`) compares.",
     "Tier a: `out/research/sim_targets` set_0 and set_1 (zero-residual targets). Tier c: `out/research/sim_targets_sky130c` set_0 and set_1 at strength 2 (misspecified; scored as RRMS minus the per-target refit floor from `floors.json`). 18 devices per set, 36 targets per tier; budgets 500, 1000, 2000, 5000 NGSpice calls per target, Jacobian probes included.",
     "This is an ablation report. Per-target value = mean over the arm's seeds; pre-registered tests: `out/research/dev/prereg_iter2.json` (C1-C6) and `lambda_tr.py` PRE_REGISTERED (A1-A4)."
    ],
@@ -2309,11 +2309,11 @@
    ],
    "result": {
     "text": [
-     "n2b \u03bb decision (pre-registered): result negative. Rules failed: lam_curve_k8 A2, A3, A4; lam_scalar_k8 A2, A3, A4; lam_cusum_k8 A2, A3; hyb_lam_curve A1, A4. Frozen candidates: none in the sketch family, none in the hybrid family. No TEST run follows. Controls resolved by exact P1 parity to the iteration-1 controls (sketch_none_k8 / sketch_surrogate_k8, hybrid_none / hybrid_surrogate).",
+     "n2b λ decision (pre-registered): result negative. Rules failed: lam_curve_k8 A2, A3, A4; lam_scalar_k8 A2, A3, A4; lam_cusum_k8 A2, A3; hyb_lam_curve A1, A4. Frozen candidates: none in the sketch family, none in the hybrid family. No TEST run follows. Controls resolved by exact P1 parity to the iteration-1 controls (sketch_none_k8 / sketch_surrogate_k8, hybrid_none / hybrid_surrogate).",
      "Before the check change the decision file read 'hard checks failed (candidate withdrawn)'; no arm passed A1-A4 then either, so the outcome is the same.",
-     "C1 `sketch_surrogate_k8` \u2212 `sketch_none_k8`: tier a B500 -0.0033 [-0.0121, +0.0047], Holm p 1.000; tier a B5000 +0.0058 [+0.0020, +0.0117], Holm p 0.010; tier c B500 -0.0004 [-0.0054, +0.0050], Holm p 1.000; tier c B5000 +0.0025 [+0.0010, +0.0042], Holm p 0.151.",
-     "C3 `lam_curve_k8` \u2212 `sketch_none_k8`: tier a B500 -0.0050 [-0.0123, +0.0017], Holm p 1.000; tier a B5000 +0.0038 [+0.0016, +0.0068], Holm p 0.024; tier c B500 -0.0025 [-0.0068, +0.0023], Holm p 1.000; tier c B5000 +0.0017 [+0.0005, +0.0030], Holm p 0.197.",
-     "C5 `dfols_style` \u2212 `sketch_none_k8`: tier a B500 +0.0212 [+0.0053, +0.0377], Holm p 0.043; tier a B5000 +0.0052 [+0.0031, +0.0076], Holm p 0.013; tier c B500 +0.0181 [+0.0090, +0.0314], Holm p 0.000; tier c B5000 +0.0040 [+0.0018, +0.0066], Holm p 0.043."
+     "C1 `sketch_surrogate_k8` − `sketch_none_k8`: tier a B500 -0.0033 [-0.0121, +0.0047], Holm p 1.000; tier a B5000 +0.0058 [+0.0020, +0.0117], Holm p 0.010; tier c B500 -0.0004 [-0.0054, +0.0050], Holm p 1.000; tier c B5000 +0.0025 [+0.0010, +0.0042], Holm p 0.151.",
+     "C3 `lam_curve_k8` − `sketch_none_k8`: tier a B500 -0.0050 [-0.0123, +0.0017], Holm p 1.000; tier a B5000 +0.0038 [+0.0016, +0.0068], Holm p 0.024; tier c B500 -0.0025 [-0.0068, +0.0023], Holm p 1.000; tier c B5000 +0.0017 [+0.0005, +0.0030], Holm p 0.197.",
+     "C5 `dfols_style` − `sketch_none_k8`: tier a B500 +0.0212 [+0.0053, +0.0377], Holm p 0.043; tier a B5000 +0.0052 [+0.0031, +0.0076], Holm p 0.013; tier c B500 +0.0181 [+0.0090, +0.0314], Holm p 0.000; tier c B5000 +0.0040 [+0.0018, +0.0066], Holm p 0.043."
     ],
     "figures": [
      {
@@ -2336,7 +2336,7 @@
      },
      {
       "batch": "2026-10-19_dev_iteration2_ablation",
-      "table": "DEV iteration 2 paired comparisons: \u03bb arms"
+      "table": "DEV iteration 2 paired comparisons: λ arms"
      },
      {
       "batch": "2026-10-19_dev_iteration2_ablation",
@@ -2348,7 +2348,7 @@
      },
      {
       "batch": "2026-10-19_dev_iteration2_ablation",
-      "table": "Pre-registered \u03bb decision"
+      "table": "Pre-registered λ decision"
      }
     ]
    },
@@ -2380,7 +2380,7 @@
    "statement": "The GF180MCU and IHP SG13G2 truth tiers a/b/c leave seven-parameter refit floors of 0 / 0.0136 / 0.0743 (GF180) and 0 / 0.0146 / 0.1227 (IHP).",
    "status": "verified",
    "headline": {
-    "value": "GF180 0 / 0.0136 / 0.0743 \u00b7 IHP 0 / 0.0146 / 0.1227",
+    "value": "GF180 0 / 0.0136 / 0.0743 · IHP 0 / 0.0146 / 0.1227",
     "convention": "mean paper RRMS over 3 devices per PDK, seven-parameter set, tiers a / b / c, one truth draw (final run)"
    },
    "numbers": [
@@ -2426,8 +2426,8 @@
     "For each (tier, device, fitted set): start = paper RRMS of the truth card's projection onto the fitted parameters; floor = after `ngspice_fit.polish` from that start; noise = the truth's own noise-free curves scored against its observed curves. Tiers are defined on the [Benchmark tab](#bench-tiers). Metric: paper RRMS with a 1e-10 A trim floor and target-frozen inclusion."
    ],
    "did": [
-    "Final run `out/research/pdk2/floors/2026-10-16_final/` (commit 60aa8e1): `scripts/research/pdk2/floors.py --pdk gf180 --devices gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5` (21:31\u201321:33, 111 s) and `--pdk ihp --devices ihp_nmos_L0p13_W0p2,ihp_nmos_L2_W2,ihp_pmos_L0p5_W2` (21:33\u201321:36, 149 s); nfev 300, irls 3, one truth set per tier from `make_truth.py` / `ihp_make_truth.py` with default settings; the JSON files record the full truth-generator argv, options and seed offsets.",
-    "Earlier runs: `floors_gf180/`, `floors_ihp/` (IHP run 1, tiers a, b, c) and `floors_ihp2/` (IHP run 2, tiers b, c) under `out/research/pdk2/floors/`, 2026-10-16 14:44\u201314:52."
+    "Final run `out/research/pdk2/floors/2026-10-16_final/` (commit 60aa8e1): `scripts/research/pdk2/floors.py --pdk gf180 --devices gf180_nmos_L0p3_W0p3,gf180_nmos_L5_W5,gf180_pmos_L1_W5` (21:31–21:33, 111 s) and `--pdk ihp --devices ihp_nmos_L0p13_W0p2,ihp_nmos_L2_W2,ihp_pmos_L0p5_W2` (21:33–21:36, 149 s); nfev 300, irls 3, one truth set per tier from `make_truth.py` / `ihp_make_truth.py` with default settings; the JSON files record the full truth-generator argv, options and seed offsets.",
+    "Earlier runs: `floors_gf180/`, `floors_ihp/` (IHP run 1, tiers a, b, c) and `floors_ihp2/` (IHP run 2, tiers b, c) under `out/research/pdk2/floors/`, 2026-10-16 14:44–14:52."
    ],
    "result": {
     "text": [
@@ -2582,7 +2582,7 @@
    "statement": "Running all Jacobian probes in one NGSpice process cuts the 43-parameter forward-difference Jacobian from 1.37 s to 0.65 s with bit-identical results.",
    "status": "verified",
    "headline": {
-    "value": "1.37 s \u2192 0.65 s",
+    "value": "1.37 s → 0.65 s",
     "convention": "43-parameter forward Jacobian, exact; 0.30 s in the near-exact one-circuit mode"
    },
    "numbers": [
@@ -2593,8 +2593,8 @@
      "source": "docs/RESEARCH_LOOP.md"
     },
     {
-     "label": "43-parameter forward Jacobian, separate calls \u2192 batched",
-     "value": "1.37 s \u2192 0.65 s",
+     "label": "43-parameter forward Jacobian, separate calls → batched",
+     "value": "1.37 s → 0.65 s",
      "convention": "exact",
      "source": "docs/RESEARCH_LOOP.md"
     },
@@ -2664,7 +2664,7 @@
    "status": "verified",
    "headline": {
     "value": "~14% of nMOS samples",
-    "convention": "cold round-1 box (u0 \u00d7100)"
+    "convention": "cold round-1 box (u0 ×100)"
    },
    "numbers": [
     {
@@ -2675,13 +2675,13 @@
     },
     {
      "label": "Jacobian error along a random direction, nmos_L1_W1p6",
-     "value": "33\u00d7 (step 1e-2) / 0.4% (step 1e-3)",
+     "value": "33× (step 1e-2) / 0.4% (step 1e-3)",
      "convention": "FD Jacobian vs directional difference",
      "source": "scripts/research/hybrid_tr.py"
     }
    ],
    "what": [
-    "BSIM4 treats u0 > 1 as cm\u00b2/(V\u00b7s) and divides it by 1e4. A box that spans u0 = 1 contains a 10^4 step in mobility."
+    "BSIM4 treats u0 > 1 as cm²/(V·s) and divides it by 1e4. A box that spans u0 = 1 contains a 10^4 step in mobility."
    ],
    "did": [
     "Found while reading the BSIM4 v4.8.2 source during the 2026-10-16 scoping of a differentiable BSIM4 port.",
@@ -2731,7 +2731,7 @@
     },
     {
      "label": "Pipeline 43, round 4, raw",
-     "value": "0.1522 (0.1437); 18 of 18 devices valid; `nmos_L8_W1p6` 0.0263 \u2192 0.0431",
+     "value": "0.1522 (0.1437); 18 of 18 devices valid; `nmos_L8_W1p6` 0.0263 → 0.0431",
      "convention": "all-device (combined); final selection rerun with failed-curve rejection",
      "source": "out/research/pipe_fixed/full_r4/summary.md"
     },
@@ -2756,11 +2756,11 @@
    ],
    "what": [
     "Question: how low can the measured-data RRMS go with 43 parameters when no released 77 K multiplier is used?",
-    "Direct NGSpice: CMA-ES then TRF directly on NGSpice (`scripts/research/ngspice_direct.py`), round 1 seeded from the seven-parameter fit, rounds 2 and 3 re-centred with the cold-loop rule. Paper pipeline: bank \u2192 surrogate \u2192 multistart surrogate FD \u2192 NGSpice validation, four rounds. FD: uniform polish for every method."
+    "Direct NGSpice: CMA-ES then TRF directly on NGSpice (`scripts/research/ngspice_direct.py`), round 1 seeded from the seven-parameter fit, rounds 2 and 3 re-centred with the cold-loop rule. Paper pipeline: bank → surrogate → multistart surrogate FD → NGSpice validation, four rounds. FD: uniform polish for every method."
    ],
    "did": [
-    "Direct NGSpice 43: `full_r1_direct_seeded` \u2192 `full_r2_direct` \u2192 `full_r3_direct`, about 21.9k NGSpice calls per device in round 1 (TRF Jacobians included); `direct43_r3_fd` polish (314 calls per device).",
-    "Pipeline 43: `scripts/research/cold_loop.py --set full`, rounds 1\u20134, finished 2026-10-16 05:39 (12.4 h); `fd_pipe43_r4_real` (338 s) polished the round-4 card selected before the fix and is superseded by `fd_pipe43_r4_fixed` (33 s, 2026-10-17 07:13) on the corrected card.",
+    "Direct NGSpice 43: `full_r1_direct_seeded` → `full_r2_direct` → `full_r3_direct`, about 21.9k NGSpice calls per device in round 1 (TRF Jacobians included); `direct43_r3_fd` polish (314 calls per device).",
+    "Pipeline 43: `scripts/research/cold_loop.py --set full`, rounds 1–4, finished 2026-10-16 05:39 (12.4 h); `fd_pipe43_r4_real` (338 s) polished the round-4 card selected before the fix and is superseded by `fd_pipe43_r4_fixed` (33 s, 2026-10-17 07:13) on the corrected card.",
     "All re-scored independently with `scripts/research/verify_direct.py` and `verify_cold_results.py`.",
     "Final selection rerun for round 4 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r4`, with the round-4 surrogate (forward-model checksum identical to `out/cold_loop/full/round_4/extract/forward_model.pt`) and the same rule. Only `nmos_L8_W1p6` changes: its selected card changes from an FD endpoint with 9 of 10 included curves failed (stored 0.0263) to another FD endpoint (0.0431). The other 17 devices keep the same card and score."
    ],
@@ -2829,10 +2829,10 @@
     ]
    },
    "caveats": [
-    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2\u20133 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
     "Values before the fix, pipeline 43 round 4, all-device, raw / + FD: stored 0.1513 / 0.1465; valid-only 0.1586 / 0.1539 over 17 devices; penalized 0.6500 / 0.6455; 1 failed device (`nmos_L8_W1p6`, 9 of 10 included curves) (`out/research/audit/failed_curves.json`).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
-    "About 6 of 43 parameters per device sit at the box edge in the direct fits (mostly secondary parameters held to \u00d73: dwg, k3b, pdiblc2, xj, prwg, k2). A physicality check is pending before any card is presented.",
+    "About 6 of 43 parameters per device sit at the box edge in the direct fits (mostly secondary parameters held to ×3: dwg, k3b, pdiblc2, xj, prwg, k2). A physicality check is pending before any card is presented.",
     "Direct NGSpice 43-parameter fits used about 21.9k NGSpice calls per device per round (TRF Jacobian evaluations included), not 3.3k as first logged.",
     "These runs used the real devices, which are TEST data under the ICML protocol defined later the same day."
    ],
@@ -2856,7 +2856,7 @@
   {
    "id": "cryo-seven-floor",
    "tab": "cryo77k",
-   "statement": "With seven parameters the measured-data RRMS stops near 0.164 all-device; a 3\u00d7 longer direct search changes it by 0.0005.",
+   "statement": "With seven parameters the measured-data RRMS stops near 0.164 all-device; a 3× longer direct search changes it by 0.0005.",
    "status": "verified",
    "headline": {
     "value": "0.1643",
@@ -2876,7 +2876,7 @@
      "source": "out/research/polished/direct7_fd/real/summary.json"
     },
     {
-     "label": "Direct NGSpice 7, 3\u00d7 budget (7.9k calls) vs 1\u00d7",
+     "label": "Direct NGSpice 7, 3× budget (7.9k calls) vs 1×",
      "value": "0.16708 vs 0.16757",
      "convention": "all-device",
      "source": "docs/RESEARCH_LOOP.md"
@@ -2899,7 +2899,7 @@
     "Test: the same methods on held-out simulated devices, where the true card scores 0. A method that inverts the simulator there but not the measurements is limited by the seven-parameter model form."
    ],
    "did": [
-    "Cold seven-parameter pipeline rounds 1\u20134 and direct NGSpice in the round-1 box, 2026-10-15; scores re-checked with `scripts/research/verify_cold_results.py` (`out/research/verify_seven_r4.json`).",
+    "Cold seven-parameter pipeline rounds 1–4 and direct NGSpice in the round-1 box, 2026-10-15; scores re-checked with `scripts/research/verify_cold_results.py` (`out/research/verify_seven_r4.json`).",
     "Uniform FD polish of every method on real and three simulated sets (`scripts/research/polish_cards.py`)."
    ],
    "result": {
@@ -2947,9 +2947,9 @@
         "direct NGSpice, 43, round 3",
         "0.1044",
         "0.0976",
-        "\u2013",
+        "–",
         "not run",
-        "\u2013",
+        "–",
         "314"
        ]
       ],
@@ -2960,7 +2960,7 @@
     ]
    },
    "caveats": [
-    "Many seven-parameter direct fits sit at the \u00d70.01 / \u00d7100 box edges (eta0, vsat, rdsw, delta), and rdsw reaches \u00d72\u00b710^4 of released on some devices. The fits may rely on non-physical compensation.",
+    "Many seven-parameter direct fits sit at the ×0.01 / ×100 box edges (eta0, vsat, rdsw, delta), and rdsw reaches ×2·10^4 of released on some devices. The fits may rely on non-physical compensation.",
     "The floor applies to this parameter set and these boxes."
    ],
    "sources": [
@@ -2978,21 +2978,21 @@
   {
    "id": "cryo-rounds",
    "tab": "cryo77k",
-   "statement": "Each cold-pipeline round lowers the 43-parameter all-device RRMS: 0.2382, 0.1965, 0.1716, 0.1522 over rounds 1\u20134, with 18 of 18 devices valid in each round (rounds 1 and 4 from the final selection rerun with failed-curve rejection, rounds 2 and 3 as stored).",
+   "statement": "Each cold-pipeline round lowers the 43-parameter all-device RRMS: 0.2382, 0.1965, 0.1716, 0.1522 over rounds 1–4, with 18 of 18 devices valid in each round (rounds 1 and 4 from the final selection rerun with failed-curve rejection, rounds 2 and 3 as stored).",
    "status": "verified",
    "headline": {
-    "value": "0.2382 \u2192 0.1522",
-    "convention": "all-device, raw, pipeline 43, rounds 1\u20134 (combined 0.2289 \u2192 0.1437); stored before the fix: 0.2375 \u2192 0.1513"
+    "value": "0.2382 → 0.1522",
+    "convention": "all-device, raw, pipeline 43, rounds 1–4 (combined 0.2289 → 0.1437); stored before the fix: 0.2375 → 0.1513"
    },
    "numbers": [
     {
-     "label": "Pipeline 7, rounds 1\u20134",
+     "label": "Pipeline 7, rounds 1–4",
      "value": "0.2367, 0.1921, 0.1758, 0.1697",
      "convention": "all-device, raw",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     },
     {
-     "label": "Pipeline 43, rounds 1\u20134",
+     "label": "Pipeline 43, rounds 1–4",
      "value": "0.2382, 0.1965, 0.1716, 0.1522",
      "convention": "all-device, raw; rounds 1 and 4: final selection rerun with failed-curve rejection; rounds 2 and 3: stored, 0 failed devices",
      "source": [
@@ -3002,7 +3002,7 @@
      ]
     },
     {
-     "label": "Pipeline 43, rounds 1\u20134, combined",
+     "label": "Pipeline 43, rounds 1–4, combined",
      "value": "0.2289, 0.1875, 0.1631, 0.1437",
      "convention": "combined, raw; same rounds as the row above",
      "source": [
@@ -3012,25 +3012,25 @@
      ]
     },
     {
-     "label": "A tandem 43, rounds 2 / 3 / 4: stored \u00b7 valid-only \u00b7 penalized",
-     "value": "5.8288 / 2.2458 / 1.6969 \u00b7 6.0969 / 2.2458 / 1.7538 \u00b7 5.9743 / 2.6766 / 1.8114",
+     "label": "A tandem 43, rounds 2 / 3 / 4: stored · valid-only · penalized",
+     "value": "5.8288 / 2.2458 / 1.6969 · 6.0969 / 2.2458 / 1.7538 · 5.9743 / 2.6766 / 1.8114",
      "convention": "all-device; 1 failed device in each round",
      "source": "out/research/audit/failed_curves.json"
     },
     {
-     "label": "Direct NGSpice 43, rounds 1\u20133",
+     "label": "Direct NGSpice 43, rounds 1–3",
      "value": "0.1201, 0.1094, 0.1049",
      "convention": "all-device, raw",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     },
     {
-     "label": "Pipeline 43 surrogate validation loss, rounds 1\u20134",
+     "label": "Pipeline 43 surrogate validation loss, rounds 1–4",
      "value": "0.0322, 0.0207, 0.0113, 0.0085",
      "convention": "forward model",
      "source": "docs/RESEARCH_LOOP.md"
     },
     {
-     "label": "Seven parameters: kept candidate is an FD endpoint, rounds 1\u20134",
+     "label": "Seven parameters: kept candidate is an FD endpoint, rounds 1–4",
      "value": "11, 8, 5, 3 of 18",
      "convention": "devices",
      "source": "docs/RESEARCH_LOOP.md"
@@ -3040,8 +3040,8 @@
     "Each round re-centres every device's box on its selected NGSpice-validated card; interior coordinates halve their log width, edge coordinates keep it so the box moves outward. Each round draws a new 10k bank per device and trains a new surrogate from random initialization."
    ],
    "did": [
-    "`scripts/research/cold_loop.py --set seven` and `--set full`, rounds 1\u20134; 43-parameter rounds finished 2026-10-16 05:39 after 12.4 h; 40,035 cumulative NGSpice calls per device by round 4.",
-    "Direct NGSpice chain `full_r1_direct_seeded` \u2192 `full_r2_direct` \u2192 `full_r3_direct` (each spec's `source_run` names the previous round).",
+    "`scripts/research/cold_loop.py --set seven` and `--set full`, rounds 1–4; 43-parameter rounds finished 2026-10-16 05:39 after 12.4 h; 40,035 cumulative NGSpice calls per device by round 4.",
+    "Direct NGSpice chain `full_r1_direct_seeded` → `full_r2_direct` → `full_r3_direct` (each spec's `source_run` names the previous round).",
     "Final selection rerun for round 1 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r1`, with the round-1 surrogate (forward-model checksum identical to `out/cold_loop/full/round_1/extract/forward_model.pt`) and the rule that rejects candidates with failed included curves (commit a0e1e97). Only `nmos_L0p15_W1p6` changes: its selected card changes from an FD endpoint (0.2035, 1 of 10 included curves failed) to a bank start (0.2159). The other 17 devices keep the same card and score.",
     "Final selection rerun for round 4 (logged 2026-10-16 22:18): `out/research/pipe_fixed/full_r4`, with the round-4 surrogate (forward-model checksum identical to `out/cold_loop/full/round_4/extract/forward_model.pt`) and the same rule. Only `nmos_L8_W1p6` changes: its selected card changes from an FD endpoint with 9 of 10 included curves failed (stored 0.0263) to another FD endpoint (0.0431). The other 17 devices keep the same card and score."
    ],
@@ -3133,11 +3133,11 @@
     ]
    },
    "caveats": [
-    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2\u20133 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
     "The round-2 box for `nmos_L0p15_W1p6` is centred on its round-1 card selected before the fix.",
     "At seven parameters, by round 4 the kept candidate is usually a raw NGSpice bank sample (FD endpoint on 3 of 18 devices), so the iterated loop acts mostly as an NGSpice cross-entropy search. The paper's own runs also kept bank samples on 11 of 18 devices.",
-    "Values before the fix, pipeline 43 rounds 1\u20134, all-device: stored 0.2375, 0.1965, 0.1716, 0.1513; valid-only 0.2395, 0.1965, 0.1716, 0.1586 over 17 / 18 / 18 / 17 devices; penalized 0.2920, 0.1965, 0.1716, 0.6500 (failed included curves at RRMS 10). The failed devices were `nmos_L0p15_W1p6` in round 1 (1 of 10 included curves) and `nmos_L8_W1p6` in round 4 (9 of 10). In the penalized convention round 4 was above rounds 2 and 3 (`out/research/audit/failed_curves.json`).",
-    "The tandem model A at 43 parameters, rounds 2\u20134, all-device stored 5.8288, 2.2458, 1.6969; each round has 1 failed device (round 3, `nmos_L0p25_W1p6`: 10 of 10 included curves failed, logged as nan).",
+    "Values before the fix, pipeline 43 rounds 1–4, all-device: stored 0.2375, 0.1965, 0.1716, 0.1513; valid-only 0.2395, 0.1965, 0.1716, 0.1586 over 17 / 18 / 18 / 17 devices; penalized 0.2920, 0.1965, 0.1716, 0.6500 (failed included curves at RRMS 10). The failed devices were `nmos_L0p15_W1p6` in round 1 (1 of 10 included curves) and `nmos_L8_W1p6` in round 4 (9 of 10). In the penalized convention round 4 was above rounds 2 and 3 (`out/research/audit/failed_curves.json`).",
+    "The tandem model A at 43 parameters, rounds 2–4, all-device stored 5.8288, 2.2458, 1.6969; each round has 1 failed device (round 3, `nmos_L0p25_W1p6`: 10 of 10 included curves failed, logged as nan).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device."
    ],
    "sources": [
@@ -3157,41 +3157,41 @@
   {
    "id": "cryo-fd",
    "tab": "cryo77k",
-   "statement": "The uniform NGSpice FD polish lowers measured-data all-device RRMS by 0.12\u20130.46 for the inverse models and by 0.0005\u20130.0582 for the search pipelines; the largest search-pipeline change is pipeline 43 round 1 on the corrected cards (0.2382 \u2192 0.1800).",
+   "statement": "The uniform NGSpice FD polish lowers measured-data all-device RRMS by 0.12–0.46 for the inverse models and by 0.0005–0.0582 for the search pipelines; the largest search-pipeline change is pipeline 43 round 1 on the corrected cards (0.2382 → 0.1800).",
    "status": "verified",
    "headline": {
-    "value": "0.6857 \u2192 0.2270",
-    "convention": "all-device, tandem A round 4, before \u2192 after FD; pipeline 7 r4 0.1697 \u2192 0.1643; pipeline 43 r1 / r4, corrected cards, 0.2382 \u2192 0.1800 / 0.1522 \u2192 0.1477"
+    "value": "0.6857 → 0.2270",
+    "convention": "all-device, tandem A round 4, before → after FD; pipeline 7 r4 0.1697 → 0.1643; pipeline 43 r1 / r4, corrected cards, 0.2382 → 0.1800 / 0.1522 → 0.1477"
    },
    "numbers": [
     {
      "label": "A tandem, round 4",
-     "value": "0.6857 \u2192 0.2270",
+     "value": "0.6857 → 0.2270",
      "convention": "all-device",
      "source": "out/research/polished/A_r4_fd/real/summary.json"
     },
     {
      "label": "B flow pooled / flow r1",
-     "value": "0.2922 \u2192 0.1728 / 0.3801 \u2192 0.2209",
+     "value": "0.2922 → 0.1728 / 0.3801 → 0.2209",
      "convention": "all-device",
      "source": "docs/RESEARCH_LOOP.md"
     },
     {
      "label": "B WTA pooled / WTA r1",
-     "value": "0.4608 \u2192 0.2268 / 0.5148 \u2192 0.2587",
+     "value": "0.4608 → 0.2268 / 0.5148 → 0.2587",
      "convention": "all-device",
      "source": "docs/RESEARCH_LOOP.md"
     },
     {
      "label": "Pipeline 7 r4",
-     "value": "0.1697 \u2192 0.1643",
+     "value": "0.1697 → 0.1643",
      "convention": "all-device",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     },
     {
-     "label": "Pipeline 43 r1 / r4, corrected cards, raw \u2192 + FD",
-     "value": "0.2382 \u2192 0.1800 / 0.1522 \u2192 0.1477",
-     "convention": "all-device; combined 0.2289 \u2192 0.1703 / 0.1437 \u2192 0.1394; 18 of 18 devices valid before and after; FD 350 / 381 NGSpice calls per device; cards from the final selection rerun with failed-curve rejection",
+     "label": "Pipeline 43 r1 / r4, corrected cards, raw → + FD",
+     "value": "0.2382 → 0.1800 / 0.1522 → 0.1477",
+     "convention": "all-device; combined 0.2289 → 0.1703 / 0.1437 → 0.1394; 18 of 18 devices valid before and after; FD 350 / 381 NGSpice calls per device; cards from the final selection rerun with failed-curve rejection",
      "source": [
       "out/research/polished/pipe43_r1_fixed_fd/real/summary.json",
       "out/research/polished/pipe43_r4_fixed_fd/real/summary.json",
@@ -3200,18 +3200,18 @@
     },
     {
      "label": "Direct 7 / direct 43 r1 / direct 43 r3 / swap 43 r1",
-     "value": "0.1676 \u2192 0.1670 / 0.1201 \u2192 0.1191 / 0.1049 \u2192 0.1044 / 0.1125 \u2192 0.1106",
+     "value": "0.1676 → 0.1670 / 0.1201 → 0.1191 / 0.1049 → 0.1044 / 0.1125 → 0.1106",
      "convention": "all-device",
      "source": "out/research/report/2026-10-16_baseline_results/tables.md"
     }
    ],
    "what": [
-    "FD polish: bounded TRF on frozen-inclusion per-curve NGSpice residuals against the target curves, about 400 simulations per device (max_nfev 400, diff_step 0.01, irls 2), in the method's own search box (pooled B: the union of the round 1\u20134 boxes). Applied identically to every method, on real and the three simulated sets.",
+    "FD polish: bounded TRF on frozen-inclusion per-curve NGSpice residuals against the target curves, about 400 simulations per device (max_nfev 400, diff_step 0.01, irls 2), in the method's own search box (pooled B: the union of the round 1–4 boxes). Applied identically to every method, on real and the three simulated sets.",
     "Before this study, `ngspice_fit.polish` used SciPy's relative `diff_step`/`xtol`; a start at the box centre (local = 0) stopped after one rejected step. It now uses an absolute-step local Jacobian (`xtol = ftol = gtol = 1e-10`). Direct NGSpice runs were not affected."
    ],
    "did": [
     "`scripts/research/polish_cards.py` for every method (queue jobs `fdU_*` and `fd_*`), 2026-10-15 17:30 to 2026-10-16 06:42.",
-    "`fd_pipe43_r1_fixed` (32 s) and `fd_pipe43_r4_fixed` (33 s): `scripts/research/polish_cards.py` (max_nfev 400, diff_step 0.01, irls 2) on the corrected cards `out/research/pipe_fixed/full_r1` and `full_r4`, 2026-10-17 07:12\u201307:13."
+    "`fd_pipe43_r1_fixed` (32 s) and `fd_pipe43_r4_fixed` (33 s): `scripts/research/polish_cards.py` (max_nfev 400, diff_step 0.01, irls 2) on the corrected cards `out/research/pipe_fixed/full_r1` and `full_r4`, 2026-10-17 07:12–07:13."
    ],
    "result": {
     "tables": [
@@ -3266,11 +3266,11 @@
     ]
    },
    "caveats": [
-    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2\u20133 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
-    "Values before the fix (FD runs started from the cards selected before the fix), pipeline 43 r1 / r4, all-device, raw \u2192 + FD: stored 0.2375 \u2192 0.1824 / 0.1513 \u2192 0.1465; valid-only 0.2395 \u2192 0.1853 / 0.1586 \u2192 0.1539 (17 valid devices each); penalized 0.2920 \u2192 0.2373 / 0.6500 \u2192 0.6455 (`out/research/audit/failed_curves.json`). With these values the upper end of the search-pipeline range was 0.055 (pipeline 43 r1, stored).",
+    "Correction (logged 2026-10-16 22:18): the pipeline's final selection was rerun for rounds 1 and 4 with the same surrogates and the rule that rejects candidates with failed included curves (`out/research/pipe_fixed/full_r1`, `out/research/pipe_fixed/full_r4`). Rounds 2–3 were not rerun. The round-4 box comes from the round-3 pick made before the fix.",
+    "Values before the fix (FD runs started from the cards selected before the fix), pipeline 43 r1 / r4, all-device, raw → + FD: stored 0.2375 → 0.1824 / 0.1513 → 0.1465; valid-only 0.2395 → 0.1853 / 0.1586 → 0.1539 (17 valid devices each); penalized 0.2920 → 0.2373 / 0.6500 → 0.6455 (`out/research/audit/failed_curves.json`). With these values the upper end of the search-pipeline range was 0.055 (pipeline 43 r1, stored).",
     "Dropped-curve bug: `metrics.device_rrms_new` averaged only the finite included curves, so a device whose included metric curve failed to simulate was stored with the mean of its surviving curves (upstream `rrmsCalc.py` gives NaN for that device), while the FD polish scored the same start with the penalized objective (RRMS 10 per failed curve). This gave the FD-start mismatches 0.2035 vs 1.1832 (pipeline 43 round 1, `nmos_L0p15_W1p6`, 1 of 10 included curves failed) and 0.0263 vs 9.0026 (pipeline 43 round 4, `nmos_L8_W1p6`, 9 of 10 failed). Fix: `cryoml.strict_score` marks such devices as failed and every report gives the failed-device count, the mean over valid devices and the penalized mean next to the stored value (commit 15d1f3e); `polish_cards.py` scores its start with `final_score` and records failed included curves (8302a9d); `metrics.device_rrms_new` now returns NaN for a device with a non-finite or missing included curve and the pipeline's NGSpice validation sorts such candidates last (a0e1e97). Result files written before the fix keep their stored values; `out/research/audit/failed_curves.json` recomputes the three values for 227 runs, 16 of which have a failed device.",
     "FD is local: devices whose start lies in another basin stay there, so the inverse models' means stay above the search pipelines after FD.",
-    "Simulated column, pipeline 43 r4 + FD: set 1 mean 0.113; sets 0 and 2 have means 4.9 and 5.0 from one device (`nmos_L1_W3`, RRMS ~87); median about 0.09\u20130.10. Sets 0 and 2 also have 1 failed device each (`pmos_L0p5_W0p42`, 1 of 9 included curves): set 0 stored 4.9243, valid-only 5.2116, penalized 4.9858; set 2 stored 5.0292, valid-only 5.3225, penalized 5.0907."
+    "Simulated column, pipeline 43 r4 + FD: set 1 mean 0.113; sets 0 and 2 have means 4.9 and 5.0 from one device (`nmos_L1_W3`, RRMS ~87); median about 0.09–0.10. Sets 0 and 2 also have 1 failed device each (`pmos_L0p5_W0p42`, 1 of 9 included curves): set 0 stored 4.9243, valid-only 5.2116, penalized 4.9858; set 2 stored 5.0292, valid-only 5.3225, penalized 5.0907."
    ],
    "sources": [
     "scripts/research/polish_cards.py",
@@ -3290,7 +3290,7 @@
   {
    "id": "cryo-temp",
    "tab": "cryo77k",
-   "statement": "On the simulated 77\u2013300 K benchmark all three methods reach held-out-temperature RRMS of 0.0004\u20130.0117 after FD, while the temperature exponents g stay weakly identified.",
+   "statement": "On the simulated 77–300 K benchmark all three methods reach held-out-temperature RRMS of 0.0004–0.0117 after FD, while the temperature exponents g stay weakly identified.",
    "status": "verified",
    "headline": {
     "value": "0.0004 / 0.0007 / 0.0117",
@@ -3317,7 +3317,7 @@
     },
     {
      "label": "Parameter error at RRMS ~1e-4",
-     "value": "0.16\u20130.27",
+     "value": "0.16–0.27",
      "convention": "local RMS",
      "source": "docs/RESEARCH_LOOP.md"
     },
@@ -3341,7 +3341,7 @@
      "text": "p(T) = p_stock * m ** (w(T) ** g),   w = (27 C - T) / 223.15 K, clipped at 0\np(77 K) = p_stock * m;  p(300.15 K) = p_stock",
      "source": "src/cryoml/temperature.py"
     },
-    "14 numbers per device: log m and log g for the seven paper parameters; BSIM4's own temperature coefficients stay zero. 77 K multipliers anchored on the cold seven-parameter round-4 box. Bank: 10k LHC per device in 1.5\u00d7 that box with g \u2208 [1/4, 4], each simulated at 7 temperatures. Truths: 3 sets \u00d7 18 devices in 0.75\u00d7 with g \u2208 [1/3, 3]. Observed 77, 150, 225, 300 K; held out 110, 190, 260 K."
+    "14 numbers per device: log m and log g for the seven paper parameters; BSIM4's own temperature coefficients stay zero. 77 K multipliers anchored on the cold seven-parameter round-4 box. Bank: 10k LHC per device in 1.5× that box with g ∈ [1/4, 4], each simulated at 7 temperatures. Truths: 3 sets × 18 devices in 0.75× with g ∈ [1/3, 3]. Observed 77, 150, 225, 300 K; held out 110, 190, 260 K."
    ],
    "did": [
     "`temp_bank_v1` (`scripts/research/temp_bank.py`, 3,049 s), `temp_direct` (1,025 s), `temp_ngspice_search` (1,434 s), `temp_sur_paper_mlp` (3,099 s), 2026-10-16. All seven temperatures run in one NGSpice process (`option temp=` re-evaluates `temper` expressions; identical to separate decks).",
@@ -3373,9 +3373,9 @@
     ]
    },
    "caveats": [
-    "The truths come from the same card family as the fits (well-specified), and every method reaches \u22640.0117 held-out after FD; this tier does not separate methods. A misspecified tier is the next step for this benchmark.",
-    "Parameter error stays 0.16\u20130.27 (local RMS) at RRMS 1e-4, so the g exponents are weakly identifiable from these curves.",
-    "BSIM4's temperature laws are not built for the cryogenic range; intermediate temperatures are model predictions until measurements at another temperature exist. The 77 K fits move nfactor \u00d726 from stock, and BSIM4 has no temperature law for nfactor."
+    "The truths come from the same card family as the fits (well-specified), and every method reaches ≤0.0117 held-out after FD; this tier does not separate methods. A misspecified tier is the next step for this benchmark.",
+    "Parameter error stays 0.16–0.27 (local RMS) at RRMS 1e-4, so the g exponents are weakly identifiable from these curves.",
+    "BSIM4's temperature laws are not built for the cryogenic range; intermediate temperatures are model predictions until measurements at another temperature exist. The 77 K fits move nfactor ×26 from stock, and BSIM4 has no temperature law for nfactor."
    ],
    "sources": [
     "src/cryoml/temperature.py",
@@ -3430,8 +3430,8 @@
      "text": "I_corr = I_bsim * exp(g),  g = tanh(h(phi))\nphi = [is_pmos, |Vgs|/VDD, |Vds|/VDD, log10 L, log10 W, log10(|I_bsim| L/W + 1e-13)]",
      "source": "out/research/explore/E1/prereg.json"
     },
-    "Arms: C0 no correction; M (primary) MLP 6-32-32-1 tanh, 5 seeds, 2000 Adam steps, L2 1e-4; T1 one log-gain per (family, curve tag), 22 scalars; T2 one log-gain per (family, curve kind), 4 scalars; LIN quadratic features \u2192 linear \u2192 tanh. M depends only on terminal state and geometry and can be written as Verilog-A; T1 and T2 are indexed by curve tag and cannot.",
-    "Pre-registered continue rule (all five): M all-device \u2264 0.090; M < T1 all-device; M < T1 on \u2265 8 of 12; M < C0 on \u2265 8 of 12; 0 failed devices for M. E1 is stopped if neither stage meets all five."
+    "Arms: C0 no correction; M (primary) MLP 6-32-32-1 tanh, 5 seeds, 2000 Adam steps, L2 1e-4; T1 one log-gain per (family, curve tag), 22 scalars; T2 one log-gain per (family, curve kind), 4 scalars; LIN quadratic features → linear → tanh. M depends only on terminal state and geometry and can be written as Verilog-A; T1 and T2 are indexed by curve tag and cannot.",
+    "Pre-registered continue rule (all five): M all-device ≤ 0.090; M < T1 all-device; M < T1 on ≥ 8 of 12; M < C0 on ≥ 8 of 12; 0 failed devices for M. E1 is stopped if neither stage meets all five."
    ],
    "did": [
     "Cards: direct NGSpice 43-parameter fit, round 3 + FD (`out/research/polished/direct43_r3_fd/real/summary.json`); one NGSpice simulation per device on the measured bias grid (`scripts/research/explore/e1_collect_real.py`).",
@@ -3439,7 +3439,7 @@
    ],
    "result": {
     "text": [
-     "Checks: M \u2264 0.090 no; M < T1 mean no; M < T1 on \u2265 8/12 no (4); M < C0 on \u2265 8/12 no (6); 0 failed yes. Stage 1 does not pass; the E1 decision moved to stage 2 as pre-registered."
+     "Checks: M ≤ 0.090 no; M < T1 mean no; M < T1 on ≥ 8/12 no (4); M < C0 on ≥ 8/12 no (6); 0 failed yes. Stage 1 does not pass; the E1 decision moved to stage 2 as pre-registered."
     ],
     "tables": [
      {
@@ -3502,7 +3502,7 @@
     },
     {
      "label": "M relative to C0 refit",
-     "value": "\u221218.8%",
+     "value": "−18.8%",
      "convention": "all-device",
      "source": "out/research/explore/E1/real_dev_refit/results.json"
     }
@@ -3514,17 +3514,17 @@
      "text": "I_corr = I_bsim * exp(g),  g = tanh(h(phi))\nphi = [is_pmos, |Vgs|/VDD, |Vds|/VDD, log10 L, log10 W, log10(|I_bsim| L/W + 1e-13)]",
      "source": "out/research/explore/E1/prereg.json"
     },
-    "Arms: C0 no correction; M (primary) MLP 6-32-32-1 tanh, 5 seeds, 2000 Adam steps, L2 1e-4; T1 one log-gain per (family, curve tag), 22 scalars; T2 one log-gain per (family, curve kind), 4 scalars; LIN quadratic features \u2192 linear \u2192 tanh. M depends only on terminal state and geometry and can be written as Verilog-A; T1 and T2 are indexed by curve tag and cannot.",
-    "Pre-registered continue rule (all five): M all-device \u2264 0.090; M < T1 all-device; M < T1 on \u2265 8 of 12; M < C0 on \u2265 8 of 12; 0 failed devices for M. E1 is stopped if neither stage meets all five."
+    "Arms: C0 no correction; M (primary) MLP 6-32-32-1 tanh, 5 seeds, 2000 Adam steps, L2 1e-4; T1 one log-gain per (family, curve tag), 22 scalars; T2 one log-gain per (family, curve kind), 4 scalars; LIN quadratic features → linear → tanh. M depends only on terminal state and geometry and can be written as Verilog-A; T1 and T2 are indexed by curve tag and cannot.",
+    "Pre-registered continue rule (all five): M all-device ≤ 0.090; M < T1 all-device; M < T1 on ≥ 8 of 12; M < C0 on ≥ 8 of 12; 0 failed devices for M. E1 is stopped if neither stage meets all five."
    ],
    "did": [
-    "Stage 2 (`scripts/research/explore/e1_refit.py`, queue job `e1_refit_real`, 2026-10-19 10:05\u201310:08, 156 s): for each fold, the held-out card is re-polished (`ngspice_fit.polish`, TRF max_nfev 400, irls 2, diff_step 0.01, round-3 box) against the measured curves with that fold's M correction inside the residual. Controls from the same start and budget: the polish without correction (C0 refit) and the polish with T1 in the loop.",
+    "Stage 2 (`scripts/research/explore/e1_refit.py`, queue job `e1_refit_real`, 2026-10-19 10:05–10:08, 156 s): for each fold, the held-out card is re-polished (`ngspice_fit.polish`, TRF max_nfev 400, irls 2, diff_step 0.01, round-3 box) against the measured curves with that fold's M correction inside the residual. Controls from the same start and budget: the polish without correction (C0 refit) and the polish with T1 in the loop.",
     "Scored with the same strict paper RRMS (frozen inclusion) as stage 1."
    ],
    "result": {
     "text": [
-     "Checks: M \u2264 0.090 yes (0.0871); M < T1 mean no; M < T1 on \u2265 8/12 no (6); M < C0 refit on \u2265 8/12 yes (8); 0 failed yes. Stage 2 does not pass.",
-     "The same correction that raised RRMS post hoc (stage 1, 0.1276) lowers it when the card is refit with it (0.0871). The C0 re-polish changes the card little (0.1073 \u2192 0.1072).",
+     "Checks: M ≤ 0.090 yes (0.0871); M < T1 mean no; M < T1 on ≥ 8/12 no (6); M < C0 refit on ≥ 8/12 yes (8); 0 failed yes. Stage 2 does not pass.",
+     "The same correction that raised RRMS post hoc (stage 1, 0.1276) lowers it when the card is refit with it (0.0871). The C0 re-polish changes the card little (0.1073 → 0.1072).",
      "Candidate for exploration iteration 2: a new pre-registration with the correction inside the refit as the primary setting. Not queued."
     ],
     "figures": [
@@ -3561,7 +3561,7 @@
   {
    "id": "e1-sim-logo",
    "tab": "explore",
-   "statement": "E1 simulated benchmark (GF180 and IHP tier c, sets 0\u20132, 48 targets per PDK, leave-one-geometry-out, post-hoc correction): M is above C0 on both PDKs, and criterion_S fails on both.",
+   "statement": "E1 simulated benchmark (GF180 and IHP tier c, sets 0–2, 48 targets per PDK, leave-one-geometry-out, post-hoc correction): M is above C0 on both PDKs, and criterion_S fails on both.",
    "status": "refuted",
    "headline": {
     "value": "GF180 0.0496 vs 0.0474; IHP 0.1553 vs 0.1012",
@@ -3592,7 +3592,7 @@
     {
      "label": "M / C0",
      "value": "GF180 1.045; IHP 1.534",
-     "convention": "all-device; criterion_S requires \u2264 0.90",
+     "convention": "all-device; criterion_S requires ≤ 0.90",
      "source": [
       "out/research/explore/E1/gf180_c_logo/results.json",
       "out/research/explore/E1/ihp_c_logo/results.json"
@@ -3600,8 +3600,8 @@
     }
    ],
    "what": [
-    "Simulated check of E1 with known misspecification: GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c truths (non-fitted parameters \u00b150%, series R, per-curve heating, Vd-dependent noise, gain error), each fitted per target with `ngspice_fit.polish` from the wide-set projection (max_nfev 300, irls 3).",
-    "criterion_S (per PDK): M all-device \u2264 0.90 \u00d7 C0 and M < T1 on the leave-one-geometry-out run. Secondary; the E1 decision is made on REAL_DEV only."
+    "Simulated check of E1 with known misspecification: GF180 (BSIM4) and IHP SG13G2 (PSP103) tier c truths (non-fitted parameters ±50%, series R, per-curve heating, Vd-dependent noise, gain error), each fitted per target with `ngspice_fit.polish` from the wide-set projection (max_nfev 300, irls 3).",
+    "criterion_S (per PDK): M all-device ≤ 0.90 × C0 and M < T1 on the leave-one-geometry-out run. Secondary; the E1 decision is made on REAL_DEV only."
    ],
    "did": [
     "Collection: `scripts/research/explore/e1_collect_pdk2.py` for sets 0, 1, 2 (queue jobs `e1_collect_gf180_s12`, `e1_collect_ihp_s12`).",
@@ -3610,7 +3610,7 @@
    ],
    "result": {
     "text": [
-     "criterion_S: M \u2264 0.90 \u00d7 C0 no, M < T1 no, on both PDKs. T1 has the lowest all-device mean on both PDKs (GF180 0.0420, IHP 0.0957)."
+     "criterion_S: M ≤ 0.90 × C0 no, M < T1 no, on both PDKs. T1 has the lowest all-device mean on both PDKs (GF180 0.0420, IHP 0.0957)."
     ],
     "figures": [
      {
@@ -3662,15 +3662,15 @@
     {
      "label": "Devices improved by A2",
      "value": "2 of 12",
-     "convention": "kill if \u2264 6 of 12 or reduction < 5%",
+     "convention": "kill if ≤ 6 of 12 or reduction < 5%",
      "source": "out/research/explore/E5/stage1_light.json"
     }
    ],
    "what": [
-    "Question: is the signed-log residual log|I_meas| \u2212 log|I_sim| after the best 43-parameter fit shared across devices as a function of family, log L, log W, |Vg|, |Vd| and log|I_sim|? Primary arm A2: MLP 2 \u00d7 64 tanh, ensemble of seeds, trained leave-one-device-out."
+    "Question: is the signed-log residual log|I_meas| − log|I_sim| after the best 43-parameter fit shared across devices as a function of family, log L, log W, |Vg|, |Vd| and log|I_sim|? Primary arm A2: MLP 2 × 64 tanh, ensemble of seeds, trained leave-one-device-out."
    ],
    "did": [
-    "`scripts/research/explore/e5_shared_discrepancy.py stage1` with light settings (800 steps, seeds 0\u20132; pre-registered: 3000 steps, 5 seeds). The stage-2 light check ran on one device only."
+    "`scripts/research/explore/e5_shared_discrepancy.py stage1` with light settings (800 steps, seeds 0–2; pre-registered: 3000 steps, 5 seeds). The stage-2 light check ran on one device only."
    ],
    "result": {
     "text": [
@@ -3816,7 +3816,7 @@
     }
    ],
    "what": [
-    "Question: does training a one-pass I\u2013V \u2192 seven-parameter network on simulated currents distorted by output-space misspecification components (series R, per-curve heating, gain error, Vd-dependent noise, floor) lower the NGSpice-validated RRMS on measured devices by \u2265 30% vs no augmentation?"
+    "Question: does training a one-pass I–V → seven-parameter network on simulated currents distorted by output-space misspecification components (series R, per-curve heating, gain error, Vd-dependent noise, floor) lower the NGSpice-validated RRMS on measured devices by ≥ 30% vs no augmentation?"
    ],
    "did": [
     "Light run: seed 0 only, raw on all sets, FD on REAL_DEV only (`scripts/research/explore/e2_direct.py`)."
@@ -4690,10 +4690,10 @@
     {
      "type": "list",
      "items": [
-      "Corrected current: I_corr(V) = I_sim(card; V) \u00b7 exp(g(x)), x = (is_pmos, |Vgs|/VDD, |Vds|/VDD), VDD = 1.85 V. The multiplication keeps the sign and zero crossings of I_sim.",
-      "g(x) = (1/5) \u03a3_{s=0..4} tanh(h_s(z)), z = standardized x (fold training mean and std; is_pmos kept 0/1); h_s = MLP 3-16-16-1 with tanh hidden units and a zero-initialized last layer (353 weights per member).",
-      "Training loss = (1/N_train) \u03a3_devices RRMS_dev(I_sim \u00b7 exp(g), I_meas) + 1e-4 \u03a3 ||W||\u00b2, RRMS_dev = mean over the frozen-included curves of RMSE / mean |I_meas| on the trimmed points (paper metric). Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4.",
-      "Held-out refit: minimize the residuals of I_bsim(card) \u00b7 exp(g) against the held-out device's measured curves over the 43 card parameters (ngspice_fit.polish, trust-region least squares, max_nfev 400, 2 IRLS rounds, diff_step 0.01), starting from the device's direct43_r3_fd card; g frozen. Score: fresh NGSpice simulation of the best card times exp(g), strict paper RRMS with frozen inclusion.",
+      "Corrected current: I_corr(V) = I_sim(card; V) · exp(g(x)), x = (is_pmos, |Vgs|/VDD, |Vds|/VDD), VDD = 1.85 V. The multiplication keeps the sign and zero crossings of I_sim.",
+      "g(x) = (1/5) Σ_{s=0..4} tanh(h_s(z)), z = standardized x (fold training mean and std; is_pmos kept 0/1); h_s = MLP 3-16-16-1 with tanh hidden units and a zero-initialized last layer (353 weights per member).",
+      "Training loss = (1/N_train) Σ_devices RRMS_dev(I_sim · exp(g), I_meas) + 1e-4 Σ ||W||², RRMS_dev = mean over the frozen-included curves of RMSE / mean |I_meas| on the trimmed points (paper metric). Adam lr 3e-3, 2000 full-batch steps, float64, seeds 0-4.",
+      "Held-out refit: minimize the residuals of I_bsim(card) · exp(g) against the held-out device's measured curves over the 43 card parameters (ngspice_fit.polish, trust-region least squares, max_nfev 400, 2 IRLS rounds, diff_step 0.01), starting from the device's direct43_r3_fd card; g frozen. Score: fresh NGSpice simulation of the best card times exp(g), strict paper RRMS with frozen inclusion.",
       "Arms: C0_refit (control, same refit with g = 0); M_bias (primary); M_bias_geom (secondary, adds log10 L and log10 W: 5-16-16-1); T1_inloop (per-tag gains, not deployable, comparator).",
       "Rule (pre-registered): CONTINUE only if R1 upper CI bound of R(M_bias, C0_refit) < 1 on REAL_DEV; R2 M_bias all-device <= T1_inloop + 0.005; R3 0 failed devices; R4 R(M_bias, C0_refit) <= 0.90 and 0 failed on GF180 or IHP tier c. STOP otherwise."
      ]
@@ -4999,7 +4999,7 @@
     }
    ],
    "what": [
-    "Question: does a simpler or physics-based change to the held-out card refit give the same held-out strict paper RRMS as the I3-2 correction M_bias (I = I_card \u00b7 exp(g), g = tanh(MLP 3-16-16-1 of is_pmos, |Vgs|/VDD, |Vds|/VDD), card refit with g in the loop)?",
+    "Question: does a simpler or physics-based change to the held-out card refit give the same held-out strict paper RRMS as the I3-2 correction M_bias (I = I_card · exp(g), g = tanh(MLP 3-16-16-1 of is_pmos, |Vgs|/VDD, |Vds|/VDD), card refit with g in the loop)?",
     {
      "type": "list",
      "items": [
@@ -5876,6 +5876,118 @@
     "out/research/explore/I13_1/audit/audit.json",
     "out/research/explore/I13_1/summary.json",
     "out/research/report/2026-10-22_i13_1/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
+   "id": "i14-1",
+   "tab": "explore",
+   "statement": "I14-1: with the BSIM4 clamp written into every deck, an element that scales only the replica's channel current and the element-identity Q2 reference, the full-data g v2 on 18 sky130 77 K devices passes every Part B core check except 'Q1 runs' (2 gmin-stepping warning lines in 1 of 126 element decks); by the pre-registered rule it is not deployable.",
+   "status": "refuted",
+   "headline": {
+    "value": "not deployable (rule); exchange asymmetry 1.35e-2 -> 1.7e-5, Q2 derivative 2.31 -> 1.2e-5, capacitance 1.8e-3 -> 1.1e-12 (I12-1 -> I14-1); element-deck RRMS v2 0.0771 vs stored 0.0772",
+    "convention": "Part B on M2 cards (refit with the full-data g, state C), tight tolerance; accuracy: held-out pairs of I13-1, strict paper RRMS, all-device"
+   },
+   "numbers": [
+    {
+     "label": "Part B g v2, core checks",
+     "value": "Q1 0 violations (both benches); Q1 runs 2 lines (FAIL); Vds = 0 9.8e-13 A; Verilog-A 2.5e-16 / 3.3e-16; asymmetry 1.7e-5; Q2 1.2e-5; capacitances 1.1e-12; gm sign 0; Q3 0",
+     "convention": "thresholds of I12-1",
+     "source": "out/research/explore/I14_1/deploy_v2/summary.json"
+    },
+    {
+     "label": "Part B g v2, restrictions",
+     "value": "default tolerance 1.8e-3; 2 of 90 gds curves (pmos_L8_W0p84, pmos_L8_W1p6, |Vgs| 1.85 V); runtime ro5_A 4.59, DC grid 1.90-2.00",
+     "convention": "listed when they apply",
+     "source": "out/research/explore/I14_1/deploy_v2/summary.json"
+    },
+    {
+     "label": "element-deck accuracy (all-device / combined)",
+     "value": "v2 0.07714 / 0.07321 vs stored 0.07716 / 0.07323 (max per-device |d| 1.8e-04); v1 0.07346 / 0.06951 vs 0.07348 / 0.06953 (max 2.5e-04); GMR(native v2, C0_refit) 0.785 [0.693, 0.896]; GMR(native v2, native v1) 1.053 [0.966, 1.137]",
+     "convention": "fold g + I13-1 held-out card, OSDI element deck; reported, no rule; registered A1 / A2 stay I13-1 (A1 pass, A2 fail)",
+     "source": "out/research/explore/I14_1/accuracy/accuracy.json"
+    },
+    {
+     "label": "reference arm M_bias v1 (full-data g)",
+     "value": "not deployable: exchanged Verilog-A g 0.134, asymmetry 0.125, Q2 6.6e-3, 1 gm sign change, Vds = 0 1.0e-12 A",
+     "convention": "abs() inputs; same element",
+     "source": "out/research/explore/I14_1/deploy_v1/summary.json"
+    }
+   ],
+   "what": [
+    "Question: does g v2 pass the I12-1 Part B checks once (1) every deck uses one BSIM4 model-check state, (2) the element scales only the channel current, (3) the Q2 reference matches the element identity?",
+    "Pre-registered (d637500): same core checks and restrictions as I12-1; replica without Isub (incl. l/w/p terms), GIDL / GISL, junction saturation current and gate tunneling, gmin VCCS; accuracy flags fixed by I13-1."
+   ],
+   "did": [
+    "Code f40c6b7: clamp in spice_batch, sky130_misspec, simulate_sky130, patched_library(_v2), e3_temp; i14_1_chan module and driver; 16 unit tests.",
+    "Queue: validity 6 s, accuracy 13 s, deploy v2 187 s, deploy v1 306 s, decide; post-hoc diagnosis 11 s."
+   ],
+   "result": {
+    "text": [
+     "Replica pre-check: the replica has no non-channel current (exact zeros); its channel current equals the card's within 1e-12 only where the card's own substrate and junction currents are negligible (forward up to 1.2e-3 on nmos_L100_W100, via the rbodymod = 1 body network).",
+     "The I12-1 core failures are removed: asymmetry 1.7e-5, Q2 1.2e-5 against the element identity (0.0217 with the I12-1 formula on the same runs), capacitance 1.1e-12. The single failure: 'dynamic / true gmin stepping failed' in nmos_L8_W1p6 exchanged tight element deck; the card + replica reference printed the same; post hoc, the warnings come from the zero-saturation-current replica (with and without VCCS and module), not from card-only or I12-1-replica decks.",
+     "The element changes the held-out RRMS by at most 1.8e-4 (v2) and 2.5e-4 (v1) per device."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "01_table_i14_1_part_b.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "02_table_i14_1_validity.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "03_table_i14_1_devices_v2.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "04_table_i14_1_accuracy.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "05_i14_1_accuracy_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "06_i14_1_checks_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "07_table_i14_1_diagnosis.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "08_table_i14_1_circuits.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "09_i14_1_iv_nmos_L100_W100.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "10_i14_1_iv_nmos_L20_W0p64.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "11_i14_1_iv_nmos_L8_W1p6.png"
+     },
+     {
+      "batch": "2026-10-22_i14_1",
+      "file": "12_i14_1_iv_pmos_L2_W5.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The pre-registered 1e-12 equality of replica and card channel current is met only in part (2-6 of 18 devices on every forward point).",
+    "Circuit checks are simulator-level; there is no measured circuit data."
+   ],
+   "sources": [
+    "out/research/explore/I14_1/prereg.md",
+    "out/research/explore/I14_1/decision.json",
+    "out/research/explore/I14_1/diagnosis/diagnosis.json",
+    "out/research/report/2026-10-22_i14_1/README.md"
    ],
    "updated": "2026-10-22"
   },

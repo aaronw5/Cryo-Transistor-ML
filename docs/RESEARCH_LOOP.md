@@ -2059,3 +2059,83 @@ headline; I12-1 Part B was not rerun. Report batch `out/research/report/2026-10-
 new held-out cards, each RRMS checked against the stored rows); site claim `i13-1`. Not changed: modules with their
 own multi-analysis decks that do not call `simulate_pdk` (`spice_batch.simulate_pdk_multi`, `sky130_misspec`) and
 the I12-1 OSDI element decks.
+
+## I14-1 pre-registration in force (2026-10-22 01:05): Part B of g v2 with a channel-current replica, one model-check state, element-identity Q2 reference
+
+Pre-registration `out/research/explore/I14_1/prereg.md` / `prereg.json`, commit d637500 (alone). Inputs fixed from
+I13-1 state C (records, v2 fold / full corrections and held-out cards, v1 fold / full corrections and held-out cards,
+C0_refit cards); nothing is trained. Fix 1: the b4check.c A1/A2 clamp is written into the card by every deck builder
+with more than one analysis per process (`spice_batch.simulate_pdk_multi` / `ngspice_jacobian`,
+`sky130_misspec.simulate_truth`, `i3_2_followup.simulate_sky130`, `i11_1_deploy.patched_library`,
+`i12_1_symm.patched_library_v2`, `e3_temp.simulate_truth_at`; "legacy" kept for reproduction, used by
+`i12_1_diagnosis.py`). Fix 2: the sensed replica has no charge (I12-1 set), alpha0 = alpha1 = beta0 = 0 with the
+l/w/p terms (the nMOS bins carry nonzero lalpha0 / walpha0 / palpha0 / lbeta0 / wbeta0 / pbeta0), agidl = agisl = 0
+with l/w/p terms, jss = jsd = jsws = jswd = jswgs = jswgd = 0, igcmod = igbmod = 0; a VCCS of -gmin between the replica
+drain and body copies removes the junction gmin current (BSIM4 instance m = 1 in these decks: the X-line mult / m of
+the six pMOS devices with 2 or 3 does not reach the BSIM4 instance). Fix 3: Q2 reference Re Y_card + (exp(g) - 1)
+Re Y_rep + I_rep exp(g) dg/dV from one card + replica run. Part B rules unchanged from I12-1; M2 cards refit in state C
+with the full-data g; reference arm M_bias v1 full-data g (module with the v1 abs() inputs, same element), reported,
+not the outcome. Accuracy flags fixed by I13-1 (A1 passes 0.785 [0.693, 0.896]; A2 fails 1.053 [0.966, 1.137]);
+element-deck RRMS of the held-out pairs reported without a rule. Reachable outcomes: invalid / not deployable /
+deployable, accuracy below v1.
+Replica pre-check before registration (`repcheck/repcheck.json`; 18 devices x published, start C, v2 held-out C, v1
+held-out C; I11-1 grid, tight, 17 digits, 8 s): P1 replica isub, igidl, igisl and gate currents exactly 0, junction
+current = gmin x V to 6e-16 A; P2 sensed current vs the replica's own BSIM4 `id` max 1.7e-12 A (solver tolerance;
+relative up to 1.1e-4 at 1 nA); P3 replica channel vs card channel within 1e-12 relative on every forward point for 2,
+6, 5, 6 of 18 devices per set, max 1.2e-3 forward (nmos_L100_W100, card Isub up to 1.2e-4 A) and up to 218 in the
+reverse quadrant (forward-biased drain junction). The requested criterion (replica drain current = card channel
+current within 1e-12 relative) is therefore met only in part: the card's own substrate and junction currents flow
+through its rbodymod = 1 body resistor network (5 x 50 ohm) and change its internal body voltage and channel current;
+the replica without these currents has a different internal body voltage, and a replica with them carries them in
+its drain-terminal current. Registered consequence: the element scales the replica channel current, and every Part B
+reference uses I_rep measured in a card + replica run.
+
+## I14-1 code, unit tests, smoke, queue (2026-10-22 01:07)
+
+Code f40c6b7: `src/cryoml/explore/i14_1_chan.py` (replica, gmin VCCS, card / card_rep / elem netlists, v1 Verilog-A,
+element-identity references, validity rule), driver `scripts/research/explore/i14_1_chan.py` (repcheck, validity,
+accuracy, deploy --arm v2|v1, decide), `tests/test_i14_1_chan.py` (16 tests; 68 with the I13-1, spice_batch,
+sky130_misspec and I12-1 suites, all pass). Smoke (`I14_1/smoke/`, nmos_L1_W1p6 and pmos_L2_W5, refit max_nfev 20; not
+used for decisions): all stages run; V1 0.0 on 4 rows; v2 core checks pass on the 2 devices (exchange asymmetry
+3.8e-6, Q2 1.3e-6, capacitance 2.1e-15), restrictions default tolerance 1.06e-3 and runtime 4.6; v1 reference arm
+fails the exchanged Verilog-A g check (0.134) and the exchange asymmetry (0.125), as expected for abs() inputs.
+Queue: I14_1_validity, I14_1_accuracy, I14_1_deploy_v2, I14_1_deploy_v1, I14_1_decide.
+
+## I14-1 outcome (2026-10-22 01:16): Part B of g v2 with the channel-current replica, not deployable (pre-registered rule)
+
+Queue: I14_1_validity 6 s, I14_1_accuracy 13 s (36 OSDI compiles 9 s), I14_1_deploy_v2 187 s (M2 refit 147 s, 0
+failed), I14_1_deploy_v1 306 s, I14_1_decide. Validity: V1 card-only library deck x exp(fold g) reproduces the 36
+I13-1 rows (max |diff| 0.0); V2 68 unit tests pass; V3 18 rows per arm, 0 failed M2 refits: valid.
+Part B, g v2 (M2 cards, in-sample M2 RRMS Python 0.0756, element deck 0.0756, card only 0.1081). Core checks: Q1
+equivalence 0 violating points (tight, forward and exchanged, reference I_card + (exp(g) - 1) I_rep); Q1 runs **2
+convergence lines** ('dynamic gmin stepping failed', 'true gmin stepping failed') in 1 of 126 element decks
+(nmos_L8_W1p6, exchanged bench, tight; 0 non-finite values): **fails**; max |I(Vds = 0)| 9.8e-13 A; Verilog-A g vs
+Python 2.5e-16, exchanged vs forward 3.3e-16; exchange asymmetry 1.7e-5 (I12-1: 1.35e-2); Q2 derivative vs the
+element identity 1.2e-5 (I12-1: 2.31; the I12-1 formula on the same runs: 0.0217); capacitance error 1.1e-12 (I12-1:
+1.8e-3); 0 of 54 gm curves with an introduced sign change; 0 circuits failing only with the element (ro5_B fails at
+card level, amendment A1). Restrictions: default tolerance 1.8e-3; 2 of 90 gds curves (pmos_L8_W0p84, pmos_L8_W1p6,
+|Vgs| 1.85 V); runtime DC grid 1.90-2.00, ro5_A 4.59. Q3 (published / C0_refit / M2_card / M2_full): mirror_n Iout /
+Iref at 0.9 V 1.059 / 1.022 / 1.022 / 1.024; mirror_p 0.938 / 0.992 / 0.992 / 0.984.
+Outcome (rule): **not deployable**; action 'stop; diagnose the failed core checks'. Accuracy flags (I13-1): A1 passes,
+A2 fails.
+Element-deck accuracy of the held-out pairs (reported): v2 all-device / combined 0.07714 / 0.07321 vs stored 0.07716 /
+0.07323 (max per-device |d| 1.8e-4, nmos_L100_W100 and nmos_L20_W0p64); v1 0.07346 / 0.06951 vs 0.07348 / 0.06953 (max
+2.5e-4); GMR(native v2, C0_refit) 0.785 [0.693, 0.896], GMR(native v2, native v1) 1.053 [0.966, 1.137]: the element's
+DC change (substrate current, junction gmin term, body-voltage effect) moves no aggregate by more than 2e-5.
+Reference arm M_bias v1 (full-data g, abs() inputs, same element): not deployable (exchanged Verilog-A g 0.134,
+exchange asymmetry 0.125, Q2 6.6e-3, 1 gm sign change, max |I(Vds = 0)| 1.0e-12 A; 28 gds curves, default tolerance
+1.9e-3, runtime 4.48).
+Diagnosis (post hoc, `scripts/research/explore/i14_1_diagnosis.py` -> `I14_1/diagnosis/diagnosis.json`, 11 s; the
+recorded outcome stays 'not deployable'): tight forward and exchanged grids of all 18 M2 cards in six deck variants.
+No message in the card-only and the I12-1-replica variants. The two warnings on nmos_L8_W1p6 occur with the
+channel-current replica in the card + replica deck (forward) and in the element deck (exchanged), with and without the
+gmin VCCS: the cause is the replica with zero junction saturation current (its operating-point solution needs the
+convergence aids), not the module and not the VCCS. Without the VCCS, nmos_L0p25_W1p6 also fails source stepping and
+the element run violates Q1 on 1735 points; with the VCCS (I14-1 element) Q1 has 0 violations on all 18 devices.
+Possible next step (needs a new pre-registration): a replica whose junction currents stay nonzero but are sensed
+separately is not available from BSIM4 terminal currents (pre-check); options are a replica with small nonzero
+saturation currents compensated in the module, or counting 'gmin stepping failed' warnings as a restriction when the
+solution converges (rule change).
+Report batch `out/research/report/2026-10-22_i14_1/` (`scripts/research/plot_explore_i14_1.py`; 12 PNGs; the I-V
+figures re-simulate the published, C0_refit and v2 / v1 held-out cards and reproduce the stored rows); site claim
+`i14-1` (refuted).

@@ -1,0 +1,61 @@
+{
+ "arm": "v1",
+ "label": "reference arm (M_bias v1 full-data g, non-symmetric inputs; not the I14-1 outcome)",
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 9.891599423600088e-13,
+  "g_text_max": 2.8796409701215e-16,
+  "g_sym_text_max": 0.1344307358561045,
+  "swap_asym_max": 0.12518920251354881,
+  "q2_ac_max": 1.5476547726447112e-06,
+  "cap_max": 2.715326160059122e-15,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.001852413629580614,
+  "q2_gds_sign": 5,
+  "runtime_ratio_max": 4.296074318783236
+ },
+ "runtime_grid": {
+  "nmos_L1_W1p6": 1.8533500772444211,
+  "pmos_L2_W5": 1.8536493345548073
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": 1.671578625029038,
+  "inv_B_vtc": 1.6987808694109854,
+  "ro5_A": 4.296074318783236,
+  "mirror_n": 1.2085445436126714,
+  "mirror_p": 1.259860930651087
+ },
+ "runtime_circuits_excluded": [
+  "ro5_B"
+ ],
+ "n_devices": 2,
+ "q3_not_ok": [
+  "ro5_B|C0_refit",
+  "ro5_B|M2_card",
+  "ro5_B|M2_full"
+ ],
+ "q2_err_i12_formula_max": 0.0002221982676389555,
+ "nonchannel_share_fwd_max": 0.0012628316061921478,
+ "card_rep_vs_card_default_max_abs": 1.0175598938455543e-07,
+ "decision": {
+  "deploy": "not deployable",
+  "core_fail": [
+   "Verilog-A g not d/s symmetric",
+   "terminal-exchange asymmetry > 1e-3"
+  ],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "refit_in_sample": {
+  "mean_rrms_M2_python": 0.04178621189173559,
+  "mean_rrms_M2_python_channel": 0.041786211302664536,
+  "mean_rrms_M2_native": 0.04178954512865831,
+  "mean_rrms_M2_card_only": 0.05946359310871856,
+  "n_failed": 0
+ }
+}

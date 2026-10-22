@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i14_1
+
+Folder: [2026-10-22_i14_1/](2026-10-22_i14_1/) · [tables.md](2026-10-22_i14_1/tables.md) · [README.md](2026-10-22_i14_1/README.md)
+
+- I14-1 Part B of g v2 with a channel-current replica, clamp state C, element-identity Q2: not deployable (pre-registered rule).
+- Only failed core check: 2 gmin-stepping warning lines in 1 of 126 element decks (nmos_L8_W1p6); asymmetry 1.7e-05, Q2 1.2e-05, Q1 0 violations.
+- Element-deck RRMS v2 0.0771 (stored 0.0772).
+
+Figures and tables: [01_table_i14_1_part_b.png](2026-10-22_i14_1/01_table_i14_1_part_b.png) · [02_table_i14_1_validity.png](2026-10-22_i14_1/02_table_i14_1_validity.png) · [03_table_i14_1_devices_v2.png](2026-10-22_i14_1/03_table_i14_1_devices_v2.png) · [04_table_i14_1_accuracy.png](2026-10-22_i14_1/04_table_i14_1_accuracy.png) · [05_i14_1_accuracy_per_device.png](2026-10-22_i14_1/05_i14_1_accuracy_per_device.png) · [06_i14_1_checks_per_device.png](2026-10-22_i14_1/06_i14_1_checks_per_device.png) · [07_table_i14_1_diagnosis.png](2026-10-22_i14_1/07_table_i14_1_diagnosis.png) · [08_table_i14_1_circuits.png](2026-10-22_i14_1/08_table_i14_1_circuits.png) · [09_i14_1_iv_nmos_L100_W100.png](2026-10-22_i14_1/09_i14_1_iv_nmos_L100_W100.png) · [10_i14_1_iv_nmos_L20_W0p64.png](2026-10-22_i14_1/10_i14_1_iv_nmos_L20_W0p64.png) · [11_i14_1_iv_nmos_L8_W1p6.png](2026-10-22_i14_1/11_i14_1_iv_nmos_L8_W1p6.png) · [12_i14_1_iv_pmos_L2_W5.png](2026-10-22_i14_1/12_i14_1_iv_pmos_L2_W5.png)
+
 ## 2026-10-22 · i13_1
 
 Folder: [2026-10-22_i13_1/](2026-10-22_i13_1/) · [tables.md](2026-10-22_i13_1/tables.md) · [README.md](2026-10-22_i13_1/README.md)

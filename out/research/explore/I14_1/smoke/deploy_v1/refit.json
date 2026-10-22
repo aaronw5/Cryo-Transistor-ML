@@ -1,0 +1,43 @@
+{
+ "arm": "v1",
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "refit_s": 6.3,
+ "rows": {
+  "nmos_L1_W1p6": {
+   "rrms_start": 0.03115122793948396,
+   "rrms": 0.02315923255363992,
+   "failed": [],
+   "n_sim": 163,
+   "runtime_s": 5.71
+  },
+  "pmos_L2_W5": {
+   "rrms_start": 0.061668275242501784,
+   "rrms": 0.060413191229831256,
+   "failed": [],
+   "n_sim": 163,
+   "runtime_s": 5.9
+  }
+ },
+ "native": {
+  "nmos_L1_W1p6": {
+   "tag": "nmos_L1_W1p6",
+   "rrms_card_only": 0.03915595493733067,
+   "rrms_python": 0.02315923255363992,
+   "rrms_python_channel": 0.02315923252751553,
+   "rrms_native": 0.023164278355722337,
+   "msgs": []
+  },
+  "pmos_L2_W5": {
+   "tag": "pmos_L2_W5",
+   "rrms_card_only": 0.07977123128010644,
+   "rrms_python": 0.060413191229831256,
+   "rrms_python_channel": 0.06041319007781354,
+   "rrms_native": 0.060414811901594284,
+   "msgs": []
+  }
+ }
+}
