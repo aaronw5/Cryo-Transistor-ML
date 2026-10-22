@@ -5783,6 +5783,103 @@
    "updated": "2026-10-21"
   },
   {
+   "id": "i13-1",
+   "tab": "explore",
+   "statement": "I13-1: the stored 43-parameter scores on 5 sky130 77 K devices (a2 > 1) simulated the first curve of each batch deck with the BSIM4 check clamp A2 = 1 and the other curves with the card a2; with the clamp written into the card (every curve in the fresh-process state) and the I3-2 / I12-1 recipes rerun, M_bias v1 changes from 0.0732 to 0.0735 all-device and its gain over C0_refit is unchanged.",
+   "status": "verified",
+   "headline": {
+    "value": "M_bias v1 all-device / combined / median 0.0732 / 0.0691 / 0.0643 -> 0.0735 / 0.0695 / 0.0637; GMR(v1, C0_refit) 0.755 [0.673, 0.852], 16/18 -> 0.745 [0.660, 0.850], 17/18",
+    "convention": "strict paper RRMS, inclusion frozen to the published card; old = stored rows (state L), new = state C rerun; GMR device bootstrap 10,000, 95% CI"
+   },
+   "numbers": [
+    {
+     "label": "headline all-18, old -> new (all-device / combined / median)",
+     "value": "published 0.2751 / 0.2595 / 0.2304 -> 0.2751 / 0.2595 / 0.2304; start 0.1044 / 0.0976 / 0.0823 -> 0.1109 / 0.1049 / 0.0823; C0_refit 0.1043 / 0.0975 / 0.0820 -> 0.1051 / 0.0984 / 0.0820; T1_inloop 0.0744 / 0.0703 / 0.0672 -> 0.0753 / 0.0713 / 0.0680; M_bias_v1 0.0732 / 0.0691 / 0.0643 -> 0.0735 / 0.0695 / 0.0637; M_bias_v2 0.0774 / 0.0732 / 0.0534 -> 0.0772 / 0.0732 / 0.0544",
+     "convention": "start: direct43_r3_fd cards rescored, not refit; published unchanged",
+     "source": "out/research/explore/I13_1/summary.json"
+    },
+    {
+     "label": "paired contrasts, old -> new",
+     "value": "v1 vs C0_refit 0.755 [0.673, 0.852], 16/18 -> 0.745 [0.660, 0.850], 17/18; v2 vs C0_refit 0.787 [0.703, 0.884], 16/18 -> 0.785 [0.693, 0.896], 16/18; v2 vs v1 1.042 [0.967, 1.111], 5/18 -> 1.053 [0.966, 1.137], 4/18",
+     "convention": "I12-1 A1 still passes (CI upper < 1), A2 still fails (margin 1.05)",
+     "source": "out/research/explore/I13_1/summary.json"
+    },
+    {
+     "label": "audit of the stored cards (all-device, states stored / L / C / U)",
+     "value": "start 0.1044 / 0.1044 / 0.1109 / 0.1045; C0_refit 0.1043 / 0.1043 / 0.1108 / 0.1044; T1_inloop 0.0744 / 0.0744 / 0.0785 / 0.0745; M_bias_v1 0.0732 / 0.0732 / 0.0775 / 0.0732; M_bias_v2 0.0774 / 0.0774 / 0.0821 / 0.0774",
+     "convention": "V1 L reproduces stored rows 0.0; V2 83 unclamped cards C = L = U 0.0; no other b4check.c clamp on any stored card",
+     "source": "out/research/explore/I13_1/audit/audit.json"
+    }
+   ],
+   "what": [
+    "Question: are the stored 43-parameter scores defined by one model per card? ngspice-41 b4check.c clamps A2 > 1 to 1 (A1 to 0) once per process per model name; b4temp.c rebuilds size-dependent parameters at every analysis; the batch deck runs one dc analysis per curve.",
+    "Pre-registered (d507908): a card is valid only if every curve is evaluated in one clamp state; option (b): state C, the clamp written into the card (simulate_pdk default); published and a2 <= 1 cards must give identical scores (0, unit-tested)."
+   ],
+   "did": [
+    "Code 837d07d: simulate_pdk bsim4_state (clamped / legacy / unclamped), bsim4_clamp_params, bsim4_check_messages; 9 unit tests. Audit e6b2cdd: six stored arms in states L / C / U (8 s).",
+    "Reruns in state C through the queue: start records (5 devices changed), I3-2 all18 recipe (600 s, 1645553), I12-1 LODO recipe (1694 s, 45443eb); start cards not refit. Report batch 2026-10-22_i13_1 re-simulates the I-V cards and checks every RRMS against the stored rows."
+   ],
+   "result": {
+    "text": [
+     "a2 > 1 on nmos_L0p19_W7 (1.877), nmos_L0p25_W1p6 (1.045), nmos_L20_W0p64 (2.002), nmos_L8_W1p6 (1.062) and pmos_L0p35_W1p6 (1.253) in every 43-parameter arm. On the 4 nMOS devices the stored cards score 0.0153-0.0491 in state L and 0.0263-0.0797 in state C; state U is within 0.001 of L. pmos_L0p35_W1p6 is unaffected to 4 digits.",
+     "After the reruns the start row rises by 0.0065 all-device (not refit); the refit arms change by at most 0.0009 all-device; C0_refit is identical to the stored rows on the 13 devices with a2 <= 1. GMR(M_bias v1, C0_refit) 0.745 [0.660, 0.850] (17/18) and GMR(M_bias v1, T1_inloop) 0.960 [0.934, 0.986] (old 0.974 [0.945, 1.001])."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "01_table_i13_1_headline.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "02_table_i13_1_clamp_audit.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "03_table_i13_1_clamped_devices.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "04_i13_1_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "05_i13_1_gmr.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "06_i13_1_iv_nmos_L0p19_W7.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "07_i13_1_iv_nmos_L0p25_W1p6.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "08_i13_1_iv_nmos_L20_W0p64.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "09_i13_1_iv_nmos_L8_W1p6.png"
+     },
+     {
+      "batch": "2026-10-22_i13_1",
+      "file": "10_i13_1_iv_pmos_L0p35_W1p6.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The start cards were FD-polished in state L and are not refit; their state-C score includes that mismatch.",
+    "I12-1 Part B (deployment checks) was not rerun; other modules with their own multi-analysis decks (spice_batch, temp_fit, sky130_misspec) do not use simulate_pdk and are not changed."
+   ],
+   "sources": [
+    "out/research/explore/I13_1/prereg.md",
+    "out/research/explore/I13_1/audit/audit.json",
+    "out/research/explore/I13_1/summary.json",
+    "out/research/report/2026-10-22_i13_1/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
    "id": "i12-1",
    "tab": "explore",
    "statement": "I12-1: the bias-only correction g v2 (d/s-symmetric smooth inputs, element scaling the drain current of a charge-free card replica, gm/gds penalty) keeps a gain over the refit card without correction on sky130 77 K (18 devices, LODO) but is not non-inferior to M_bias v1 and is not deployable under the pre-registered simulator-level rule; post hoc, two of the three failed core checks come from the reference runs, the third (terminal exchange) from the element.",

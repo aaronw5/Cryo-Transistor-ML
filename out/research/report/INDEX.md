@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i13_1
+
+Folder: [2026-10-22_i13_1/](2026-10-22_i13_1/) · [tables.md](2026-10-22_i13_1/tables.md) · [README.md](2026-10-22_i13_1/README.md)
+
+- I13-1 BSIM4 A2 clamp state: stored 43-parameter scores used A2 = 1 only in the first curve on 5 devices; fix: clamp written into the card (every curve in the fresh-process state).
+- M_bias v1 all-device / combined 0.0732 / 0.0691 -> 0.0735 / 0.0695; C0_refit 0.1043 -> 0.1051; GMR(v1, C0_refit) 0.745 [0.660, 0.850].
+- Published-card scores unchanged (difference 0).
+
+Figures and tables: [01_table_i13_1_headline.png](2026-10-22_i13_1/01_table_i13_1_headline.png) · [02_table_i13_1_clamp_audit.png](2026-10-22_i13_1/02_table_i13_1_clamp_audit.png) · [03_table_i13_1_clamped_devices.png](2026-10-22_i13_1/03_table_i13_1_clamped_devices.png) · [04_i13_1_per_device.png](2026-10-22_i13_1/04_i13_1_per_device.png) · [05_i13_1_gmr.png](2026-10-22_i13_1/05_i13_1_gmr.png) · [06_i13_1_iv_nmos_L0p19_W7.png](2026-10-22_i13_1/06_i13_1_iv_nmos_L0p19_W7.png) · [07_i13_1_iv_nmos_L0p25_W1p6.png](2026-10-22_i13_1/07_i13_1_iv_nmos_L0p25_W1p6.png) · [08_i13_1_iv_nmos_L20_W0p64.png](2026-10-22_i13_1/08_i13_1_iv_nmos_L20_W0p64.png) · [09_i13_1_iv_nmos_L8_W1p6.png](2026-10-22_i13_1/09_i13_1_iv_nmos_L8_W1p6.png) · [10_i13_1_iv_pmos_L0p35_W1p6.png](2026-10-22_i13_1/10_i13_1_iv_pmos_L0p35_W1p6.png)
+
 ## 2026-10-21 · i12_1
 
 Folder: [2026-10-21_i12_1/](2026-10-21_i12_1/) · [tables.md](2026-10-21_i12_1/tables.md) · [README.md](2026-10-21_i12_1/README.md)

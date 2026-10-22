@@ -2025,3 +2025,37 @@ rescored in L, C and U, per device and all-device / combined / median; validity 
 card. Rerun in state C: start-card records, I3-2 all18 recipe, I12-1 LODO recipe; start cards not refit. Before
 registration: code draft and a mechanism check on two start cards; stored a2 > 1 on 5 devices (nmos_L0p19_W7,
 nmos_L0p25_W1p6, nmos_L20_W0p64, nmos_L8_W1p6, pmos_L0p35_W1p6) in every 43-parameter arm.
+
+## I13-1 outcome (2026-10-22 00:40): BSIM4 A2 clamp state of the 43-parameter cards, audit and fix
+
+Code `837d07d` (`simulate_pdk(..., bsim4_state)`: "clamped" default writes the b4check.c clamp into the card,
+a2 > 1 -> a2 = 1, a1 = 0, a2 < 0.01 -> 0.01; "legacy" reproduces the old batch deck; "unclamped" runs a warm-up op;
+`bsim4_clamp_params`, `bsim4_check_messages`; driver `scripts/research/explore/i13_1_clamp.py`; 9 unit tests in
+`tests/test_i13_1_clamp.py`). The 77 K bins have a1 = 0, no l/w/p A1/A2 terms and 0.01 <= a2 <= 1 (max 0.467), and
+b4ld.c is the only user of A1/A2, so state C equals the fresh-process state.
+Audit (`I13_1/audit/audit.json`, 8 s): V1 state L reproduces every stored row of the six arms (max |diff| 0.0,
+published included); V2 the 83 cards with a2 in [0.01, 1] give C = L = U (0.0); V3 18 rows per arm and state. a2 > 1
+in every 43-parameter arm on nmos_L0p19_W7 (start 1.877), nmos_L0p25_W1p6 (1.045), nmos_L20_W0p64 (2.002),
+nmos_L8_W1p6 (1.062), pmos_L0p35_W1p6 (1.253). Stored cards rescored, all-device stored / L / C / U: start 0.1044 /
+0.1044 / 0.1109 / 0.1045; C0_refit 0.1043 / 0.1043 / 0.1108 / 0.1044; T1_inloop 0.0744 / 0.0744 / 0.0785 / 0.0745;
+M_bias v1 0.0732 / 0.0732 / 0.0775 / 0.0732; M_bias v2 0.0774 / 0.0774 / 0.0821 / 0.0774. Per device in state C the
+4 nMOS stored cards score 0.0263-0.0797 against 0.0153-0.0491 in L (largest: nmos_L0p19_W7 start 0.0155 -> 0.0699);
+pmos_L0p35_W1p6 differs below 1e-4. Other b4check.c clamps on size-dependent parameters (ckappas / ckappad < 0.02,
+prwg < 0, rdsw < 0, rds0 < 0, rdswmin < 0, xn < 3 and lc < 0 with vtl given): no stored card hits one; after writing
+the A2 clamp no clamp message remains. Warnings printed without a clamp: Eta0 < 0, Pdibl1 < 0, (B1 + Weff) small,
+TNOIMOD = 1.
+Reruns in state C (queue): start records (5 devices changed, 13 identical); I3-2 all18 recipe 600 s; I12-1 LODO recipe
+1694 s; start cards not refit. C0_refit is identical to the stored rows on the 13 devices with a2 <= 1.
+Headline all-18 (all-device / combined / median), old -> new: published 0.2751 / 0.2595 / 0.2304 (unchanged); start
+0.1044 / 0.0976 / 0.0823 -> 0.1109 / 0.1049 / 0.0823; C0_refit 0.1043 / 0.0975 / 0.0820 -> 0.1051 / 0.0984 / 0.0820;
+T1_inloop 0.0744 / 0.0703 / 0.0672 -> 0.0753 / 0.0713 / 0.0680; M_bias v1 0.0732 / 0.0691 / 0.0643 -> 0.0735 /
+0.0695 / 0.0637; M_bias v2 0.0774 / 0.0732 / 0.0534 -> 0.0772 / 0.0732 / 0.0544. GMR(M_bias v1, C0_refit) 0.755
+[0.673, 0.852] 16/18 -> 0.745 [0.660, 0.850] 17/18; GMR(M_bias v2, C0_refit) 0.787 [0.703, 0.884] -> 0.785 [0.693,
+0.896] (I12-1 A1 passes); GMR(M_bias v2, M_bias v1) 1.042 [0.967, 1.111] -> 1.053 [0.966, 1.137] (I12-1 A2 fails,
+margin 1.05); GMR(M_bias v1, T1_inloop) 0.974 [0.945, 1.001] -> 0.960 [0.934, 0.986]. The state-C rows
+(`I13_1/all18`, `I13_1/lodo`, `I13_1/summary.json`) replace the stored I3-2 all18 and I12-1 LODO rows as the
+headline; I12-1 Part B was not rerun. Report batch `out/research/report/2026-10-22_i13_1/`
+(`scripts/research/plot_explore_i13_1.py`; 10 PNGs; the I-V figures re-simulate the start card in L and C and the
+new held-out cards, each RRMS checked against the stored rows); site claim `i13-1`. Not changed: modules with their
+own multi-analysis decks that do not call `simulate_pdk` (`spice_batch.simulate_pdk_multi`, `sky130_misspec`) and
+the I12-1 OSDI element decks.
