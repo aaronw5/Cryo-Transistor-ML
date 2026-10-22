@@ -1,0 +1,14 @@
+{
+ "id": "I18-2 amendment A1",
+ "date": "2026-10-22",
+ "status": "in force",
+ "before": "any full I18-2 run (only the smoke run under I18_2/smoke existed; smoke is not used for decisions)",
+ "changes": {
+  "part_B_vds0_check": {
+   "registered": "|I(V(d,s) = 0)| <= 1e-12 A on the tight forward Q1 grid of the element run (I17-1)",
+   "amended": "|I_elem(V(d,s) = 0) - I_card(V(d,s) = 0)| <= 1e-12 A on the tight forward Q1 grid, I_card = drain current of the card + replica run at the same tolerance and bias (the current the element adds at V(d,s) = 0); the raw element value |I_elem(V(d,s) = 0)| and the card value are reported without a rule",
+   "reason": "the TU Delft card has igcmod = igbmod = 1: at V(d,s) = 0 its drain-terminal current contains gate-to-drain tunneling current. Smoke (t40_nmos_W0p36_L0p04_d190, 4.13 K, tight): card alone 5.96e-11 A, element run 5.96e-11 A, element minus card 1.8e-20 A. The registered check would test the card's gate current, not the element. On the sky130 cards (igcmod = 0) the card current at V(d,s) = 0 was below 1e-16 A, so the registered quantity there measured the element-added current."
+  }
+ },
+ "unchanged": "every other rule, threshold, procedure and prediction of prereg.json"
+}
