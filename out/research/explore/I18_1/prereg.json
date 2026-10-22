@@ -1,0 +1,76 @@
+{
+ "id": "I18-1",
+ "status": "in force",
+ "date": "2026-10-22",
+ "title": "Gated correction: selected g v2 applied only if the training-only S3 gate predicts a gain, else C0_refit; every measured DEV dataset with stored rows; retrospective + prospective (TU Delft g v2 from I18-2)",
+ "not_done_before": [
+  "any I18-1 code or S3 value with the g v2 recipe",
+  "any I18-2 run",
+  "only pre-check: the existing I7-1 S3 code reproduced the stored S3_f of IHP 300 K fold hv_nmos_W0p3_L0p5 (difference 0)"
+ ],
+ "method": {
+  "gated": "per outer fold f: held-out devices get the correction-arm row if S3_f < 0, else the C0_refit row (S3_f >= 0 or non-finite)",
+  "unit": "one decision per outer fold from the fold's training devices only"
+ },
+ "gate": {
+  "S3_f": "mean over training records r of fold f of ln(RRMS(r, I_start * exp(g_{-k(r)})) / RRMS(r, I_start)); nanmean (I7-1 run_s3)",
+  "inner_group_k": {"sky130": "device", "nist": "device", "ihp": "device", "tudelft": "geometry group"},
+  "g_minus_k": "gated arm recipe, seed 0, 500 steps, trained on the fold's training records outside k(r), record load order, applied post hoc (no refit)",
+  "sign_convention": "S3_f < 0: the reduced correction lowered the starting-card RRMS on inner held-out training records (predicted gain)",
+  "threshold": "apply iff S3_f < 0 (strict); not fitted (sign used by I8-2 G and I10-2 S_gate)",
+  "recipes": {
+   "g_v2": "i12_1_symm.fit_v2, inputs sym_v2, EPS 0.01 V, vdd = dataset supply (sky130 1.85 V, IHP class 1.2 / 3.3 V, TU Delft 1.1 V), lambda = lambda*_f of the outer fold, penalty grids of the inner-training devices (sky130 I12-1 card grids as I15-2; IHP I17_2/pens; TU Delft I18-2 grids), HYPER_V2 with seeds (0,), steps 500; recomputed (S3_v2)",
+   "v1": "i3_2_bias.fit_bias, S3_HYPER (seed 0, 500 steps); stored values used"
+  }
+ },
+ "datasets": {
+  "sky130_77K": {"n": 18, "unit": "device", "arm": "selected g v2", "rows": "I15_2/decision.json selected_rows", "c0": "I13_1/lodo/results.json per_device C0_refit", "s3": "S3_v2 new, records I13_1/records, lambda*_f I15_2/decision.json lambda_star"},
+  "nist_4K": {"n": 53, "unit": "device", "arm": "M_bias v1", "rows": "I8_1/lodo/results.json per_device M_bias", "c0": "same file C0_refit", "s3": "stored I8_1/prediction_v2.json per_fold S3"},
+  "nist_rt_card_4K": {"n": 87, "unit": "device", "arm": "M_bias v1", "rows": "I9_1/lodo/results.json per_device M_bias", "c0": "same file C0_refit", "s3": "stored I9_1/prediction.json per_fold S3"},
+  "ihp_300K": {"n": 18, "unit": "device", "arm": "selected g v2", "rows": "I17_2/decision.json selected_rows", "c0": "I17_2/base/results.json per_device C0_refit", "s3": "S3_v2 new, records I5_1/start/records_300K, lambda*_f I17_2/inner/inner.json"},
+  "ihp_233K": {"n": 18, "unit": "device", "arm": "M_bias v1", "rows": "I5_1/lodo_233K/results.json", "c0": "same file", "s3": "stored I7_1/retro/s3.json"},
+  "ihp_343K": {"n": 18, "unit": "device", "arm": "M_bias v1", "rows": "I5_1/lodo_343K/results.json", "c0": "same file", "s3": "stored I7_1/retro/s3.json"},
+  "ihp_398K": {"n": 18, "unit": "device", "arm": "M_bias v1", "rows": "I5_1/lodo_398K/results.json", "c0": "same file", "s3": "stored I7_1/retro/s3.json"},
+  "tudelft_4K": {"n": 45, "unit": "cluster (7 geometry groups)", "arm": "selected g v2 (I18-2, state C)", "rows": "I18_2 decision selected rows 4 K", "c0": "I18_2 C0_refit 4 K", "s3": "S3_v2 new on I18-2 state-C records, lambda*_f I18-2 inner"},
+  "tudelft_295K": {"n": 45, "unit": "cluster (7 geometry groups)", "arm": "selected g v2 (I18-2, state C)", "rows": "I18_2 decision selected rows 295 K", "c0": "I18_2 C0_refit 295 K", "s3": "S3_v2 new on I18-2 state-C records, lambda*_f I18-2 inner"}
+ },
+ "fallback_tudelft": "if I18-2 is invalid or its selected rows are missing: I6-1 stored rows (M_bias v1, C0_refit, clamp state L) and stored I7-1 S3_f, labelled fallback",
+ "rules": {
+  "stat": "per dataset GMR(gated, C0_refit), i3_2_bias.paired_ratio, 10000 resamples, seed 0, 95% percentile CI, unit per dataset",
+  "C1_never_worse": "CI lower <= 1 on every primary dataset",
+  "C2_sky130_gain": "CI upper < 1 on sky130_77K",
+  "outcomes": {
+   "supported": "valid, C1 and C2",
+   "not supported (worse than C0_refit on <datasets>)": "valid, C1 fails",
+   "not supported (no gain on sky130)": "valid, C1 holds, C2 fails",
+   "invalid": "any validity fail"
+  }
+ },
+ "validity": {
+  "V1": "finite paired rows: sky130 18, nist_4K 53, nist_rt_card_4K 87, ihp 18 per temperature, tudelft 45 per temperature; g v2 rows equal stored selected_rows (difference 0)",
+  "V2": "I18-1 S3 code with the v1 recipe reproduces stored I7-1 S3_f of IHP 300 K folds hv_nmos_W0p3_L0p5 and lv_nmos_W0p15_L0p18 within 1e-9",
+  "V3": "finite S3_v2_f on every outer fold of sky130, ihp_300K, tudelft_4K, tudelft_295K; every inner fit ran",
+  "V4": "tests.test_i18_1_gate passes"
+ },
+ "reported": [
+  "decisions per dataset (folds, devices)",
+  "GMR(gated, C0_refit) under the other unit (device for TU Delft, geometry cluster for IHP)",
+  "GMR(gated, correction always), GMR(correction, C0_refit)",
+  "v1 gate on every dataset with v1 rows: sky130 all-18 state C (S3_v1 new on I13_1/records), NIST x2, IHP x4, TU Delft x2 (I6-1 stored, state L)",
+  "dataset-level gate (I8-2 G) reference",
+  "S3_v2_f vs S3_v1_f per fold (sky130, IHP 300 K); within-dataset Spearman(S3_f, y_f)",
+  "equal-weight pooled exp(mean ln GMR); per-dataset oracle (post hoc)"
+ ],
+ "predictions": {
+  "sky130_77K": {"decisions": "18/18", "gmr": "= GMR(selected, C0_refit) 0.743 [0.654, 0.855]; C2 holds"},
+  "nist_4K": {"decisions": "53/53 (determined)", "gmr": "0.806 [0.758, 0.864] (known)"},
+  "nist_rt_card_4K": {"decisions": "87/87 (determined)", "gmr": "0.797 [0.748, 0.859] (known)"},
+  "ihp_300K": {"decisions": "0/18", "gmr": "1.000 [1.000, 1.000]"},
+  "ihp_233K_343K_398K": {"decisions": "0/18 each (determined)", "gmr": "1.000"},
+  "tudelft_4K": {"decisions": "5/7 groups", "gmr": "ln GMR < 0, CI lower <= 1"},
+  "tudelft_295K": {"decisions": "3/7 groups", "gmr": "ln GMR < 0, CI lower <= 1"},
+  "outcome": "supported"
+ },
+ "known_before": "v1-arm datasets fully known (S3_f, decisions, rows; I8-2 fold gate, I10-2 S_gate); sky130 and IHP 300 K g v2 rows known, S3_v2 not computed; TU Delft g v2 rows not computed (prospective)",
+ "order": "prereg (alone) -> code + unit tests -> smoke (2 folds, 50 steps) -> I18-2 prereg (alone) -> I18-2 code -> queue I18_1_s3, I18-2 jobs, I18_1_s3_tud, I18_1_decide"
+}
