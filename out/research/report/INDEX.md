@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i16_1
+
+Folder: [2026-10-22_i16_1/](2026-10-22_i16_1/) · [tables.md](2026-10-22_i16_1/tables.md) · [README.md](2026-10-22_i16_1/README.md)
+
+- I16-1 Part B of the I15-2 selected correction (full-data lambda* 1 V): not deployable (pre-registered rule); label not deployable.
+- gm curves 0 of 54; restrictions: default tolerance 1.8e-03, 6 of 90 gds curves, runtime 4.56.
+- Element-deck RRMS 0.0739 (I15-2 rows 0.0739).
+
+Figures and tables: [01_table_i16_1_part_b.png](2026-10-22_i16_1/01_table_i16_1_part_b.png) · [02_table_i16_1_validity.png](2026-10-22_i16_1/02_table_i16_1_validity.png) · [03_table_i16_1_devices.png](2026-10-22_i16_1/03_table_i16_1_devices.png) · [04_table_i16_1_accuracy.png](2026-10-22_i16_1/04_table_i16_1_accuracy.png) · [05_i16_1_accuracy_per_device.png](2026-10-22_i16_1/05_i16_1_accuracy_per_device.png) · [06_i16_1_checks_per_device.png](2026-10-22_i16_1/06_i16_1_checks_per_device.png) · [07_table_i16_1_gds.png](2026-10-22_i16_1/07_table_i16_1_gds.png) · [08_table_i16_1_gm.png](2026-10-22_i16_1/08_table_i16_1_gm.png) · [09_i16_1_signs_per_device.png](2026-10-22_i16_1/09_i16_1_signs_per_device.png) · [10_i16_1_gds_curves.png](2026-10-22_i16_1/10_i16_1_gds_curves.png) · [11_table_i16_1_circuits.png](2026-10-22_i16_1/11_table_i16_1_circuits.png) · [12_table_i16_1_restrictions.png](2026-10-22_i16_1/12_table_i16_1_restrictions.png) · [13_table_i16_1_vds0.png](2026-10-22_i16_1/13_table_i16_1_vds0.png) · [14_i16_1_iv_pmos_L2_W5.png](2026-10-22_i16_1/14_i16_1_iv_pmos_L2_W5.png) · [15_i16_1_iv_pmos_L8_W0p84.png](2026-10-22_i16_1/15_i16_1_iv_pmos_L8_W0p84.png) · [16_i16_1_iv_pmos_L8_W5.png](2026-10-22_i16_1/16_i16_1_iv_pmos_L8_W5.png) · [17_i16_1_iv_pmos_L4_W7.png](2026-10-22_i16_1/17_i16_1_iv_pmos_L4_W7.png)
+
 ## 2026-10-22 · i15_2
 
 Folder: [2026-10-22_i15_2/](2026-10-22_i15_2/) · [tables.md](2026-10-22_i15_2/tables.md) · [README.md](2026-10-22_i15_2/README.md)

@@ -6101,6 +6101,131 @@
    "updated": "2026-10-22"
   },
   {
+   "id": "i16-1",
+   "tab": "explore",
+   "statement": "I16-1: the I15-2 selected bias-only correction (symmetric inputs, EPS 0.01 V, penalty lambda selected per fold; deployed full-data model lambda* = 1 V) passes every Part B core check of I15-1 (channel-current replica element, serpentine Q1 grids) as an ngspice-41 OSDI element on 18 sky130 77 K devices.",
+   "status": "refuted",
+   "headline": {
+    "value": "not deployable (rule): 1 core failure, Q1 |I(Vds = 0)| 1.0006e-12 A > 1e-12 A at 1 of 2700 points (pmos_L8_W0p84, |Vgs| 0.825 V, default tolerance); the other 9 core checks pass; restrictions: default tolerance 1.84e-3, gds 6/90 (I15-1 lambda 10 V: 2/90), runtime 4.56",
+    "convention": "Part B on M2 cards (refit with full|sym_e1_l1 in the loop, state C), I15-1 thresholds; accuracy fixed from I15-2 (GMR(selected, v1) 0.997 [0.962, 1.027])"
+   },
+   "numbers": [
+    {
+     "label": "core checks",
+     "value": "Q1 0 violations, 0 run messages; |I(Vds = 0)| 1.0006e-12 A (FAIL; tight max 4.9e-17 A); Verilog-A g 2.8e-16, exchanged 1.7e-16; exchange asymmetry 2.2e-5; Q2 1.1e-5; capacitances 3.3e-14; gm sign 0/54; Q3 0 circuits",
+     "convention": "thresholds of I15-1 (1e-12 A, 1e-9, 1e-12, 1e-3, 1e-3, 1e-3, 0, 0)",
+     "source": "out/research/explore/I16_1/decision.json"
+    },
+    {
+     "label": "gds restriction items",
+     "value": "6 of 90 curves: pmos_L2_W5 (|Vgs| 0.9 V, 230 points), pmos_L8_W0p84 (1.5 V 115, 1.85 V 555), pmos_L8_W1p6 (1.5 V 543, 1.85 V 870), pmos_L8_W5 (1.5 V 126); I_card exp(g) has the same points on these curves, the card none",
+     "convention": "1 mV dense sweeps, tight, |V(d,s)| >= 0.05 V; gds sign change classified as a restriction",
+     "source": "out/research/explore/I16_1/deploy_sel/restrictions.json"
+    },
+    {
+     "label": "element-deck accuracy (reported)",
+     "value": "all-device / combined / median 0.07390 / 0.06996 / 0.05503 vs I15-2 rows 0.07391 / 0.06997 / 0.05504 (max per-device |d| 2.0e-4); GMR(element, v1) 0.997 [0.962, 1.027]; GMR(element, g v2 element) 0.947 [0.885, 1.023]",
+     "convention": "selected held-out pairs (fold g of sym_e1_l{lambda*_h} as OSDI element + held-out card), strict paper RRMS",
+     "source": "out/research/explore/I16_1/accuracy/accuracy.json"
+    }
+   ],
+   "what": [
+    "Question: does the I15-2 selected correction (accuracy non-inferior to M_bias v1) pass the I15-1 deployment checks?",
+    "Pre-registered (6adec13): I15-1 Part B procedure, checks and thresholds; gds sign change a restriction, gm sign change in strong inversion a core failure; outcomes invalid / deployable / not deployable."
+   ],
+   "did": [
+    "Code 64c1e54 (arm 'sel' on the I14-1 / I15-1 drivers); queue: validity 6 s, accuracy 6 s, deploy 197 s, restrict 1 s, runtime 6 s, decide.",
+    "Post hoc stage vds0 (after the decision) locates the failed point; report batch 2026-10-22_i16_1 re-simulates published, C0_refit, v1, g v2 and selected cards for 4 devices and checks every RRMS against the stored rows."
+   ],
+   "result": {
+    "text": [
+     "Outcome by rule: not deployable. The failing value is one default-tolerance point at V(d,s) = 0 (ngspice default abstol 1e-12 A) where the card + replica run gives 8e-24 A; the same point is 3.5e-13 A at reltol 1e-4 and the tight maximum is 4.9e-17 A. The I15-1 arms had 9.8e-13 (g v2) and 9.95e-13 A (v1) on the same check.",
+     "As expected in the prereg, the lambda = 1 V model introduces more gds sign changes (6 of 90) than lambda = 10 V (2 of 90); all are pMOS at |V(g,s)| >= 0.9 V."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "01_table_i16_1_part_b.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "02_table_i16_1_validity.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "03_table_i16_1_devices.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "04_table_i16_1_accuracy.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "05_i16_1_accuracy_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "06_i16_1_checks_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "07_table_i16_1_gds.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "08_table_i16_1_gm.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "09_i16_1_signs_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "10_i16_1_gds_curves.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "11_table_i16_1_circuits.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "12_table_i16_1_restrictions.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "13_table_i16_1_vds0.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "14_i16_1_iv_pmos_L2_W5.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "15_i16_1_iv_pmos_L8_W0p84.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "16_i16_1_iv_pmos_L8_W5.png"
+     },
+     {
+      "batch": "2026-10-22_i16_1",
+      "file": "17_i16_1_iv_pmos_L4_W7.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The failure margin is 5.8e-16 A on one of 2700 points; the threshold equals ngspice's default abstol, so the check at default tolerance tests the solver tolerance. Any change of the check needs a new pre-registration.",
+    "The deployed model is lambda 1 V (full-data lambda*); fold models with 2, 0 and 10 V are used only for the held-out accuracy rows."
+   ],
+   "sources": [
+    "out/research/explore/I16_1/prereg.md",
+    "out/research/explore/I16_1/decision.json",
+    "out/research/explore/I16_1/diagnosis/vds0.json",
+    "out/research/report/2026-10-22_i16_1/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
    "id": "i15-2",
    "tab": "explore",
    "statement": "I15-2: on 18 sky130 77 K devices (18-fold LODO, state C) the symmetric inputs and EPS = 0.01 V of g v2 change the held-out RRMS by less than 1 % relative to M_bias v1; the accuracy difference of g v2 follows the gm/gds penalty weight lambda = 10 V. A lambda chosen per fold from {0, 1, 2, 5, 10} V by nested 3-fold selection on training devices only (lambda* 1 or 2 V on 16 of 18 folds) is non-inferior to M_bias v1 (margin 1.05).",
