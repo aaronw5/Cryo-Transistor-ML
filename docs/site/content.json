@@ -6215,13 +6215,142 @@
    },
    "caveats": [
     "The failure margin is 5.8e-16 A on one of 2700 points; the threshold equals ngspice's default abstol, so the check at default tolerance tests the solver tolerance. Any change of the check needs a new pre-registration.",
-    "The deployed model is lambda 1 V (full-data lambda*); fold models with 2, 0 and 10 V are used only for the held-out accuracy rows."
+    "The deployed model is lambda 1 V (full-data lambda*); fold models with 2, 0 and 10 V are used only for the held-out accuracy rows.",
+    "Follow-up I17-1 (claim i17-1) re-registered the V(d,s) = 0 check at tight tolerance only; under that rule the same model is 'deployable with restrictions'. The I16-1 outcome is unchanged."
    ],
    "sources": [
     "out/research/explore/I16_1/prereg.md",
     "out/research/explore/I16_1/decision.json",
     "out/research/explore/I16_1/diagnosis/vds0.json",
     "out/research/report/2026-10-22_i16_1/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
+   "id": "i17-1",
+   "tab": "explore",
+   "statement": "I17-1: with the Q1 V(d,s) = 0 check evaluated at tight tolerance only (re-registered after the observed I16-1 failure; threshold 1e-12 A kept; every other I16-1 rule unchanged), the I15-2 selected bias-only correction (full-data lambda* = 1 V) passes every Part B core check as an ngspice-41 OSDI element on 18 sky130 77 K devices.",
+   "status": "verified",
+   "headline": {
+    "value": "deployable with restrictions (rule): every core check passes; Q1 |I(Vds = 0)| tight max 4.87e-17 A (default tolerance, reported without a rule: 1.0006e-12 A, 1 of 1350 points); restrictions: default tolerance 1.84e-3, gds 6/90, runtime 4.60. Under the unchanged I16-1 rule the same run is 'not deployable'.",
+    "convention": "Part B on M2 cards rerun into I17_1 (refit with full|sym_e1_l1 in the loop, state C, BSIM4 clamp written); the V(d,s) = 0 check was changed after an observed failure; the I16-1 outcome stays 'not deployable'"
+   },
+   "numbers": [
+    {
+     "label": "core checks",
+     "value": "Q1 0 violations, 0 run messages; |I(Vds = 0)| tight 4.87e-17 A; Verilog-A g 2.8e-16, exchanged 1.7e-16; exchange asymmetry 2.2e-5; Q2 1.1e-5; capacitances 3.3e-14; gm sign 0/54; Q3 0 circuits",
+     "convention": "I16-1 thresholds; V(d,s) = 0 at tight tolerance (reltol 1e-9, abstol 1e-18 A, vntol 1e-12 V) only",
+     "source": "out/research/explore/I17_1/decision.json"
+    },
+    {
+     "label": "rerun vs I16-1",
+     "value": "every Part B value identical to the I16-1 run except the runtime ratio (4.56 -> 4.60); M2 in-sample element RRMS 0.069624 in both",
+     "convention": "same model, same procedure, all stages rerun",
+     "source": "out/research/explore/I17_1/deploy_sel/summary.json"
+    },
+    {
+     "label": "element-deck accuracy (reported)",
+     "value": "all-device / combined / median 0.07390 / 0.06996 / 0.05503 vs I15-2 rows 0.07391 / 0.06997 / 0.05504; GMR(element, v1) 0.997 [0.962, 1.027] 7/18; GMR(element, C0_refit) 0.743 [0.654, 0.855] 17/18",
+     "convention": "selected held-out pairs, strict paper RRMS, device bootstrap",
+     "source": "out/research/explore/I17_1/accuracy/accuracy.json"
+    }
+   ],
+   "what": [
+    "Question: with the V(d,s) = 0 check evaluated where the solver tolerance (abstol 1e-18 A) is below the threshold, does the selected correction pass Part B?",
+    "Pre-registered (3cfc9a7, alone): tight tolerance only, threshold 1e-12 A kept; justification: at default tolerance the threshold equals ngspice abstol, the current tolerance of the convergence test; an abstol-derived threshold would need a factor chosen with the failure known. The tight values of I16-1 were known before registration (4.87e-17 A)."
+   ],
+   "did": [
+    "Code 86fcbf8 (i17_1_vds0 module, 3 unit tests; I16-1 stages rebound to I17_1). Smoke on 2 devices. Queue: validity 6 s, accuracy 6 s, deploy 197 s, restrict 1 s, runtime 6 s, decide.",
+    "Report batch 2026-10-22_i17_1 re-simulates the published, C0_refit, v1, g v2 and selected cards for 4 devices; every RRMS equals the stored rows."
+   ],
+   "result": {
+    "text": [
+     "Outcome by rule: deployable; label 'deployable with restrictions' (default tolerance 1.84e-3 > 1e-3; 6 of 90 gds curves on pmos_L2_W5, pmos_L8_W0p84, pmos_L8_W1p6, pmos_L8_W5; runtime 4.60 > 2).",
+     "The rerun reproduces every I16-1 value except runtime; under the unchanged I16-1 rule the label is 'not deployable'. The result depends on a check changed after the failure was observed."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "01_table_i17_1_part_b.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "02_table_i17_1_validity.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "03_table_i17_1_devices.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "04_table_i17_1_accuracy.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "05_i17_1_accuracy_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "06_i17_1_checks_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "07_table_i17_1_gds.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "08_table_i17_1_gm.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "09_i17_1_signs_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "10_i17_1_gds_curves.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "11_table_i17_1_circuits.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "12_table_i17_1_restrictions.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "13_table_i17_1_vds0.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "14_table_i17_1_vs_i16_1.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "15_i17_1_iv_pmos_L2_W5.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "16_i17_1_iv_pmos_L8_W0p84.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "17_i17_1_iv_pmos_L8_W5.png"
+     },
+     {
+      "batch": "2026-10-22_i17_1",
+      "file": "18_i17_1_iv_pmos_L4_W7.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The V(d,s) = 0 check was re-registered after the observed I16-1 failure and with the tight values known; this is not a blind test of that check. The I16-1 outcome stays 'not deployable'.",
+    "Restrictions: default-tolerance accuracy 1.84e-3 relative, 6 of 90 gds curves with an introduced sign change (from g, not the element), 4.6x runtime on ro5_A."
+   ],
+   "sources": [
+    "out/research/explore/I17_1/prereg.md",
+    "out/research/explore/I17_1/decision.json",
+    "out/research/report/2026-10-22_i17_1/README.md"
    ],
    "updated": "2026-10-22"
   },

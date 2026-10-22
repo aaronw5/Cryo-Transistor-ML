@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i17_1
+
+Folder: [2026-10-22_i17_1/](2026-10-22_i17_1/) · [tables.md](2026-10-22_i17_1/tables.md) · [README.md](2026-10-22_i17_1/README.md)
+
+- I17-1 Part B of the I15-2 selected correction (full-data lambda* 1 V), V(d,s) = 0 check at tight tolerance only (re-registered after the I16-1 failure): deployable (pre-registered rule); label deployable with restrictions.
+- gm curves 0 of 54; restrictions: default tolerance 1.8e-03, 6 of 90 gds curves, runtime 4.60.
+- Element-deck RRMS 0.0739 (I15-2 rows 0.0739).
+
+Figures and tables: [01_table_i17_1_part_b.png](2026-10-22_i17_1/01_table_i17_1_part_b.png) · [02_table_i17_1_validity.png](2026-10-22_i17_1/02_table_i17_1_validity.png) · [03_table_i17_1_devices.png](2026-10-22_i17_1/03_table_i17_1_devices.png) · [04_table_i17_1_accuracy.png](2026-10-22_i17_1/04_table_i17_1_accuracy.png) · [05_i17_1_accuracy_per_device.png](2026-10-22_i17_1/05_i17_1_accuracy_per_device.png) · [06_i17_1_checks_per_device.png](2026-10-22_i17_1/06_i17_1_checks_per_device.png) · [07_table_i17_1_gds.png](2026-10-22_i17_1/07_table_i17_1_gds.png) · [08_table_i17_1_gm.png](2026-10-22_i17_1/08_table_i17_1_gm.png) · [09_i17_1_signs_per_device.png](2026-10-22_i17_1/09_i17_1_signs_per_device.png) · [10_i17_1_gds_curves.png](2026-10-22_i17_1/10_i17_1_gds_curves.png) · [11_table_i17_1_circuits.png](2026-10-22_i17_1/11_table_i17_1_circuits.png) · [12_table_i17_1_restrictions.png](2026-10-22_i17_1/12_table_i17_1_restrictions.png) · [13_table_i17_1_vds0.png](2026-10-22_i17_1/13_table_i17_1_vds0.png) · [14_table_i17_1_vs_i16_1.png](2026-10-22_i17_1/14_table_i17_1_vs_i16_1.png) · [15_i17_1_iv_pmos_L2_W5.png](2026-10-22_i17_1/15_i17_1_iv_pmos_L2_W5.png) · [16_i17_1_iv_pmos_L8_W0p84.png](2026-10-22_i17_1/16_i17_1_iv_pmos_L8_W0p84.png) · [17_i17_1_iv_pmos_L8_W5.png](2026-10-22_i17_1/17_i17_1_iv_pmos_L8_W5.png) · [18_i17_1_iv_pmos_L4_W7.png](2026-10-22_i17_1/18_i17_1_iv_pmos_L4_W7.png)
+
 ## 2026-10-22 · i16_1
 
 Folder: [2026-10-22_i16_1/](2026-10-22_i16_1/) · [tables.md](2026-10-22_i16_1/tables.md) · [README.md](2026-10-22_i16_1/README.md)
