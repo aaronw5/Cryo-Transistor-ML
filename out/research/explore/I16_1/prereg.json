@@ -1,0 +1,136 @@
+{
+ "id": "I16-1",
+ "status": "in force",
+ "date": "2026-10-22",
+ "title": "Deployment test (Part B, I15-1 rules) of the I15-2 selected bias-only correction (symmetric g, nested-selected penalty lambda; full-data lambda* = 1 V); sky130 77 K, 18 devices, state C",
+ "not_done_before": [
+  "any I16-1 run",
+  "any deck, compile, M2 refit or accuracy run with a lambda 1 / 2 / 0 V correction"
+ ],
+ "inputs": {
+  "records": "out/research/explore/I13_1/records",
+  "deployed_g": {
+   "file": "I15_2/lodo_sym_e1_l1/corrections.json",
+   "key": "full|sym_e1_l1",
+   "inputs": "sym_v2",
+   "eps_V": 0.01,
+   "lambda_V": 1.0
+  },
+  "lambda_star": {
+   "nmos_L0p15_W1p6": 1.0,
+   "nmos_L0p19_W7": 1.0,
+   "nmos_L0p25_W1p6": 1.0,
+   "nmos_L100_W100": 1.0,
+   "nmos_L1_W1p6": 1.0,
+   "nmos_L1_W3": 2.0,
+   "nmos_L20_W0p64": 1.0,
+   "nmos_L8_W1p6": 1.0,
+   "pmos_L0p35_W0p55": 1.0,
+   "pmos_L0p35_W1p6": 1.0,
+   "pmos_L0p35_W5": 1.0,
+   "pmos_L0p5_W0p42": 2.0,
+   "pmos_L0p5_W0p64": 2.0,
+   "pmos_L2_W5": 2.0,
+   "pmos_L4_W7": 0.0,
+   "pmos_L8_W0p84": 2.0,
+   "pmos_L8_W1p6": 2.0,
+   "pmos_L8_W5": 10.0,
+   "full": 1.0
+  },
+  "heldout_pairs": {
+   "1.0": "I15_2/lodo_sym_e1_l1 (corrections sym_e1_l1|<tag>, heldout_cards.json)",
+   "2.0": "I15_2/lodo_sym_e1_l2 (sym_e1_l2|<tag>)",
+   "0.0": "I15_2/lodo_sym_e1_l0 (sym_e1_l0|<tag>)",
+   "10.0": "I13_1/lodo (M_bias_v2|<tag>, heldout_cards.json)"
+  },
+  "python_rows": "I15_2/decision.json selected_rows",
+  "reference_values": [
+   "I15_1/deploy_v2/summary.json",
+   "I15_1/deploy_v1/summary.json",
+   "I15_1/deploy_v2/restrictions.json",
+   "I15_1/deploy_v2/arrays (dense sweeps, reference gm / gds counts)"
+  ],
+  "C0_refit_rows": "I13_1/lodo/results.json per_device.C0_refit",
+  "v1_rows": "I13_1/all18/results.json per_device.M_bias"
+ },
+ "part_B": {
+  "cards": "M2: refit from direct43_r3_fd with full|sym_e1_l1 frozen in the loop (TRF, max_nfev 400, irls 2, diff_step 0.01, state C)",
+  "q1_reference": {
+   "forward": "I_card + (exp(g) - 1) I_rep",
+   "exchanged": "I_card(nd) - (exp(g) - 1) I_rep"
+  },
+  "eq_criterion": {
+   "rel": 1e-06,
+   "abs_A": 1e-13
+  },
+  "thresholds": {
+   "q1_default_rel": 0.001,
+   "q1_vds0_abs": 1e-12,
+   "q2_ac": 0.001,
+   "cap": 0.001,
+   "swap_asym": 0.001,
+   "g_text": 1e-09,
+   "g_sym_text": 1e-12,
+   "runtime_ratio": 2.0,
+   "ro_min_periods": 5,
+   "v1_g": 1e-09,
+   "v2_rrms": 1e-09
+  },
+  "core": [
+   "Q1 equivalence (tight, both benches) 0 violations",
+   "Q1 runs 0 messages / non-finite",
+   "Q1 Vds=0 <= 1e-12 A",
+   "Verilog-A g <= 1e-9 and exchanged <= 1e-12",
+   "exchange asymmetry <= 1e-3",
+   "Q2 derivatives <= 1e-3 (element-identity reference)",
+   "Q2 capacitances <= 1e-3",
+   "Q2 gm sign 0 of 54",
+   "Q3 0 circuits failing only with the element"
+  ],
+  "restrictions": [
+   "default tolerance > 1e-3",
+   ">= 1 gds curve (of 90) with an introduced sign change",
+   "wall-time ratio > 2"
+  ],
+  "label": "any core fail -> not deployable; core pass and >= 1 restriction -> deployable with restrictions; else deployable (simulator-level)",
+  "amendment_A1_of_I12_1": "applies (circuit runtime ratio over circuits where M2_card and M2_full pass; no repeats after a failed run)",
+  "q1_runs_scope": "every element deck: grids (serpentine), AC, dense; grid row count != 11175 counts as a failed run",
+  "grid_order": "serpentine (i15_1_serp.grid_control_serp); row count != 11175 -> failed run",
+  "sign_change_classification": {
+   "gds": "restriction (I15-1)",
+   "gm_strong_inversion": "core failure (I15-1)"
+  },
+  "expectation_not_rule": "more than 2 of 90 gds curves with an introduced sign change (full-data negative gds on the penalty grids 1.59 % at lambda 1 V vs 0.23 % at 10 V)"
+ },
+ "restriction_items_reported": [
+  "Q1 max relative difference at |I_py| > 1 nA per device, default / r4 / tight",
+  "gds per device and V(g,s) (0.6, 0.9, 1.2, 1.5, 1.85 V): introduced flag; dense-sweep points with dI/dV(d,s) < 0 at |V(d,s)| >= 0.05 V for element, card, I_card exp(g); V(d,s) range; g range",
+  "gm per device and V(d,s) (0.05, 0.925, 1.85 V): introduced flag (core); dense-sweep points with dI/dV(g,s) < 0 in strong inversion (|V(g,s)| >= V_T + 0.2 V) and over the sweep for element, card, I_card exp(g)",
+  "same gds / gm counts for the I15-1 g v2 arm from stored arrays (reference)",
+  "runtime: grid and circuit ratios; ro5_A decomposition on I16-1 M2 cards"
+ ],
+ "accuracy": {
+  "fixed_from_I15_2": {
+   "gmr_selected_vs_v1": 0.9968,
+   "ci": [
+    0.9621,
+    1.0271
+   ],
+   "wins": 7,
+   "outcome": "selected variant non-inferior to M_bias v1"
+  },
+  "element_deck": "reported, no rule: element-deck, Python rerun and channel-model Python RRMS of the 18 selected held-out pairs; differences to I15-2 selected_rows; all-device / combined / median; GMR(element selected, v1 stored), GMR(element selected, C0_refit), GMR(element selected, I15-1 element g v2)"
+ },
+ "validity": {
+  "V1": "card-only library deck x exp(fold g) of the 18 selected held-out pairs reproduces I15-2 selected_rows: max |diff| <= 1e-9",
+  "V2": "unit tests of I15-1 plus tests.test_i15_2_ablate and tests.test_i16_1_sel pass",
+  "V3": "18 element-deck accuracy rows; 0 failed M2 refits",
+  "V4": "deployed g: inputs sym_v2, eps 0.01, lambda 1.0 in lodo_sym_e1_l1/results.json; I15-2 lambda_star.full == 1.0"
+ },
+ "decision": {
+  "invalid": "any validity fail -> stop: fix and re-register",
+  "deployable": "all Part B core checks pass (label 'deployable with restrictions' or 'deployable (simulator-level)'; restrictions listed) -> the I15-2 selected variant is the deployable add-on candidate; report restrictions",
+  "not deployable": "any core check fails -> stop; diagnose the failed core checks"
+ },
+ "order": "prereg commit (alone) -> code + unit tests commit -> smoke (nmos_L1_W1p6, pmos_L2_W5, refit max_nfev 20) -> queue: I16_1_validity, I16_1_accuracy, I16_1_deploy, I16_1_restrict, I16_1_runtime, I16_1_decide"
+}
