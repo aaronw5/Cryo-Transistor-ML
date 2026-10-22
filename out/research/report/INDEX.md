@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i17_2
+
+Folder: [2026-10-22_i17_2/](2026-10-22_i17_2/) · [tables.md](2026-10-22_i17_2/tables.md) · [README.md](2026-10-22_i17_2/README.md)
+
+- I17-2 IHP SG13G2 300 K (18 DEV DUTs): worse than C0_refit; not shown non-inferior to M_bias v1; Part B not run.
+- GMR(selected, C0_refit) 1.255 [1.026, 1.600]; GMR(selected, v1) 1.034 [0.990, 1.107].
+- All-device C0_refit 0.0191, v1 0.0203, selected 0.0205.
+
+Figures and tables: [01_table_i17_2_setup.png](2026-10-22_i17_2/01_table_i17_2_setup.png) · [02_table_i17_2_validity.png](2026-10-22_i17_2/02_table_i17_2_validity.png) · [03_table_i17_2_rules.png](2026-10-22_i17_2/03_table_i17_2_rules.png) · [04_table_i17_2_arms.png](2026-10-22_i17_2/04_table_i17_2_arms.png) · [05_table_i17_2_class.png](2026-10-22_i17_2/05_table_i17_2_class.png) · [06_table_i17_2_lambda.png](2026-10-22_i17_2/06_table_i17_2_lambda.png) · [07_table_i17_2_negative.png](2026-10-22_i17_2/07_table_i17_2_negative.png) · [08_i17_2_per_device.png](2026-10-22_i17_2/08_i17_2_per_device.png) · [09_i17_2_ratio_per_device.png](2026-10-22_i17_2/09_i17_2_ratio_per_device.png) · [10_i17_2_lambda_curve.png](2026-10-22_i17_2/10_i17_2_lambda_curve.png) · [11_i17_2_iv_lv_nmos_W0p3_L10.png](2026-10-22_i17_2/11_i17_2_iv_lv_nmos_W0p3_L10.png) · [12_i17_2_iv_lv_pmos_W10_L10.png](2026-10-22_i17_2/12_i17_2_iv_lv_pmos_W10_L10.png) · [13_i17_2_iv_hv_pmos_W0p6_L0p5.png](2026-10-22_i17_2/13_i17_2_iv_hv_pmos_W0p6_L0p5.png) · [14_i17_2_iv_hv_pmos_W0p3_L10.png](2026-10-22_i17_2/14_i17_2_iv_hv_pmos_W0p3_L10.png)
+
 ## 2026-10-22 · i17_1
 
 Folder: [2026-10-22_i17_1/](2026-10-22_i17_1/) · [tables.md](2026-10-22_i17_1/tables.md) · [README.md](2026-10-22_i17_1/README.md)

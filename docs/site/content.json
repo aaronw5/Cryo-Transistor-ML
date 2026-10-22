@@ -6355,6 +6355,119 @@
    "updated": "2026-10-22"
   },
   {
+   "id": "i17-2",
+   "tab": "explore",
+   "statement": "I17-2: the selected g v2 recipe (symmetric inputs, EPS 0.01 V, gm/gds penalty with lambda selected by nested cross-validation on training devices) lowers held-out error relative to C0_refit on a second PDK: measured IHP SG13G2 MOSFETs (PSP103), 300 K, 18 DEV DUTs, leave-one-DUT-out within class.",
+   "status": "refuted",
+   "headline": {
+    "value": "worse than C0_refit (rule): GMR(selected, C0_refit) 1.255 [1.026, 1.600], 9/18 lower; GMR(selected, M_bias v1) 1.034 [0.990, 1.107], not shown non-inferior; all-device C0_refit 0.0191, v1 0.0203, selected 0.0205. Part B not run (PSP103).",
+    "convention": "strict paper RRMS on the I5-1 frozen measured inclusion; held-out refit of the 12-parameter PSP set with g frozen; ngspice-46 + psp103.osdi; device bootstrap 10,000"
+   },
+   "numbers": [
+    {
+     "label": "arms vs C0_refit",
+     "value": "M_bias v1 1.214 [1.008, 1.537]; sym_e1_l0 1.218; l1 1.209 [0.998, 1.536]; l2 1.208; l5 1.233; l10 1.244; selected 1.255 [1.026, 1.600]",
+     "convention": "GMR, device bootstrap; geometry-cluster CIs (12 clusters) all span 1 except selected [1.000, 1.578]",
+     "source": "out/research/explore/I17_2/decision.json"
+    },
+    {
+     "label": "lambda*",
+     "value": "0 V on 2 folds, 1 V on 3, 2 V on 6, 5 V on 2, 10 V on 5",
+     "convention": "3 inner folds per outer fold within class, seed 0, mean ln RRMS",
+     "source": "out/research/explore/I17_2/inner/inner.json"
+    },
+    {
+     "label": "negative corrected gds (held-out grids)",
+     "value": "v1 2.89 %, lambda 0-10 2.84-2.89 %, selected 2.81 %; training grids v1 1.99 % -> lambda 10 0.21 %; card only 0.002 %",
+     "convention": "75 x 75 forward-quadrant starting-card grids to the class supply, forward current > 1 nA",
+     "source": "out/research/explore/I17_2/decision.json"
+    }
+   ],
+   "what": [
+    "Question: does the sky130 77 K result (selected g v2 non-inferior to v1, GMR vs C0_refit 0.743) replicate on measured data from a second foundry PDK?",
+    "Pre-registered (c071472): IHP SG13G2 chosen (only measured non-sky130 foundry card; GF180 has no measured data; TU Delft uses a generic card); predicted signs ln GMR(selected, C0_refit) > 0, ln GMR(selected, v1) < 0, ln GMR(v1, C0_refit) > 0; Part B not run with reasons (PSP103 intrinsic charge has no switch, so a channel replica carries displacement current)."
+   ],
+   "did": [
+    "Code bd660cb; queue: pens 2 s, base (C0_refit + v1) 119 s, lodo l0 82 s, l1-l10 about 915 s each, inner 2984 s (270 trainings, 730 refits), decide 17 s.",
+    "V1: C0_refit and v1 reruns equal the I5-1 rows (difference 0). Report batch 2026-10-22_i17_2 re-simulates stock, C0_refit, v1 and selected cards for 4 DUTs; RRMS equals the stored rows."
+   ],
+   "result": {
+    "text": [
+     "Outcome by rule: worse than C0_refit; secondary not shown non-inferior to v1. The penalty lowers negative gds on the training grids (1.99 % -> 0.21 %) but not on the held-out grids (about 2.8 % for every lambda). Every correction variant is above C0_refit on IHP 300 K, as M_bias v1 was in I5-1.",
+     "Prediction signs: 2 of 3 correct; the selected variant is above v1 (1.034), not below."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "01_table_i17_2_setup.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "02_table_i17_2_validity.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "03_table_i17_2_rules.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "04_table_i17_2_arms.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "05_table_i17_2_class.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "06_table_i17_2_lambda.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "07_table_i17_2_negative.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "08_i17_2_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "09_i17_2_ratio_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "10_i17_2_lambda_curve.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "11_i17_2_iv_lv_nmos_W0p3_L10.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "12_i17_2_iv_lv_pmos_W10_L10.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "13_i17_2_iv_hv_pmos_W0p6_L0p5.png"
+     },
+     {
+      "batch": "2026-10-22_i17_2",
+      "file": "14_i17_2_iv_hv_pmos_W0p3_L10.png"
+     }
+    ]
+   },
+   "caveats": [
+    "One PDK at room temperature; the starting PSP103 cards fit IHP 5x better than the sky130 77 K cards (C0_refit 0.019 vs 0.105), so the residual a shared correction can learn is smaller.",
+    "Part B (deployment checks) not run: the BSIM4 replica element does not transfer to PSP103.",
+    "Prereg text error (reported quantity only): '9 clusters' should read 12 (LV 5, HV 7)."
+   ],
+   "sources": [
+    "out/research/explore/I17_2/prereg.md",
+    "out/research/explore/I17_2/decision.json",
+    "out/research/report/2026-10-22_i17_2/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
    "id": "i15-2",
    "tab": "explore",
    "statement": "I15-2: on 18 sky130 77 K devices (18-fold LODO, state C) the symmetric inputs and EPS = 0.01 V of g v2 change the held-out RRMS by less than 1 % relative to M_bias v1; the accuracy difference of g v2 follows the gm/gds penalty weight lambda = 10 V. A lambda chosen per fold from {0, 1, 2, 5, 10} V by nested 3-fold selection on training devices only (lambda* 1 or 2 V on 16 of 18 folds) is non-inferior to M_bias v1 (margin 1.05).",
@@ -7751,7 +7864,8 @@
     "The IHP refit has 12 PSP parameters from a starting card fitted to the same DUT; the sky130 refit has 43 BSIM4 parameters. The C0_refit levels differ by a factor of 5.6.",
     "Training pools are within class: 9 LV or 7 HV training DUTs per fold (sky130: 11).",
     "The M_bias I-V curves are NGSpice-46 currents of the refit card multiplied by exp(g) in Python, not SPICE-native simulations of the correction. The stored refit I-V figures do not contain the stock-card curve; it is taken from separate stored figures for 3 of the 4 DUTs.",
-    "I6-1 (claim [i6-1](#claim-i6-1)): on TU Delft 40 nm with a generic BSIM4 card, GMR(M_bias, C0_refit) is 0.939 [0.877, 1.004] at 4.13 K (R1 not met) and 0.797 [0.688, 0.935] at 295.0 K; the cross-dataset table is in the Exploration status."
+    "I6-1 (claim [i6-1](#claim-i6-1)): on TU Delft 40 nm with a generic BSIM4 card, GMR(M_bias, C0_refit) is 0.939 [0.877, 1.004] at 4.13 K (R1 not met) and 0.797 [0.688, 0.935] at 295.0 K; the cross-dataset table is in the Exploration status.",
+    "I17-2 (claim i17-2) reran C0_refit and M_bias on the same 18 DEV DUTs at 300 K (identical rows) and added the selected g v2 recipe: GMR(selected, C0_refit) 1.255 [1.026, 1.600]."
    ],
    "sources": [
     "out/research/explore/I5_1/prereg.json",

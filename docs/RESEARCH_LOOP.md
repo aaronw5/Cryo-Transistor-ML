@@ -2315,3 +2315,47 @@ under the unchanged I16-1 rule: not deployable. Every Part B value equals the I1
 [0.654, 0.855] 17/18. Report batch `out/research/report/2026-10-22_i17_1/` (`scripts/research/plot_explore_i17_1.py`,
 18 PNGs; I-V figures re-simulate the published, C0_refit, v1, g v2 and selected held-out cards and reproduce the
 stored rows); site claim `i17-1` (verified; the check change is stated), caveat added to `i16-1`.
+
+## I17-2 pre-registration in force (2026-10-22 10:52): second-PDK replication of the selected g v2 recipe on measured IHP SG13G2
+
+Pre-registration `out/research/explore/I17_2/prereg.md` / `prereg.json`, commit c071472 (alone). Dataset: IHP SG13G2
+(I5-1 data, PSP103, 300 K, 18 DEV DUTs: LV 10, HV 8; TEST 10 locked). Chosen over TU Delft (measured, BSIM4, but a
+generic CMOSedu example card, not a foundry PDK) and GF180 (no measured data). Simulator: ngspice-46 + psp103.osdi
+(I5-1; ngspice-41 OSDI build loads OSDI 0.3 only); BSIM4 clamp not applicable. Arms, LODO within class (I5-1 folds),
+held-out refit from the I5-1 starting card with g frozen (max_nfev 400, irls 2): C0_refit, M_bias v1 (I3-2 recipe,
+class VDD), sym_e1_l{0,1,2,5,10} (symmetric inputs, EPS 0.01 V, VDD = class supply 1.2 / 3.3 V, penalty on 75 x 75
+forward-quadrant starting-card grids to the class supply), selected (nested 3-fold lambda selection per outer fold,
+I15-2 rule). Primary GMR(selected, C0_refit), device bootstrap: CI upper < 1 and 0 failed -> gain replicated; CI lower
+> 1 -> worse than C0_refit; else inconclusive. Secondary GMR(selected, M_bias v1), margin 1.05. Predicted signs: ln
+GMR(selected, C0_refit) > 0, ln GMR(selected, v1) < 0, ln GMR(v1, C0_refit) > 0. Part B not run: a PSP103 replica
+needs SWIGATE = SWIMPACT = SWGIDL = SWJUNCAP = 0, zero overlap / fringe charges and a VCCS for the DI-BP / SI-BP gmin;
+PSP103 contributes the intrinsic charges Qg, Qb, Qd unconditionally, so the sensed replica current carries
+displacement current and the Q2 capacitance check fails by construction without an edited PSP103 Verilog-A; plus OSDI
+0.4 vs ngspice-41 and no IHP circuits. Text error in the prereg (reported quantity only): it states '9 clusters of
+DEV'; the geometry clusters are 12 (LV 5, HV 7); the code uses 12.
+Code bd660cb (`src/cryoml/explore/i17_2_ihp.py`, `scripts/research/explore/i17_2_ihp.py`, 10 unit tests;
+`i12_1_symm.fit_v2` `vdd` and `penalty_arrays` `grid` options, defaults unchanged). Smoke (2 folds, 200 steps, 1 seed,
+refit max_nfev 20) ran all stages; one full-budget C0_refit refit reproduced the I5-1 row exactly.
+
+## I17-2 outcome (2026-10-22 12:50): IHP SG13G2 300 K, selected g v2 worse than C0_refit (pre-registered rule); Part B not run
+
+Queue: I17_2_pens 2 s, I17_2_base 119 s, I17_2_lodo_l0 82 s, l1 915 s, l2 / l5 / l10 about 915 s each, I17_2_inner
+2984 s (270 single-member trainings 1408 s, 730 inner refits), I17_2_decide 17 s. Valid: V1 C0_refit and M_bias v1
+reruns equal the I5-1 rows (max difference 0 on 18 each); unit tests pass; 18 rows per arm; inner complete; 18
+penalty grids finite (kept points 4213-5545 per DUT).
+All-device / median: C0_refit 0.01906 / 0.01336; M_bias v1 0.02029 / 0.01424; sym_e1_l0 0.02033; l1 0.01999; l2
+0.02025; l5 0.02014; l10 0.02015; selected 0.02045 / 0.01443. GMR vs C0_refit [device CI] (lower): v1 1.214 [1.008,
+1.537] (9); l0 1.218 [1.007, 1.546]; l1 1.209 [0.998, 1.536] (10); l2 1.208 [1.001, 1.531]; l5 1.233 [1.003, 1.578];
+l10 1.244 [1.013, 1.590]; **selected 1.255 [1.026, 1.600] (9/18): worse than C0_refit**. Secondary GMR(selected, v1)
+**1.034 [0.990, 1.107] (7/18): not shown non-inferior**. Geometry-cluster CIs (12 clusters): selected vs C0_refit
+[1.000, 1.578], the other arms span 1. LV: selected vs C0_refit 1.275 [0.961, 1.879], vs v1 1.070 [0.998, 1.194];
+HV: 1.232 [0.974, 1.636], vs v1 0.990 [0.964, 1.012]. lambda*: 0 V on 2 folds, 1 V on 3, 2 V on 6, 5 V on 2, 10 V
+on 5. Negative corrected gds on the held-out grids 2.81-2.89 % for every arm (v1 2.89 %); on the training grids v1
+1.99 %, lambda 1 1.27 %, 2 0.90 %, 5 0.45 %, 10 0.21 %, selected 0.88 %; card only 0.002 %; gm 0 everywhere.
+Predicted signs: ln GMR(selected, C0_refit) > 0 correct; ln GMR(selected, v1) < 0 wrong (observed > 0); ln GMR(v1,
+C0_refit) > 0 correct. Part B not run (prereg reasons). Report batch `out/research/report/2026-10-22_i17_2/`
+(`scripts/research/plot_explore_i17_2.py`, 14 PNGs: setup and Part B reasons, validity, rules, arms with device and
+cluster CIs, LV / HV, lambda selection, negative fractions, per-DUT RRMS and ratios, lambda curve, I-V of
+lv_nmos_W0p3_L10, lv_pmos_W10_L10, hv_pmos_W0p6_L0p5, hv_pmos_W0p3_L10 with measured points, stock-card NGSpice and
+re-simulated C0_refit / v1 / selected cards; RRMS equal to the stored rows); site claim `i17-2` (refuted), caveat on
+`i5-1`.
