@@ -1,0 +1,297 @@
+{
+ "id": "I14-1",
+ "status": "in force",
+ "date": "2026-10-22",
+ "title": "Part B deployment test of g v2 with a channel-current replica, one BSIM4 model-check state (b4check.c clamp written into every card) and the element-identity Q2 reference; M_bias v1 full-data g as reference arm; sky130 77 K, 18 devices",
+ "done_before": [
+  "code draft and unit tests (not committed)",
+  "replica pre-check repcheck/repcheck.json (72 runs)",
+  "binary check: card-only library deck on the OSDI build = simulate_pdk state C on 3 starting cards (difference 0.0)",
+  "one OpenVAF compile of a v1 fold module (0.9 s)"
+ ],
+ "not_done_before": [
+  "any element run",
+  "any M2 refit",
+  "any accuracy run",
+  "any Part B check",
+  "any training"
+ ],
+ "inputs": {
+  "records": "out/research/explore/I13_1/records",
+  "v2": {
+   "fold": "I13_1/lodo/corrections.json M_bias_v2|<tag>",
+   "full": "I13_1/lodo/corrections.json full|M_bias_v2",
+   "heldout_cards": "I13_1/lodo/heldout_cards.json",
+   "rows": "I13_1/lodo/results.json per_device.M_bias_v2"
+  },
+  "v1_reference": {
+   "fold": "I13_1/all18/corrections.json M_bias|<tag>",
+   "full": "I13_1/all18/corrections.json full|M_bias",
+   "heldout_cards": "I13_1/all18/heldout_cards.json M_bias",
+   "rows": "I13_1/all18/results.json per_device.M_bias"
+  },
+  "C0_refit_cards": "I13_1/all18/heldout_cards.json C0_refit"
+ },
+ "fix1_clamp": {
+  "rule": "b4check.c A1/A2 clamp written into the card (a2 > 1 -> a2 = 1, a1 = 0; a2 < 0.01 -> 0.01) by every deck builder with more than one analysis per process",
+  "builders": [
+   "spice_batch.simulate_pdk_multi (altermod, parallel, separate; bsim4_state default clamped)",
+   "spice_batch.ngspice_jacobian",
+   "sky130_misspec.simulate_truth",
+   "i3_2_followup.simulate_sky130",
+   "i11_1_deploy.patched_library",
+   "i12_1_symm.patched_library_v2",
+   "i14_1_chan.patched_library",
+   "e3_temp.simulate_truth_at (resistor path)"
+  ],
+  "legacy_kept": "bsim4_state='legacy' reproduces the old decks; i12_1_diagnosis.py uses legacy",
+  "unit_tests": "a2 = 1.9 card on nmos_L0p19_W7: simulate_pdk_multi altermod and separate = simulate_pdk state C (difference 0); parallel within 1e-6 relative; simulate_truth and simulate_sky130 = simulate_pdk state C (difference 0); patched_library writes a2 = 1"
+ },
+ "fix2_replica": {
+  "params_every_bin": {
+   "xpart": -1,
+   "cgso": 0,
+   "cgdo": 0,
+   "cgbo": 0,
+   "cgsl": 0,
+   "cgdl": 0,
+   "cf": 0,
+   "cjs": 0,
+   "cjd": 0,
+   "cjsws": 0,
+   "cjswd": 0,
+   "cjswgs": 0,
+   "cjswgd": 0,
+   "alpha0": 0,
+   "alpha1": 0,
+   "beta0": 0,
+   "lalpha0": 0,
+   "walpha0": 0,
+   "palpha0": 0,
+   "lalpha1": 0,
+   "walpha1": 0,
+   "palpha1": 0,
+   "lbeta0": 0,
+   "wbeta0": 0,
+   "pbeta0": 0,
+   "agidl": 0,
+   "agisl": 0,
+   "lagidl": 0,
+   "wagidl": 0,
+   "pagidl": 0,
+   "lagisl": 0,
+   "wagisl": 0,
+   "pagisl": 0,
+   "jss": 0,
+   "jsd": 0,
+   "jsws": 0,
+   "jswd": 0,
+   "jswgs": 0,
+   "jswgd": 0,
+   "igcmod": 0,
+   "igbmod": 0
+  },
+  "gmin_compensation": "VCCS -M_DEV*gmin between replica drain and body copies, gmin = 1e-12 S (ngspice default, no deck sets gmin), M_DEV = 1 (BSIM4 instance m inside the subcircuit, printed in every pre-check run)",
+  "module": "i12_1_bias_corr_v2 (unchanged text): I(d, s) <+ (exp(g) - 1) * I(sense)",
+  "precheck": {
+   "grid": "I11-1 grid 75 x 149, tight, 17 digits, canonical ngspice-41",
+   "sets": [
+    "published",
+    "start_C",
+    "v2_heldout_C",
+    "v1_heldout_C"
+   ],
+   "summary": {
+    "published": {
+     "n": 18,
+     "failed": 0,
+     "msgs": 0,
+     "bsim4_m_values": [
+      1.0
+     ],
+     "param_warnings": [],
+     "P1_rep_nonchannel_max": 0.0,
+     "P1_rep_ibd_minus_gmin_vbd_max": 5.981353024427898e-16,
+     "P2_max_rel": 0.00010581291687040003,
+     "P2_max_abs": 2.9494462427948065e-13,
+     "P2_eq_max_ratio": 1.6759646304886457,
+     "card_nonchannel_fwd_max_rel": 0.002923643593719881,
+     "P3_rep_id_fwd_max_rel": 1.0754320122505519e-05,
+     "P3_rep_id_fwd_isub_lt_1e-15_max_rel": 6.446383898196545e-11,
+     "P3_rep_id_rev_max_rel": 218.43078413719238,
+     "P3_sense_fwd_max_rel": 0.00010581293763196829,
+     "devices_P3_rep_id_fwd_le_1e-12": [
+      "pmos_L8_W0p84",
+      "pmos_L8_W1p6"
+     ]
+    },
+    "start_C": {
+     "n": 18,
+     "failed": 0,
+     "msgs": 0,
+     "bsim4_m_values": [
+      1.0
+     ],
+     "param_warnings": [],
+     "P1_rep_nonchannel_max": 0.0,
+     "P1_rep_ibd_minus_gmin_vbd_max": 5.766350881530375e-16,
+     "P2_max_rel": 2.610969101139877e-05,
+     "P2_max_abs": 3.5831255497387193e-13,
+     "P2_eq_max_ratio": 0.43396165736905157,
+     "card_nonchannel_fwd_max_rel": 1.0389667328249683,
+     "P3_rep_id_fwd_max_rel": 0.0011527648817772635,
+     "P3_rep_id_fwd_isub_lt_1e-15_max_rel": 2.0654421938756255e-08,
+     "P3_rep_id_rev_max_rel": 18.832982696941233,
+     "P3_sense_fwd_max_rel": 0.00115276280214588,
+     "devices_P3_rep_id_fwd_le_1e-12": [
+      "nmos_L8_W1p6",
+      "pmos_L2_W5",
+      "pmos_L4_W7",
+      "pmos_L8_W0p84",
+      "pmos_L8_W1p6",
+      "pmos_L8_W5"
+     ]
+    },
+    "v2_heldout_C": {
+     "n": 18,
+     "failed": 0,
+     "msgs": 0,
+     "bsim4_m_values": [
+      1.0
+     ],
+     "param_warnings": [],
+     "P1_rep_nonchannel_max": 0.0,
+     "P1_rep_ibd_minus_gmin_vbd_max": 5.734660017910158e-16,
+     "P2_max_rel": 2.1960096033038685e-05,
+     "P2_max_abs": 1.714692623999703e-12,
+     "P2_eq_max_ratio": 0.3600379520240328,
+     "card_nonchannel_fwd_max_rel": 1.0428526159402478,
+     "P3_rep_id_fwd_max_rel": 0.0011344016075760842,
+     "P3_rep_id_fwd_isub_lt_1e-15_max_rel": 2.0330607852184488e-08,
+     "P3_rep_id_rev_max_rel": 13.523978956512304,
+     "P3_sense_fwd_max_rel": 0.001134402139067001,
+     "devices_P3_rep_id_fwd_le_1e-12": [
+      "nmos_L1_W1p6",
+      "pmos_L2_W5",
+      "pmos_L8_W0p84",
+      "pmos_L8_W1p6",
+      "pmos_L8_W5"
+     ]
+    },
+    "v1_heldout_C": {
+     "n": 18,
+     "failed": 0,
+     "msgs": 0,
+     "bsim4_m_values": [
+      1.0
+     ],
+     "param_warnings": [],
+     "P1_rep_nonchannel_max": 0.0,
+     "P1_rep_ibd_minus_gmin_vbd_max": 5.735487508456946e-16,
+     "P2_max_rel": 2.5486533065482685e-05,
+     "P2_max_abs": 4.784987510386696e-13,
+     "P2_eq_max_ratio": 0.46251596632463793,
+     "card_nonchannel_fwd_max_rel": 1.0235071295813467,
+     "P3_rep_id_fwd_max_rel": 0.0011550690968105176,
+     "P3_rep_id_fwd_isub_lt_1e-15_max_rel": 2.0505607081198893e-08,
+     "P3_rep_id_rev_max_rel": 15.07117657586662,
+     "P3_sense_fwd_max_rel": 0.0011550689676848788,
+     "devices_P3_rep_id_fwd_le_1e-12": [
+      "nmos_L8_W1p6",
+      "pmos_L2_W5",
+      "pmos_L4_W7",
+      "pmos_L8_W0p84",
+      "pmos_L8_W1p6",
+      "pmos_L8_W5"
+     ]
+    }
+   }
+  },
+  "precheck_result": "requested criterion (replica drain current = card channel current within 1e-12 relative) met only in part: P1 exact; P2 to solver tolerance (max 1.7e-12 A); P3 within 1e-12 on every forward point for 2-6 of 18 devices, up to 1.2e-3 forward (card Isub through the rbodymod = 1 body network) and up to 218 in the reverse quadrant (forward-biased drain junction)",
+  "consequence": "the element scales the replica channel current I_rep; every Part B reference uses I_rep measured in a card + replica run of the same deck, tolerance and clamp state"
+ },
+ "fix3_q2_reference": "Re Y_elem = Re Y_card + (exp(g) - 1) Re Y_rep + I_rep exp(g) dg/dV; Im Y_elem = Im Y_card; Y_card, Y_rep, I_rep, I_card from one card + replica run; capacitance check unchanged",
+ "part_B": {
+  "cards": "M2: refit from direct43_r3_fd with the arm's full-data g frozen in the loop (TRF, max_nfev 400, irls 2, diff_step 0.01, state C)",
+  "q1_reference": {
+   "forward": "I_card + (exp(g) - 1) I_rep",
+   "exchanged": "I_card(nd) - (exp(g) - 1) I_rep"
+  },
+  "eq_criterion": {
+   "rel": 1e-06,
+   "abs_A": 1e-13
+  },
+  "thresholds": {
+   "q1_default_rel": 0.001,
+   "q1_vds0_abs": 1e-12,
+   "q2_ac": 0.001,
+   "cap": 0.001,
+   "swap_asym": 0.001,
+   "g_text": 1e-09,
+   "g_sym_text": 1e-12,
+   "runtime_ratio": 2.0,
+   "ro_min_periods": 5,
+   "v1_g": 1e-09,
+   "v2_rrms": 1e-09
+  },
+  "core": [
+   "Q1 equivalence (tight, both benches) 0 violations",
+   "Q1 runs 0 messages / non-finite",
+   "Q1 Vds=0 <= 1e-12 A",
+   "Verilog-A g <= 1e-9 and exchanged <= 1e-12",
+   "exchange asymmetry <= 1e-3",
+   "Q2 derivatives <= 1e-3 (element-identity reference)",
+   "Q2 capacitances <= 1e-3",
+   "Q2 gm sign 0 of 54",
+   "Q3 0 circuits failing only with the element"
+  ],
+  "restrictions": [
+   "default tolerance > 1e-3",
+   ">= 1 gds curve (of 90) with an introduced sign change",
+   "wall-time ratio > 2"
+  ],
+  "label": "any core fail -> not deployable; core pass and >= 1 restriction -> deployable with restrictions; else deployable (simulator-level)",
+  "amendment_A1_of_I12_1": "applies (circuit runtime ratio over circuits where M2_card and M2_full pass; no repeats after a failed run)",
+  "reference_arm_v1": "same stages with full|M_bias (inputs is_pmos, |V(g,s)|/VDD, |V(d,s)|/VDD; module i14_1_bias_corr_v1); label reported, not the outcome; exchanged-terminal Verilog-A check expected to fail"
+ },
+ "accuracy": {
+  "registered_flags_from_I13_1": {
+   "A1": {
+    "gmr": 0.7849,
+    "ci": [
+     0.6928,
+     0.8965
+    ],
+    "wins": 16,
+    "pass": true
+   },
+   "A2": {
+    "gmr": 1.0529,
+    "ci": [
+     0.9664,
+     1.1372
+    ],
+    "margin": 1.05,
+    "pass": false
+   }
+  },
+  "element_deck": "reported, no rule: native RRMS of the held-out pairs (v2 and v1), Python and channel-model Python RRMS, differences to the I13-1 rows, all-device / combined / median, GMR(native v2, C0_refit), GMR(native v2, stored v1), GMR(native v2, native v1), GMR(native v1, C0_refit)"
+ },
+ "validity": {
+  "V1": "card-only library deck (OSDI build, clamp written) x exp(fold g) reproduces the 36 I13-1 rows (v2, v1): max |diff| <= 1e-9",
+  "V2": "unit tests tests.test_i14_1_chan, test_i13_1_clamp, test_spice_batch, test_sky130_misspec, test_i12_1_symm pass",
+  "V3": "18 element-deck accuracy rows per arm; 0 failed M2 refits per arm"
+ },
+ "decision": {
+  "invalid": "any validity fail -> stop: fix and re-register",
+  "not deployable": "Part B (v2) not deployable -> stop; diagnose the failed core checks",
+  "deployable, accuracy below v1 (not non-inferior)": "Part B (v2) deployable with restrictions or deployable (simulator-level) -> stop v2; report the accuracy cost of the deployment constraints",
+  "note": "A1 pass / A2 fail fixed by I13-1; element-deck accuracy and the reference arm do not change the outcome"
+ },
+ "order": [
+  "prereg commit alone",
+  "code + unit tests commit",
+  "smoke (2 devices, max_nfev 20)",
+  "queue: I14_1_validity, I14_1_accuracy, I14_1_deploy_v2, I14_1_deploy_v1, I14_1_decide"
+ ]
+}
