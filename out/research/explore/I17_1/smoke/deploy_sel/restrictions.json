@@ -1,0 +1,481 @@
+{
+ "q1_max_rel_1nA": {
+  "nmos_L1_W1p6": {
+   "default": 0.0010992738382003086,
+   "r4": 0.00044372995602609636,
+   "tight": 2.6912137152417805e-06
+  },
+  "pmos_L2_W5": {
+   "default": 0.0019183877423788933,
+   "r4": 0.0006900724560721613,
+   "tight": 4.9296573884036456e-14
+  }
+ },
+ "sel": {
+  "per_device": {
+   "nmos_L1_W1p6": {
+    "vt_card": 0.6089663240344854,
+    "gds": [
+     {
+      "vgs": 0.6,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.035788012482444106,
+       0.01319538921060985
+      ]
+     },
+     {
+      "vgs": 0.9,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.0063764765277059526,
+       0.02674448139046668
+      ]
+     },
+     {
+      "vgs": 1.2,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.007842102306604565,
+       0.03278463568000185
+      ]
+     },
+     {
+      "vgs": 1.5,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.022841253031299098,
+       0.036414076598930055
+      ]
+     },
+     {
+      "vgs": 1.85,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.054449336229356285,
+       0.0385898367769897
+      ]
+     }
+    ],
+    "gm": [
+     {
+      "vds": 0.05,
+      "introduced": false,
+      "n_neg_elem_si": 110,
+      "n_neg_card_si": 110,
+      "n_neg_python_si": 110,
+      "n_neg_elem_all": 112,
+      "n_neg_card_all": 111,
+      "n_neg_python_all": 110,
+      "n_points_si": 1042
+     },
+     {
+      "vds": 0.925,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 3,
+      "n_neg_card_all": 2,
+      "n_neg_python_all": 0,
+      "n_points_si": 1042
+     },
+     {
+      "vds": 1.85,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 3,
+      "n_neg_card_all": 3,
+      "n_neg_python_all": 0,
+      "n_points_si": 1042
+     }
+    ],
+    "n_gds_introduced": 0,
+    "n_gm_introduced": 0
+   },
+   "pmos_L2_W5": {
+    "vt_card": 1.0996558584475602,
+    "gds": [
+     {
+      "vgs": -0.6,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.21243114152635229,
+       0.002555783019639603
+      ]
+     },
+     {
+      "vgs": -0.9,
+      "introduced": true,
+      "n_neg_elem": 230,
+      "n_neg_card": 0,
+      "n_neg_python": 230,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": [
+       1.2799999999999698,
+       1.5089999999999446
+      ],
+      "g_range": [
+       -0.20354164253185206,
+       0.009845509333629356
+      ]
+     },
+     {
+      "vgs": -1.2,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.22163091537447022,
+       0.008262655397530195
+      ]
+     },
+     {
+      "vgs": -1.5,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.2966973503284021,
+       0.07344846920657466
+      ]
+     },
+     {
+      "vgs": -1.85,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.3823927587238633,
+       0.2009804727711305
+      ]
+     }
+    ],
+    "gm": [
+     {
+      "vds": -0.05,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 0,
+      "n_neg_card_all": 0,
+      "n_neg_python_all": 0,
+      "n_points_si": 551
+     },
+     {
+      "vds": -0.925,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 0,
+      "n_neg_card_all": 0,
+      "n_neg_python_all": 0,
+      "n_points_si": 551
+     },
+     {
+      "vds": -1.85,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 0,
+      "n_neg_card_all": 0,
+      "n_neg_python_all": 0,
+      "n_points_si": 551
+     }
+    ],
+    "n_gds_introduced": 1,
+    "n_gm_introduced": 0
+   }
+  },
+  "totals": {
+   "label": "I16-1 selected (full|sym_e1_l1)",
+   "n_gds_curves_introduced": 1,
+   "n_gm_curves_introduced": 0,
+   "n_gds_neg_points_elem": 230,
+   "n_gds_neg_points_python": 230,
+   "n_gds_neg_points_card": 0,
+   "n_gm_neg_points_elem_si": 110,
+   "n_gm_neg_points_card_si": 110,
+   "n_gm_neg_points_python_si": 110,
+   "devices_with_gds_introduced": [
+    "pmos_L2_W5"
+   ],
+   "devices_with_gm_introduced": []
+  }
+ },
+ "ref_v2_I15_1": {
+  "per_device": {
+   "nmos_L1_W1p6": {
+    "vt_card": 0.607909572518655,
+    "gds": [
+     {
+      "vgs": 0.6,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.03789903322967443,
+       0.029080016192035364
+      ]
+     },
+     {
+      "vgs": 0.9,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.007725322896047862,
+       0.04934175015953342
+      ]
+     },
+     {
+      "vgs": 1.2,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.0038605405423603133,
+       0.02869756482169037
+      ]
+     },
+     {
+      "vgs": 1.5,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.030033379053277392,
+       0.022874936902741037
+      ]
+     },
+     {
+      "vgs": 1.85,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       0.0009558443602788791,
+       0.10474441621351978
+      ]
+     }
+    ],
+    "gm": [
+     {
+      "vds": 0.05,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 119,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 3,
+      "n_neg_card_all": 122,
+      "n_neg_python_all": 0,
+      "n_points_si": 1043
+     },
+     {
+      "vds": 0.925,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 3,
+      "n_neg_card_all": 2,
+      "n_neg_python_all": 0,
+      "n_points_si": 1043
+     },
+     {
+      "vds": 1.85,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 8,
+      "n_neg_card_all": 2,
+      "n_neg_python_all": 0,
+      "n_points_si": 1043
+     }
+    ],
+    "n_gds_introduced": 0,
+    "n_gm_introduced": 0
+   },
+   "pmos_L2_W5": {
+    "vt_card": 1.0973260426627687,
+    "gds": [
+     {
+      "vgs": -0.6,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.3037755473269841,
+       -0.003746348233015231
+      ]
+     },
+     {
+      "vgs": -0.9,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.26280521601908424,
+       0.014346611394167675
+      ]
+     },
+     {
+      "vgs": -1.2,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.24203790147199608,
+       0.017961314180545522
+      ]
+     },
+     {
+      "vgs": -1.5,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.29717590689562445,
+       0.008831139648412364
+      ]
+     },
+     {
+      "vgs": -1.85,
+      "introduced": false,
+      "n_neg_elem": 0,
+      "n_neg_card": 0,
+      "n_neg_python": 0,
+      "n_points": 1801,
+      "vds_abs_range_neg_elem": null,
+      "g_range": [
+       -0.306083853238516,
+       0.11526463980257055
+      ]
+     }
+    ],
+    "gm": [
+     {
+      "vds": -0.05,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 0,
+      "n_neg_card_all": 0,
+      "n_neg_python_all": 0,
+      "n_points_si": 553
+     },
+     {
+      "vds": -0.925,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 0,
+      "n_neg_card_all": 0,
+      "n_neg_python_all": 0,
+      "n_points_si": 553
+     },
+     {
+      "vds": -1.85,
+      "introduced": false,
+      "n_neg_elem_si": 0,
+      "n_neg_card_si": 0,
+      "n_neg_python_si": 0,
+      "n_neg_elem_all": 0,
+      "n_neg_card_all": 0,
+      "n_neg_python_all": 0,
+      "n_points_si": 553
+     }
+    ],
+    "n_gds_introduced": 0,
+    "n_gm_introduced": 0
+   }
+  },
+  "totals": {
+   "label": "I15-1 g v2 (full|M_bias_v2, lambda 10 V), stored arrays",
+   "n_gds_curves_introduced": 0,
+   "n_gm_curves_introduced": 0,
+   "n_gds_neg_points_elem": 0,
+   "n_gds_neg_points_python": 0,
+   "n_gds_neg_points_card": 0,
+   "n_gm_neg_points_elem_si": 0,
+   "n_gm_neg_points_card_si": 119,
+   "n_gm_neg_points_python_si": 0,
+   "devices_with_gds_introduced": [],
+   "devices_with_gm_introduced": []
+  }
+ }
+}

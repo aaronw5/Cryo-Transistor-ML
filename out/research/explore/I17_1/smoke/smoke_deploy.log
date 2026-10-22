@@ -1,0 +1,85 @@
+compile sel: |g text - g python| 2.78e-16, |g exchanged - forward| 1.67e-16
+refit M2 (sel): 2 devices, 7 s, in-sample mean 0.0394, native mean 0.0394
+q12 (sel): 2 devices, 4.3 s
+q3 (sel): 24 runs, 121.1 s; not ok: ['ro5_B|C0_refit', 'ro5_B|M2_card', 'ro5_B|M2_full']
+{
+ "arm": "sel",
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 4.2567346256058146e-13,
+  "g_text_max": 2.7755575615628914e-16,
+  "g_sym_text_max": 1.6653345369377348e-16,
+  "swap_asym_max": 7.211325745418339e-07,
+  "q2_ac_max": 8.78403735808122e-07,
+  "cap_max": 1.9613160536029313e-15,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.0019183877423788933,
+  "q2_gds_sign": 1,
+  "runtime_ratio_max": 4.6071699765801
+ },
+ "deploy": "deployable with restrictions",
+ "core_fail": [],
+ "restrictions": [
+  "default tolerance above 1e-3",
+  "gds sign changes introduced",
+  "runtime overhead > 2x"
+ ]
+}
+{
+ "I17_1_rule": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "I16_1_rule": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "vds0": {
+  "default": {
+   "elem_max": 4.2567346256058146e-13,
+   "at": [
+    "pmos_L2_W5",
+    0.7
+   ],
+   "card_rep_max": 4.49768613689635e-16,
+   "n_above": 0,
+   "n_points": 150,
+   "n_nonfinite": 0
+  },
+  "r4": {
+   "elem_max": 4.2567346256058146e-13,
+   "at": [
+    "pmos_L2_W5",
+    0.7
+   ],
+   "card_rep_max": 4.49768613689635e-16,
+   "n_above": 0,
+   "n_points": 150,
+   "n_nonfinite": 0
+  },
+  "tight": {
+   "elem_max": 4.390507716238634e-18,
+   "at": [
+    "nmos_L1_W1p6",
+    1.675
+   ],
+   "card_rep_max": 4.228150045766616e-18,
+   "n_above": 0,
+   "n_points": 150,
+   "n_nonfinite": 0
+  }
+ }
+}
+stage deploy done in 150 s
