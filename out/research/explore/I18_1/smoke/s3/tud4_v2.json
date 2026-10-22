@@ -1,0 +1,85 @@
+{
+ "part": "tud4_v2",
+ "recipe": "v2",
+ "steps": 50,
+ "seed": 0,
+ "smoke": true,
+ "n_tasks": 6,
+ "wall_s": 1.4,
+ "per_fold": {
+  "t40_nmos_W0p36_L0p04": {
+   "inner": {
+    "t40_nmos_W1_L1": {
+     "tags": [
+      "t40_nmos_W1_L1_d128"
+     ],
+     "log_ratios": [
+      0.004852328759109235
+     ]
+    },
+    "t40_pmos_W1_L0p04": {
+     "tags": [
+      "t40_pmos_W1_L0p04_d392"
+     ],
+     "log_ratios": [
+      0.06572932313187646
+     ]
+    },
+    "t40_pmos_W1_L1": {
+     "tags": [
+      "t40_pmos_W1_L1_d328"
+     ],
+     "log_ratios": [
+      0.0873622211941008
+     ]
+    }
+   },
+   "seconds": 3.72,
+   "S3": 0.052647957695028835,
+   "n_inner_fits": 3,
+   "n_groups": 3,
+   "n_scored": 3,
+   "n_finite": 3,
+   "lambda": 0.0
+  },
+  "t40_nmos_W1_L1": {
+   "inner": {
+    "t40_nmos_W0p36_L0p04": {
+     "tags": [
+      "t40_nmos_W0p36_L0p04_d190"
+     ],
+     "log_ratios": [
+      -0.1223461504084078
+     ]
+    },
+    "t40_pmos_W1_L0p04": {
+     "tags": [
+      "t40_pmos_W1_L0p04_d392"
+     ],
+     "log_ratios": [
+      -0.1152682211146687
+     ]
+    },
+    "t40_pmos_W1_L1": {
+     "tags": [
+      "t40_pmos_W1_L1_d328"
+     ],
+     "log_ratios": [
+      0.04848760389631047
+     ]
+    }
+   },
+   "seconds": 3.69,
+   "S3": -0.06304225587558868,
+   "n_inner_fits": 3,
+   "n_groups": 3,
+   "n_scored": 3,
+   "n_finite": 3,
+   "lambda": 0.0
+  }
+ },
+ "S3": {
+  "t40_nmos_W0p36_L0p04": 0.052647957695028835,
+  "t40_nmos_W1_L1": -0.06304225587558868
+ }
+}

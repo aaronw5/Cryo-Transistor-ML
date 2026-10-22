@@ -1,0 +1,85 @@
+{
+ "part": "tud295_v2",
+ "recipe": "v2",
+ "steps": 50,
+ "seed": 0,
+ "smoke": true,
+ "n_tasks": 6,
+ "wall_s": 1.8,
+ "per_fold": {
+  "t40_nmos_W0p36_L0p04": {
+   "inner": {
+    "t40_nmos_W1_L1": {
+     "tags": [
+      "t40_nmos_W1_L1_d128"
+     ],
+     "log_ratios": [
+      1.5986328574642459
+     ]
+    },
+    "t40_pmos_W1_L0p04": {
+     "tags": [
+      "t40_pmos_W1_L0p04_d392"
+     ],
+     "log_ratios": [
+      0.005965072881734865
+     ]
+    },
+    "t40_pmos_W1_L1": {
+     "tags": [
+      "t40_pmos_W1_L1_d328"
+     ],
+     "log_ratios": [
+      2.816040068135082
+     ]
+    }
+   },
+   "seconds": 4.59,
+   "S3": 1.4735459994936875,
+   "n_inner_fits": 3,
+   "n_groups": 3,
+   "n_scored": 3,
+   "n_finite": 3,
+   "lambda": 5.0
+  },
+  "t40_nmos_W1_L1": {
+   "inner": {
+    "t40_nmos_W0p36_L0p04": {
+     "tags": [
+      "t40_nmos_W0p36_L0p04_d190"
+     ],
+     "log_ratios": [
+      0.7859753174930771
+     ]
+    },
+    "t40_pmos_W1_L0p04": {
+     "tags": [
+      "t40_pmos_W1_L0p04_d392"
+     ],
+     "log_ratios": [
+      -0.01823790458653104
+     ]
+    },
+    "t40_pmos_W1_L1": {
+     "tags": [
+      "t40_pmos_W1_L1_d328"
+     ],
+     "log_ratios": [
+      2.7973260890737075
+     ]
+    }
+   },
+   "seconds": 4.680000000000001,
+   "S3": 1.1883545006600846,
+   "n_inner_fits": 3,
+   "n_groups": 3,
+   "n_scored": 3,
+   "n_finite": 3,
+   "lambda": 2.0
+  }
+ },
+ "S3": {
+  "t40_nmos_W0p36_L0p04": 1.4735459994936875,
+  "t40_nmos_W1_L1": 1.1883545006600846
+ }
+}

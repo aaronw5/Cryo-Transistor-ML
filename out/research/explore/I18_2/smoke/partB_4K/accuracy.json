@@ -1,0 +1,83 @@
+{
+ "T_K": 4,
+ "compile": [
+  {
+   "group": "t40_nmos_W0p36_L0p04",
+   "compiled": true,
+   "sha256": "90b139d12779fb195077222331deab1e050fd30ac4674ce26b7ef8388295645b"
+  },
+  {
+   "group": "t40_nmos_W1_L1",
+   "compiled": true,
+   "sha256": "3c1298011d0b8754c92e0ed49067f71ced949879fafbc469dd791877d3371b93"
+  }
+ ],
+ "rows": {
+  "M2|t40_nmos_W0p36_L0p04_d190": {
+   "kind": "M2",
+   "tag": "t40_nmos_W0p36_L0p04_d190",
+   "rrms_card_only": 0.05709307792888487,
+   "rrms_python": 0.04591886613492921,
+   "rrms_python_channel": 0.04592626936248,
+   "rrms_native": 0.045930601508465736,
+   "msgs": []
+  },
+  "M2|t40_nmos_W1_L1_d128": {
+   "kind": "M2",
+   "tag": "t40_nmos_W1_L1_d128",
+   "rrms_card_only": 0.07084039295394388,
+   "rrms_python": 0.05678633398305053,
+   "rrms_python_channel": 0.056786333953721034,
+   "rrms_native": 0.056785555042371934,
+   "msgs": []
+  },
+  "sel|t40_nmos_W0p36_L0p04_d190": {
+   "kind": "sel",
+   "tag": "t40_nmos_W0p36_L0p04_d190",
+   "rrms_card_only": 0.05699218250963322,
+   "rrms_python": 0.05171922444920108,
+   "rrms_python_channel": 0.051732002014355086,
+   "rrms_native": 0.05174141834898436,
+   "msgs": []
+  },
+  "sel|t40_nmos_W1_L1_d128": {
+   "kind": "sel",
+   "tag": "t40_nmos_W1_L1_d128",
+   "rrms_card_only": 0.07210915206801279,
+   "rrms_python": 0.07300803731376575,
+   "rrms_python_channel": 0.07300803557666126,
+   "rrms_native": 0.07301232901231657,
+   "msgs": []
+  }
+ },
+ "M2": {
+  "mean_native": 0.051358078275418835,
+  "mean_python_rerun": 0.05135260005898987,
+  "mean_card_only": 0.06396673544141437,
+  "mean_stored_python": 0.05135260005898987,
+  "max_abs_native_minus_stored": 1.1735373536526927e-05,
+  "n_msgs": 0
+ },
+ "sel": {
+  "mean_native": 0.062376873680650466,
+  "mean_python_rerun": 0.06236363088148342,
+  "mean_card_only": 0.064550667288823,
+  "mean_stored_python": 0.06236363088148342,
+  "max_abs_native_minus_stored": 2.2193899783279347e-05,
+  "n_msgs": 0,
+  "gmr_native_vs_C0_refit_cluster": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 1,
+   "ties": 0,
+   "ratio": 0.9817600991422692,
+   "resample_unit": "cluster (2)",
+   "ci_low": 0.9296297640754162,
+   "ci_high": 1.0368137182294928,
+   "n_boot": 10000
+  }
+ },
+ "wall_s": 0.8
+}

@@ -1,0 +1,134 @@
+{
+ "variant": "sym_e1_l0",
+ "T_K": 4,
+ "inputs": "sym_v2",
+ "eps": 0.01,
+ "lambda": 0.0,
+ "vdd": 1.1,
+ "smoke": true,
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {
+  "steps": 200
+ },
+ "seeds": [
+  0
+ ],
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "folds": [
+  "t40_nmos_W0p36_L0p04",
+  "t40_nmos_W1_L1",
+  "t40_pmos_W1_L0p04",
+  "t40_pmos_W1_L1"
+ ],
+ "train_order": {
+  "t40_nmos_W0p36_L0p04": [
+   "t40_nmos_W1_L1_d128",
+   "t40_pmos_W1_L0p04_d392",
+   "t40_pmos_W1_L1_d328"
+  ],
+  "t40_nmos_W1_L1": [
+   "t40_nmos_W0p36_L0p04_d190",
+   "t40_pmos_W1_L0p04_d392",
+   "t40_pmos_W1_L1_d328"
+  ],
+  "t40_pmos_W1_L0p04": [
+   "t40_nmos_W0p36_L0p04_d190",
+   "t40_nmos_W1_L1_d128",
+   "t40_pmos_W1_L1_d328"
+  ],
+  "t40_pmos_W1_L1": [
+   "t40_nmos_W0p36_L0p04_d190",
+   "t40_nmos_W1_L1_d128",
+   "t40_pmos_W1_L0p04_d392"
+  ]
+ },
+ "per_device": {
+  "t40_nmos_W0p36_L0p04_d190": 0.05171922444920108,
+  "t40_nmos_W1_L1_d128": 0.07300803731376575,
+  "t40_pmos_W1_L0p04_d392": 0.03806117379130846,
+  "t40_pmos_W1_L1_d328": 0.036377871429185485
+ },
+ "mean": 0.04979157674586519,
+ "heldout_rows": {
+  "t40_nmos_W0p36_L0p04_d190": {
+   "label": "sym_e1_l0",
+   "tag": "t40_nmos_W0p36_L0p04_d190",
+   "T_K": 4,
+   "state": "C",
+   "rrms": 0.05171922444920108,
+   "failed": [],
+   "n_sim": 119,
+   "runtime_s": 4.5,
+   "n_sim_timeout": 0
+  },
+  "t40_nmos_W1_L1_d128": {
+   "label": "sym_e1_l0",
+   "tag": "t40_nmos_W1_L1_d128",
+   "T_K": 4,
+   "state": "C",
+   "rrms": 0.07300803731376575,
+   "failed": [],
+   "n_sim": 156,
+   "runtime_s": 5.75,
+   "n_sim_timeout": 0
+  },
+  "t40_pmos_W1_L0p04_d392": {
+   "label": "sym_e1_l0",
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 4,
+   "state": "C",
+   "rrms": 0.03806117379130846,
+   "failed": [],
+   "n_sim": 122,
+   "runtime_s": 5.15,
+   "n_sim_timeout": 0
+  },
+  "t40_pmos_W1_L1_d328": {
+   "label": "sym_e1_l0",
+   "tag": "t40_pmos_W1_L1_d328",
+   "T_K": 4,
+   "state": "C",
+   "rrms": 0.036377871429185485,
+   "failed": [],
+   "n_sim": 122,
+   "runtime_s": 5.15,
+   "n_sim_timeout": 0
+  }
+ },
+ "train_seconds_per_member": {
+  "sym_e1_l0|t40_nmos_W0p36_L0p04": [
+   1.6
+  ],
+  "sym_e1_l0|t40_nmos_W1_L1": [
+   1.6
+  ],
+  "sym_e1_l0|t40_pmos_W1_L0p04": [
+   1.6
+  ],
+  "sym_e1_l0|t40_pmos_W1_L1": [
+   1.6
+  ]
+ },
+ "timing": {
+  "train_s": 1.7,
+  "refit_s": 6.0,
+  "n_seed_tasks": 4
+ }
+}

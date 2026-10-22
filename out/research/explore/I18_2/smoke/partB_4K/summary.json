@@ -1,0 +1,73 @@
+{
+ "T_K": 4,
+ "validity": {
+  "valid": false,
+  "fails": [
+   "VB 45 M2 refits, 0 failed",
+   "VB 45 Part B rows"
+  ]
+ },
+ "unit_tests": {
+  "files": [
+   "tests.test_i18_2_partb",
+   "tests.test_i18_2_tud",
+   "tests.test_i14_1_chan",
+   "tests.test_i12_1_symm"
+  ],
+  "rc": 0,
+  "passed": true,
+  "tail": [
+   "Ran 55 tests in 2.371s",
+   "",
+   "OK"
+  ]
+ },
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 1.7941159745363036e-20,
+  "g_text_max": 1.1102230246251565e-16,
+  "g_sym_text_max": 1.1102230246251565e-16,
+  "swap_asym_max": 1.7419399256369226e-13,
+  "q2_ac_max": 3.9606730758597814e-10,
+  "cap_max": 0.0,
+  "q2_gm_sign": 0,
+  "q1_default_max": 0.0010470934534700816,
+  "q2_gds_sign": 0,
+  "runtime_ratio_max": 1.3542321901501937
+ },
+ "decision": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3"
+  ],
+  "q3": "not run (sky130 circuits at 1.8 V; TU Delft card 1 V, measured range 1.1 V)",
+  "label_full": "deployable with restrictions (Q3 not run)"
+ },
+ "vds0_raw_element_tight_max": 5.958708397977905e-11,
+ "vds0_card_max": 5.958708398990795e-11,
+ "vds0_added_default_max": 4.916856467352429e-15,
+ "vds0_default_max": 5.958708397977905e-11,
+ "vds0_r4_max": 5.958708397977905e-11,
+ "runtime_grid": {
+  "t40_nmos_W0p36_L0p04_d190": 1.3542321901501937,
+  "t40_nmos_W1_L1_d128": 1.3225198159917302
+ },
+ "gds_curves_introduced": [],
+ "replica_nonchannel_max": {
+  "isub": 0.0,
+  "igidl": 0.0,
+  "igisl": 0.0,
+  "igs": 0.0,
+  "igd": 0.0,
+  "igb": 0.0,
+  "igcs": 0.0,
+  "igcd": 0.0
+ },
+ "nonchannel_share_fwd_max": 0.16707975792726623,
+ "card_rep_vs_card_default_max_abs": 0.0,
+ "m2_in_sample_python_mean": 0.05135260005898987,
+ "n_devices": 2,
+ "lambda_star_full": 0.0
+}
