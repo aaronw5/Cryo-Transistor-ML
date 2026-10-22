@@ -1,0 +1,57 @@
+{
+ "arm": "v2",
+ "label": "I14-1 Part B",
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 5.739867413871421e-13,
+  "g_text_max": 2.498001805406602e-16,
+  "g_sym_text_max": 3.3306690738754696e-16,
+  "swap_asym_max": 1.8885181160997776e-06,
+  "q2_ac_max": 1.2877819919078965e-06,
+  "cap_max": 2.145071057289128e-15,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.0010578812547083804,
+  "q2_gds_sign": 0,
+  "runtime_ratio_max": 4.366726207438817
+ },
+ "runtime_grid": {
+  "nmos_L1_W1p6": 1.9696520126038677,
+  "pmos_L2_W5": 2.027607608129287
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": 1.8004997409444428,
+  "inv_B_vtc": 1.7235246992913549,
+  "ro5_A": 4.366726207438817,
+  "mirror_n": 1.2380452085185278,
+  "mirror_p": 1.2609351210239492
+ },
+ "runtime_circuits_excluded": [
+  "ro5_B"
+ ],
+ "n_devices": 2,
+ "q3_not_ok": [
+  "ro5_B|C0_refit",
+  "ro5_B|M2_card",
+  "ro5_B|M2_full"
+ ],
+ "q2_err_i12_formula_max": 0.00011429973479109766,
+ "nonchannel_share_fwd_max": 0.0018231188015098469,
+ "card_rep_vs_card_default_max_abs": 1.1050392319245095e-07,
+ "decision": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "runtime overhead > 2x"
+  ]
+ },
+ "refit_in_sample": {
+  "mean_rrms_M2_python": 0.04124286478710547,
+  "mean_rrms_M2_python_channel": 0.04124286413930837,
+  "mean_rrms_M2_native": 0.041243142538490755,
+  "mean_rrms_M2_card_only": 0.059498236089568377,
+  "n_failed": 0
+ }
+}

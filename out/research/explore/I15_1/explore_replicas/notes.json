@@ -1,0 +1,64 @@
+{
+ "note": "pre-registration exploration (I15-1 prereg 'done before'); scripts in scripts/ (run from the scratchpad, PYTHONPATH=src); M2 card = I14-1 deploy_v2 cards_M2.json nmos_L8_W1p6",
+ "exp1_replica_variants_nmos_L8_M2_tight": {
+  "i14": "warnings fwd card_rep, swap elem",
+  "js_card": "none",
+  "js_scale_1e-6": "none",
+  "js_scale_1e-20": "none",
+  "js_scale_1e-60": "warnings fwd card_rep, swap elem",
+  "rbodymod0": "none",
+  "isub_on": "warnings fwd card_rep, swap elem"
+ },
+ "exp2_exp3_ro5_A_wall_s": {
+  "card": 0.24,
+  "card_rep_i14": 0.485,
+  "elem_i14": 1.126,
+  "card_rep_rb0": 0.449,
+  "elem_rb0": 1.128,
+  "rusage_load_s": {
+   "card": 0.12,
+   "card_rep": 0.269,
+   "elem": 0.88
+  },
+  "iterations": {
+   "card": 23335,
+   "card_rep": 26998,
+   "elem": 28427
+  },
+  "equations": {
+   "card": 48,
+   "card_rep": 188,
+   "elem": 188
+  }
+ },
+ "exp4_trivial_module_wall_s": {
+  "elem_v2": 1.128,
+  "elem_trivial_module": 0.517,
+  "elem_tanh_exp_form": 1.088
+ },
+ "exp5_copies_removed_wall_s": {
+  "gate_copy_removed": [
+   1.13,
+   1.102
+  ],
+  "gate_and_body_copies_removed": [
+   1.13,
+   1.127
+  ]
+ },
+ "openvaf_target_cpu": "native, apple-m1, apple-m2, apple-a14, generic: compiler crash",
+ "exp6_body_routing_and_js_on_nmos_L8_M2": "route variants: warnings on fwd tight decks; js 1e-20 both sides (no routing): none; reverse-quadrant sense - replica id up to 0.038 A",
+ "exp6_full_864_decks": "js_variants.json",
+ "exp7_junction_replica_subtraction_nmos_L8_M2": {
+  "card_js": "fwd tight card_rep aborted (timestep too small at vd -1.825 V), fwd tight elem warnings; swap tight sense - channel id max ratio 5.7e-5 of Q1 tolerance; junction replica id 0.0",
+  "js_1e-20": "same"
+ },
+ "exp8_location": "warnings only at the start of the VG = 1.85 V line (restart VD +1.85 -> -1.85) in both failing decks; isolated ops at (VG 0, VD -1.85), (0, 0), (0, -1.0) none",
+ "exp9_iteration_limits": "itl2 100/200/500, itl1 500 + itl2 500: warnings unchanged",
+ "exp10_isolated": "op at (1.85, -1.85); dc VD 1.85 -> -1.85 in one step; sweeps from -1.85, -1.80, +1.85 at VG 1.85; VG 1.80 line: no warnings",
+ "exp11_serpentine_nmos_L8_M2": {
+  "fwd card_rep": "serp none / nested warnings",
+  "swap elem": "serp none / nested warnings",
+  "max eq ratio serp vs nested": 0.0923
+ }
+}
