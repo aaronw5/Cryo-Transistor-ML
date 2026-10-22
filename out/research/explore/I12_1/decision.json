@@ -1,0 +1,86 @@
+{
+ "prereg": "out/research/explore/I12_1/prereg.json",
+ "validity": {
+  "valid": true,
+  "fails": []
+ },
+ "accuracy": {
+  "A1_gain_vs_C0_refit": true,
+  "A2_noninferior_vs_v1": false
+ },
+ "deploy": {
+  "deploy": "not deployable",
+  "core_fail": [
+   "terminal-exchange asymmetry > 1e-3",
+   "Q2 derivative agreement",
+   "Q2 capacitances differ from the card"
+  ],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "outcome": "not deployable",
+ "action": "stop; diagnose the failed core checks",
+ "A1": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 16,
+  "ties": 0,
+  "ratio": 0.7870053023424385,
+  "resample_unit": "device",
+  "ci_low": 0.702617398195328,
+  "ci_high": 0.8843097495078442,
+  "n_boot": 10000
+ },
+ "A2": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 5,
+  "ties": 0,
+  "ratio": 1.0422816294166164,
+  "resample_unit": "device",
+  "ci_low": 0.967212030545284,
+  "ci_high": 1.1109251791741668,
+  "n_boot": 10000
+ },
+ "summary": {
+  "M_bias_v2": {
+   "n": 18,
+   "n_failed": 0,
+   "all_device_mean": 0.07736659448852706,
+   "valid_only_mean": 0.07736659448852706,
+   "median": 0.05337976894959779,
+   "combined": 0.0731572452265722
+  },
+  "C0_refit": {
+   "n": 18,
+   "n_failed": 0,
+   "all_device_mean": 0.10427533896799393,
+   "valid_only_mean": 0.10427533896799393,
+   "median": 0.08197973624689832,
+   "combined": 0.09747228035981803
+  },
+  "M_bias_v1": {
+   "n": 18,
+   "n_failed": 0,
+   "all_device_mean": 0.07316345449986766,
+   "valid_only_mean": 0.07316345449986766,
+   "median": 0.06430640784463298,
+   "combined": 0.06911020463438923
+  },
+  "T1_inloop": {
+   "n": 18,
+   "n_failed": 0,
+   "all_device_mean": 0.0744060406798039,
+   "valid_only_mean": 0.0744060406798039,
+   "median": 0.06719404562871739,
+   "combined": 0.07026664021375681
+  }
+ }
+}
