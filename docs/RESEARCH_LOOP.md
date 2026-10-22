@@ -1893,3 +1893,21 @@ M_bias_pool within 1%) and the committed prediction agree. If the decide code is
 fixed and covered by a unit test. Report batch `out/research/report/2026-10-21_i11_2/`
 (`scripts/research/plot_explore_i11_2.py`); site claim `i11-2` (invalid). `lodo_ihp/corrections.json` stored gzipped
 (`corrections.json.gz`, 4.2 MB).
+
+## I12-1 pre-registration in force (2026-10-21 22:10): bias-only correction g v2 as a deployable OSDI add-on, sky130 77 K, 18 devices
+
+Pre-registration `out/research/explore/I12_1/prereg.md` / `prereg.json`, committed alone before any v2 training or
+I12-1 held-out refit. g v2 changes from M_bias v1, addressing the I11-1 failures: (1) d/s-symmetric inputs
+x1 = (s V(g,s) + s V(g,d) + m) / (2 VDD), x2 = m / VDD, m = sqrt(V(d,s)^2 + EPS^2); (2) exp(g) multiplies only the
+static drain current: the element senses a charge-free replica of the card (xpart = -1, zero overlap / fringing /
+junction capacitance parameters, terminals driven by unit-gain VCVS copies) and adds (exp(g) - 1) I_rep from d to s;
+(3) penalty lambda x P on negative corrected gm / gds on a 25 mV forward-quadrant grid of each training card,
+lambda = 10 V (rule: lambda x P(v1 full) = 10 x 0.00873 exceeds the v1 in-sample loss 0.0732); (4) EPS = 0.01 V;
+(5) equivalence |dI| <= 1e-6 |I| + 1e-13 A per point. Everything else as M_bias v1. Part A (LODO): A1 GMR(M_bias_v2,
+C0_refit) CI upper < 1 with 0 failed devices; A2 non-inferiority GMR(M_bias_v2, M_bias_v1) CI upper <= 1.05 (device
+bootstrap, stored all-18 rows). Part B: I11-1 deployment checks on the full-data g v2 with M2 cards; exchange asymmetry,
+capacitance and Verilog-A g checks are core. Validity V1 (trainer reproduces 2 stored fold corrections), V2 (held-out
+refit reproduces 2 stored rows), V3 (18 rows). Outcome: invalid / no gain / supported / deployable with accuracy below
+v1 / not deployable. Before registration: replica check on the published card (DC equal to 12 digits, imaginary AC
+current 0) and the v1 penalty calibration (8.4% of grid points with negative corrected gds, 0.20% gm; card alone
+0.13% gm, 0 gds).

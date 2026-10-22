@@ -1,0 +1,245 @@
+{
+ "id": "I12-1",
+ "status": "in force",
+ "date": "2026-10-21",
+ "title": "bias-only correction g v2 (d/s-symmetric smooth inputs, static element via a charge-free card replica, gm/gds penalty) as a deployable ngspice-41 OSDI add-on, sky130 77 K, 18 devices",
+ "data": "sky130 77 K, all 18 devices (REAL_DEV + REAL_TEST, opened by user decision 2026-10-21); starting-card records out/research/explore/E1/real_dev + real_test with direct43_r3_fd cards",
+ "done_before": [
+  "code draft (not committed)",
+  "charge-free replica check on the published card (nmos_L1_W1p6, pmos_L2_W5): DC equal to 12 digits, imaginary AC replica current 0",
+  "penalty grids of the 18 starting cards",
+  "penalty value of the stored v1 corrections (calib/calib_v1.json)"
+ ],
+ "g_v2": {
+  "inputs": {
+   "definition": "s = +1 nMOS / -1 pMOS; a = s V(g,s); b = s V(g,d); m = sqrt(V(d,s)^2 + EPS^2); x1 = (a + b + m) / (2 VDD); x2 = m / VDD; network input (is_pmos, x1, x2) standardized with training-point mean/std, is_pmos kept 0/1",
+   "VDD": 1.85,
+   "EPS_V": 0.01
+  },
+  "element": {
+   "module": "i12_1_bias_corr_v2(d, g, s, rx, ri)",
+   "contribution": "I(d, s) <+ (exp(g) - 1) * I(sense)",
+   "sense": "V(sense) <+ RS * I(sense), RS = 0, branch rx -> ri",
+   "replica": "same subcircuit and bins as the card (same bin patch), every bin: xpart=-1 cgso=0 cgdo=0 cgbo=0 cgsl=0 cgdl=0 cf=0 cjs=0 cjd=0 cjsws=0 cjswd=0 cjswgs=0 cjswgd=0; terminals driven by unit-gain VCVS copies of V(d), V(g), V(s), V(b); replica drain at ri; rx driven by the V(d) copy",
+   "card_instance": "unchanged"
+  },
+  "penalty": {
+   "grid": "u_g in {0, 0.025, ..., 1.85} V x u_d in {0.025, ..., 1.85} V, u = s V (forward quadrant = measured range of every device)",
+   "card": "training card of the device (direct43_r3_fd), canonical ngspice-41 /Users/anrunw/cryo-ng41/arm64/bin/ngspice, default tolerances",
+   "keep": "forward card current s*I_card > 1e-9 A",
+   "r": "r_gm = gm_card/I_card + dg/du_g, r_gds = gds_card/I_card + dg/du_d (1/V); card derivatives by central differences on the grid (one-sided at edges); dg/du by autograd",
+   "P": "mean over training devices of per-device mean of relu(-r_gm) + relu(-r_gds)",
+   "lambda_V": 10.0,
+   "lambda_rule": "smallest value of the 1-2-5-10 sequence with lambda * P(v1 full) > in-sample E1 loss of v1 full (P = 0.00873 /V, loss 0.0732 -> 8.4 -> 10)"
+  },
+  "objective": "E1 loss + lambda * P + 1e-4 * sum ||W||^2",
+  "unchanged": {
+   "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mlp": "3-16-16-1 tanh, zero-init last layer, OUT_SCALE 1 tanh output",
+   "adam_lr": 0.003,
+   "steps": 2000,
+   "l2": 0.0001,
+   "float64": true,
+   "training_cards": "fixed (stored starting-card records)"
+  }
+ },
+ "refit": {
+  "heldout_nfev": 400,
+  "heldout_irls": 2,
+  "diff_step": 0.01,
+  "start": "direct43_r3_fd",
+  "metric": "strict paper RRMS, inclusion frozen to the published card's curve set"
+ },
+ "part_A": {
+  "protocol": "LODO over 18 devices; g v2 trained on the other 17 records and their penalty grids; held-out refit with the fold g in the loop; full-data g v2 on all 18 for part B",
+  "comparators": {
+   "source": "out/research/explore/I3_2/all18/results.json per_device",
+   "C0_refit": "C0_refit",
+   "M_bias_v1": "M_bias",
+   "T1_inloop": "T1_inloop",
+   "known_values": {
+    "M_bias_v1": [
+     0.0732,
+     0.0691
+    ],
+    "C0_refit": [
+     0.1043,
+     0.0975
+    ],
+    "T1_inloop": [
+     0.0744,
+     0.0703
+    ],
+    "note": "[all-device, combined]"
+   }
+  },
+  "A1": {
+   "statistic": "GMR(M_bias_v2, C0_refit) over 18 devices",
+   "bootstrap": {
+    "unit": "device",
+    "n": 10000,
+    "rng": "numpy default_rng(0)",
+    "ci": "95% percentile"
+   },
+   "pass": "ci_high < 1 and 0 failed devices"
+  },
+  "A2": {
+   "statistic": "GMR(M_bias_v2, M_bias_v1) over 18 devices",
+   "bootstrap": "as A1",
+   "margin": 1.05,
+   "pass": "ci_high <= 1.05"
+  },
+  "reported": [
+   "all-device mean",
+   "combined",
+   "median",
+   "wins",
+   "GMR(M_bias_v2, T1_inloop)",
+   "post-hoc no-refit RRMS",
+   "training penalty P",
+   "fraction of training grid points with negative corrected gm / gds"
+  ]
+ },
+ "part_B": {
+  "correction": "full-data g v2",
+  "card": "M2: refit from direct43_r3_fd with the full-data g v2 in the loop (in-sample)",
+  "tools": {
+   "openvaf": "23.5.0 --target aarch64-apple-darwin",
+   "ngspice": "/Users/anrunw/cryo-ng41/arm64-osdi/bin/ngspice (card-only runs: same binary without pre_osdi)"
+  },
+  "tolerances": {
+   "default": "",
+   "r4": "reltol=1e-4",
+   "tight": "reltol=1e-9 abstol=1e-18 vntol=1e-12"
+  },
+  "q1": {
+   "grid_vgs": "0..+-1.85 step 0.025 (75)",
+   "grid_vds": "-1.85..1.85 step 0.025 (149)",
+   "benches": {
+    "forward": "card (nd, ng, 0, 0), module d = nd, s = 0",
+    "exchanged": "card drain nz (VZ 0 V to ground), card source nd; module d = nz, s = nd"
+   },
+   "python": {
+    "forward": "I_card * exp(g)",
+    "exchanged": "I_card(nd) + (exp(g) - 1) * i(VZ)_card"
+   },
+   "equivalence": "|I_elem - I_py| <= 1e-6 |I_py| + 1e-13 A at every grid point, tight, both benches",
+   "va_text": {
+    "points": 2000,
+    "rng": "default_rng(20261021)",
+    "range": "both polarities, V(g,s), V(d,s) uniform in [-1.85, 1.85] V"
+   },
+   "swap_asym": "element-introduced |ln(I_swap/I_fwd)_elem - ln(I_swap/I_fwd)_card|, forward operation, |I| > 1 nA, tight",
+   "swap_asym_expected": "nonzero from BSIM4 junction gmin currents (gmin 1e-12 S) in the replica drain-terminal current; bound about (1 - exp(-|g|)) * 1.85e-12 / 1e-9 <= 1e-3"
+  },
+  "q2": {
+   "op_points": "I11-1 (gm sets |Vds| 0.05/0.925/1.85 x |Vgs| grid; gds sets |Vgs| 0.6/0.9/1.2/1.5/1.85 x |Vds| grid)",
+   "ac_freq_Hz": 1000000.0,
+   "tolerance": "tight",
+   "python": "Re Y = exp(g) Re Y_card + I_card exp(g) dg/dV (central differences h = 1e-5 V); Im Y = Im Y_card",
+   "derivative_error": "|Y_elem - Y_py| / max(|Y_py|, 1e-9 S), real parts, |I_py| > 1 nA",
+   "capacitance_error": "|Im Y_elem - Im Y_card| / max(|Im Y_card|, 1e-15 S) for Y_dd, Y_dg, Y_gg, all op points",
+   "sign_rule": "I11-1 curve-level rule (strong inversion |Vgs| >= V_T + 0.2 V; gm < -1e-12 S on the element curve and none on the card-only curve; gds curves at |Vds| >= 0.05 V)"
+  },
+  "q3": {
+   "circuits": [
+    "inv_A_vtc",
+    "inv_B_vtc",
+    "ro5_A",
+    "ro5_B",
+    "mirror_n",
+    "mirror_p"
+   ],
+   "definition": "I11-1 prereg q3",
+   "arms": [
+    "published",
+    "C0_refit",
+    "M2_card",
+    "M2_full"
+   ],
+   "tolerance": "default",
+   "timeout_s": 120,
+   "ro_min_periods": 5
+  },
+  "q4": {
+   "repeats": 3,
+   "statistic": "median wall time ratio element / card only (grid deck, 18 devices; circuits M2_full / M2_card)",
+   "expected": "> 2 (two BSIM4 evaluations per corrected transistor)"
+  },
+  "rule": {
+   "core": {
+    "q1_equivalence_violations": "== 0",
+    "q1_bad": "== 0",
+    "q1_vds0_max_A": "<= 1e-12",
+    "va_g_text_vs_python": "<= 1e-9",
+    "va_g_text_symmetry": "<= 1e-12",
+    "swap_asym_max": "<= 1e-3",
+    "q2_derivative_max": "<= 1e-3",
+    "q2_capacitance_max": "<= 1e-3",
+    "q2_gm_curves_introduced": "== 0",
+    "q3_fail_with_element_only": "== 0"
+   },
+   "restrictions": {
+    "q1_default_max_rel_1nA": "> 1e-3",
+    "q2_gds_curves_introduced": ">= 1",
+    "runtime_ratio_max": "> 2"
+   },
+   "labels": {
+    "not deployable": "any core check fails",
+    "deployable with restrictions": "core pass, >= 1 restriction",
+    "deployable (simulator-level)": "core pass, no restriction"
+   },
+   "changes_from_I11_1": "Q1 tight relative 1e-5 replaced by the per-point criterion; exchange asymmetry and capacitance moved from restrictions to core; Verilog-A g checks added to core"
+  }
+ },
+ "validity": {
+  "V1": {
+   "what": "fit_v2 with abs_v1 inputs, lambda 0, v1 hyperparameters",
+   "folds": [
+    "nmos_L0p15_W1p6",
+    "pmos_L2_W5"
+   ],
+   "stored_keys": [
+    "M_bias|nmos_L0p15_W1p6",
+    "M_bias|pmos_L2_W5"
+   ],
+   "stored_file": "out/research/explore/I3_2/all18/corrections.json",
+   "pass": "max |g_new - g_stored| over the 17 training records' points <= 1e-9 on both"
+  },
+  "V2": {
+   "what": "held-out refit with the stored v1 fold correction",
+   "devices": [
+    "nmos_L1_W1p6",
+    "pmos_L8_W5"
+   ],
+   "stored": "out/research/explore/I3_2/all18/results.json per_device.M_bias",
+   "pass": "|RRMS difference| <= 1e-9 on both"
+  },
+  "V3": {
+   "what": "M_bias_v2 LODO rows",
+   "pass": "exactly one row per device for the 18 devices"
+  },
+  "selection_unit_tested": true
+ },
+ "decision": {
+  "invalid": "any validity check fails -> stop: fix and re-register",
+  "no gain over C0_refit": "A1 fails -> stop",
+  "supported": "A1 and A2 pass and part B not 'not deployable' -> continue: v2 replaces v1 as the deployable add-on",
+  "deployable, accuracy below v1": "A1 passes, A2 fails, part B not 'not deployable' -> stop v2; report the accuracy cost",
+  "not deployable": "A1 passes, part B 'not deployable' -> stop; diagnose the failed core checks"
+ },
+ "prediction_commit": "none (I11-1 pattern; no training-set statistic pre-registered)",
+ "other": {
+  "D1_no_card_shift": "held-out and M2 cards refit inside the stored base box; no clamp (I10-1 mechanism does not arise)",
+  "D2_replica_check": "every replica bin carries every REPLICA_ZERO value; checked before each deck",
+  "D3_smoke": "2 folds, 1 seed, 200 steps, refit max_nfev 20; part B on 2 devices with starting cards; not used for decisions",
+  "D4_order": "prereg commit alone -> code + unit tests -> smoke -> queue (validity, lodo, deploy, decide), one heavy job at a time"
+ },
+ "no_measured_circuit_data": "part B circuits are simulator-level consistency, convergence and runtime checks"
+}
