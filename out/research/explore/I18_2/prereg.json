@@ -1,0 +1,75 @@
+{
+ "id": "I18-2",
+ "status": "in force",
+ "date": "2026-10-22",
+ "title": "Second BSIM4 dataset for the deployable element: selected g v2 recipe on measured TU Delft 40-nm MOSFETs (I6-1 data), 4.13 K and 295.0 K, 45 DEV devices, leave-one-geometry-group-out; Part B (I17-1 rules) with ngspice-41 OSDI",
+ "not_done_before": ["any I18-2 code, simulation, training or refit"],
+ "known_before": ["I6-1 starting cards with a2 > 1: 25/45 at 4.13 K, 20/45 at 295.0 K", "I6-1 rows (state L)"],
+ "data": {
+  "split": "out/research/explore/I6_1/split.json DEV (45 devices, 7 groups); TEST 24 locked",
+  "temperatures": [4, 295],
+  "metric": "strict paper RRMS, I6-1 frozen measured inclusion"
+ },
+ "card": "BSIM4 4.5.0 N1/P1 CMOSedu 50 nm (I6-1), 43-parameter set and box of I6-1",
+ "simulator": "ngspice-41 native arm64 (I6-1), timeout 10 s",
+ "bsim4_state": {
+  "state": "C (clamped)",
+  "rule": "every deck writes the b4check.c clamp: a2 > 1 -> a2 = 1 and a1 = 0 if nonzero; a2 < 0.01 -> 0.01; card has no l/w/p A1/A2 terms",
+  "audit": "fresh-process op per starting card, b4check messages listed (reported)"
+ },
+ "start": "I6-1 starting parameters (not refit), records re-simulated in state C",
+ "folds": "leave-one-geometry-group-out (7), training = other 6 groups, both polarities, record load order",
+ "refit": {"heldout_nfev": 400, "heldout_irls": 2, "diff_step": 0.01, "start": "I6-1 starting card", "state": "C"},
+ "arms": {
+  "C0_refit": "g = 0",
+  "M_bias_v1": "fit_bias I3-2 recipe, abs inputs / VDD 1.1 V, 5 seeds, 2000 steps",
+  "sym_e1_l{0,1,2,5,10}": "fit_v2, sym_v2 inputs, EPS 0.01 V, vdd 1.1 V, lambda in V, 5 seeds",
+  "selected": "per outer fold the sym_e1_l{lambda*_G} row"
+ },
+ "penalty_grid": {"axes": "u_g, u_d in {0, 0.025, ..., 1.1} V (45 x 45), forward quadrant, Vb = 0, state-C starting card, dataset temperature", "floor_A": 1e-09},
+ "selection": {
+  "inner_folds": "outer training groups sorted by (pmos, group name), group i -> inner fold i mod 3",
+  "members": "seed 0",
+  "lambda_grid": [0, 1, 2, 5, 10],
+  "score": "mean ln RRMS of inner held-out refits (non-finite -> 0)",
+  "ties": "larger lambda within 1e-12",
+  "full_data_model": "lambda*_full by the same selection over all 7 groups; 5 seeds at lambda*_full on all 45 devices"
+ },
+ "rules": {
+  "primary": {
+   "stat": "GMR(selected, C0_refit) per temperature, cluster bootstrap over 7 geometry groups, 10000, seed 0, 95% CI",
+   "gain over C0_refit replicated": "CI upper < 1 and 0 failed devices in selected and C0_refit",
+   "worse than C0_refit": "CI lower > 1",
+   "inconclusive": "otherwise"
+  },
+  "secondary": {"stat": "GMR(selected, M_bias v1), cluster bootstrap", "non-inferior": "CI upper <= 1.05", "not shown non-inferior": "otherwise"}
+ },
+ "part_B": {
+  "model": "full|sym_e1_l{lambda*_full(T)} per temperature",
+  "M2": "each DEV starting card refit with the full-data g in the loop, state C, max_nfev 400, irls 2",
+  "replica": "model i6card_ch: REPLICA_ZERO + REPLICA_CHAN (alpha0 = alpha1 = beta0 = 0, agidl = agisl = 0, jss = jsd = jsws = jswd = jswgs = jswgd = 0, igcmod = igbmod = 0), VCVS copies, -gmin VCCS (1e-12 S), OSDI module to_verilog_a_v2 (vdd 1.1 V)",
+  "card_flags": "igcmod = igbmod = 1, rgatemod = 1, rbodymod = 1, agidl, alpha0, beta0, junction saturation currents nonzero in the card; off in the replica",
+  "Q1": "forward and exchanged benches, V(g,s) 0..s 1.1 V (45), V(d,s) -1.1..1.1 V (89), serpentine; default / r4 / tight; card, card + replica, element; core: tight equivalence |dI| <= 1e-6 |I| + 1e-13 A, 0 messages / non-finite / failed element runs, |I(V(d,s)=0)| <= 1e-12 A tight forward only (I17-1), g text <= 1e-9, exchanged g <= 1e-12, exchange asymmetry <= 1e-3; restriction: default tolerance > 1e-3",
+  "Q2": "tight, 1 MHz; gm sets |V(d,s)| in {0.05, 0.55, 1.1}, gds sets |V(g,s)| in {0.35, 0.525, 0.725, 0.9, 1.1}; core: derivative vs element identity <= 1e-3, capacitances <= 1e-3, 0 gm curves with introduced sign change in strong inversion (|V(g,s)| >= Vt + 0.2 V, Vt at 1e-7 A W/L); restriction: gds curves with introduced sign change",
+  "Q3": "not run: sky130 circuits at 1.8 V supply; TU Delft card 1 V (CMOSedu VDD=1V), measured range 1.1 V; core check recorded as not evaluated (count 0, label 'Q3 not run')",
+  "Q4": "element / card wall-time ratio of the default forward DC grid (3 repeats); restriction if > 2",
+  "label": "i12_1_symm.decide_deploy with the I17-1 V(d,s) = 0 value; not deployable / deployable with restrictions / deployable (simulator-level), each with 'Q3 not run'",
+  "reported": ["replica pre-check (non-channel outputs 0 at the Q2 op points)", "element-deck RRMS of the 45 M2 pairs and the 45 selected held-out pairs vs Python rows"]
+ },
+ "validity": {
+  "V1": "(a) state-L re-simulation of the 90 I6-1 starting cards reproduces the stored records (<= 1e-9); (b) state C = state L on cards with a2 in [0.01, 1] (difference 0); (c) state-L refits of C0_refit and stored M_bias v1 fold correction for t40_nmos_W1_L1_d130 and t40_pmos_W1_L1_d330 at 4.13 K reproduce I6-1 rows (<= 1e-9)",
+  "V2": "tests.test_i18_2_tud, tests.test_i12_1_symm, tests.test_i15_2_ablate pass",
+  "V3": "45 rows per arm and temperature; inner complete (7 x 3 x 5 per temperature, every inner held-out device scored); full-data selection complete",
+  "V4": "90 penalty grids 45 x 45 finite; forward current > 0 at u_g = u_d = 1.1 V",
+  "VB": "0 failed M2 refits; Part B unit tests pass; 45 Part B rows per temperature"
+ },
+ "decision": {"invalid": "any validity fail -> stop: fix and re-register", "valid": "per temperature: primary + secondary + Part B label (Q3 not run)"},
+ "predictions": {
+  "ln GMR(selected, C0_refit)": {"4": "< 0", "295": "< 0"},
+  "ln GMR(selected, M_bias v1)": {"4": "> 0", "295": "> 0"},
+  "ln GMR(M_bias v1, C0_refit)": {"4": "< 0", "295": "< 0"},
+  "primary_label": {"4": "inconclusive", "295": "gain over C0_refit replicated"},
+  "part_B": {"4": "deployable with restrictions (Q3 not run)", "295": "deployable with restrictions (Q3 not run)"}
+ },
+ "order": "prereg (alone) -> code + unit tests -> smoke -> queue I18_2_start, I18_2_pens, I18_2_base_{4,295}, I18_2_lodo_{T}_l{0,1,2,5,10}, I18_2_inner_{4,295}, I18_2_full_{4,295}, I18_2_decide, I18_2_partB_{4,295}, I18_2_decideB"
+}
