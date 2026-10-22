@@ -1,0 +1,114 @@
+{
+ "variant": "sym_e1_l0",
+ "inputs": "sym_v2",
+ "eps": 0.01,
+ "lambda": 0.0,
+ "smoke": true,
+ "vdd": {
+  "lv_nmos_W0p15_L0p18": 1.2,
+  "hv_nmos_W0p3_L0p5": 3.3
+ },
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {
+  "steps": 200
+ },
+ "seeds": [
+  0
+ ],
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "folds": [
+  "lv_nmos_W0p15_L0p18",
+  "hv_nmos_W0p3_L0p5"
+ ],
+ "train_order": {
+  "sym_e1_l0|lv_nmos_W0p15_L0p18": [
+   "lv_nmos_W0p15_L10",
+   "lv_nmos_W0p3_L0p13",
+   "lv_nmos_W0p3_L10",
+   "lv_nmos_W10_L10",
+   "lv_pmos_W0p15_L0p18",
+   "lv_pmos_W0p15_L10",
+   "lv_pmos_W0p3_L0p13",
+   "lv_pmos_W0p3_L10",
+   "lv_pmos_W10_L10"
+  ],
+  "sym_e1_l0|hv_nmos_W0p3_L0p5": [
+   "hv_nmos_W0p3_L10",
+   "hv_nmos_W0p6_L1p2",
+   "hv_nmos_W10_L0p5",
+   "hv_pmos_W0p3_L10",
+   "hv_pmos_W0p6_L0p5",
+   "hv_pmos_W10_L0p35",
+   "hv_pmos_W2_L1p2"
+  ]
+ },
+ "per_device": {
+  "lv_nmos_W0p15_L0p18": 0.03179815235615079,
+  "hv_nmos_W0p3_L0p5": 0.0192205838103576
+ },
+ "mean": 0.025509368083254196,
+ "heldout_rows": {
+  "lv_nmos_W0p15_L0p18": {
+   "label": "sym_e1_l0",
+   "tag": "lv_nmos_W0p15_L0p18",
+   "T_K": 300,
+   "n_active": 12,
+   "rrms_start": 0.03186650610793291,
+   "rrms": 0.03179815235615079,
+   "failed": [],
+   "n_sim": 60,
+   "history": [
+    0.03186650610793291,
+    0.03180476051196811,
+    0.03179815235615079
+   ],
+   "runtime_s": 1.59
+  },
+  "hv_nmos_W0p3_L0p5": {
+   "label": "sym_e1_l0",
+   "tag": "hv_nmos_W0p3_L0p5",
+   "T_K": 300,
+   "n_active": 12,
+   "rrms_start": 0.019736651041778273,
+   "rrms": 0.0192205838103576,
+   "failed": [],
+   "n_sim": 60,
+   "history": [
+    0.019736651041778273,
+    0.019554103666496667,
+    0.0192205838103576
+   ],
+   "runtime_s": 1.7
+  }
+ },
+ "train_seconds_per_member": {
+  "sym_e1_l0|lv_nmos_W0p15_L0p18": [
+   1.1
+  ],
+  "sym_e1_l0|hv_nmos_W0p3_L0p5": [
+   1.2
+  ]
+ },
+ "timing": {
+  "train_s": 1.7,
+  "refit_s": 2.3,
+  "n_seed_tasks": 2
+ }
+}

@@ -234,20 +234,22 @@ PEN_GRID = np.round(np.arange(PEN_N) * PEN_STEP, 6)     # 0 .. 1.85
 
 
 def penalty_arrays(i_grid: np.ndarray, is_pmos: bool, step: float = PEN_STEP,
-                   floor: float = PEN_I_FLOOR) -> dict:
+                   floor: float = PEN_I_FLOOR, grid: np.ndarray | None = None) -> dict:
     """Penalty inputs from a card current grid ``i_grid`` (signed drain
     current, shape (len(PEN_GRID) u_g, len(PEN_GRID) u_d), forward quadrant).
 
     Returns flattened arrays over the kept points (u_d > 0, forward current
     > ``floor``, finite): ug, ud (V, forward-positive), r_gm = gm/I and
     r_gds = gds/I of the card (1/V, central differences, one-sided at the
-    grid edges)."""
+    grid edges).  ``grid`` (default ``PEN_GRID``): the axis values of both
+    u_g and u_d, spaced by ``step`` (I17-2: 0 .. VDD of another PDK)."""
     i_grid = np.asarray(i_grid, dtype=np.float64)
+    axis = PEN_GRID if grid is None else np.asarray(grid, dtype=np.float64)
     s = -1.0 if is_pmos else 1.0
     i_f = s * i_grid
     dg = np.gradient(i_f, step, axis=0)
     dd = np.gradient(i_f, step, axis=1)
-    UG, UD = np.meshgrid(PEN_GRID[:i_grid.shape[0]], PEN_GRID[:i_grid.shape[1]], indexing="ij")
+    UG, UD = np.meshgrid(axis[:i_grid.shape[0]], axis[:i_grid.shape[1]], indexing="ij")
     keep = (UD > 0) & np.isfinite(i_f) & (i_f > floor) & np.isfinite(dg) & np.isfinite(dd)
     with np.errstate(divide="ignore", invalid="ignore"):
         r_gm = dg / i_f
@@ -257,7 +259,7 @@ def penalty_arrays(i_grid: np.ndarray, is_pmos: bool, step: float = PEN_STEP,
 
 
 def penalty_value_numpy(corr: SymCorrection | Correction, pens: Sequence[dict],
-                        h: float = 1e-5) -> dict:
+                        h: float = 1e-5, vdd_v1: float = VDD_NORM) -> dict:
     """P (mean over devices of the per-device mean hinge) and the fraction
     of grid points with a negative corrected gm / gds, for a trained
     correction (v2: ``SymCorrection``; v1: ``BiasCorrection`` on E1 columns
@@ -271,8 +273,8 @@ def penalty_value_numpy(corr: SymCorrection | Correction, pens: Sequence[dict],
         if isinstance(corr, BiasCorrection):
             phi = np.zeros((len(ug), 6))
             phi[:, 0] = 1.0 if pm else 0.0
-            phi[:, 1] = np.abs(ug) / VDD_NORM
-            phi[:, 2] = np.abs(ud) / VDD_NORM
+            phi[:, 1] = np.abs(ug) / vdd_v1
+            phi[:, 2] = np.abs(ud) / vdd_v1
             return corr.g(phi)
         raise TypeError(type(corr))
     per, neg_gm, neg_gds, n = [], 0, 0, 0
@@ -304,20 +306,22 @@ def card_negative_fraction(pens: Sequence[dict]) -> dict:
 # ---------------------------------------------------------------------------
 def fit_v2(train: list[DeviceRec], pens: Sequence[dict] | None, lam: float,
            hyper: dict | None = None, inputs: str = "sym_v2", eps: float = EPS,
-           threads: int = 1, arm: str = "M_bias_v2", trace: list | None = None) -> SymCorrection:
+           threads: int = 1, arm: str = "M_bias_v2", trace: list | None = None,
+           vdd: float = VDD_NORM) -> SymCorrection:
     """Train the v2 ensemble on ``train`` (cards fixed: the records' stored
     simulations) with the gm / gds penalty on ``pens`` (one dict per training
     device, ``penalty_arrays``) and weight ``lam``.
 
     The objective per member is  E1 loss + lam * P + l2 * sum ||W||^2
     (P omitted when lam == 0 or pens is empty; then the update sequence is
-    the one of ``i3_2_bias.fit_bias``)."""
+    the one of ``i3_2_bias.fit_bias``).  ``vdd``: input normalization
+    (default the sky130 ``VDD_NORM``; I17-2 passes the IHP class supply)."""
     import torch
     torch.set_num_threads(threads)
     hp = {**HYPER_V2, **(hyper or {})}
     batch = make_batch(train)
     loss = _loss_fn(batch)
-    x = batch_inputs(train, inputs, eps)
+    x = batch_inputs(train, inputs, eps, vdd)
     if len(x) != len(batch.sim):
         raise RuntimeError("batch_inputs and make_batch differ in length")
     # same memory layout as fit_bias (E1 phi column selection by a list index),
@@ -365,7 +369,7 @@ def fit_v2(train: list[DeviceRec], pens: Sequence[dict] | None, lam: float,
         def penalty():
             per = []
             for pm, ug, ud, rg, rd in pen_t:
-                x1, x2 = torch_sym_forward(ug, ud, eps)
+                x1, x2 = torch_sym_forward(ug, ud, eps, vdd)
                 xin = torch.stack([torch.full_like(x1, pm), x1, x2], dim=1)
                 gp = forward((xin - mu_t) / sd_t)
                 dgg, dgd = torch.autograd.grad(gp.sum(), (ug, ud), create_graph=True)
@@ -386,7 +390,7 @@ def fit_v2(train: list[DeviceRec], pens: Sequence[dict] | None, lam: float,
                               None if pval is None else float(pval.detach())))
         nets.append([(mm.weight.detach().numpy().T.copy(), mm.bias.detach().numpy().copy())
                      for mm in mods])
-    return SymCorrection(arm, mu, sd, nets=nets, inputs=inputs, eps=eps)
+    return SymCorrection(arm, mu, sd, nets=nets, inputs=inputs, eps=eps, vdd=vdd)
 
 
 def merge_seed_corrections(parts: list[SymCorrection]) -> SymCorrection:
