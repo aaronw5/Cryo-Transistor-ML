@@ -1,0 +1,225 @@
+{
+ "id": "I15-2",
+ "status": "in force",
+ "date": "2026-10-22",
+ "title": "Which g v2 change costs accuracy: ablation of the symmetric inputs, the smooth-abs EPS and the gm/gds penalty on the 18-fold LODO, and a training-data-only nested selection of lambda in {0, 1, 2, 5, 10} V; sky130 77 K, 18 devices, state C",
+ "done_before": "none of the I15-2 runs (stored I13-1 rows and corrections only)",
+ "inputs": {
+  "records": "out/research/explore/I13_1/records",
+  "v1_rows": "I13_1/all18/results.json per_device.M_bias",
+  "v2_rows": "I13_1/lodo/results.json per_device.M_bias_v2",
+  "C0_refit_rows": "I13_1/lodo/results.json per_device.C0_refit",
+  "corrections": [
+   "I13_1/all18/corrections.json",
+   "I13_1/lodo/corrections.json"
+  ],
+  "penalty_grids": "I12_1/grids/card_grids.npz"
+ },
+ "recipe": {
+  "net": "3-16-16-1 tanh, zero-init last layer, OUT_SCALE tanh output",
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "adam_lr": 0.003,
+  "steps": 2000,
+  "l2": 0.0001,
+  "dtype": "float64",
+  "loss": "E1 (mean per-device paper RRMS)",
+  "train_order": "record load order (I12-1 amendment A2)",
+  "heldout_refit": {
+   "method": "TRF",
+   "max_nfev": 400,
+   "irls": 2,
+   "diff_step": 0.01,
+   "bsim4_state": "clamped (C)",
+   "metric": "strict paper RRMS, frozen curve inclusion"
+  }
+ },
+ "variants": {
+  "v1": {
+   "inputs": "abs_v1",
+   "eps": null,
+   "lambda": 0,
+   "source": "stored I13_1/all18 M_bias"
+  },
+  "sym_e0_l0": {
+   "inputs": "sym_v2",
+   "eps": 0.0,
+   "lambda": 0,
+   "source": "new LODO"
+  },
+  "sym_e1_l0": {
+   "inputs": "sym_v2",
+   "eps": 0.01,
+   "lambda": 0,
+   "source": "new LODO"
+  },
+  "sym_e0_l10": {
+   "inputs": "sym_v2",
+   "eps": 0.0,
+   "lambda": 10,
+   "source": "new LODO"
+  },
+  "sym_e1_l10": {
+   "inputs": "sym_v2",
+   "eps": 0.01,
+   "lambda": 10,
+   "source": "stored I13_1/lodo M_bias_v2 (g v2)"
+  },
+  "sym_e1_l1": {
+   "inputs": "sym_v2",
+   "eps": 0.01,
+   "lambda": 1,
+   "source": "new LODO"
+  },
+  "sym_e1_l2": {
+   "inputs": "sym_v2",
+   "eps": 0.01,
+   "lambda": 2,
+   "source": "new LODO"
+  },
+  "sym_e1_l5": {
+   "inputs": "sym_v2",
+   "eps": 0.01,
+   "lambda": 5,
+   "source": "new LODO"
+  }
+ },
+ "contrasts": {
+  "inputs_abs_to_sym": [
+   [
+    "sym_e0_l0",
+    "v1"
+   ]
+  ],
+  "eps_0_to_0.01": [
+   [
+    "sym_e1_l0",
+    "sym_e0_l0"
+   ],
+   [
+    "sym_e1_l10",
+    "sym_e0_l10"
+   ]
+  ],
+  "penalty_0_to_10": [
+   [
+    "sym_e0_l10",
+    "sym_e0_l0"
+   ],
+   [
+    "sym_e1_l10",
+    "sym_e1_l0"
+   ]
+  ],
+  "lambda_curve": [
+   [
+    "sym_e1_l1",
+    "sym_e1_l0"
+   ],
+   [
+    "sym_e1_l2",
+    "sym_e1_l0"
+   ],
+   [
+    "sym_e1_l5",
+    "sym_e1_l0"
+   ],
+   [
+    "sym_e1_l10",
+    "sym_e1_l0"
+   ],
+   [
+    "sym_e1_l0",
+    "v1"
+   ],
+   [
+    "sym_e1_l1",
+    "v1"
+   ],
+   [
+    "sym_e1_l2",
+    "v1"
+   ],
+   [
+    "sym_e1_l5",
+    "v1"
+   ],
+   [
+    "sym_e1_l10",
+    "v1"
+   ]
+  ]
+ },
+ "contrast_labels": {
+  "cost": "CI lower > 1",
+  "no_cost_beyond_margin": "CI upper <= 1.05",
+  "inconclusive": "otherwise",
+  "change_named_costly": "at least one of its contrasts labelled cost"
+ },
+ "gmr": {
+  "function": "i3_2_bias.paired_ratio",
+  "n_boot": 10000,
+  "seed": 0,
+  "resample_unit": "device"
+ },
+ "selection": {
+  "grid_lambda": [
+   0,
+   1,
+   2,
+   5,
+   10
+  ],
+  "inputs": "sym_v2",
+  "eps": 0.01,
+  "inner_folds": "training devices sorted by (polarity nMOS first, tag); i-th -> fold i mod 3",
+  "inner_model": "one member, seed 0, recipe above, trained on the training devices outside the inner fold (load order), penalty grids of those devices",
+  "inner_heldout": "refit of each inner held-out device's card with the member in the loop (recipe above), strict paper RRMS",
+  "score": "mean over inner held-out devices of ln RRMS; non-finite RRMS counts as ln(1.0)",
+  "choice": "argmin score; ties within 1e-12 -> larger lambda",
+  "scope": "18 outer folds (17 training devices) + full-data model (18 devices, reported, not scored)",
+  "selected_row": "held-out row of the 5-seed LODO variant sym_e1_l{lambda*_h} for fold h"
+ },
+ "primary": {
+  "contrast": "GMR(selected, v1)",
+  "ni_margin": 1.05
+ },
+ "secondary": [
+  "GMR(selected, C0_refit)",
+  "GMR(selected, sym_e1_l10)",
+  "per-variant table (all-device, combined, median, GMR vs v1 and C0_refit, devices lower, failed)",
+  "lambda* per fold and full-data",
+  "inner scores per fold"
+ ],
+ "negative_fractions": {
+  "grid": "penalty grids (card forward current > 1 nA), dg/du central differences h 1e-5 V (penalty_value_numpy)",
+  "sets": [
+   "fold training grids (mean over folds)",
+   "held-out starting-card grid (mean over folds and pooled)",
+   "full-data model on all 18 grids",
+   "card only"
+  ],
+  "variants": "every variant incl. v1, sym_e1_l10 and selected"
+ },
+ "outcome": {
+  "invalid": "any validity fail -> stop: fix and re-register",
+  "non-inferior": "CI upper of GMR(selected, v1) <= 1.05",
+  "not shown non-inferior": "CI upper > 1.05",
+  "reported": [
+   "CI upper < 1",
+   "GMR(selected, C0_refit) CI upper < 1"
+  ]
+ },
+ "validity": {
+  "V1": "seed 0 of fold pmos_L2_W5 reproduces stored member 0: (a) sym_e1_l10 vs I13_1/lodo M_bias_v2|pmos_L2_W5, (b) abs lambda 0 vs I13_1/all18 M_bias|pmos_L2_W5; max |weight diff| = 0",
+  "V2": "held-out refit of stored g v2 fold corrections of nmos_L1_W1p6 and pmos_L2_W5 reproduces stored rows; max |RRMS diff| <= 1e-9",
+  "V3": "18 held-out rows per new variant; inner CV complete (19 x 5 x 3 trainings; every inner held-out device scored)"
+ },
+ "order": "prereg commit (alone) -> code + unit tests commit -> smoke (2 outer folds, 200 steps, refit max_nfev 20) -> queue (one heavy job at a time, 6 workers): I15_2_validity, I15_2_lodo_sym_e0_l0, _sym_e1_l0, _sym_e0_l10, _sym_e1_l1, _sym_e1_l2, _sym_e1_l5, I15_2_inner, I15_2_decide",
+ "compute_estimate_h": 4.3
+}
