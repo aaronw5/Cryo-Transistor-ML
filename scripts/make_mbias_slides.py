@@ -3,7 +3,9 @@
 (I3-2 recipe), sky130 77 K, all 18 measured devices, leave-one-device-out.
 
 Inputs (all stored; nothing is fitted here):
-  out/research/explore/I3_2/all18/results.json        all-18 LODO run
+  out/research/explore/I13_1/all18/results.json       all-18 LODO run, BSIM4 clamp
+      state C (I13-1 rerun of the I3-2 recipe; replaces I3_2/all18)
+  out/research/explore/I13_1/summary.json             old (state L) vs new (state C)
   out/research/explore/I3_2/real_dev/results.json     pre-registered 12-device run
   out/research/explore/mbias_deck/sky130/check.json   NGSpice re-simulation
       (scripts/research/explore/mbias_deck_resim.py --dataset sky130)
@@ -34,7 +36,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DECK = ROOT / "slides" / "cryo_ml_mbias_real_data.pptx"
 PLOTS = ROOT / "slides" / "mbias_plots"
 EXP = ROOT / "out/research/explore"
-ALL18 = EXP / "I3_2/all18"
+ALL18 = EXP / "I13_1/all18"        # I13-1: state-C rerun of the I3-2 recipe
+I13 = EXP / "I13_1"
 DEV12 = EXP / "I3_2/real_dev"
 CHECK = EXP / "mbias_deck/sky130/check.json"
 INK = RGBColor(32, 36, 40)
@@ -117,20 +120,21 @@ def performance_rows() -> list[dict]:
                      "cost": f"{s(p)['mean_ngspice_calls_per_device']:.0f} calls/device",
                      "src": f"ngspice_direct/{name}"})
     p = pol / "direct43_r3_fd/real/summary.json"
-    rows.append({"m": "Direct NGSpice, round 3 + FD (starting card)", "p": "43",
-                 "d": summary_rrms(p),
+    start_c = {t: float(v["new"]) for t, v in jload(I13 / "summary.json")["per_device"]["start"].items()}
+    rows.append({"m": "Direct NGSpice, round 3 + FD (starting card), state C (e)", "p": "43",
+                 "d": start_c,
                  "cost": f"+{s(p)['mean_ngspice_calls_per_device']:.0f} calls/device",
                  "src": "polished/direct43_r3_fd"})
     rows += [
-        {"group": "This deck: leave-one-device-out, all 18 devices"},
+        {"group": "This deck: leave-one-device-out, all 18 devices, BSIM4 clamp state C"},
         {"m": "C0_refit (refit, g = 0)", "p": "43", "d": a18["per_device"]["C0_refit"],
-         "cost": f"+{nsim['C0_refit']:.0f} calls/device", "src": "I3_2/all18"},
+         "cost": f"+{nsim['C0_refit']:.0f} calls/device", "src": "I13_1/all18"},
         {"m": "T1_inloop (refit, per-curve gain table) (b)", "p": "43 + table",
          "d": a18["per_device"]["T1_inloop"],
-         "cost": f"+{nsim['T1_inloop']:.0f} calls/device", "src": "I3_2/all18"},
+         "cost": f"+{nsim['T1_inloop']:.0f} calls/device", "src": "I13_1/all18"},
         {"m": "M_bias (refit with shared g)", "p": "43 + 1765 shared (c)",
          "d": a18["per_device"]["M_bias"],
-         "cost": f"+{nsim['M_bias']:.0f} calls/device", "src": "I3_2/all18"},
+         "cost": f"+{nsim['M_bias']:.0f} calls/device", "src": "I13_1/all18"},
         {"group": "Pre-registered I3-2 run, 12 devices, training on 11 (d)"},
         {"m": "Published 77 K card, same 12 devices", "p": "published",
          "d": {t: v for t, v in refd("released").items() if t in d12["M_bias"]}, "cost": "-",
@@ -304,7 +308,7 @@ def title_slide(prs, a18):
         "(leave-one-device-out)",
         f"All-device RRMS: released card 0.2751, paper 43 parameters 0.2038, "
         f"M_bias {s['M_bias']['all_device_mean']:.4f}",
-        "2026-10-21",
+        "2026-10-22 (BSIM4 clamp state C, I13-1)",
     ], left=1.0, top=3.55, width=11.3, height=1.6, size=18).text_frame.paragraphs[0]
     for para in slide.shapes[-1].text_frame.paragraphs:
         para.alignment = PP_ALIGN.CENTER
@@ -329,7 +333,8 @@ def data_slide(prs, check):
         "All-device = mean of the 18 device values. Combined = (mean nMOS + mean pMOS) / 2. "
         "Paper numbers below are all-device.",
         "Simulator: ngspice-41 (arm64 build; reproduces the reference scores exactly). "
-        "Every RRMS on these slides is from an NGSpice simulation.",
+        "Every RRMS on these slides is from an NGSpice simulation, with the BSIM4 A2 clamp "
+        "written into the card (state C, slide 'BSIM4 A2 clamp').",
         "Reference, 18 devices: released card 0.2751 (combined 0.2595); paper, 7 parameters 0.2284 "
         "(0.2135); paper, 43 parameters 0.2038 (0.1905).",
         "Device split: the 18 devices are the 12 former DEV and 6 former TEST devices. The TEST "
@@ -735,8 +740,10 @@ def performance_slide(prs, rows):
         "(b) One constant g per (polarity, curve tag), 21 values; defined only at the measured biases.  "
         "(c) 43 card parameters per device plus 5 x 353 network weights shared by all devices.  "
         "(d) Pre-registered I3-2 run on the 12 former DEV devices.  Cost: NGSpice simulations; "
-        "'+' = on top of the starting card; direct NGSpice rounds: calls in that round.",
-    ], top=6.55, height=0.9, size=9.5)
+        "'+' = on top of the starting card; direct NGSpice rounds: calls in that round.  "
+        "(e) Starting card scored with the BSIM4 A2 clamp written into the card (I13-1); the earlier "
+        "rows are the stored scores (old deck, state L; 5 devices have a2 > 1 in the 43-parameter cards).",
+    ], top=6.55, height=0.9, size=9)
 
 
 def per_device_slide(prs, check, a18):
@@ -778,8 +785,8 @@ def dev12_slide(prs, a18):
     slide = new_slide(prs, "Earlier pre-registered run: 12 devices, training on 11", size=24)
     head = ["Same 12 devices", "Published card", "C0_refit", "T1_inloop", "M_bias"]
     rows = [head]
-    for lab, src in (("I3-2 run (2026-10-20), g trained on 11 devices", d12),
-                     ("All-18 run, g trained on 17 devices", pd)):
+    for lab, src in (("I3-2 run (2026-10-20, state L), g trained on 11 devices", d12),
+                     ("All-18 run (state C), g trained on 17 devices", pd)):
         for conv in ("all", "combined"):
             rows.append([f"{lab}, {'all-device' if conv == 'all' else 'combined'}",
                          f4(agg({t: ref[t]['rrms'] for t in tags12})[conv])]
@@ -791,10 +798,46 @@ def dev12_slide(prs, a18):
         "not loaded then.",
         "On 2026-10-21 the user opened the 6 TEST devices. The all-18 run uses the same recipe "
         "with 17 training devices per fold.",
-        "C0_refit does not depend on the training devices: on the 12 devices the two runs give "
-        "the same values (max |difference| "
+        "C0_refit does not depend on the training devices: on the 12 devices the two runs differ only "
+        "through the BSIM4 clamp state (state L vs C, devices with a2 > 1; max |difference| "
         f"{a18['reproduction'].get('C0_refit_vs_stored_I2_1_on_REAL_DEV', float('nan')):.1e}).",
     ], top=3.6, height=2.5, size=15)
+
+
+def clamp_slide(prs):
+    """I13-1: BSIM4 A2 clamp state, issue and effect (old state L vs new state C)."""
+    s = jload(I13 / "summary.json")
+    T, G = s["table"], s["gmr"]
+    slide = new_slide(prs, "BSIM4 A2 clamp: one model state per card (I13-1)", size=24)
+    add_lines(slide, [
+        "ngspice-41 b4check.c checks each BSIM4 model once per process (static model name) and sets "
+        "A2 = 1 and A1 = 0 when the size-dependent A2 > 1; b4temp.c rebuilds the size-dependent "
+        "parameters at every analysis.",
+        "The measured-curve deck runs one dc analysis per curve in one process. For a card with "
+        "a2 > 1 the first curve was simulated with A2 = 1, the other curves with the card a2 "
+        "(state L, all stored 43-parameter scores before I13-1).",
+        "a2 > 1 in every 43-parameter arm on nmos_L0p19_W7 (1.877), nmos_L0p25_W1p6 (1.045), "
+        "nmos_L20_W0p64 (2.002), nmos_L8_W1p6 (1.062), pmos_L0p35_W1p6 (1.253). Published cards: a2 <= 0.467.",
+        "Fix: the clamp is written into the card (state C: every curve as in a fresh process). "
+        "All numbers in this deck are state C; refit and training reruns, starting cards not refit.",
+    ], top=0.95, height=2.6, size=13.5)
+    lab = {"published": "Published 77 K card", "start": "Starting card (not refit)",
+           "C0_refit": "C0_refit", "T1_inloop": "T1_inloop", "M_bias_v1": "M_bias",
+           "M_bias_v2": "M_bias v2 (symmetric inputs, I12-1)"}
+    rows = [["Arm (18 devices)", "Old, state L: all / comb / median", "New, state C: all / comb / median",
+             "New - old (all-device)"]]
+    for a in ("published", "start", "C0_refit", "T1_inloop", "M_bias_v1", "M_bias_v2"):
+        o, n = T[a]["old"], T[a]["new"]
+        rows.append([lab[a], f"{o['all_device_mean']:.4f} / {o['combined']:.4f} / {o['median']:.4f}",
+                     f"{n['all_device_mean']:.4f} / {n['combined']:.4f} / {n['median']:.4f}",
+                     f"{n['all_device_mean'] - o['all_device_mean']:+.4f}"])
+    for k, name in (("M_bias_v1_vs_C0_refit", "GMR M_bias / C0_refit"),
+                    ("M_bias_v1_vs_T1_inloop", "GMR M_bias / T1_inloop")):
+        o, n = G[k]["old"], G[k]["new"]
+        rows.append([name, f"{o['ratio']:.3f} [{o['ci_low']:.3f}, {o['ci_high']:.3f}], {o['wins']}/18",
+                     f"{n['ratio']:.3f} [{n['ci_low']:.3f}, {n['ci_high']:.3f}], {n['wins']}/18", ""])
+    add_table(slide, rows, [3.3, 3.4, 3.4, 1.9], left=0.6, top=3.6, size=11.5, row_h=0.36,
+              align_right_from=1)
 
 
 def bar_slide(prs):
@@ -825,7 +868,7 @@ def deploy_slide(prs, check):
             ["All-18 run, 18 fold models", "18",
              f"{agg(nat)['all']:.6f} ({agg(nat)['combined']:.6f})",
              f"{agg(py)['all']:.6f} ({agg(py)['combined']:.6f})", f"{dmax:.1e}"],
-            ["I3-2 run, 12 fold models (F1c)", "12",
+            ["I3-2 run, 12 fold models (F1c, state L)", "12",
              f"{fa['native_ng41osdi']['all_device_mean']:.6f} "
              f"({fa['native_ng41osdi']['combined']:.6f})",
              f"{fa['stored_M_bias']['all_device_mean']:.6f} ({fa['stored_M_bias']['combined']:.6f})",
@@ -895,6 +938,7 @@ def main() -> None:
     cost_slide(prs, nums)
     performance_slide(prs, rows)
     per_device_slide(prs, check, a18)
+    clamp_slide(prs)
     dev12_slide(prs, a18)
     bar_slide(prs)
     deploy_slide(prs, check)

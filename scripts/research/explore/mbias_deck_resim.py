@@ -7,14 +7,17 @@ Datasets (``--dataset``; sky130: all 18 devices, the 6 REAL_TEST devices
 opened on 2026-10-21 by user decision; other datasets: DEV devices only, their
 TEST splits are not read):
 
-  sky130      I3-2 all18 run (out/research/explore/I3_2/all18), ngspice-41
+  sky130      I3-2 all18 recipe rerun in BSIM4 clamp state C (I13-1:
+              out/research/explore/I13_1/all18, records I13_1/records; the
+              b4check.c A1/A2 clamp is written into every card), ngspice-41
               arm64 (canonical) and the ngspice-41 OSDI build.  Arms:
               published 77 K card, starting card (direct43_r3_fd), C0_refit
               card, T1_inloop card, M_bias refit card; M_bias two ways:
               (a) SPICE-native, the fold Verilog-A correction compiled here
               with OpenVAF 23.5.0 and placed in the netlist, (b) ngspice-41
               card current x exp(g) in Python.  Checks against
-              I3_2/all18/results.json and reference_scores.json.
+              I13_1/all18/results.json, I13_1/summary.json (state-C start
+              card) and reference_scores.json.
   nist4k      I8-1 NIST mds2-2997 4 K, lvt, 77 K sky130 card (stock = the
               card with the device's bin, no fit).
   nist_rtcard I9-1 NIST mds2-2997 4 K, regular Vt, room-temperature sky130
@@ -60,14 +63,15 @@ def jload(p: Path):
 # ---------------------------------------------------------------------------
 # sky130 77 K, all 18 devices (I3-2 recipe, leave-one-device-out, all18 run)
 # ---------------------------------------------------------------------------
-ALL18 = I32 / "all18"
+ALL18 = EXP / "I13_1/all18"        # I13-1 state-C rerun of the I3-2 recipe
+I13 = EXP / "I13_1"
 OPENVAF = "/Users/anrunw/cryo-ng41/openvaf/bin/openvaf"      # OpenVAF 23.5.0 (OSDI 0.3), as F1c
 OPENVAF_ARGS = ("--target", "aarch64-apple-darwin")
 
 
 def sky130_records() -> dict:
     from cryoml.explore.e1_correction import load_devices
-    recs = load_devices(EXP / "E1/real_dev") + load_devices(EXP / "E1/real_test")
+    recs = load_devices(I13 / "records/real_dev") + load_devices(I13 / "records/real_test")
     return {r.tag: r for r in recs}
 
 
@@ -133,9 +137,9 @@ def sky130_task(task) -> dict:
 def sky130_stored() -> dict:
     res = jload(ALL18 / "results.json")["per_device"]
     rel = jload(ROOT / "out/research/reference_scores.json")
-    start = jload(ROOT / "out/research/polished/direct43_r3_fd/real/summary.json")["devices"]
+    start = jload(I13 / "summary.json")["per_device"]["start"]       # state C
     return {t: {"published": rel["released"]["devices"][t]["rrms"],
-                "start": start[t]["rrms"],
+                "start": start[t]["new"],
                 "C0_refit": res["C0_refit"][t],
                 "M_bias_python": res["M_bias"][t],
                 "M_bias_native": res["M_bias"][t],

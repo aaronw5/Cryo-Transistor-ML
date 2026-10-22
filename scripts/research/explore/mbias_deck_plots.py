@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "src"))
 
 SRC = ROOT / "out/research/explore/mbias_deck/sky130"
-ALL18 = ROOT / "out/research/explore/I3_2/all18"
+ALL18 = ROOT / "out/research/explore/I13_1/all18"     # I13-1 state-C rerun of the I3-2 recipe
 OUT = ROOT / "slides" / "mbias_plots"
 VDD = 1.85
 

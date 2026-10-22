@@ -6,8 +6,9 @@ the fold's five seeds with the e1_correction / i3_2_bias recipe and checks the
 result against the stored fold model.
 
 Inputs:
-  out/research/explore/E1/real_{dev,test}.{npz,json}   starting-card records
-  out/research/explore/I3_2/all18/{results,corrections,heldout_cards}.json
+  out/research/explore/I13_1/records/real_{dev,test}.{npz,json}   starting-card records (state C)
+  out/research/explore/I13_1/all18/{results,corrections,heldout_cards}.json  (I3-2 recipe, state C)
+  out/research/explore/I13_1/summary.json   state-C start-card scores (round 3 + FD stage)
   out/research/ngspice_direct/*/summary.json, out/research/polished/direct43_r3_fd
   out/research/reference_scores.json, out/cold_loop/full_direct/round_3/spec.json
   out/research/explore/mbias_deck/sky130/check.json
@@ -38,8 +39,9 @@ from cryoml.explore.e1_correction import _loss_fn, load_devices, make_batch, raw
 from cryoml.explore.i3_2_bias import HYPER_BIAS, correction_from_json  # noqa: E402
 from cryoml.explore.i2_1_joint import log_ratio  # noqa: E402
 
-E1 = ROOT / "out/research/explore/E1"
-ALL18 = ROOT / "out/research/explore/I3_2/all18"
+E1 = ROOT / "out/research/explore/I13_1/records"      # I13-1 state-C records
+ALL18 = ROOT / "out/research/explore/I13_1/all18"     # I13-1 state-C rerun of the I3-2 recipe
+I13_SUMMARY = ROOT / "out/research/explore/I13_1/summary.json"
 DECKDIR = ROOT / "out/research/explore/mbias_deck"
 OUT = ROOT / "slides" / "mbias_plots"
 ND = ROOT / "out/research/ngspice_direct"
@@ -159,8 +161,10 @@ def fig_stages() -> dict:
     rows = [("published card", pubd, None, None, None)]
     for lab, path in STAGES:
         s = jload(path)
-        rows.append((lab, {t: float(v["rrms"]) for t, v in s["devices"].items()},
-                     s["mean_ngspice_calls_per_device"], s["wall_s"], s))
+        d = {t: float(v["rrms"]) for t, v in s["devices"].items()}
+        if lab == "round 3 + FD":     # I13-1: the starting card scored in state C (clamp written)
+            d = {t: float(v["new"]) for t, v in jload(I13_SUMMARY)["per_device"]["start"].items()}
+        rows.append((lab, d, s["mean_ngspice_calls_per_device"], s["wall_s"], s))
     fig, axes = plt.subplots(1, 3, figsize=(16.5, 4.9), layout="constrained",
                              gridspec_kw={"width_ratios": [1, 1, 1.15]})
     x = np.arange(len(rows))
@@ -200,7 +204,9 @@ def fig_stages() -> dict:
     out = []
     for (lab, d, c, w, s), m in zip(rows, means):
         out.append({"label": lab, "all_device": m, "calls": c, "wall_s": w,
-                    "combined": None if s is None else s.get("combined_rrms"),
+                    "combined": None if s is None else float(
+                        (np.mean([v for k, v in d.items() if k.startswith("nmos")])
+                         + np.mean([v for k, v in d.items() if k.startswith("pmos")])) / 2),
                     "options": None if s is None else s.get("options")})
     r1 = jload(ND / "full_r1_direct_seeded/summary.json")["devices"]
     cma_better = {}
