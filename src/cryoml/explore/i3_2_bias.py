@@ -62,14 +62,17 @@ def correction_from_json(row: dict) -> Correction:
 
 def fit_bias(arm: str, train: list[DeviceRec], hyper: dict | None = None,
              cols: tuple | None = None, threads: int = 1,
-             verbose: bool = False, trace: list | None = None) -> BiasCorrection:
+             verbose: bool = False, trace: list | None = None,
+             trace_cb=None) -> BiasCorrection:
     """Train an ``M_bias``-type MLP ensemble on ``train``.
 
     Same recipe as ``e1_correction.fit_arm('M')`` (standardization with the
     training-point mean/std, is_pmos kept 0/1, zero-initialized last layer,
     ``torch.manual_seed(seed)`` before each member, L2 on weight matrices,
     full-batch Adam, float64) on the feature columns ``cols``
-    (default ``ARM_COLUMNS[arm]``)."""
+    (default ``ARM_COLUMNS[arm]``).  ``trace_cb(seed, step, fit, value)``,
+    if given, is called at every step with the loss term and the objective
+    before that step's update (floats; the update sequence is unchanged)."""
     import torch
     torch.set_num_threads(threads)
     hp = {**HYPER_BIAS, **(hyper or {})}
@@ -101,7 +104,10 @@ def fit_bias(arm: str, train: list[DeviceRec], hyper: dict | None = None,
             return OUT_SCALE * torch.tanh(x[:, 0])
         for step in range(hp["steps"]):
             opt.zero_grad()
-            value = loss(forward(z)) + hp["l2"] * sum((m.weight ** 2).sum() for m in mods)
+            fit = loss(forward(z))
+            value = fit + hp["l2"] * sum((m.weight ** 2).sum() for m in mods)
+            if trace_cb is not None:
+                trace_cb(int(seed), step, float(fit), float(value))
             value.backward()
             opt.step()
             if verbose and step % 500 == 0:

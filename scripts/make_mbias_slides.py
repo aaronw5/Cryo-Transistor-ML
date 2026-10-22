@@ -576,8 +576,9 @@ def training_slide(prs, nums):
         "5-seed mean g.",
         f"Std of g across seeds at the training points: median {t['seed_spread_g_std_median']:.4f}, "
         f"max {t['seed_spread_g_std_max']:.3f}.",
-        f"This trace is a re-run ({t['runtime_s']:.0f} s); max |g - stored fold g| = "
-        f"{t['max_abs_g_vs_stored']:.1e}.",
+        f"Trace: re-run of the stored fold model's trainer (fit_bias, training records in load "
+        f"order, {t['runtime_s']:.0f} s); max |g - stored fold g| = {t['max_abs_g_vs_stored']:.1g}, "
+        f"max |weight difference| = {t.get('max_abs_weight_vs_stored', float('nan')):.1g}.",
     ], left=8.65, top=1.95, width=4.55, height=5.3, size=12.5)
 
 

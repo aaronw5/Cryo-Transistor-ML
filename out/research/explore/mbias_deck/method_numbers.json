@@ -374,6 +374,26 @@
   "held": "pmos_L2_W5",
   "n_train_points": 23955,
   "n_train_devices": 17,
+  "train_order": [
+   "nmos_L0p15_W1p6",
+   "nmos_L0p25_W1p6",
+   "nmos_L100_W100",
+   "nmos_L1_W3",
+   "nmos_L20_W0p64",
+   "pmos_L0p35_W0p55",
+   "pmos_L0p35_W5",
+   "pmos_L0p5_W0p42",
+   "pmos_L4_W7",
+   "pmos_L8_W1p6",
+   "pmos_L8_W5",
+   "nmos_L0p19_W7",
+   "nmos_L1_W1p6",
+   "nmos_L8_W1p6",
+   "pmos_L0p35_W1p6",
+   "pmos_L0p5_W0p64",
+   "pmos_L8_W0p84"
+  ],
+  "trainer": "cryoml.explore.i3_2_bias.fit_bias('M_bias')",
   "mu": [
    0.0,
    0.686150947440866,
@@ -385,17 +405,18 @@
    0.3184645995835692
   ],
   "loss_g0": 0.11271532907875995,
-  "loss_ensemble": 0.07863954588862905,
-  "max_abs_g_vs_stored": 0.0017669216639109864,
-  "seed_spread_g_std_median": 0.0050564900542621714,
-  "seed_spread_g_std_max": 0.15635782525617264,
-  "runtime_s": 69.0,
+  "loss_ensemble": 0.07867075257057132,
+  "max_abs_g_vs_stored": 0.0,
+  "max_abs_weight_vs_stored": 0.0,
+  "seed_spread_g_std_median": 0.005484865919439331,
+  "seed_spread_g_std_max": 0.15812560606300613,
+  "runtime_s": 72.0,
   "final_loss_per_seed": {
-   "0": 0.07895473442165876,
-   "1": 0.0789136419874285,
-   "2": 0.07977040297071172,
-   "3": 0.0778444831557921,
-   "4": 0.07958246802163081
+   "0": 0.07924615796942795,
+   "1": 0.07912283527109543,
+   "2": 0.07930987660438651,
+   "3": 0.07816831565513169,
+   "4": 0.07958216957626756
   }
  },
  "g_folds": {

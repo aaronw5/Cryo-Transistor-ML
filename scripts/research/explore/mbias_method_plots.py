@@ -36,7 +36,8 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts" / "research"))
 
 from cryoml.explore.e1_correction import _loss_fn, load_devices, make_batch, raw_features  # noqa: E402
-from cryoml.explore.i3_2_bias import HYPER_BIAS, correction_from_json  # noqa: E402
+from cryoml.explore.e1_correction import OUT_SCALE  # noqa: E402
+from cryoml.explore.i3_2_bias import HYPER_BIAS, correction_from_json, fit_bias  # noqa: E402
 from cryoml.explore.i2_1_joint import log_ratio  # noqa: E402
 
 E1 = ROOT / "out/research/explore/I13_1/records"      # I13-1 state-C records
@@ -370,64 +371,61 @@ def fig_network() -> None:
     save(fig, "m_network.png")
 
 
+def records_load_order():
+    """Records in the load order of the I3-2 all-18 run (REAL_DEV, then
+    REAL_TEST, as ``i3_2_bias.load_records_all18``); the order sets the
+    summation order of the training loss."""
+    return load_devices(E1 / "real_dev") + load_devices(E1 / "real_test")
+
+
 def train_trace(recs, held: str, every: int = 10) -> dict:
-    """Fold ``held``: re-run the five seeds of fit_bias('M_bias') with a loss
-    trace every ``every`` steps; compare g with the stored fold model."""
+    """Fold ``held``: re-run the trainer of the stored fold model
+    (``i3_2_bias.fit_bias('M_bias')``, five seeds, training records in load
+    order) with a loss trace every ``every`` steps; compare g with the stored
+    fold model.  ``recs`` is ignored for training (load order is required)."""
     import torch
-    torch.set_num_threads(1)
-    hp = HYPER_BIAS
-    train = [r for r in recs if r.tag != held]
+    del recs
+    train = [r for r in records_load_order() if r.tag != held]
     batch = make_batch(train)
     loss = _loss_fn(batch)
-    cols = [0, 1, 2]
-    phi = batch.phi[:, cols]
-    mu, sd = phi.mean(axis=0), phi.std(axis=0)
-    mu[0], sd[0] = 0.0, 1.0
-    sd = np.where(sd > 1e-12, sd, 1.0)
-    z = torch.tensor((phi - mu) / sd, dtype=torch.float64)
-    traces, gs, t0 = {}, [], time.time()
-    for seed in hp["seeds"]:
-        torch.manual_seed(seed)
-        dims = [3] + [hp["hidden"]] * hp["layers"] + [1]
-        mods = [torch.nn.Linear(a, b).double() for a, b in zip(dims[:-1], dims[1:])]
-        torch.nn.init.zeros_(mods[-1].weight)
-        torch.nn.init.zeros_(mods[-1].bias)
-        opt = torch.optim.Adam([p for m in mods for p in m.parameters()], lr=hp["lr"])
+    traces = {}
 
-        def forward(x):
-            for i, m in enumerate(mods):
-                x = m(x)
-                if i < len(mods) - 1:
-                    x = torch.tanh(x)
-            return torch.tanh(x[:, 0])
-        tr = []
-        for step in range(hp["steps"]):
-            opt.zero_grad()
-            fit = loss(forward(z))
-            value = fit + hp["l2"] * sum((m.weight ** 2).sum() for m in mods)
-            if step % every == 0:
-                tr.append((step, float(fit), float(value)))
-            value.backward()
-            opt.step()
-        with torch.no_grad():
-            fit = loss(forward(z))
-            tr.append((hp["steps"], float(fit),
-                       float(fit + hp["l2"] * sum((m.weight ** 2).sum() for m in mods))))
-            gs.append(forward(z).numpy().copy())
-        traces[seed] = tr
-    g_mean = np.mean(gs, axis=0)
+    def cb(seed, step, fit, value):
+        if step % every == 0:
+            traces.setdefault(seed, []).append((step, fit, value))
+    t0 = time.time()
+    corr = fit_bias("M_bias", train, trace_cb=cb)
+    runtime = time.time() - t0
+    phi = batch.phi[:, list(corr.cols)]
+    z = (phi - corr.mu) / corr.sd
+    gs = []
+    for seed, layers in zip(HYPER_BIAS["seeds"], corr.nets):
+        h = z
+        for i, (w, b) in enumerate(layers):
+            h = h @ w + b
+            if i < len(layers) - 1:
+                h = np.tanh(h)
+        g = OUT_SCALE * np.tanh(h[:, 0])
+        gs.append(g)
+        l2 = HYPER_BIAS["l2"] * sum(float(np.sum(w ** 2)) for w, _ in layers)
+        fit = float(loss(torch.tensor(g, dtype=torch.float64)))
+        traces[seed].append((HYPER_BIAS["steps"], fit, fit + l2))
+    g_mean = corr.g(batch.phi)
     stored = correction_from_json(jload(ALL18 / "corrections.json")[f"M_bias|{held}"])
     g_stored = stored.g(batch.phi)
-    import torch as _t
-    gt = _t.tensor(g_mean)
+    w_diff = max(float(np.max(np.abs(np.asarray(x) - np.asarray(y))))
+                 for la, lb in zip(corr.nets, stored.nets) for (wa, ba), (wb, bb) in zip(la, lb)
+                 for x, y in ((wa, wb), (ba, bb)))
     return {"held": held, "n_train_points": int(len(batch.sim)), "n_train_devices": len(train),
-            "mu": mu.tolist(), "sd": sd.tolist(), "traces": traces,
-            "loss_g0": float(loss(_t.zeros(len(batch.sim), dtype=_t.float64))),
-            "loss_ensemble": float(loss(gt)),
+            "train_order": [r.tag for r in train], "trainer": "cryoml.explore.i3_2_bias.fit_bias('M_bias')",
+            "mu": np.asarray(corr.mu).tolist(), "sd": np.asarray(corr.sd).tolist(), "traces": traces,
+            "loss_g0": float(loss(torch.zeros(len(batch.sim), dtype=torch.float64))),
+            "loss_ensemble": float(loss(torch.tensor(g_mean, dtype=torch.float64))),
             "max_abs_g_vs_stored": float(np.max(np.abs(g_mean - g_stored))),
+            "max_abs_weight_vs_stored": w_diff,
             "seed_spread_g_std_median": float(np.median(np.std(gs, axis=0))),
             "seed_spread_g_std_max": float(np.max(np.std(gs, axis=0))),
-            "runtime_s": round(time.time() - t0, 1)}
+            "runtime_s": round(runtime, 1)}
 
 
 def fig_training(tr: dict) -> None:
