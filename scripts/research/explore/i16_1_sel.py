@@ -24,6 +24,7 @@ Stages (``--stage``):
             counts for the I15-1 g v2 arm from its stored arrays)
   runtime   ro5_A decomposition on the I16-1 M2 cards
   decide    validity + Part B -> decision.json
+  vds0      (post hoc) the Q1 V(d,s) = 0 check per arm, device and tolerance
 
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i16_1_sel.py --stage validity --workers 6
 """
@@ -322,11 +323,47 @@ def stage_decide() -> dict:
     return out
 
 
+def stage_vds0() -> dict:
+    """Post hoc (after the decision; the outcome is unchanged): the core
+    check 'Q1 |I(V(d,s) = 0)| <= 1e-12 A' per arm, device and tolerance from
+    the stored forward Q1 grids: max |I| of the element and of the card +
+    replica run at V(d,s) = 0, its V(g,s), and the number of points above
+    1e-12 A (ngspice default abstol 1e-12 A; r4 reltol 1e-4; tight abstol
+    1e-18 A).  Arms: I16-1 selected, I15-1 g v2 and v1."""
+    j0 = int(np.argmin(np.abs(m1.GRID_VDS)))
+    out = {"note": "post hoc diagnosis of the failed core check; outcome unchanged",
+           "options": {"default": "ngspice defaults (abstol 1e-12 A, reltol 1e-3)", "r4": m1.R4,
+                       "tight": m1.TIGHT}, "threshold_A": v2.THR["q1_vds0_abs"], "arms": {}}
+    for arm, rd in (("sel", OUT / "deploy_sel"), ("v2_I15_1", I15_1 / "deploy_v2"), ("v1_I15_1", I15_1 / "deploy_v1")):
+        q12 = jload(rd / "q12.json")["devices"]
+        per = {}
+        for tag in sorted(q12):
+            z = np.load(rd / "arrays" / f"q12_{tag}.npz")
+            per[tag] = {}
+            for tol, _ in TOLS:
+                el = np.abs(z[f"grid_fwd_{tol}_elem"][:, j0])
+                cr = np.abs(z[f"grid_fwd_{tol}_card_rep"][:, j0])
+                k = int(np.argmax(el))
+                per[tag][tol] = {"elem_max": float(el[k]), "vgs_abs_at_max": float(m1.GRID_VGS[k]),
+                                 "card_rep_at_max": float(cr[k]), "card_rep_max": float(cr.max()),
+                                 "n_above_1e-12": int(np.sum(el > 1e-12)), "n_points": int(el.size)}
+        summ = {tol: {"elem_max": max(per[t][tol]["elem_max"] for t in per),
+                      "card_rep_max": max(per[t][tol]["card_rep_max"] for t in per),
+                      "n_above_1e-12": sum(per[t][tol]["n_above_1e-12"] for t in per),
+                      "n_points": sum(per[t][tol]["n_points"] for t in per),
+                      "at": max(((per[t][tol]["elem_max"], t, per[t][tol]["vgs_abs_at_max"]) for t in per))[1:]}
+                for tol, _ in TOLS}
+        out["arms"][arm] = {"summary": summ, "per_device": per}
+    jdump(out, OUT / "diagnosis" / "vds0.json")
+    print(json.dumps({a: v["summary"] for a, v in out["arms"].items()}, indent=1, default=float), flush=True)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--stage", required=True,
                     choices=("validity", "accuracy", "deploy", "compile", "refit", "q12", "q3", "report",
-                             "restrict", "runtime", "decide"))
+                             "restrict", "runtime", "decide", "vds0"))
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--smoke", action="store_true",
                     help="2 devices, refit max_nfev 20 (code check; not used for decisions)")
@@ -341,6 +378,8 @@ def main() -> int:
         stage_accuracy(args.workers, base / "accuracy", tags)
     elif args.stage == "decide":
         stage_decide()
+    elif args.stage == "vds0":
+        stage_vds0()
     elif args.stage == "restrict":
         stage_restrict(rd, args.smoke)
     elif args.stage == "runtime":
