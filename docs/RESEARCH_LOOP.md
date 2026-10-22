@@ -2359,3 +2359,53 @@ cluster CIs, LV / HV, lambda selection, negative fractions, per-DUT RRMS and rat
 lv_nmos_W0p3_L10, lv_pmos_W10_L10, hv_pmos_W0p6_L0p5, hv_pmos_W0p3_L10 with measured points, stock-card NGSpice and
 re-simulated C0_refit / v1 / selected cards; RRMS equal to the stored rows); site claim `i17-2` (refuted), caveat on
 `i5-1`.
+
+## I18-1 pre-registration in force (2026-10-22 15:30): gated correction on every measured DEV dataset with stored rows
+
+Pre-registration `out/research/explore/I18_1/prereg.md` / `prereg.json`, commit b384a42 (alone, before any S3 value
+with the g v2 recipe and before any I18-2 run). Method: for each outer fold f, the held-out devices get the stored
+correction-arm row if S3_f < 0 (strict), else the C0_refit row; S3_f = mean over the fold's training records of
+ln(RRMS(start x exp(g_{-k})) / RRMS(start)), g_{-k} trained with the gated arm's recipe (seed 0, 500 steps) on the
+training records outside the record's inner group (device; geometry group for TU Delft), applied without refit (I7-1
+definition). S3_f < 0 = predicted gain. Recipe matched to the arm: g v2 datasets (sky130 77 K all-18 with the I15-2
+selected rows, IHP 300 K with the I17-2 selected rows, TU Delft 4.13 / 295.0 K with the I18-2 selected rows) use
+S3_v2 (`fit_v2`, sym_v2, EPS 0.01 V, dataset supply, lambda = lambda*_f of the outer fold, penalty grids of the
+inner-training devices), recomputed; M_bias v1 datasets (NIST 4 K I8-1, NIST 4 K room-temperature card I9-1, IHP
+233 / 343 / 398 K) use the stored v1-recipe S3_f. Bootstrap unit: device; 7 geometry groups for TU Delft. Rule: C1
+CI lower of GMR(gated, C0_refit) <= 1 on all 9 datasets, C2 CI upper < 1 on sky130; supported iff both. Validity:
+V1 row counts (18 / 53 / 87 / 18 x 4 / 45 x 2) and selected rows equal the stored ones; V2 the I18-1 S3 code with
+the v1 recipe reproduces the stored I7-1 S3_f on 2 IHP 300 K folds; V3 S3_v2 finite on every fold; V4 unit tests.
+Predicted decisions: sky130 18/18, NIST 53/53 and 87/87 (determined from stored S3_f), IHP 300 K 0/18, IHP 233 /
+343 / 398 K 0/18 (determined), TU Delft 5/7 and 3/7 groups; predicted outcome supported. The v1-arm datasets are
+retrospective (S3_f, decisions and rows stored; I8-2 fold gate and I10-2 S_gate values known); TU Delft g v2 is
+prospective. Code 8fc4f32 (`src/cryoml/explore/i18_1_gate.py`, `scripts/research/explore/i18_1_gate.py`, 9 unit
+tests); smoke (2 folds, 50 steps) ran.
+Queue I18_1_s3 (2035 s, commit after the run): V2 difference 0.0 on both folds; sky130 S3_v2 < 0 on 18/18 folds
+(range -0.214 .. -0.100; 306 inner fits 1509 s); sky130 S3_v1 < 0 on 18/18 (-0.190 .. -0.147); IHP 300 K S3_v2 < 0
+on 0/18 (0.184 .. 0.642). The TU Delft S3_v2 (I18_1_s3_tud) and I18_1_decide run after the I18-2 jobs.
+
+## I18-2 pre-registration in force (2026-10-22 16:00): selected g v2 recipe on measured TU Delft 40 nm, Part B with ngspice-41 OSDI
+
+Pre-registration `out/research/explore/I18_2/prereg.md` / `prereg.json`, commit 2454b15 (alone). Data I6-1 (45 DEV
+devices, 7 geometry groups, TEST 24 locked), 4.13 K and 295.0 K, BSIM4 CMOSedu card, ngspice-41. BSIM4 clamp state C
+(change from I6-1): the I6-1 starting cards have a2 > 1 on 25/45 (4.13 K) and 20/45 (295.0 K); every deck writes
+the b4check.c clamp. Arms per temperature, leave-one-group-out: C0_refit, M_bias v1, sym_e1_l{0,1,2,5,10} (VDD
+1.1 V), selected (inner 3-fold selection over the training groups). Penalty grid 45 x 45 to 1.1 V (25 mV step).
+Primary GMR(selected, C0_refit) with the 7-group cluster bootstrap (gain replicated / worse / inconclusive);
+secondary GMR(selected, v1) margin 1.05. Part B per temperature on the full-data model at lambda*_full (selection
+over all 7 groups) with M2 cards: TU Delft channel replica `i6card_ch` (charge-free; alpha0 = alpha1 = beta0 = 0,
+agidl = agisl = 0, junction saturation currents 0, igcmod = igbmod = 0), VCVS copies, -gmin VCCS, OSDI module;
+serpentine Q1 grids V(g,s) 0 .. 1.1 V x V(d,s) -1.1 .. 1.1 V; Q2 op points scaled to 1.1 V; I17-1 rules; Q3 not run
+(sky130 circuits at 1.8 V, card 1 V). Predictions: ln GMR(selected, C0_refit) < 0 at both temperatures, ln
+GMR(selected, v1) > 0 at both, primary inconclusive at 4.13 K and gain replicated at 295.0 K, Part B deployable
+with restrictions (Q3 not run) at both.
+Amendment A1 (commit 1795e10, alone, before any full run): the Part B V(d,s) = 0 check is evaluated on the
+element-added current |I_elem - I_card| (tight forward grid, 1e-12 A). Reason: the card has igcmod = igbmod = 1;
+in the smoke run the card alone gave 5.96e-11 A at V(d,s) = 0 (gate tunneling) and the element added 1.8e-20 A.
+Code 254e77d (`src/cryoml/explore/i18_2_tud.py`, `i18_2_partb.py`, drivers `scripts/research/explore/i18_2_tud.py`,
+`i18_2_partb.py`, 11 unit tests). Smoke (4 groups x 1 device, 200 steps, Part B on 2 devices; not used for
+decisions) ran every stage; it found the serpentine default-tolerance grid file appended over the runtime repeats
+(fixed before the code commit). Queue: I18_2_start (V1a max |diff| 0 on 90 cards, V1b identical on 45 unclamped
+cards; state-C starting RRMS 4.13 K 0.0628 -> 0.0722, 295.0 K 0.0271 -> 0.0463), I18_2_pens (90 grids, V4 ok),
+I18_2_base_4 (V1c |diff| 0.0 on 4 rows), then base_295, lodo x 10, inner x 2, full x 2, decide, I18_1_s3_tud,
+I18_1_decide, partB x 2, decideB.
