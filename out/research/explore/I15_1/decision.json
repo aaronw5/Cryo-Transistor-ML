@@ -1,0 +1,163 @@
+{
+ "prereg": "out/research/explore/I15_1/prereg.json",
+ "validity": {
+  "valid": true,
+  "fails": []
+ },
+ "accuracy_I13_1": {
+  "A1_gain_vs_C0_refit": true,
+  "A2_noninferior_vs_v1": false
+ },
+ "deploy_v2": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "outcome": "deployable, accuracy below v1 (not non-inferior)",
+ "action": "stop v2; report the accuracy cost of the deployment constraints",
+ "A1": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 16,
+  "ties": 0,
+  "ratio": 0.7848602919739102,
+  "resample_unit": "device",
+  "ci_low": 0.6928491904556094,
+  "ci_high": 0.8964741968266031,
+  "n_boot": 10000
+ },
+ "A2": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 4,
+  "ties": 0,
+  "ratio": 1.0528892724477141,
+  "resample_unit": "device",
+  "ci_low": 0.9664287777478355,
+  "ci_high": 1.1371512941027175,
+  "n_boot": 10000
+ },
+ "reference_arm_v1_deploy": {
+  "deploy": "not deployable",
+  "core_fail": [
+   "Verilog-A g not d/s symmetric",
+   "terminal-exchange asymmetry > 1e-3",
+   "Q2 derivative agreement",
+   "Q2 gm sign change in strong inversion"
+  ],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "m2_v2_cards_max_rel_diff_vs_I14_1": 0.0,
+ "element_deck_accuracy": {
+  "v2": {
+   "max_abs_native_minus_stored": 0.00018196413120011995,
+   "max_abs_python_rerun_minus_stored": 0.0,
+   "max_native_vs_channel_ratio": 0.996125429953875,
+   "n_msgs": 0,
+   "summary_native": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07713708641451414,
+    "valid_only_mean": 0.07713708641451414,
+    "median": 0.054280776159076234,
+    "combined": 0.07321007229348396
+   },
+   "summary_stored": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07715554613226162,
+    "valid_only_mean": 0.07715554613226162,
+    "median": 0.05436676937867882,
+    "combined": 0.07323125483040499
+   }
+  },
+  "v1": {
+   "max_abs_native_minus_stored": 0.00025103799921860626,
+   "max_abs_python_rerun_minus_stored": 0.0,
+   "max_native_vs_channel_ratio": 1.000701206171958,
+   "n_msgs": 0,
+   "summary_native": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.07346220282654897,
+    "valid_only_mean": 0.07346220282654897,
+    "median": 0.06357856998469669,
+    "combined": 0.06951085499735082
+   },
+   "summary_stored": {
+    "n": 18,
+    "n_failed": 0,
+    "all_device_mean": 0.0734762121773837,
+    "valid_only_mean": 0.0734762121773837,
+    "median": 0.06370324632784027,
+    "combined": 0.06952762824478365
+   }
+  }
+ },
+ "element_deck_gmr": {
+  "v2_native_vs_C0_refit": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 16,
+   "ties": 0,
+   "ratio": 0.7846340304126967,
+   "resample_unit": "device",
+   "ci_low": 0.6927472429897964,
+   "ci_high": 0.8961462116145849,
+   "n_boot": 10000
+  },
+  "v2_native_vs_v1_stored": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 4,
+   "ties": 0,
+   "ratio": 1.0525857427966347,
+   "resample_unit": "device",
+   "ci_low": 0.9663049074488637,
+   "ci_high": 1.1367972221372382,
+   "n_boot": 10000
+  },
+  "v2_native_vs_v1_native": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 4,
+   "ties": 0,
+   "ratio": 1.052799128634761,
+   "resample_unit": "device",
+   "ci_low": 0.9663157327866376,
+   "ci_high": 1.1370034578908763,
+   "n_boot": 10000
+  },
+  "v1_native_vs_C0_refit": {
+   "n": 18,
+   "n_used": 18,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 17,
+   "ties": 0,
+   "ratio": 0.745283700443585,
+   "resample_unit": "device",
+   "ci_low": 0.6594490156936732,
+   "ci_high": 0.849662530669149,
+   "n_boot": 10000
+  }
+ }
+}

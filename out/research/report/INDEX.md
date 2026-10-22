@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i15_1
+
+Folder: [2026-10-22_i15_1/](2026-10-22_i15_1/) · [tables.md](2026-10-22_i15_1/tables.md) · [README.md](2026-10-22_i15_1/README.md)
+
+- I15-1 Part B of g v2 with serpentine Q1 grids (I14-1 replica): deployable, accuracy below v1 (not non-inferior) (pre-registered rule); label deployable with restrictions.
+- Q1 runs 0 warnings; asymmetry 1.7e-05, Q2 1.2e-05; restrictions: default tolerance 1.8e-03, 2 gds curves, runtime 4.30.
+- Element-deck RRMS v2 0.0771 (stored 0.0772).
+
+Figures and tables: [01_table_i15_1_part_b.png](2026-10-22_i15_1/01_table_i15_1_part_b.png) · [02_table_i15_1_validity.png](2026-10-22_i15_1/02_table_i15_1_validity.png) · [03_table_i15_1_devices_v2.png](2026-10-22_i15_1/03_table_i15_1_devices_v2.png) · [04_table_i15_1_accuracy.png](2026-10-22_i15_1/04_table_i15_1_accuracy.png) · [05_i15_1_accuracy_per_device.png](2026-10-22_i15_1/05_i15_1_accuracy_per_device.png) · [06_i15_1_checks_per_device.png](2026-10-22_i15_1/06_i15_1_checks_per_device.png) · [07_table_i15_1_precheck.png](2026-10-22_i15_1/07_table_i15_1_precheck.png) · [08_table_i15_1_circuits.png](2026-10-22_i15_1/08_table_i15_1_circuits.png) · [09_table_i15_1_restrictions.png](2026-10-22_i15_1/09_table_i15_1_restrictions.png) · [10_i15_1_iv_nmos_L100_W100.png](2026-10-22_i15_1/10_i15_1_iv_nmos_L100_W100.png) · [11_i15_1_iv_nmos_L20_W0p64.png](2026-10-22_i15_1/11_i15_1_iv_nmos_L20_W0p64.png) · [12_i15_1_iv_nmos_L8_W1p6.png](2026-10-22_i15_1/12_i15_1_iv_nmos_L8_W1p6.png) · [13_i15_1_iv_pmos_L2_W5.png](2026-10-22_i15_1/13_i15_1_iv_pmos_L2_W5.png)
+
 ## 2026-10-22 · i14_1
 
 Folder: [2026-10-22_i14_1/](2026-10-22_i14_1/) · [tables.md](2026-10-22_i14_1/tables.md) · [README.md](2026-10-22_i14_1/README.md)

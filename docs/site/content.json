@@ -5992,6 +5992,115 @@
    "updated": "2026-10-22"
   },
   {
+   "id": "i15-1",
+   "tab": "explore",
+   "statement": "I15-1: with the Q1 grid swept in serpentine order (no 3.7 V restart jump of the nested sweep) and the I14-1 replica, module, references and thresholds unchanged, the full-data g v2 on 18 sky130 77 K devices passes every Part B core check; label 'deployable with restrictions' (default-tolerance difference 1.8e-3, 2 of 90 gds curves, runtime 4.30); outcome by rule 'deployable, accuracy below v1 (not non-inferior)'.",
+   "status": "verified",
+   "headline": {
+    "value": "core checks 10/10 pass: Q1 runs 0 warnings (I14-1: 2), Q1 0 violations, exchange asymmetry 1.7e-5, Q2 1.2e-5, capacitance 1.1e-12; restrictions: default tolerance 1.81e-3, gds 2/90, runtime 4.30 (ro5_A)",
+    "convention": "Part B on M2 cards (refit with the full-data g, state C; identical to the I14-1 M2 cards, max relative difference 0), tight tolerance; accuracy flags from I13-1 (A1 passes, A2 fails, GMR(v2, v1) 1.053 [0.966, 1.137])"
+   },
+   "numbers": [
+    {
+     "label": "pre-registration: replica variants, decks with warnings (4 card sets x 18 devices)",
+     "value": "I14-1 replica 0/864; saturation current card x 1e-20, x 1e-10, x 1: 1/864 each; rbodymod 0: 3/1008; serpentine (registered) 0/1296, nested 0/1296; nmos_L8_W1p6 M2 nested 2, serpentine 0",
+     "convention": "exact junction subtraction with a junction-only replica aborts at tight tolerance (difference of two ~0.04 A currents in the sense branch)",
+     "source": "out/research/explore/I15_1/precheck/precheck.json"
+    },
+    {
+     "label": "element-deck accuracy of the held-out pairs",
+     "value": "v2 0.07714 / 0.07321 (stored 0.07716 / 0.07323); v1 0.07346 / 0.06951; GMR(native v2, native v1) 1.053 [0.966, 1.137]; GMR(native v2, C0_refit) 0.785 [0.693, 0.896]",
+     "convention": "all-device / combined, strict paper RRMS",
+     "source": "out/research/explore/I15_1/accuracy/accuracy.json"
+    },
+    {
+     "label": "restriction items",
+     "value": "default tolerance 16 of 18 devices above 1e-3 (r4 max 9.9e-4, tight 1.8e-5); gds sign changes pmos_L8_W0p84 and pmos_L8_W1p6 at V(g,s) = -1.85 V also present in I_card exp(g) (506 / 914 points, card 0): caused by g; ro5_A card / card+replica / element 0.26 / 0.52 / 1.21 s, module network evaluation about 0.6 s",
+     "convention": "reported, no rule",
+     "source": "out/research/explore/I15_1/deploy_v2/restrictions.json"
+    }
+   ],
+   "what": [
+    "Question: after the I14-1 failure (gmin-stepping warnings in 1 of 126 element decks), does g v2 pass Part B with a fix that leaves the replica channel current and the convergence elsewhere unchanged?",
+    "Pre-registered (04c7c2e): the warnings were located at the restart of the nested sweep (V(d) +1.85 -> -1.85 V at V(g) = 1.85 V); the requested small-saturation-current replica added warnings elsewhere and exact subtraction did not converge at tight tolerance, so the Q1 grid decks sweep V(d) in serpentine order; all checks, thresholds and the rule as I14-1."
+   ],
+   "did": [
+    "Code 6df4cab (i15_1_serp, driver reusing the I14-1 stages, 3 unit tests); queue: validity 7 s, accuracy 14 s, deploy v2 194 s, deploy v1 313 s, restrictions and runtime 7 s, decide.",
+    "Report batch 2026-10-22_i15_1 re-simulates the published, C0_refit and v2 / v1 held-out cards (element decks) and checks every RRMS against the stored rows."
+   ],
+   "result": {
+    "text": [
+     "Validity: V1 0.0 (36 rows), unit tests pass, 18 rows per arm, 0 failed M2 refits. Part B v2: every core check passes; reference arm v1 not deployable (abs() inputs: exchanged Verilog-A g 0.134, asymmetry 0.125, Q2 6.6e-3, 1 gm sign change).",
+     "Limitation: a nested sweep with the 3.7 V restart at tight tolerance can print gmin-stepping warnings for the element deck where the card-only deck prints none. Accuracy cost of g v2 vs v1 stays 1.053 (I15-2 studies its cause)."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "01_table_i15_1_part_b.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "02_table_i15_1_validity.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "03_table_i15_1_devices_v2.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "04_table_i15_1_accuracy.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "05_i15_1_accuracy_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "06_i15_1_checks_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "07_table_i15_1_precheck.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "08_table_i15_1_circuits.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "09_table_i15_1_restrictions.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "10_i15_1_iv_nmos_L100_W100.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "11_i15_1_iv_nmos_L20_W0p64.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "12_i15_1_iv_nmos_L8_W1p6.png"
+     },
+     {
+      "batch": "2026-10-22_i15_1",
+      "file": "13_i15_1_iv_pmos_L2_W5.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The fix is a change of the test procedure (sweep order), not of the element.",
+    "Circuit checks are simulator-level; there is no measured circuit data."
+   ],
+   "sources": [
+    "out/research/explore/I15_1/prereg.md",
+    "out/research/explore/I15_1/decision.json",
+    "out/research/explore/I15_1/precheck/precheck.json",
+    "out/research/report/2026-10-22_i15_1/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
    "id": "i12-1",
    "tab": "explore",
    "statement": "I12-1: the bias-only correction g v2 (d/s-symmetric smooth inputs, element scaling the drain current of a charge-free card replica, gm/gds penalty) keeps a gain over the refit card without correction on sky130 77 K (18 devices, LODO) but is not non-inferior to M_bias v1 and is not deployable under the pre-registered simulator-level rule; post hoc, two of the three failed core checks come from the reference runs, the third (terminal exchange) from the element.",

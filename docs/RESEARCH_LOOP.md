@@ -2139,3 +2139,60 @@ solution converges (rule change).
 Report batch `out/research/report/2026-10-22_i14_1/` (`scripts/research/plot_explore_i14_1.py`; 12 PNGs; the I-V
 figures re-simulate the published, C0_refit and v2 / v1 held-out cards and reproduce the stored rows); site claim
 `i14-1` (refuted).
+
+## I15-1 pre-registration in force (2026-10-22 01:57): re-registration of the I14-1 Part B test of g v2 with the Q1 grid swept in serpentine order
+
+Pre-registration `out/research/explore/I15_1/prereg.md` / `prereg.json`, commit 04c7c2e (alone). Work before
+registration (not used for decisions): (1) the two I14-1 warning decks split per V(g) line: the warnings occur only at
+the restart of the inner sweep from V(d) = +1.85 V to -1.85 V when V(g) steps to 1.85 V; isolated ops at that bias and
+sweeps that start there print none; itl1 / itl2 up to 500 leave the warnings unchanged. (2) Requested fix, a replica
+with small junction saturation currents: card values x 1e-20 removes the nmos_L8_W1p6 warnings but adds 1 warning deck
+in 864 on the 4 card sets x 18 devices (I14-1 replica: 0); x 1e-10 and x 1 also 1 each; x 1e-60 does not remove them;
+rbodymod = 0 adds 3 of 1008. Without compensation the sensed current of these replicas contains the forward-biased
+drain-junction current in the reverse quadrant (up to 0.039 A). Exact subtraction through a junction-only replica
+(u0 = 1e-30) and a CCCS is exact to 5.7e-5 of the Q1 tolerance but the forward tight card + replica run aborts on
+the nmos_L8_W1p6 M2 card (difference of two ~0.04 A currents in the sense branch); body-current routing gives
+warnings. Result: no replica change met the pre-condition 'convergence unchanged elsewhere'. (3) Registered change:
+every Q1 grid deck (card, card + replica, element; both benches; three tolerances; Q4 grid) sweeps V(d) up on even
+and down on odd V(g) lines (one dc per line, rows appended and reordered); replica, module, references, thresholds and
+rule as I14-1. Pre-check: 0 / 0 warning decks over 1296 decks per order (nested / serpentine), nmos_L8_W1p6 M2
+(disclosed) nested 2 / serpentine 0; serpentine - nested tight max 2.1 x (1e-6 |I| + 1e-13 A). (4) Runtime
+decomposition on ro5_A: card 0.24 s, card + replica 0.48 s, element 1.13 s, element with a trivial module 0.52 s; the
+network evaluation in the OSDI module is about 0.6 s of the 0.89 s added; replica-side reductions <= 2.5 % without new
+warnings; OpenVAF --target_cpu crashes; no runtime variant registered.
+
+## I15-1 outcome (2026-10-22 02:09): Part B of g v2 with serpentine Q1 grids, deployable with restrictions; outcome 'deployable, accuracy below v1 (not non-inferior)' (pre-registered rule)
+
+Code 6df4cab (`src/cryoml/explore/i15_1_serp.py`, `scripts/research/explore/i15_1_chan.py`, 3 unit tests). Queue:
+I15_1_validity 7 s, I15_1_accuracy 14 s, I15_1_deploy_v2 194 s, I15_1_deploy_v1 313 s, I15_1_restrict 7 s,
+I15_1_decide. Validity: V1 0.0 (36 rows), unit tests pass, 18 rows per arm, 0 failed M2 refits; M2 v2 cards identical
+to the I14-1 ones (max relative difference 0). Part B v2: Q1 0 violations, **Q1 runs 0** (I14-1: 2), max |I(Vds = 0)|
+9.8e-13 A, Verilog-A g 2.5e-16 / exchanged 3.3e-16, exchange asymmetry 1.7e-5, Q2 vs element identity 1.2e-5,
+capacitance 1.1e-12, 0 of 54 gm curves, 0 circuits failing only with the element: every core check passes.
+Restrictions: default-tolerance difference 1.81e-3 (16 of 18 devices above 1e-3; r4 max 9.9e-4, tight 1.8e-5);
+2 of 90 gds curves (pmos_L8_W0p84 506 points, pmos_L8_W1p6 914 points of dI/dV(d,s) < 0 at V(g,s) = -1.85 V,
+|V(d,s)| 0.77-0.97 V; the card alone has none and I_card exp(g) of the same sweep has the same points: the sign change
+comes from g, not from the element); runtime DC grid 1.84-2.08, circuits inv_A 1.76, inv_B 1.95, ro5_A 4.30,
+mirror_n 1.19, mirror_p 1.30 (ro5_A on the M2 cards: card 0.26 s, card + replica 0.52 s, element 1.21 s; load time
+0.13 / 0.29 / 0.94 s). Label **deployable with restrictions**; outcome **deployable, accuracy below v1 (not
+non-inferior)**; action 'stop v2; report the accuracy cost of the deployment constraints' (A2: GMR(v2, v1) 1.053
+[0.966, 1.137]). Element-deck accuracy (unchanged decks, reproduces I14-1): v2 0.07714 / 0.07321 vs stored 0.07716 /
+0.07323; v1 0.07346 / 0.06951. Reference arm v1: not deployable (exchanged g 0.134, asymmetry 0.125, Q2 6.6e-3, 1 gm
+sign change; 28 gds curves). Q3: mirror_p Iout / Iref at 0.9 V published 0.938, C0_refit 0.992, M2 card 0.992, M2 +
+element 0.984; ro5_A 5.322 / 5.287 / 5.291 / 5.353 GHz. Limitation (stated in the prereg): nested sweeps with the
+3.7 V restart at tight tolerance can print gmin-stepping warnings for the element deck. Report batch
+`out/research/report/2026-10-22_i15_1/` (`scripts/research/plot_explore_i15_1.py`, 13 PNGs; I-V figures re-simulate
+the published, C0_refit and v2 / v1 held-out cards, RRMS checked against the stored rows); site claim `i15-1`.
+
+## I15-2 pre-registration in force (2026-10-22 02:05): which g v2 change costs accuracy; ablation and training-data-only selection of lambda
+
+Pre-registration `out/research/explore/I15_2/prereg.md` / `prereg.json`, commit 7924961 (alone). New 18-fold LODO
+variants (I12-1 recipe, 5 seeds, held-out refit in state C): sym_e0_l0, sym_e1_l0, sym_e0_l10, sym_e1_l1, sym_e1_l2,
+sym_e1_l5 (symmetric inputs, EPS 0 or 0.01 V, lambda in V); stored v1 and g v2 (= sym_e1_l10). Contrasts with
+pre-registered labels (cost: CI lower > 1; no cost beyond the margin: CI upper <= 1.05; else inconclusive): input form
+GMR(sym_e0_l0, v1); EPS at lambda 0 and 10; penalty at EPS 0 and 0.01; lambda curve. Selection: per outer fold, 3
+inner folds (sorted by polarity, tag; i mod 3), one member (seed 0) per inner fold and lambda in {0, 1, 2, 5, 10},
+inner held-out refits, lambda* = argmin mean ln RRMS (ties to the larger lambda); the selected row of device h is
+the sym_e1_l{lambda*_h} LODO row. Primary GMR(selected, M_bias v1), device bootstrap, non-inferiority margin 1.05.
+Negative gm / gds grid fractions for every variant. Code d9e79ac (8 unit tests); smoke (2 folds, 200 steps, not used
+for decisions) ran all stages; queue: I15_2_validity, six lodo variants, I15_2_inner (about 2 h), I15_2_decide.

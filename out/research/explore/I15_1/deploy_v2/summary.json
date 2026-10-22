@@ -1,0 +1,74 @@
+{
+ "arm": "v2",
+ "label": "I14-1 Part B",
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 9.83570056331825e-13,
+  "g_text_max": 2.498001805406602e-16,
+  "g_sym_text_max": 3.3306690738754696e-16,
+  "swap_asym_max": 1.6756932850368756e-05,
+  "q2_ac_max": 1.2363952553982762e-05,
+  "cap_max": 1.085347324632146e-12,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.0018141260699451845,
+  "q2_gds_sign": 2,
+  "runtime_ratio_max": 4.297880280737737
+ },
+ "runtime_grid": {
+  "nmos_L0p15_W1p6": 1.885380705630591,
+  "nmos_L0p19_W7": 2.0120309620758885,
+  "nmos_L0p25_W1p6": 2.077888492930019,
+  "nmos_L100_W100": 2.029633699597756,
+  "nmos_L1_W1p6": 2.0102062565648673,
+  "nmos_L1_W3": 2.029978580144575,
+  "nmos_L20_W0p64": 1.9975485332117153,
+  "nmos_L8_W1p6": 2.0262298386446975,
+  "pmos_L0p35_W0p55": 1.836089179586402,
+  "pmos_L0p35_W1p6": 1.917991393149023,
+  "pmos_L0p35_W5": 2.0160189328917633,
+  "pmos_L0p5_W0p42": 1.9565174909716372,
+  "pmos_L0p5_W0p64": 1.9173520739380563,
+  "pmos_L2_W5": 1.9426288991312277,
+  "pmos_L4_W7": 1.8514970688946524,
+  "pmos_L8_W0p84": 2.0420778573839957,
+  "pmos_L8_W1p6": 1.8401083551580324,
+  "pmos_L8_W5": 1.8670014090866758
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": 1.761037143423534,
+  "inv_B_vtc": 1.9540622655787092,
+  "ro5_A": 4.297880280737737,
+  "mirror_n": 1.1853955894707822,
+  "mirror_p": 1.298240269490744
+ },
+ "runtime_circuits_excluded": [
+  "ro5_B"
+ ],
+ "n_devices": 18,
+ "q3_not_ok": [
+  "ro5_B|C0_refit",
+  "ro5_B|M2_card",
+  "ro5_B|M2_full"
+ ],
+ "q2_err_i12_formula_max": 0.021700652230752297,
+ "nonchannel_share_fwd_max": 0.5049157147034793,
+ "card_rep_vs_card_default_max_abs": 4.001061939023359e-05,
+ "decision": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "refit_in_sample": {
+  "mean_rrms_M2_python": 0.07559326775391083,
+  "mean_rrms_M2_python_channel": 0.07557751906406757,
+  "mean_rrms_M2_native": 0.07557929136220726,
+  "mean_rrms_M2_card_only": 0.10805483995312859,
+  "n_failed": 0
+ }
+}
