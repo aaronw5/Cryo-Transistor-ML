@@ -2232,3 +2232,52 @@ The deck's training-trace slide re-ran the fold pmos_L2_W5 training with its own
 stored model (`i3_2_bias.fit_bias`, new per-step `trace_cb`, update sequence unchanged; 36 I12-1 / I15-2 unit tests
 pass) with the training records in load order: max |g - stored g| 0, max weight difference 0 (72 s). Deck regenerated
 (43 slides), commit e92946a.
+
+## I16-1 pre-registration in force (2026-10-22 07:27): deployment test of the I15-2 selected correction
+
+Pre-registration `out/research/explore/I16_1/prereg.md` / `prereg.json`, commit 6adec13 (alone). Model under test:
+the full-data correction of the I15-2 variant sym_e1_l1 (symmetric inputs, EPS 0.01 V, lambda 1 V = I15-2 full-data
+lambda*), `I15_2/lodo_sym_e1_l1` `full|sym_e1_l1`. Part B procedure, replica, module, references, serpentine Q1
+grids, core checks, restrictions and thresholds of I15-1; gds sign change a restriction, gm sign change in strong
+inversion a core failure (I15-1 classification). Expectation stated before the run (not a rule): more than 2 of 90
+gds curves (full-data negative gds on the penalty grids 1.59 % at lambda 1 V vs 0.23 % at 10 V). Accuracy fixed from
+I15-2 (GMR(selected, v1) 0.997 [0.962, 1.027]); element-deck RRMS of the 18 selected held-out pairs (fold g of
+sym_e1_l{lambda*_h} + its held-out card) reported against the I15-2 rows. Validity V1 card-only deck reproduces the
+I15-2 selected rows, V2 unit tests, V3 18 rows / 0 failed M2 refits, V4 deployed g. Outcomes: invalid / deployable
+(restrictions listed) / not deployable. Code 64c1e54 (`src/cryoml/explore/i16_1_sel.py`,
+`scripts/research/explore/i16_1_sel.py`, 6 unit tests); smoke (nmos_L1_W1p6, pmos_L2_W5, refit max_nfev 20; not used
+for decisions) ran all stages.
+
+## I16-1 outcome (2026-10-22 07:37): selected correction (lambda 1 V), not deployable (pre-registered rule)
+
+Queue: I16_1_validity 6 s, I16_1_accuracy 6 s, I16_1_deploy 197 s (0 failed M2 refits), I16_1_restrict 1 s,
+I16_1_runtime 6 s, I16_1_decide. Validity: V1 max |RRMS card-only deck - I15-2 selected row| 0.0 (18 rows); unit
+tests pass; V3 18 rows, 0 failed; V4 deployed g sym_v2 / EPS 0.01 / lambda 1, I15-2 full-data lambda* 1: valid.
+Part B (M2 cards, in-sample M2 RRMS Python 0.0696, element 0.0696, card only 0.1083). Core checks: Q1 equivalence 0
+violating points; Q1 runs 0 messages, 0 non-finite, 0 failed runs; **Q1 max |I(V(d,s) = 0)| 1.0006e-12 A > 1e-12 A:
+fails**; Verilog-A g 2.8e-16, exchanged 1.7e-16; exchange asymmetry 2.2e-5; Q2 vs element identity 1.1e-5;
+capacitances 3.3e-14; gm curves with an introduced sign change 0 of 54; Q3 0 circuits failing only with the element
+(ro5_B fails at card level, amendment A1). Restrictions: default tolerance 1.84e-3 (18 of 18 devices above 1e-3; r4
+max 9.9e-4, tight 2.3e-5); **6 of 90 gds curves** (pmos_L2_W5 V(g,s) -0.9 V 230 points; pmos_L8_W0p84 -1.5 V 115,
+-1.85 V 555; pmos_L8_W1p6 -1.5 V 543, -1.85 V 870; pmos_L8_W5 -1.5 V 126; the card alone has none on these curves and
+I_card exp(g) of the card sweep has the same points: the sign changes come from g; I15-1 lambda 10 V: 2 of 90);
+runtime DC grid 1.80-2.09, inv_A 1.75, inv_B 1.71, ro5_A 4.56, mirror_n 1.21, mirror_p 1.25 (ro5_A wall card / card +
+replica / element ratio 4.66; rusage load 0.13 / 0.29 / 0.94 s). gm items: element and card have the same negative
+strong-inversion points (316 / 315; card mobility degradation), none introduced. Label **not deployable**; outcome
+**not deployable**; action 'stop; diagnose the failed core checks'.
+Element-deck accuracy (reported, no rule): all-device / combined / median 0.07390 / 0.06996 / 0.05503 vs I15-2 rows
+0.07391 / 0.06997 / 0.05504 (max per-device |d| 2.0e-4); GMR(element, v1 rows) 0.997 [0.962, 1.027];
+GMR(element, I15-1 g v2 element) 0.947 [0.885, 1.023]; GMR(element, C0_refit) 0.743 [0.654, 0.855].
+Q3: mirror_p Iout / Iref at 0.9 V published 0.938, C0_refit 0.992, M2 card 0.992, M2 + element 0.989; ro5_A M2 card
+5.292 GHz, M2 + element 5.384 GHz.
+Diagnosis (post hoc, `--stage vds0` -> `I16_1/diagnosis/vds0.json`; the recorded outcome stays 'not deployable'): the
+failure is 1 of 2700 V(d,s) = 0 points of the default and tight forward grids: pmos_L8_W0p84, |V(g,s)| = 0.825 V,
+default tolerance (no options; ngspice abstol 1e-12 A), element 1.0006e-12 A where the card + replica run of the same
+grid gives 8.1e-24 A. The same device gives 3.5e-13 A at reltol 1e-4 and 8.3e-19 A at tight tolerance; the tight
+maximum over 18 devices is 4.9e-17 A. The I15-1 arms on the same check: g v2 9.84e-13 A, v1 9.95e-13 A (both at
+default tolerance). The threshold equals the default abstol, so at default tolerance the check compares the solver's
+current tolerance with itself. Possible next step (needs a new pre-registration): evaluate the V(d,s) = 0 check at
+tight tolerance only, or as a restriction at default tolerance.
+Report batch `out/research/report/2026-10-22_i16_1/` (`scripts/research/plot_explore_i16_1.py`, 17 PNGs; the I-V
+figures re-simulate the published, C0_refit, v1, g v2 and selected held-out cards and reproduce the stored rows); site
+claim `i16-1` (refuted).
