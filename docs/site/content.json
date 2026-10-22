@@ -314,6 +314,27 @@
       ]
      },
      {
+      "text": "Iteration 12 (2026-10-21): I12-1 g v2 (d/s-symmetric smooth inputs, charge-free replica element, gm/gds penalty) on sky130 77 K, 18 devices: not deployable under the pre-registered rule. LODO all-device / combined v2 0.0774 / 0.0732 (v1 0.0732 / 0.0691, C0_refit 0.1043 / 0.0975); A1 GMR(v2, C0_refit) 0.787 [0.703, 0.884] passes, A2 GMR(v2, v1) 1.042 [0.967, 1.111] fails (margin 1.05). Q1 tight equivalence 0 violations; failed core checks: exchange asymmetry 1.35e-2, Q2 derivatives 2.31, Q2 capacitances 1.77e-3. Post hoc: capacitance and 4 of 5 derivative failures come from the reference run (BSIM4 A2 > 1 clamp applied only in the first analysis of a card-only process); nmos_L100_W100 derivative from the 1 MHz body-resistor term in the reference; exchange asymmetry from impact-ionization current in the sensed drain current.",
+      "source": [
+       "out/research/explore/I12_1/decision.json",
+       "out/research/explore/I12_1/diagnosis/diagnosis.json"
+      ],
+      "claim": "i12-1",
+      "queue_match": "^I12_1_"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i12_1",
+      "table": "I12-1 LODO RRMS per arm",
+      "caption": "I12-1 LODO RRMS per arm, A1 / A2 and the outcome"
+     },
+     {
+      "type": "batch_table",
+      "batch": "2026-10-21_i12_1",
+      "table": "I12-1 part B deployment checks",
+      "caption": "I12-1 part B deployment checks: values vs thresholds"
+     },
+     {
       "text": "Iteration 11 (2026-10-21): I11-1 M_bias as an ngspice-41 OSDI add-on on sky130 77 K (18 devices, M_full card + full-data g): not deployable under the pre-registered rule. Every element run converges; OSDI matches the Python model to 1.5e-6 above 10 nA, but the tight threshold fails at 1-3 nA (2.6e-5, 1e-14 A floor), the AC check fails at the Vgs = 0 abs() kink (6.4e-3), and gm turns negative on one curve (nmos_L100_W100). Restrictions: terminal asymmetry 0.117, drain displacement current x exp(g), 27/90 gds curves negative, ring-oscillator wall time 3.25x.",
       "source": [
        "out/research/explore/I11_1/runs/full/decision.json"
@@ -5758,6 +5779,120 @@
     "scripts/research/explore/i10_1_diagnose.py",
     "scripts/research/plot_explore_i10_1.py",
     "docs/RESEARCH_LOOP.md"
+   ],
+   "updated": "2026-10-21"
+  },
+  {
+   "id": "i12-1",
+   "tab": "explore",
+   "statement": "I12-1: the bias-only correction g v2 (d/s-symmetric smooth inputs, element scaling the drain current of a charge-free card replica, gm/gds penalty) keeps a gain over the refit card without correction on sky130 77 K (18 devices, LODO) but is not non-inferior to M_bias v1 and is not deployable under the pre-registered simulator-level rule; post hoc, two of the three failed core checks come from the reference runs, the third (terminal exchange) from the element.",
+   "status": "refuted",
+   "headline": {
+    "value": "not deployable (pre-registered rule); A1 GMR(v2, C0_refit) 0.787 [0.703, 0.884], 16/18; A2 GMR(v2, v1) 1.042 [0.967, 1.111] > margin 1.05",
+    "convention": "strict paper RRMS of I_card x exp(g) after the held-out card refit with the fold g in the loop; GMR, device bootstrap 10,000, 95% CI; part B: M2 card + full-data g v2, ngspice-41 OSDI build"
+   },
+   "numbers": [
+    {
+     "label": "LODO RRMS all-device / combined / median",
+     "value": "M_bias v2 0.0774 / 0.0732 / 0.0534; M_bias v1 0.0732 / 0.0691 / 0.0643; T1_inloop 0.0744 / 0.0703 / 0.0672; C0_refit 0.1043 / 0.0975 / 0.0820; published 0.2751 / 0.2595 / 0.2304",
+     "convention": "18 devices; combined = equal-weight nMOS / pMOS family means",
+     "source": "out/research/explore/I12_1/lodo/results.json"
+    },
+    {
+     "label": "accuracy contrasts",
+     "value": "A1 v2 vs C0_refit 0.787 [0.703, 0.884], 16/18 lower (passes); A2 v2 vs v1 1.042 [0.967, 1.111], 5/18 lower (fails, margin 1.05); reported v2 vs T1_inloop 1.015 [0.930, 1.096]",
+     "convention": "GMR, device bootstrap",
+     "source": "out/research/explore/I12_1/decision.json"
+    },
+    {
+     "label": "part B core checks passed",
+     "value": "Q1 tight 0 points violating |dI| <= 1e-6|I| + 1e-13 A (forward and exchanged, 18 devices); 0 convergence messages; |I(Vds = 0)| 9.6e-13 A; Verilog-A g vs Python 2.2e-16, exchanged vs forward 1.7e-16; 0/54 gm sign changes; 0 element-only circuit failures",
+     "convention": "tight = reltol 1e-9, abstol 1e-18, vntol 1e-12",
+     "source": "out/research/explore/I12_1/deploy/summary.json"
+    },
+    {
+     "label": "part B core checks failed (registered values)",
+     "value": "exchange asymmetry 1.35e-2 (nmos_L100_W100, nmos_L20_W0p64); Q2 derivative 2.31 (nmos_L0p19_W7, L0p25_W1p6, L100_W100, L20_W0p64, L8_W1p6); Q2 capacitance 1.77e-3 (nmos_L0p19_W7, L20_W0p64); thresholds 1e-3",
+     "convention": "restrictions: default tolerance 1.8e-3, 2/90 gds sign changes, wall time up to 4.72x (ro5_A)",
+     "source": "out/research/explore/I12_1/deploy/q12.json"
+    },
+    {
+     "label": "post hoc diagnosis",
+     "value": "capacitance and 4 derivative failures: the card-only AC reference runs 600 analyses in one ngspice process; ngspice-41 applies the BSIM4 'A2 > 1 -> 1' clamp only in the first analysis (static per-process model check), while the element deck (card + replica models) applies it every time; matched-state recomputation: capacitance 9.9e-13, derivative 2.8e-6. nmos_L100_W100 derivative: Re Y_card at 1 MHz contains a body-resistor (rbodymod = 1) term; with the replica static conductance 6.6e-6 over 18 devices. Exchange asymmetry: the sensed replica drain current includes impact-ionization substrate current on the forward side only (J/I 0.26 at the nmos_L100_W100 max; alpha0 = 0 removes it); predicted 0.0136 / 0.0065, observed 0.0135 / 0.0065",
+     "convention": "post hoc, after the decision; outcome unchanged",
+     "source": "out/research/explore/I12_1/diagnosis/diagnosis.json"
+    }
+   ],
+   "what": [
+    "Question: does a bias-only correction g v2 that removes the I11-1 deployment failures (source/drain asymmetry, scaled displacement currents, abs() kinks, negative gm / gds) keep the LODO accuracy of M_bias v1 and pass the I11-1 deployment checks in ngspice-41 + OSDI?",
+    "Pre-registered (in force from 3619a2b; code e7bf9b6; amendment A2 28b6c14): A1 GMR(v2, C0_refit) CI upper < 1; A2 GMR(v2, v1) CI upper <= 1.05; part B core checks (Q1 per-point equivalence, Verilog-A g, exchange asymmetry <= 1e-3, Q2 derivatives <= 1e-3, Q2 capacitances <= 1e-3, gm sign, Q3 circuits). A1 passes and part B 'not deployable' -> outcome 'not deployable', action 'stop; diagnose the failed core checks'."
+   ],
+   "did": [
+    "Validity run 2 (after amendment A2): V1 trainer reproduction max |g diff| 0.0, V2 held-out refit reproduction 0.0. LODO: 18 folds + full-data model, 5 seeds each (95 training tasks, 1649 s), held-out refits 53 s. Part B: M2 cards (refit with the full-data g in the loop, 94 s), q12 grids / exchanged terminals / AC / 1 mV sweeps, q3 circuits.",
+    "Post hoc diagnosis `scripts/research/explore/i12_1_diagnosis.py` (18 s, single-process ngspice decks): second-analysis drift test, single-parameter search, card AC reference rerun with the replica present, frequency sweep with rbodymod 1 / 0, impact-ionization test (alpha0 = 0). Report `scripts/research/plot_explore_i12_1.py` (batch 2026-10-21_i12_1) re-simulates the stored held-out cards for the I-V figures and checks each RRMS against the stored row."
+   ],
+   "result": {
+    "text": [
+     "Outcome (pre-registered rule): not deployable. Accuracy: v2 keeps a gain over C0_refit (0.787) but is 4.2% above v1 on the geometric mean (CI to 1.111), so non-inferiority at 1.05 fails; v2 has the lowest median (0.0534) and is lower than v1 on 5/18 devices (pmos_L2_W5 0.693, pmos_L4_W7 0.750).",
+     "Q1 per-point equivalence at tight tolerance passes on all 18 devices in both terminal orientations, and the Verilog-A g is d/s symmetric to 1.7e-16.",
+     "Post hoc: the capacitance failure and the derivative failures on four nMOS devices are produced by the reference run (BSIM4 A2 clamp state differs between the card-only and element decks); the nmos_L100_W100 derivative failure by the registered reference formula (1 MHz real part with rbodymod = 1); the exchange asymmetry by the element (impact-ionization current inside the scaled drain-terminal current). The same A2 clamp state applies to every multi-analysis card-only deck with a2 > 1, including the measured-curve batch deck used for scoring.",
+     "Next actions (new pre-registration each): fix the Q2 reference (one model-check state for card-only and element decks, e.g. replica present in the card-only deck; reference from the replica's static conductance); scale only the channel current (sense I_ds without substrate / junction currents, or BSIM4 with the correction inside); bound a2 <= 1 in the card box or run each curve in a fresh process, and rescore."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "01_table_i12_1_performance.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "02_i12_1_per_device.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "03_i12_1_gmr.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "04_table_i12_1_deploy_checks.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "05_table_i12_1_diagnosis.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "06_i12_1_diagnosis.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "07_i12_1_iv_pmos_L2_W5.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "08_i12_1_iv_pmos_L0p35_W1p6.png"
+     },
+     {
+      "batch": "2026-10-21_i12_1",
+      "file": "09_i12_1_iv_nmos_L8_W1p6.png"
+     }
+    ]
+   },
+   "caveats": [
+    "Simulator-level only: there is no measured circuit data.",
+    "The M2 RRMS is in-sample; LODO values are the accuracy result.",
+    "The diagnosis is post hoc; the registered outcome stays 'not deployable'.",
+    "Cards with a2 > 1 (4 nMOS starting and M2 cards) are evaluated with A2 = 1 on the first curve of each batch deck and with the card value on the other curves; all stored 43-parameter scores share this deck order."
+   ],
+   "sources": [
+    "out/research/explore/I12_1/prereg.md",
+    "out/research/explore/I12_1/prereg.json",
+    "out/research/explore/I12_1/decision.json",
+    "out/research/explore/I12_1/lodo/results.json",
+    "out/research/explore/I12_1/deploy/summary.json",
+    "out/research/explore/I12_1/diagnosis/diagnosis.json",
+    "src/cryoml/explore/i12_1_symm.py",
+    "scripts/research/explore/i12_1_symm.py",
+    "scripts/research/explore/i12_1_diagnosis.py"
    ],
    "updated": "2026-10-21"
   },

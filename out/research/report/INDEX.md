@@ -2,6 +2,16 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-21 · i12_1
+
+Folder: [2026-10-21_i12_1/](2026-10-21_i12_1/) · [tables.md](2026-10-21_i12_1/tables.md) · [README.md](2026-10-21_i12_1/README.md)
+
+- I12-1 g v2 deployable add-on, sky130 77 K, 18 devices: not deployable (pre-registered rule). A1 GMR(v2, C0_refit) 0.787 [0.703, 0.884] passes; A2 GMR(v2, v1) 1.042 [0.967, 1.111] fails (margin 1.05).
+- All-device / combined: v2 0.0774 / 0.0732, v1 0.0732 / 0.0691, C0_refit 0.1043 / 0.0975.
+- Post hoc: capacitance and 4 of 5 derivative failures are a reference-run artifact (BSIM4 A2 clamp applied only in the first analysis); nmos_L100_W100 derivative: 1 MHz body-resistor term in the reference; exchange asymmetry: impact-ionization current in the sensed drain current.
+
+Figures and tables: [01_table_i12_1_performance.png](2026-10-21_i12_1/01_table_i12_1_performance.png) · [02_i12_1_per_device.png](2026-10-21_i12_1/02_i12_1_per_device.png) · [03_i12_1_gmr.png](2026-10-21_i12_1/03_i12_1_gmr.png) · [04_table_i12_1_deploy_checks.png](2026-10-21_i12_1/04_table_i12_1_deploy_checks.png) · [05_table_i12_1_diagnosis.png](2026-10-21_i12_1/05_table_i12_1_diagnosis.png) · [06_i12_1_diagnosis.png](2026-10-21_i12_1/06_i12_1_diagnosis.png) · [07_i12_1_iv_pmos_L2_W5.png](2026-10-21_i12_1/07_i12_1_iv_pmos_L2_W5.png) · [08_i12_1_iv_pmos_L0p35_W1p6.png](2026-10-21_i12_1/08_i12_1_iv_pmos_L0p35_W1p6.png) · [09_i12_1_iv_nmos_L8_W1p6.png](2026-10-21_i12_1/09_i12_1_iv_nmos_L8_W1p6.png)
+
 ## 2026-10-21 · i11_2
 
 Folder: [2026-10-21_i11_2/](2026-10-21_i11_2/) · [tables.md](2026-10-21_i11_2/tables.md) · [README.md](2026-10-21_i11_2/README.md)

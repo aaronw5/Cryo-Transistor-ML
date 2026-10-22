@@ -1946,3 +1946,68 @@ workers, about 30 min), I12_1_deploy (about 10 min), I12_1_decide.
 Run 2 (after A2): I12_1_validity 49 s, V1 max |g_new - g_stored| 0.0 on both folds, V2 |RRMS difference| 0.0 on both
 devices (valid so far; V3 is checked on the LODO rows). I12_1_lodo started 22:08:44. (Correction to A2: lodo run 1 ran
 22:05:24-22:06:45.)
+
+## I12-1 outcome (2026-10-21 22:39): g v2 deployable add-on, sky130 77 K, 18 devices, not deployable (pre-registered rule)
+
+Queue (after amendment A2): I12_1_lodo 95 seed tasks (training 1649 s) + 18 held-out refits (53 s), 0 failed devices;
+I12_1_deploy compile 16 s, M2 refit 94 s, q12 15 s, q3 4 s; I12_1_decide. Validity: V1 0.0, V2 0.0, V3 18 rows: valid.
+Training penalty of the full-data g v2 0.00024 /V (v1 0.00873); negative corrected gds on 0.25% and gm on 0.07% of
+the training grid points.
+Part A (LODO, all-device / combined / median): M_bias_v2 0.0774 / 0.0732 / 0.0534; M_bias_v1 0.0732 / 0.0691 / 0.0643;
+T1_inloop 0.0744 / 0.0703 / 0.0672; C0_refit 0.1043 / 0.0975 / 0.0820; published 0.2751 / 0.2595 / 0.2304. A1
+GMR(v2, C0_refit) 0.787 [0.703, 0.884], 16/18 lower: passes. A2 GMR(v2, v1) 1.042 [0.967, 1.111], 5/18 lower: CI upper
+above 1.05, fails. Reported: GMR(v2, T1_inloop) 1.015 [0.930, 1.096]. Largest per-device v2 / v1 ratios: pmos_L0p35_W1p6
+1.224, nmos_L1_W1p6 1.194, pmos_L8_W0p84 1.193; smallest pmos_L2_W5 0.693, pmos_L4_W7 0.750.
+Part B (M2 cards + full-data g v2; M2 in-sample RRMS Python 0.0751, SPICE-native 0.0801, card only 0.1055): **not
+deployable**. Passed core checks: Q1 tight 0 points violating |dI| <= 1e-6 |I| + 1e-13 A (forward and exchanged
+benches, 18 devices); 0 convergence messages, 0 non-finite values; max |I(Vds = 0)| 9.6e-13 A; Verilog-A g vs Python
+2.2e-16, exchanged vs forward 1.7e-16; 0 of 54 gm curves with an introduced sign change; 0 circuits failing only with the
+element. Failed core checks: exchange asymmetry 1.35e-2 (nmos_L100_W100; nmos_L20_W0p64 6.5e-3); Q2 derivative
+difference 2.31 (nmos_L20_W0p64; also nmos_L0p19_W7, nmos_L0p25_W1p6, nmos_L100_W100, nmos_L8_W1p6); Q2 capacitance
+error 1.77e-3 (nmos_L20_W0p64, nmos_L0p19_W7). Restrictions: default-tolerance difference 1.8e-3 (13 of 18 devices above
+1e-3); 2 of 90 gds curves with an introduced sign change (pmos_L8_W0p84, pmos_L8_W1p6, |Vgs| 1.85 V); wall-time ratio
+DC grid 1.91-2.00, ro5_A 4.72. Q3 (published / C0_refit / M2_card / M2_full): inv_A V_M 0.7466 / 0.7593 / 0.7592 /
+0.7596 V; ro5_A 5.322 / 5.287 / 5.301 / 5.335 GHz; mirror_p Iout/Iref at 0.9 V 0.938 / 0.992 / 0.992 / 0.989; ro5_B
+fails at card level (amendment A1).
+Outcome (rule): **not deployable**; action 'stop; diagnose the failed core checks'.
+Diagnosis (post hoc, `scripts/research/explore/i12_1_diagnosis.py` -> `out/research/explore/I12_1/diagnosis/
+diagnosis.json`, 18 s of single-process ngspice runs; the recorded outcome stays 'not deployable'):
+(1) Q2 capacitances and the Q2 derivative failures on nmos_L0p19_W7, nmos_L0p25_W1p6, nmos_L20_W0p64, nmos_L8_W1p6:
+cause in the reference run, not in the element. ngspice-41 `b4check.c` checks each BSIM4 model name once per process
+(static `modname`) and clamps a size-dependent A2 > 1 to 1 (A1 to 0); `b4temp.c` rebuilds the size-dependent parameters
+at every analysis. A deck with one BSIM4 model therefore uses A2 = 1 in its first analysis and the card value in every
+later one; in the element deck the card and replica model names alternate, so the check and the clamp run in every
+analysis. The card-only AC reference (600 op + AC in one process) used the unclamped card; the element deck the clamped
+card. The four M2 cards have a2 1.888 / 1.042 / 2.003 / 1.030; two op at the same bias in one card-only process differ
+by up to 0.094 (published cards 0; cards with a2 <= 1 0); on nmos_L0p19_W7 the a2 value alone produces the drift and
+removing it removes the drift. Card op current of the stored AC deck vs the DC grid: up to 0.183. With the card-only
+reference rerun with the replica instance present (matched check state): capacitance error max 9.9e-13, derivative
+difference on the four devices max 2.8e-6.
+(2) Q2 derivative on nmos_L100_W100 (1.67e-2): cause in the registered reference formula exp(g) Re Y_card + I exp(g)
+dg/dV, which takes Re Y_card at 1 MHz as the static conductance. With rbodymod = 1 (body resistor network) and the
+100 um x 100 um capacitances, Re Y_dg at Vgs 0, Vds 0.05 V is 5.797e-7 S at 1 MHz and 4.699e-7 S at 100 Hz
+(rbodymod = 0: 4.699e-7 S at 1 MHz). The charge-free replica contributes its static conductance. With the element
+identity Re Y_card + (exp(g) - 1) Re Y_rep + I_rep exp(g) dg/dV (matched state) the max difference over 18 devices is
+6.6e-6.
+(3) Exchange asymmetry: cause in the element. The replica drain-terminal current contains the impact-ionization
+substrate current (drain to body) in the forward bench; in the exchanged bench this current flows at the module s
+terminal and is not scaled. At the nmos_L100_W100 maximum (Vgs 0, Vds 1.5 V, I 7.1e-7 A) the drain non-channel current
+J = |I_fwd,card| - |i(VZ)| is 1.82e-7 A (J/I 0.26); alpha0 = 0 lowers the card current by 1.82e-7 A. The predicted
+asymmetry |1 - exp(-g)| J / I is 0.0136 (observed 0.0135) and 0.0065 for nmos_L20_W0p64 (observed 0.0065). The
+pre-registered bound assumed J = gmin x V <= 1.85e-12 A.
+Why the smoke passed: nmos_L1_W1p6 and pmos_L2_W5 have a2 <= 1, J/I <= 1e-3 and Re Y_card at 1 MHz equal to the static
+value.
+Side finding (affects stored results): the A2 clamp state applies to every multi-analysis card-only deck, including the
+measured-curve batch deck (`spice_pdk._batch_deck`, one dc analysis per curve). For cards with a2 > 1 (the four nMOS
+devices above, in the direct43_r3_fd starting cards and in the refit cards) the first curve is simulated with A2 = 1 and
+the other curves with the card value. All stored 43-parameter scores (I3-2 and later) were produced with this deck
+order, so they are reproducible, but the card does not define a single model for these devices. The SPICE-native M2
+RRMS (0.0801, element deck: clamp in every analysis) differs from the Python value (0.0751) partly for this reason.
+Recommended next actions (each needs a new pre-registration): (a) make the card unambiguous: bound a2 <= 1 in the
+43-parameter box (or run each curve in a fresh process / set the clamp explicitly) and rescore the stored arms; (b)
+restate the Q2 reference with one model-check state for card-only and element runs and the replica's static
+conductance; (c) scale only the channel current: sense I_ds of the replica without the substrate and junction currents
+(for example a second replica with alpha0 = beta0 = 0 and the junction currents off, or the source-terminal current
+combined with the drain-terminal current), then rerun Part B; A2 (accuracy cost 1.042 vs v1) stays as measured.
+Report batch `out/research/report/2026-10-21_i12_1/` (`scripts/research/plot_explore_i12_1.py`; 9 PNGs; the I-V figures
+re-simulate the stored held-out cards and reproduce the stored LODO rows); site claim `i12-1` (refuted).
