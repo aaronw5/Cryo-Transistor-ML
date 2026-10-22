@@ -1,0 +1,29 @@
+compile: |g text - g python| 1.39e-16, |g text exchanged - forward| 1.39e-16
+refit M2: 2 devices, 6 s, in-sample mean 0.0543, native mean 0.0543
+q12: 2 devices, 2.5 s
+q3: 24 runs, 360.8 s; not ok: ['ro5_B|C0_refit', 'ro5_B|M2_card', 'ro5_B|M2_full']
+{
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 6.613179575431e-13,
+  "g_text_max": 1.3877787807814457e-16,
+  "g_sym_text_max": 1.3877787807814457e-16,
+  "swap_asym_max": 5.266730833894075e-05,
+  "q2_ac_max": 8.98769178978042e-07,
+  "cap_max": 0.0,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.001587223667820146,
+  "q2_gds_sign": 2,
+  "runtime_ratio_max": 1693.8512228724958
+ },
+ "deploy": "deployable with restrictions",
+ "core_fail": [],
+ "restrictions": [
+  "default tolerance above 1e-3",
+  "gds sign changes introduced",
+  "runtime overhead > 2x"
+ ]
+}
+stage deploy done in 373 s

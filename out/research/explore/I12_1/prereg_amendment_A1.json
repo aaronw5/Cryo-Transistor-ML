@@ -1,0 +1,12 @@
+{
+ "id": "I12-1 amendment A1",
+ "date": "2026-10-21",
+ "status": "in force",
+ "committed_before": "any full (non-smoke) I12-1 run: no v2 correction trained at full settings, no held-out refit at full settings",
+ "reason": "smoke (2 devices, 1 seed, 200 steps, refit max_nfev 20): ro5_B fails at card level ('timestep too small') for C0_refit and M2_card, and the M2_full run reaches the 120 s timeout; the Q4 circuit wall-time ratio then compares a 120 s timeout with a 0.07 s aborted run (ratio 1694), which is not a runtime overhead",
+ "change": {
+  "q4_circuits": "a circuit enters the Q4 wall-time ratio only when both its M2_card and its M2_full run pass (Q3 'ok'); excluded circuits are listed in summary.json (runtime_circuits_excluded)",
+  "q3_repeats": "after a failed run (convergence message or timeout) the remaining repeats of that run are skipped; wall times of failed runs do not enter any rule"
+ },
+ "unchanged": "every other check, threshold and rule of prereg.json, including Q3 core (circuits failing with the element while M2_card passes) and the Q4 grid-deck ratio"
+}

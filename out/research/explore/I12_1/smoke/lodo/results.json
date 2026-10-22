@@ -1,0 +1,209 @@
+{
+ "smoke": true,
+ "preregistered_config": false,
+ "prereg": "out/research/explore/I12_1/prereg.json",
+ "lambda": 10.0,
+ "eps": 0.01,
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {
+  "steps": 200
+ },
+ "seeds": [
+  0
+ ],
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "folds": [
+  "nmos_L1_W1p6",
+  "pmos_L2_W5"
+ ],
+ "summary": {
+  "M_bias_v2": {
+   "mean": 0.0557346543510435
+  },
+  "C0_refit": {
+   "mean": 0.056329467455490265
+  },
+  "M_bias_v1": {
+   "mean": 0.04793066291432249
+  },
+  "T1_inloop": {
+   "mean": 0.050076839982323325
+  }
+ },
+ "comparisons": {
+  "A1_M_bias_v2_vs_C0_refit": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 1,
+   "ties": 0,
+   "ratio": 1.0460422669717362,
+   "resample_unit": "device",
+   "ci_low": 0.8891121635312632,
+   "ci_high": 1.230670852534,
+   "n_boot": 10000
+  },
+  "A2_M_bias_v2_vs_M_bias_v1": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 0,
+   "ties": 0,
+   "ratio": 1.2732548774563255,
+   "resample_unit": "device",
+   "ci_low": 1.0000754292262388,
+   "ci_high": 1.6210557079885786,
+   "n_boot": 10000
+  },
+  "M_bias_v2_vs_T1_inloop": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 1,
+   "ties": 0,
+   "ratio": 1.2088619036856278,
+   "resample_unit": "device",
+   "ci_low": 0.9660216893339898,
+   "ci_high": 1.5127477139669046,
+   "n_boot": 10000
+  },
+  "M_bias_v1_vs_C0_refit": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 0.8215497819741256,
+   "resample_unit": "device",
+   "ci_low": 0.7591786306104361,
+   "ci_high": 0.8890451035470113,
+   "n_boot": 10000
+  }
+ },
+ "n_failed_M_bias_v2": 0,
+ "per_device": {
+  "M_bias_v2": {
+   "nmos_L1_W1p6": 0.04072542905243824,
+   "pmos_L2_W5": 0.07074387964964876
+  },
+  "C0_refit": {
+   "nmos_L1_W1p6": 0.03309205622980586,
+   "pmos_L2_W5": 0.07956687868117468
+  },
+  "M_bias_v1": {
+   "nmos_L1_W1p6": 0.025122781932627562,
+   "pmos_L2_W5": 0.07073854389601743
+  },
+  "T1_inloop": {
+   "nmos_L1_W1p6": 0.026921494361834625,
+   "pmos_L2_W5": 0.07323218560281203
+  }
+ },
+ "posthoc_no_refit": {
+  "nmos_L1_W1p6": 0.04080619129116022,
+  "pmos_L2_W5": 0.0721342729427029
+ },
+ "penalty": {
+  "M_bias_v2|nmos_L1_W1p6": {
+   "P_train": 0.0005169939458120619,
+   "frac_neg_gm_train": 0.0009511406371178976,
+   "frac_neg_gds_train": 0.006321427003614335,
+   "P_heldout_start": 0.0,
+   "frac_neg_gds_heldout_start": 0.0,
+   "frac_neg_gm_heldout_start": 0.0
+  },
+  "M_bias_v2|pmos_L2_W5": {
+   "P_train": 0.0005073088092486949,
+   "frac_neg_gm_train": 0.0009379780080233195,
+   "frac_neg_gds_train": 0.0021645646338999684,
+   "P_heldout_start": 0.0006950249207480861,
+   "frac_neg_gds_heldout_start": 0.1306263770853006,
+   "frac_neg_gm_heldout_start": 0.0
+  },
+  "full|M_bias_v2": {
+   "P_train": 0.0004898270928551804,
+   "frac_neg_gm_train": 0.0008968609865470852,
+   "frac_neg_gds_train": 0.0035184546395308726
+  }
+ },
+ "heldout_rows": {
+  "nmos_L1_W1p6": {
+   "label": "M_bias_v2",
+   "round": null,
+   "tag": "nmos_L1_W1p6",
+   "rrms_start": 0.04080619129116022,
+   "rrms": 0.04072542905243824,
+   "failed": [],
+   "n_sim": 163,
+   "history": [
+    0.040806191291160226,
+    0.04077461147218388,
+    0.04072542905243824
+   ],
+   "runtime_s": 5.37
+  },
+  "pmos_L2_W5": {
+   "label": "M_bias_v2",
+   "round": null,
+   "tag": "pmos_L2_W5",
+   "rrms_start": 0.0721342729427029,
+   "rrms": 0.07074387964964876,
+   "failed": [],
+   "n_sim": 163,
+   "history": [
+    0.07213427294270289,
+    0.0715040364879901,
+    0.07074387964964876
+   ],
+   "runtime_s": 6.36
+  }
+ },
+ "train_seconds_per_member": {
+  "M_bias_v2|nmos_L1_W1p6": [
+   9.7
+  ],
+  "M_bias_v2|pmos_L2_W5": [
+   9.8
+  ],
+  "full|M_bias_v2": [
+   10.2
+  ]
+ },
+ "traces": {
+  "M_bias_v2|nmos_L1_W1p6": {
+   "0": []
+  },
+  "M_bias_v2|pmos_L2_W5": {
+   "0": []
+  },
+  "full|M_bias_v2": {
+   "0": []
+  }
+ },
+ "timing": {
+  "train_s": 10.4,
+  "refit_s": 6.6,
+  "n_seed_tasks": 3
+ }
+}

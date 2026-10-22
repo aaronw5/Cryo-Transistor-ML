@@ -1911,3 +1911,22 @@ refit reproduces 2 stored rows), V3 (18 rows). Outcome: invalid / no gain / supp
 v1 / not deployable. Before registration: replica check on the published card (DC equal to 12 digits, imaginary AC
 current 0) and the v1 penalty calibration (8.4% of grid points with negative corrected gds, 0.20% gm; card alone
 0.13% gm, 0 gds).
+
+## I12-1 code, unit tests, smoke, amendment A1 (2026-10-21 22:20)
+
+Code `src/cryoml/explore/i12_1_symm.py` (inputs, `SymCorrection`, trainer `fit_v2` with the gm/gds penalty, Verilog-A
+v2 export and evaluator, charge-free replica library, add-on netlist, Python reference model, row selections,
+decision), driver `scripts/research/explore/i12_1_symm.py` (stages grids, calib, validity, lodo, deploy, decide),
+tests `tests/test_i12_1_symm.py` (26 tests; they include the V1 / V2 / primary / Q3 row selections against the
+prereg.json wording and a bitwise reproduction of `i3_2_bias.fit_bias` by `fit_v2` with v1 inputs and lambda 0).
+Pre-checks: one full-length seed of the V1 fold pmos_L2_W5 reproduces the stored member 0 exactly (max |dW| 0);
+`CorrectedProblem` feeds the held-out refit the same signed voltages as the stored records (difference 0, 2 devices).
+Smoke (`out/research/explore/I12_1/smoke/`; 2 folds, 1 seed, 200 steps, refit max_nfev 20; Part B on nmos_L1_W1p6 and
+pmos_L2_W5; not used for decisions): all stages run; Verilog-A g vs Python 1.4e-16, exchanged vs forward 1.4e-16;
+Q1 tight 0 violations (max |dI| / (1e-6 |I| + 1e-13 A) 0.10); exchange asymmetry 5.3e-5; capacitance error 0 (Y_dd,
+Y_dg, Y_gg); AC derivative error 9.0e-7; 0 gm curves and 2 of 10 gds curves (pmos_L2_W5) with an introduced sign
+change; default-tolerance difference 1.6e-3; grid wall-time ratio 1.37, ro5_A 2.76; training penalty of the smoke
+full model 0.00049 /V (negative corrected gds on 0.35% of grid points). Amendment A1 (`prereg_amendment_A1.json`,
+before any full run): ro5_B fails at card level (C0_refit and M2_card 'timestep too small'; the M2_full run reaches the
+120 s timeout), so the Q4 circuit ratio uses only circuits where both M2_card and M2_full pass, and repeats after a
+failed run are skipped.

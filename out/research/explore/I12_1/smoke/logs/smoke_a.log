@@ -1,0 +1,61 @@
+{"v1_max_g_diff": 0.25914052605004934, "v2_max_rrms_diff": 0.002579642073712224, "wall_s": 8.6}
+stage validity done in 9 s
+lodo: training 3 seed tasks 10 s
+{
+ "summary": {
+  "M_bias_v2": {
+   "mean": 0.0557346543510435
+  },
+  "C0_refit": {
+   "mean": 0.056329467455490265
+  },
+  "M_bias_v1": {
+   "mean": 0.04793066291432249
+  },
+  "T1_inloop": {
+   "mean": 0.050076839982323325
+  }
+ },
+ "comparisons": {
+  "A1_M_bias_v2_vs_C0_refit": {
+   "ratio": 1.0460422669717362,
+   "ci_low": 0.8891121635312632,
+   "ci_high": 1.230670852534,
+   "wins": 1,
+   "n_used": 2
+  },
+  "A2_M_bias_v2_vs_M_bias_v1": {
+   "ratio": 1.2732548774563255,
+   "ci_low": 1.0000754292262388,
+   "ci_high": 1.6210557079885786,
+   "wins": 0,
+   "n_used": 2
+  },
+  "M_bias_v2_vs_T1_inloop": {
+   "ratio": 1.2088619036856278,
+   "ci_low": 0.9660216893339898,
+   "ci_high": 1.5127477139669046,
+   "wins": 1,
+   "n_used": 2
+  },
+  "M_bias_v1_vs_C0_refit": {
+   "ratio": 0.8215497819741256,
+   "ci_low": 0.7591786306104361,
+   "ci_high": 0.8890451035470113,
+   "wins": 2,
+   "n_used": 2
+  }
+ },
+ "accuracy_decision": null,
+ "penalty_full": {
+  "P_train": 0.0004898270928551804,
+  "frac_neg_gm_train": 0.0008968609865470852,
+  "frac_neg_gds_train": 0.0035184546395308726
+ },
+ "timing": {
+  "train_s": 10.4,
+  "refit_s": 6.6,
+  "n_seed_tasks": 3
+ }
+}
+stage lodo done in 17 s

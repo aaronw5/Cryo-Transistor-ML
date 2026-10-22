@@ -1,0 +1,52 @@
+{
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 6.613179575431e-13,
+  "g_text_max": 1.3877787807814457e-16,
+  "g_sym_text_max": 1.3877787807814457e-16,
+  "swap_asym_max": 5.266730833894075e-05,
+  "q2_ac_max": 8.98769178978042e-07,
+  "cap_max": 0.0,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.001587223667820146,
+  "q2_gds_sign": 2,
+  "runtime_ratio_max": 2.7555725223569993
+ },
+ "runtime_grid": {
+  "nmos_L1_W1p6": 1.3691840475651127,
+  "pmos_L2_W5": 1.373223793958608
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": 1.3676033132526935,
+  "inv_B_vtc": 1.3667591549479297,
+  "ro5_A": 2.7555725223569993,
+  "mirror_n": 1.165430972833468,
+  "mirror_p": 1.224635620632671
+ },
+ "runtime_circuits_excluded": [
+  "ro5_B"
+ ],
+ "n_devices": 2,
+ "q3_not_ok": [
+  "ro5_B|C0_refit",
+  "ro5_B|M2_card",
+  "ro5_B|M2_full"
+ ],
+ "decision": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced",
+   "runtime overhead > 2x"
+  ]
+ },
+ "refit_in_sample": {
+  "mean_rrms_M2_python": 0.054331638028563084,
+  "mean_rrms_M2_native": 0.054333043883973545,
+  "mean_rrms_M2_card_only": 0.05688730386176855,
+  "n_failed": 0
+ }
+}
