@@ -6,8 +6,9 @@ Inputs (all stored; nothing is fitted here):
   out/research/explore/I13_1/all18/results.json       all-18 LODO run, BSIM4 clamp
       state C (I13-1 rerun of the I3-2 recipe; replaces I3_2/all18)
   out/research/explore/I13_1/summary.json             old (state L) vs new (state C)
-  out/research/explore/I15_2/decision.json, I16_1/{decision.json, accuracy/accuracy.json,
-      deploy_sel/{summary,restrictions}.json}, I15_1/deploy_{v2,v1}/summary.json
+  out/research/explore/I15_2/decision.json, I17_1/{decision.json, accuracy/accuracy.json,
+      deploy_sel/{summary,restrictions}.json}, I16_1/decision.json, I16_1/diagnosis/vds0.json,
+      I15_1/deploy_{v2,v1}/summary.json
       (g v2 with the selected penalty weight: accuracy and deployment checks)
   out/research/explore/I3_2/real_dev/results.json     pre-registered 12-device run
   out/research/explore/mbias_deck/sky130/check.json   NGSpice re-simulation
@@ -894,7 +895,7 @@ def selected_variant_slide(prs):
     """g v2 with the nested-selected penalty weight (I12-1, I14-1, I15-2, I16-1):
     definition and 18-device accuracy."""
     d152 = jload(EXP / "I15_2/decision.json")
-    acc16 = jload(EXP / "I16_1/accuracy/accuracy.json")
+    acc16 = jload(EXP / "I17_1/accuracy/accuracy.json")
     a18 = jload(ALL18 / "results.json")["per_device"]
     lodo = jload(I13 / "lodo/results.json")["per_device"]
     ref = jload(ROOT / "out/research/reference_scores.json")["released"]["devices"]
@@ -905,7 +906,7 @@ def selected_variant_slide(prs):
             ("M_bias v1 (abs inputs, no penalty)", v1),
             ("g v2, lambda = 10 V (I12-1)", lodo["M_bias_v2"]),
             ("g v2, selected lambda (I15-2 rows)", d152["selected_rows"]),
-            ("g v2, selected lambda, element deck (I16-1)", acc16["native"]))
+            ("g v2, selected lambda, element deck (I17-1)", acc16["native"]))
     rows = [["Arm (18 devices, held-out)", "All-device", "Combined", "Median", "GMR vs M_bias v1 [95% CI]",
              "Lower than v1"]]
     for name, dd in arms:
@@ -946,16 +947,25 @@ def selected_variant_slide(prs):
 
 
 def selected_deploy_slide(prs):
-    """I16-1 Part B checks of the deployed selected model vs I15-1 g v2 and v1."""
-    dec = jload(EXP / "I16_1/decision.json")
-    s16 = jload(EXP / "I16_1/deploy_sel/summary.json")
-    rest = jload(EXP / "I16_1/deploy_sel/restrictions.json")
+    """I17-1 Part B checks of the deployed selected model (V(d,s) = 0 check at
+    tight tolerance only, re-registered after the I16-1 failure) vs I15-1 g v2
+    and v1."""
+    dec = jload(EXP / "I17_1/decision.json")
+    s17 = jload(EXP / "I17_1/deploy_sel/summary.json")
+    rest = jload(EXP / "I17_1/deploy_sel/restrictions.json")
+    vds16 = jload(EXP / "I16_1/diagnosis/vds0.json")["arms"]
     s2 = jload(EXP / "I15_1/deploy_v2/summary.json")
     s1 = jload(EXP / "I15_1/deploy_v1/summary.json")
+    tight = {"sel": s17["vds0"]["summary"]["tight"]["elem_max"],
+             "v2": vds16["v2_I15_1"]["summary"]["tight"]["elem_max"],
+             "v1": vds16["v1_I15_1"]["summary"]["tight"]["elem_max"]}
+    dflt = {"sel": s17["vds0"]["summary"]["default"]["elem_max"],
+            "v2": vds16["v2_I15_1"]["summary"]["default"]["elem_max"],
+            "v1": vds16["v1_I15_1"]["summary"]["default"]["elem_max"]}
     e = lambda x: f"{x:.1e}" if (x != 0 and (abs(x) < 1e-2 or abs(x) >= 1e4)) else f"{x:.3g}"
     checks = (("q1_tight_viol", "Q1 equivalence violations, tight", "0", lambda v: v == 0),
               ("q1_bad", "Q1 runs: convergence lines / non-finite", "0", lambda v: v == 0),
-              ("q1_vds0_max", "|I(Vds = 0)| (A)", "<= 1e-12", lambda v: v <= 1e-12),
+              ("vds0_tight", "|I(Vds = 0)| (A), tight tolerance", "<= 1e-12", lambda v: v <= 1e-12),
               ("g_text_max", "Verilog-A g vs Python", "<= 1e-9", lambda v: v <= 1e-9),
               ("g_sym_text_max", "Verilog-A g, d/s exchanged", "<= 1e-12", lambda v: v <= 1e-12),
               ("swap_asym_max", "exchange asymmetry", "<= 1e-3", lambda v: v <= 1e-3),
@@ -966,16 +976,20 @@ def selected_deploy_slide(prs):
               ("q1_default_max", "default tolerance, relative (restriction)", "<= 1e-3", lambda v: v <= 1e-3),
               ("q2_gds_sign", "gds curves with a sign change, of 90 (restriction)", "0", lambda v: v == 0),
               ("runtime_ratio_max", "wall-time ratio element / card (restriction)", "<= 2", lambda v: v <= 2))
-    rows = [["Check", "Threshold", "g v2, selected lambda (I16-1)", "g v2, lambda 10 V (I15-1)",
+    rows = [["Check", "Threshold", "g v2, selected lambda (I17-1)", "g v2, lambda 10 V (I15-1)",
              "M_bias v1 (I15-1)"]]
     for k, lab, thr, ok in checks:
-        fm = (lambda x: f"{x:.4e}") if k == "q1_vds0_max" else e
         bad = "restriction" if "(restriction)" in lab else "FAIL"
-        rows.append([lab, thr] + [f"{fm(s['values'][k])} {'pass' if ok(s['values'][k]) else bad}"
-                                  for s in (s16, s2, s1)])
-    rows.append(["Label", ""] + [s["decision"]["deploy"] for s in (s16, s2, s1)])
-    slide = new_slide(prs, "Deployment checks of the selected g v2 (I16-1, pre-registered)", size=24)
-    add_table(slide, rows, [4.3, 1.1, 2.55, 2.55, 2.0], left=0.4, top=0.8, size=10.5, row_h=0.27,
+        vals = ([tight[a] for a in ("sel", "v2", "v1")] if k == "vds0_tight"
+                else [s["values"][k] for s in (s17, s2, s1)])
+        fm = (lambda x: f"{x:.2e}") if k == "vds0_tight" else e
+        rows.append([lab, thr] + [f"{fm(v)} {'pass' if ok(v) else bad}" for v in vals])
+    rows.append(["|I(Vds = 0)| (A), default tolerance (reported, no rule)", "-"]
+                + [f"{dflt[a]:.4e}" for a in ("sel", "v2", "v1")])
+    lab2 = s2["decision"]["deploy"]
+    rows.append(["Label", ""] + [s17["decision"]["deploy"], lab2, s1["decision"]["deploy"]])
+    slide = new_slide(prs, "Deployment checks of the selected g v2 (I17-1, re-registered V(d,s) = 0 check)", size=22)
+    add_table(slide, rows, [4.3, 1.1, 2.55, 2.55, 2.0], left=0.4, top=0.8, size=10.5, row_h=0.26,
               align_right_from=1)
     tot = rest["sel"]["totals"]
     gds_dev = [f"{t} ({v['n_gds_introduced']})" for t, v in sorted(rest["sel"]["per_device"].items())
@@ -983,19 +997,17 @@ def selected_deploy_slide(prs):
     intro = [c for v in rest["sel"]["per_device"].values() for c in v["gds"] if c["introduced"]]
     n_el, n_py, n_cd = (sum(c[k] for c in intro) for k in ("n_neg_elem", "n_neg_python", "n_neg_card"))
     add_lines(slide, [
-        f"Outcome (pre-registered rule): {dec['outcome']}; label {s16['decision']['deploy']}. Core failures: "
-        + (", ".join(s16["decision"]["core_fail"]) or "none") + ". Restrictions: "
-        + ("; ".join(s16["decision"]["restrictions"]) or "none") + ".",
+        f"Outcome (I17-1 rule): {dec['outcome']}; label {s17['decision']['deploy']}. Restrictions: "
+        + ("; ".join(s17["decision"]["restrictions"]) or "none") + ".",
+        "The |I(Vds = 0)| check was changed after an observed failure: I16-1 took the maximum over default and tight "
+        "tolerance and failed at 1 of 2700 points (1.0006e-12 A, pmos_L8_W0p84, default tolerance, where the "
+        "threshold equals ngspice abstol 1e-12 A). I17-1 uses tight tolerance only (abstol 1e-18 A), threshold "
+        "kept. The I16-1 outcome stays 'not deployable'; the I17-1 run under the I16-1 rule is also "
+        f"'{s17['decision_I16_1_rule']['deploy']}'. All other I17-1 values equal the I16-1 run except runtime.",
         f"gds curves with an introduced sign change: {tot['n_gds_curves_introduced']} of 90 ("
-        + (", ".join(gds_dev) or "none") + f"). On these curves the element has {n_el} points with dI/dV(d,s) < 0, "
-        f"I_card exp(g) of the card sweep {n_py}, the card alone {n_cd}: the sign changes come from g. "
-        "A gds sign change is a restriction, a gm sign change in strong inversion a core failure (I15-1).",
-        f"Failed core check: |I(Vds = 0)| = {s16['values']['q1_vds0_max']:.4e} A at 1 of 2700 points (pmos_L8_W0p84, "
-        "|Vgs| = 0.825 V, default tolerance, ngspice abstol 1e-12 A); card + replica run at that point 8e-24 A; "
-        "tight-tolerance maximum 4.9e-17 A (post hoc diagnosis).",
-        "M2 card: 43-parameter card refit from the starting card with the full-data g in the loop. Q1 grids: "
-        "V(g,s), V(d,s) in 25 mV steps, V(d,s) swept in serpentine order; tight: reltol 1e-9.",
-    ], top=0.8 + 0.27 * len(rows) + 0.1, height=2.4, size=11)
+        + (", ".join(gds_dev) or "none") + f"). Element {n_el} points with dI/dV(d,s) < 0, I_card exp(g) {n_py}, "
+        f"card alone {n_cd}: the sign changes come from g.",
+    ], top=0.8 + 0.26 * len(rows) + 0.1, height=2.3, size=10.5)
 
 
 def gmap_slide(prs):
