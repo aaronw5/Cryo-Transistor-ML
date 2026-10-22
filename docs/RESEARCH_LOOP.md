@@ -2281,3 +2281,37 @@ tight tolerance only, or as a restriction at default tolerance.
 Report batch `out/research/report/2026-10-22_i16_1/` (`scripts/research/plot_explore_i16_1.py`, 17 PNGs; the I-V
 figures re-simulate the published, C0_refit, v1, g v2 and selected held-out cards and reproduce the stored rows); site
 claim `i16-1` (refuted).
+
+## I17-1 pre-registration in force (2026-10-22 10:35): re-registration of the I16-1 Part B test with the V(d,s) = 0 check at tight tolerance only
+
+Pre-registration `out/research/explore/I17_1/prereg.md` / `prereg.json`, commit 3cfc9a7 (alone). The check was changed
+after an observed failure: I16-1 failed only 'Q1 |I(V(d,s) = 0)| <= 1e-12 A, max over default and tight tolerance'
+(1.0006e-12 A at 1 of 2700 points); the I16-1 outcome stays 'not deployable'. I17-1 evaluates this check on the tight
+forward Q1 grid only (reltol 1e-9, abstol 1e-18 A, vntol 1e-12 V), threshold 1e-12 A kept. Option chosen over an
+abstol-derived threshold because (1) at default tolerance the threshold equals ngspice abstol, the current tolerance of
+the convergence test, so the check there does not separate an element current from the solver tolerance; (2) a factor
+k x abstol would be chosen with the observed value known; (3) at tight tolerance abstol is six orders of magnitude below
+the threshold. Known before registration: the I16-1 tight maximum 4.87e-17 A. Every other I16-1 rule, procedure,
+threshold and validity check unchanged; every stage rerun into `I17_1`. Reported without a rule: default and r4 values
+and the label under the I16-1 rule. Code 86fcbf8 (`src/cryoml/explore/i17_1_vds0.py`,
+`scripts/research/explore/i17_1_vds0.py`, 3 unit tests); smoke (nmos_L1_W1p6, pmos_L2_W5, refit max_nfev 20) ran all
+stages.
+
+## I17-1 outcome (2026-10-22 10:45): selected correction deployable with restrictions under the re-registered check
+
+Queue: I17_1_validity 6 s, I17_1_accuracy 6 s, I17_1_deploy 197 s (0 failed M2 refits), I17_1_restrict 1 s,
+I17_1_runtime 6 s, I17_1_decide. Valid (V1 max |RRMS card-only deck - I15-2 selected row| 0.0 on 18 rows; unit tests
+pass; V3 18 rows / 0 failed; V4 sym_v2 / EPS 0.01 / lambda 1, lambda*_full 1).
+Core checks: Q1 equivalence 0 violating points; Q1 runs 0 messages, 0 non-finite, 0 failed; **Q1 |I(V(d,s) = 0)| tight
+max 4.87e-17 A (nmos_L0p19_W7, |V(g,s)| 1.825 V; 0 of 1350 points above 1e-12 A): pass**; Verilog-A g 2.8e-16,
+exchanged 1.7e-16; exchange asymmetry 2.2e-5; Q2 1.1e-5; capacitances 3.3e-14; gm 0 of 54; Q3 0 circuits failing only
+with the element. Reported without a rule: default tolerance 1.0006e-12 A (pmos_L8_W0p84, 0.825 V; 1 of 1350 points),
+r4 9.28e-13 A. Restrictions: default tolerance 1.84e-3, 6 of 90 gds curves (pmos_L2_W5, pmos_L8_W0p84 x2,
+pmos_L8_W1p6 x2, pmos_L8_W5), runtime DC grid 1.84-2.07, inv_A 1.76, inv_B 1.75, ro5_A 4.60, mirror_n 1.20,
+mirror_p 1.29. Label **deployable with restrictions**; outcome **deployable** (re-registered check). The same run
+under the unchanged I16-1 rule: not deployable. Every Part B value equals the I16-1 run except the runtime ratio
+(4.56 -> 4.60); M2 in-sample element RRMS 0.069624 in both. Element-deck accuracy (reported): 0.07390 / 0.06996 /
+0.05503 (all-device / combined / median); GMR(element, v1) 0.997 [0.962, 1.027] 7/18; GMR(element, C0_refit) 0.743
+[0.654, 0.855] 17/18. Report batch `out/research/report/2026-10-22_i17_1/` (`scripts/research/plot_explore_i17_1.py`,
+18 PNGs; I-V figures re-simulate the published, C0_refit, v1, g v2 and selected held-out cards and reproduce the
+stored rows); site claim `i17-1` (verified; the check change is stated), caveat added to `i16-1`.
