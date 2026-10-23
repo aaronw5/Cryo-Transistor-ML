@@ -1,0 +1,254 @@
+{
+ "id": "I21-1",
+ "status": "in force",
+ "date": "2026-10-23",
+ "title": "Open items without a user decision: (A) NIST Part B of the selected g v2 full-data element, (B) TU Delft v1-recipe S3_D on state-C records, (C) selected g v2 recipe on IHP SG13G2 233 / 343 / 398 K",
+ "test_locked": true,
+ "no_amendment": "no amendment of the committed I19-1 TEST gate decisions (a755e18); Part B reports a value only",
+ "not_done_before": [
+  "any I21-1 code, simulation, training or refit",
+  "pre-checks: igcmod / igbmod values of every bin of both NIST cards (0); circuit-device choice from the DEV geometries and bins"
+ ],
+ "part_A": {
+  "models": {
+   "nist4": "I20_1/select_nist4/full_corrections.json full|sym_e1_l0",
+   "nistrt": "I20_1/select_nistrt/full_corrections.json full|sym_e1_l0",
+   "lambda_full_V": 0.0,
+   "vdd_V": 1.8,
+   "eps_V": 0.01
+  },
+  "simulator": "~/cryo-ng41/arm64-osdi/bin/ngspice (ngspice-41 --enable-osdi), OpenVAF 23.5.0 OSDI 0.3",
+  "datasets": {
+   "nist4": {
+    "n": 53,
+    "deck": "sky130 77 K lvt library tt_77k, explicit bin, 77 K"
+   },
+   "nistrt": {
+    "n": 87,
+    "deck": "open_pdks tt nfet_01v8 / pfet_01v8 card, one explicit bin, library tt_rt, 30 C"
+   }
+  },
+  "m2": "state-C starting card refit with the full-data g frozen (I20-1 refit_task, state C, max_nfev 400, irls 2, diff_step 0.01)",
+  "card_text": "changed_params vs stock + b4check.c A1/A2 clamp (state C)",
+  "gate_current": "igcmod = igbmod = 0 in every bin of both cards; I18-2 amendment A1 not applicable; V(d,s) = 0 check on the raw element current (I17-1)",
+  "replica": "REPLICA_ZERO + REPLICA_CHAN in every replica bin; subckt and model suffix _ch; VCVS copies; -gmin VCCS (1e-12 S)",
+  "q1": {
+   "vgs_V": [
+    0.0,
+    1.8,
+    73
+   ],
+   "vds_V": [
+    -1.8,
+    1.8,
+    145
+   ],
+   "step_V": 0.025,
+   "order": "serpentine",
+   "tolerances": {
+    "default": "",
+    "r4": "reltol=1e-4",
+    "tight": "reltol=1e-9 abstol=1e-18 vntol=1e-12"
+   }
+  },
+  "q2": {
+   "freq_Hz": 1000000.0,
+   "gm_vds_V": [
+    0.05,
+    0.9,
+    1.8
+   ],
+   "gds_vgs_V": [
+    0.6,
+    0.9,
+    1.2,
+    1.5,
+    1.8
+   ],
+   "dense_step_V": 0.001,
+   "vt_criterion": "1e-7 A x W / L"
+  },
+  "q3": {
+   "circuits": [
+    "inv_A_vtc",
+    "inv_B_vtc",
+    "ro5_A",
+    "ro5_B",
+    "mirror_n",
+    "mirror_p"
+   ],
+   "supply_V": 1.8,
+   "device_rule": "per sky130 circuit device the NIST DEV device of the same polarity nearest in (ln L, ln W); ties first tag",
+   "devices": {
+    "nist4": {
+     "nmos_L0p15_W1p6": [
+      "nfet_01v8_lvt_W1p65_L0p18_m23p3",
+      0
+     ],
+     "pmos_L0p35_W1p6": [
+      "pfet_01v8_lvt_W1_L0p35_m28p6",
+      0
+     ],
+     "nmos_L1_W1p6": [
+      "nfet_01v8_lvt_W1p65_L1_m23p6",
+      3
+     ],
+     "pmos_L2_W5": [
+      "pfet_01v8_lvt_W5_L1p5_m30p6",
+      11
+     ]
+    },
+    "nistrt": {
+     "nmos_L0p15_W1p6": [
+      "nfet_01v8_W1p68_L0p15_m6p7",
+      44
+     ],
+     "pmos_L0p35_W1p6": [
+      "pfet_01v8_W1p68_L0p5_m16p1",
+      41
+     ],
+     "nmos_L1_W1p6": [
+      "nfet_01v8_W1p68_L1_m7p2",
+      40
+     ],
+     "pmos_L2_W5": [
+      "pfet_01v8_W5_L2_m18p5",
+      12
+     ]
+    }
+   },
+   "arms": [
+    "published",
+    "C0_refit",
+    "M2_card",
+    "M2_full"
+   ],
+   "core": "circuits failing with M2_full while M2_card passes = 0 (failure: convergence message, non-finite output, < 5 ring periods)"
+  },
+  "thresholds": {
+   "q1_tight_equivalence": "|dI| <= 1e-6 |I| + 1e-13 A",
+   "q1_vds0_abs_A": 1e-12,
+   "g_text": 1e-09,
+   "g_sym_text": 1e-12,
+   "swap_asym": 0.001,
+   "q2_ac": 0.001,
+   "cap": 0.001,
+   "gm_sign_curves": 0,
+   "q3_fail": 0,
+   "restrictions": {
+    "q1_default_rel": 0.001,
+    "gds_sign_curves": "> 0",
+    "runtime_ratio": 2.0
+   }
+  },
+  "label": "i12_1_symm.decide_deploy with the I17-1 V(d,s) = 0 value: not deployable / deployable with restrictions / deployable",
+  "validity": {
+   "VA1": "card-only measured deck (Part B builder) x exp(g) reproduces the M2 Python row, max |diff| <= 1e-9",
+   "VA2": "0 failed M2 refits; 53 / 87 rows",
+   "VA3": "unit tests test_i21_1_close, test_i14_1_chan, test_i12_1_symm, test_i20_1_nist_clamp",
+   "VA4": "53 / 87 Part B rows, 24 Q3 runs",
+   "VA5": "loaded tags in DEV, none in TEST"
+  },
+  "reported": [
+   "replica non-channel outputs",
+   "gds curves per device and |V(g,s)|",
+   "V(d,s) = 0 at default / r4",
+   "element-deck RRMS of the M2 pairs vs Python",
+   "circuit metrics per arm"
+  ]
+ },
+ "part_B": {
+  "definition": "I19-1 S3_D, v1 recipe (fit_bias M_bias, seed 0, 500 steps), LOGO over 7 DEV groups",
+  "records": "I18_2/start/records_{4,295}K (state C)",
+  "state_L_values": {
+   "4": -0.029237998681334147,
+   "295": -0.05098787045944309
+  },
+  "reported": [
+   "S3_D state C",
+   "sign differs from state L",
+   "decision word (apply iff S3_D < 0)"
+  ],
+  "amendment": "none",
+  "validity": {
+   "VB1": "state-L recompute of the first sorted group reproduces I19-1 per-record values (<= 1e-9)",
+   "VB2": "DEV only (I6_1/split.json)",
+   "VB3": "45 finite per-record values per temperature"
+  }
+ },
+ "part_C": {
+  "temperatures_K": [
+   233,
+   343,
+   398
+  ],
+  "setup": "I17-2 (c071472)",
+  "simulator": "ngspice-46 + psp103.osdi",
+  "start_records": "I5_1/start/records_TK",
+  "refit": {
+   "heldout_nfev": 400,
+   "heldout_irls": 2,
+   "diff_step": 0.01
+  },
+  "arms": {
+   "C0_refit": "rerun",
+   "M_bias_v1": "rerun, I5-1 recipe",
+   "selected": "5-seed fit_v2 at lambda*_f (sym_v2, EPS 0.01 V, class VDD 1.2 / 3.3 V), 75 x 75 penalty grid at T"
+  },
+  "selection": "I17-2 nested selection (inner i mod 3 over (pmos, tag)-sorted training DUTs, seed 0, lambda in {0,1,2,5,10} V, argmin mean ln RRMS, non-finite -> 0, ties to larger lambda)",
+  "change_from_I17_2": "fixed-lambda arms not run on every fold; selected row = 5-seed fold correction at lambda*_f (identical construction)",
+  "rules": {
+   "primary": {
+    "stat": "GMR(selected, C0_refit), device bootstrap 10000, seed 0, 95% CI",
+    "gain over C0_refit replicated": "CI upper < 1 and 0 failed DUTs",
+    "worse than C0_refit": "CI lower > 1",
+    "inconclusive": "otherwise"
+   },
+   "secondary": {
+    "stat": "GMR(selected, M_bias v1)",
+    "non-inferior": "CI upper <= 1.05"
+   }
+  },
+  "validity": {
+   "VC1": "C0_refit / M_bias v1 reruns reproduce I5_1/lodo_TK rows (<= 1e-9, 18 each)",
+   "VC2": "unit tests test_i21_1_close, test_i17_2_ihp, test_i12_1_symm, test_i15_2_ablate",
+   "VC3": "18 rows per arm; inner complete (18 x 3 x 5)",
+   "VC4": "18 finite 75 x 75 grids, positive corner current",
+   "VC5": "loaded tags in DEV (I5_1/split.json)"
+  }
+ },
+ "predictions": {
+  "A label nist4": "deployable with restrictions",
+  "A label nistrt": "deployable with restrictions",
+  "A gds sign curves": "> 0 on both",
+  "B sign S3_D state C 4K": "< 0",
+  "B sign S3_D state C 295K": "< 0",
+  "C ln GMR(selected, C0_refit)": {
+   "233": "> 0",
+   "343": "> 0",
+   "398": "> 0"
+  },
+  "C primary label": {
+   "233": "inconclusive",
+   "343": "inconclusive",
+   "398": "worse than C0_refit"
+  },
+  "C ln GMR(selected, M_bias v1)": {
+   "233": "> 0",
+   "343": "> 0",
+   "398": "> 0"
+  },
+  "C secondary label": {
+   "233": "not shown non-inferior to M_bias v1",
+   "343": "not shown non-inferior to M_bias v1",
+   "398": "not shown non-inferior to M_bias v1"
+  }
+ },
+ "order": [
+  "prereg alone",
+  "code + unit tests",
+  "smoke (not used for decisions)",
+  "queue: I21_1_s3tud, I21_1_partA_nist4, I21_1_partA_nistrt, I21_1_ihp_{233,343,398}_{pens,base,inner,sel}, I21_1_decide"
+ ],
+ "compute_estimate": "5-6 h"
+}
