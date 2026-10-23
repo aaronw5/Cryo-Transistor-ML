@@ -1,0 +1,119 @@
+{
+ "T_K": 295,
+ "validity": {
+  "valid": true,
+  "fails": []
+ },
+ "unit_tests": {
+  "files": [
+   "tests.test_i18_2_partb",
+   "tests.test_i18_2_tud",
+   "tests.test_i14_1_chan",
+   "tests.test_i12_1_symm"
+  ],
+  "rc": 0,
+  "passed": true,
+  "tail": [
+   "Ran 55 tests in 2.324s",
+   "",
+   "OK"
+  ]
+ },
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 1.2220538895189979e-19,
+  "g_text_max": 3.3306690738754696e-16,
+  "g_sym_text_max": 2.220446049250313e-16,
+  "swap_asym_max": 4.1822101337620943e-13,
+  "q2_ac_max": 2.8230039797544426e-08,
+  "cap_max": 0.0,
+  "q2_gm_sign": 0,
+  "q1_default_max": 0.0014623119834760443,
+  "q2_gds_sign": 1,
+  "runtime_ratio_max": 1.9278980310565812
+ },
+ "decision": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "gds sign changes introduced"
+  ],
+  "q3": "not run (sky130 circuits at 1.8 V; TU Delft card 1 V, measured range 1.1 V)",
+  "label_full": "deployable with restrictions (Q3 not run)"
+ },
+ "vds0_raw_element_tight_max": 4.068479085616131e-08,
+ "vds0_card_max": 4.06847908561822e-08,
+ "vds0_added_default_max": 9.96108076352517e-13,
+ "vds0_default_max": 4.068479085616131e-08,
+ "vds0_r4_max": 4.068479085616131e-08,
+ "runtime_grid": {
+  "t40_nmos_W0p12_L0p04_d152": 1.8575309302665584,
+  "t40_nmos_W0p12_L0p04_d153": 1.9278980310565812,
+  "t40_nmos_W0p12_L0p04_d154": 1.8507697029751302,
+  "t40_nmos_W0p12_L0p04_d155": 1.8148423766352637,
+  "t40_nmos_W0p12_L0p04_d156": 1.8382856526103624,
+  "t40_nmos_W0p12_L0p04_d157": 1.7831526968739084,
+  "t40_nmos_W0p12_L0p04_d158": 1.8216096956160992,
+  "t40_nmos_W0p12_L0p04_d159": 1.8359860473111018,
+  "t40_nmos_W0p12_L0p05_d160": 1.8817353385656914,
+  "t40_nmos_W0p12_L0p05_d161": 1.8432792966910057,
+  "t40_nmos_W0p12_L0p05_d162": 1.8195244941349005,
+  "t40_nmos_W0p36_L0p04_d190": 1.809696542201492,
+  "t40_nmos_W0p36_L0p04_d191": 1.8493935121884444,
+  "t40_nmos_W1_L0p04_d192": 1.8215899435326173,
+  "t40_nmos_W1_L0p04_d193": 1.8116051380970228,
+  "t40_nmos_W1_L0p04_d194": 1.7986091352552727,
+  "t40_nmos_W1_L0p04_d195": 1.8742664361354606,
+  "t40_nmos_W1_L0p04_d196": 1.8445673677681815,
+  "t40_nmos_W1_L0p04_d197": 1.8152295195550516,
+  "t40_nmos_W1_L0p04_d198": 1.794445153054979,
+  "t40_nmos_W1_L0p04_d199": 1.812265327478672,
+  "t40_nmos_W1_L1_d128": 1.8449826221662131,
+  "t40_nmos_W1_L1_d129": 1.8352157359386525,
+  "t40_nmos_W1_L1_d130": 1.8386947355106071,
+  "t40_nmos_W1_L1_d131": 1.797796287870391,
+  "t40_nmos_W1_L1_d132": 1.8162816732012372,
+  "t40_nmos_W1_L1_d133": 1.8779158195649202,
+  "t40_nmos_W1_L1_d134": 1.8429112616831431,
+  "t40_nmos_W1_L1_d135": 1.8520188840984815,
+  "t40_pmos_W1_L0p04_d392": 1.7185922205440178,
+  "t40_pmos_W1_L0p04_d393": 1.8489156261963111,
+  "t40_pmos_W1_L0p04_d394": 1.7729081849947166,
+  "t40_pmos_W1_L0p04_d395": 1.7531846258643438,
+  "t40_pmos_W1_L0p04_d396": 1.7760424080321218,
+  "t40_pmos_W1_L0p04_d397": 1.7834186719801275,
+  "t40_pmos_W1_L0p04_d398": 1.7760667638995682,
+  "t40_pmos_W1_L0p04_d399": 1.7769410253860292,
+  "t40_pmos_W1_L1_d328": 1.8132056851271627,
+  "t40_pmos_W1_L1_d329": 1.830981500970211,
+  "t40_pmos_W1_L1_d330": 1.8055352375524625,
+  "t40_pmos_W1_L1_d331": 1.7934383377141123,
+  "t40_pmos_W1_L1_d332": 1.8418993583080283,
+  "t40_pmos_W1_L1_d333": 1.8476700318291324,
+  "t40_pmos_W1_L1_d334": 1.7506562385791369,
+  "t40_pmos_W1_L1_d335": 1.8495256967045937
+ },
+ "gds_curves_introduced": [
+  [
+   "t40_nmos_W1_L1_d134",
+   0.725
+  ]
+ ],
+ "replica_nonchannel_max": {
+  "isub": 0.0,
+  "igidl": 0.0,
+  "igisl": 0.0,
+  "igs": 0.0,
+  "igd": 0.0,
+  "igb": 0.0,
+  "igcs": 0.0,
+  "igcd": 0.0
+ },
+ "nonchannel_share_fwd_max": 0.9476186794052451,
+ "card_rep_vs_card_default_max_abs": 1.6840126825304336e-06,
+ "m2_in_sample_python_mean": 0.016616686060997716,
+ "n_devices": 45,
+ "lambda_star_full": 5.0
+}

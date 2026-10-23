@@ -1,0 +1,124 @@
+{
+ "prereg": "out/research/explore/I18_2/prereg.json",
+ "per_temperature": {
+  "4": {
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "label": "not deployable (Q3 not run)",
+   "core_fail": [
+    "Q1 convergence / non-finite"
+   ],
+   "restrictions": [
+    "default tolerance above 1e-3"
+   ],
+   "q3": "not run (sky130 circuits at 1.8 V; TU Delft card 1 V, measured range 1.1 V)",
+   "values": {
+    "q1_tight_viol": 0,
+    "q1_bad": 3,
+    "q1_vds0_max": 9.695682404288619e-19,
+    "g_text_max": 4.440892098500626e-16,
+    "g_sym_text_max": 1.7208456881689926e-15,
+    "swap_asym_max": 3.775899592282537e-10,
+    "q2_ac_max": 1.0375631467487373e-07,
+    "cap_max": 0.0,
+    "q2_gm_sign": 0,
+    "q1_default_max": 0.0016441604340554645,
+    "q2_gds_sign": 0,
+    "runtime_ratio_max": 1.9466439319220163
+   },
+   "lambda_star_full": 10.0,
+   "accuracy": {
+    "M2": {
+     "mean_native": 0.04107864928944466,
+     "mean_python_rerun": 0.04108350743316773,
+     "mean_card_only": 0.06277146633835581,
+     "mean_stored_python": 0.04108350743316773,
+     "max_abs_native_minus_stored": 0.00024585462119695173,
+     "n_msgs": 0
+    },
+    "sel": {
+     "mean_native": 0.0483577333883662,
+     "mean_python_rerun": 0.048354428187961734,
+     "mean_card_only": 0.062368476810123794,
+     "mean_stored_python": 0.048354428187961734,
+     "max_abs_native_minus_stored": 0.00013766714528594404,
+     "n_msgs": 0,
+     "gmr_native_vs_C0_refit_cluster": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 30,
+      "ties": 0,
+      "ratio": 0.8259208835243208,
+      "resample_unit": "cluster (7)",
+      "ci_low": 0.6686274537418098,
+      "ci_high": 1.0142527140399535,
+      "n_boot": 10000
+     }
+    }
+   }
+  },
+  "295": {
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "label": "deployable with restrictions (Q3 not run)",
+   "core_fail": [],
+   "restrictions": [
+    "default tolerance above 1e-3",
+    "gds sign changes introduced"
+   ],
+   "q3": "not run (sky130 circuits at 1.8 V; TU Delft card 1 V, measured range 1.1 V)",
+   "values": {
+    "q1_tight_viol": 0,
+    "q1_bad": 0,
+    "q1_vds0_max": 1.2220538895189979e-19,
+    "g_text_max": 3.3306690738754696e-16,
+    "g_sym_text_max": 2.220446049250313e-16,
+    "swap_asym_max": 4.1822101337620943e-13,
+    "q2_ac_max": 2.8230039797544426e-08,
+    "cap_max": 0.0,
+    "q2_gm_sign": 0,
+    "q1_default_max": 0.0014623119834760443,
+    "q2_gds_sign": 1,
+    "runtime_ratio_max": 1.9278980310565812
+   },
+   "lambda_star_full": 5.0,
+   "accuracy": {
+    "M2": {
+     "mean_native": 0.016621810900727087,
+     "mean_python_rerun": 0.016616686060997716,
+     "mean_card_only": 0.045659099748611015,
+     "mean_stored_python": 0.016616686060997716,
+     "max_abs_native_minus_stored": 6.623257953467312e-05,
+     "n_msgs": 0
+    },
+    "sel": {
+     "mean_native": 0.021499049011702173,
+     "mean_python_rerun": 0.021488191973913943,
+     "mean_card_only": 0.04289476303418036,
+     "mean_stored_python": 0.021488191973913943,
+     "max_abs_native_minus_stored": 0.00015210629329530378,
+     "n_msgs": 0,
+     "gmr_native_vs_C0_refit_cluster": {
+      "n": 45,
+      "n_used": 45,
+      "n_method_failed": 0,
+      "n_control_failed": 0,
+      "wins": 29,
+      "ties": 0,
+      "ratio": 0.8290072182810404,
+      "resample_unit": "cluster (7)",
+      "ci_low": 0.5234140632657764,
+      "ci_high": 1.247908820231924,
+      "n_boot": 10000
+     }
+    }
+   }
+  }
+ }
+}
