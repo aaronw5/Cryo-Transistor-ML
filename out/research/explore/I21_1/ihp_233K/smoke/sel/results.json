@@ -1,0 +1,89 @@
+{
+ "T_K": 233,
+ "smoke": true,
+ "lambda_star": {
+  "lv_nmos_W0p15_L0p18": 1.0,
+  "hv_nmos_W0p3_L0p5": 2.0
+ },
+ "names": {
+  "lv_nmos_W0p15_L0p18": "sym_e1_l1|lv_nmos_W0p15_L0p18",
+  "hv_nmos_W0p3_L0p5": "sym_e1_l2|hv_nmos_W0p3_L0p5"
+ },
+ "seeds": [
+  0
+ ],
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {
+  "steps": 200
+ },
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "per_device": {
+  "lv_nmos_W0p15_L0p18": 0.03273457457909249,
+  "hv_nmos_W0p3_L0p5": 0.026313471981477158
+ },
+ "mean": 0.029524023280284827,
+ "heldout_rows": {
+  "lv_nmos_W0p15_L0p18": {
+   "label": "selected",
+   "tag": "lv_nmos_W0p15_L0p18",
+   "T_K": 233,
+   "n_active": 12,
+   "rrms_start": 0.03276870870495418,
+   "rrms": 0.03273457457909249,
+   "failed": [],
+   "n_sim": 60,
+   "history": [
+    0.03276870870495418,
+    0.032741231731600595,
+    0.03273457457909249
+   ],
+   "runtime_s": 1.61
+  },
+  "hv_nmos_W0p3_L0p5": {
+   "label": "selected",
+   "tag": "hv_nmos_W0p3_L0p5",
+   "T_K": 233,
+   "n_active": 12,
+   "rrms_start": 0.029954430745825197,
+   "rrms": 0.026313471981477158,
+   "failed": [],
+   "n_sim": 60,
+   "history": [
+    0.029954430745825197,
+    0.02664526346949078,
+    0.026313471981477158
+   ],
+   "runtime_s": 1.7
+  }
+ },
+ "train_seconds_per_member": {
+  "sym_e1_l1|lv_nmos_W0p15_L0p18": [
+   5.5
+  ],
+  "sym_e1_l2|hv_nmos_W0p3_L0p5": [
+   4.7
+  ]
+ },
+ "timing": {
+  "train_s": 6.1,
+  "refit_s": 2.3,
+  "n_seed_tasks": 2
+ }
+}

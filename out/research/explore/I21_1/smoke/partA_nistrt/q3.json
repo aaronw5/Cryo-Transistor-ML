@@ -1,0 +1,596 @@
+{
+ "ds": "nistrt",
+ "wall_s": 3.5,
+ "devices": {
+  "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+  "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1",
+  "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+  "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+ },
+ "rows": {
+  "inv_A_vtc|published": {
+   "circuit": "inv_A_vtc",
+   "arm": "published",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.025093125004786998
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.6867781446356592,
+   "gain_max": 35.867971646000115,
+   "vin_at_gain_max": 0.666,
+   "vout_min": 8.64920394706e-10,
+   "vout_max": 1.800001166912,
+   "ok": true
+  },
+  "inv_A_vtc|C0_refit": {
+   "circuit": "inv_A_vtc",
+   "arm": "C0_refit",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.03465862502343953
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.6032595355025042,
+   "gain_max": 14.557458852500076,
+   "vin_at_gain_max": 0.574,
+   "vout_min": 9.544779198047e-10,
+   "vout_max": 1.800000203833,
+   "ok": true
+  },
+  "inv_A_vtc|M2_card": {
+   "circuit": "inv_A_vtc",
+   "arm": "M2_card",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.03192525001941249,
+    0.026952250045724213,
+    0.030345666978973895
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.6062998905393691,
+   "gain_max": 14.72845986909988,
+   "vin_at_gain_max": 0.578,
+   "vout_min": 9.137622413929e-10,
+   "vout_max": 1.800000286044,
+   "ok": true
+  },
+  "inv_A_vtc|M2_full": {
+   "circuit": "inv_A_vtc",
+   "arm": "M2_full",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.05790616601007059,
+    0.055572375014889985,
+    0.05622979102190584
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.6071405388601858,
+   "gain_max": 14.83626852149996,
+   "vin_at_gain_max": 0.592,
+   "vout_min": 9.201876738422e-10,
+   "vout_max": 1.799999886748,
+   "ok": true
+  },
+  "inv_B_vtc|published": {
+   "circuit": "inv_B_vtc",
+   "arm": "published",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.029214292007964104
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.6589548095497111,
+   "gain_max": 248.92092716174977,
+   "vin_at_gain_max": 0.657,
+   "vout_min": 4.265013087253e-09,
+   "vout_max": 1.799999986562,
+   "ok": true
+  },
+  "inv_B_vtc|C0_refit": {
+   "circuit": "inv_B_vtc",
+   "arm": "C0_refit",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.038569250027649105
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.5650417570851373,
+   "gain_max": 67.96333699859997,
+   "vin_at_gain_max": 0.564,
+   "vout_min": 1.801679346922e-09,
+   "vout_max": 1.800000533129,
+   "ok": true
+  },
+  "inv_B_vtc|M2_card": {
+   "circuit": "inv_B_vtc",
+   "arm": "M2_card",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.0323683749884367,
+    0.041108959005214274,
+    0.02645637496607378
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.5515020023672095,
+   "gain_max": 70.41765311729995,
+   "vin_at_gain_max": 0.549,
+   "vout_min": 1.813245114547e-09,
+   "vout_max": 1.800000543722,
+   "ok": true
+  },
+  "inv_B_vtc|M2_full": {
+   "circuit": "inv_B_vtc",
+   "arm": "M2_full",
+   "kind": "vtc",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.05734466697322205,
+    0.05571624997537583,
+    0.07091100001707673
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 1801,
+   "vm": 0.5522852893403818,
+   "gain_max": 79.8200788870999,
+   "vin_at_gain_max": 0.551,
+   "vout_min": 1.855486317311e-09,
+   "vout_max": 1.799999991725,
+   "ok": true
+  },
+  "ro5_A|published": {
+   "circuit": "ro5_A",
+   "arm": "published",
+   "kind": "ring",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.28396912495372817
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 6,
+   "period_s": 1.0211535026769316e-09,
+   "freq_hz": 979284698.5086198,
+   "period_spread": 1.4496296873741316e-06,
+   "ok": true
+  },
+  "ro5_A|C0_refit": {
+   "circuit": "ro5_A",
+   "arm": "C0_refit",
+   "kind": "ring",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.2659795840154402
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 8,
+   "period_s": 8.478945029525023e-10,
+   "freq_hz": 1179392007.5172586,
+   "period_spread": 3.98105604442755e-06,
+   "ok": true
+  },
+  "ro5_A|M2_card": {
+   "circuit": "ro5_A",
+   "arm": "M2_card",
+   "kind": "ring",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.2856560000218451,
+    0.2612920410465449,
+    0.2315402909880504
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 7,
+   "period_s": 8.402254984527532e-10,
+   "freq_hz": 1190156692.2706656,
+   "period_spread": 4.211444425594129e-06,
+   "ok": true
+  },
+  "ro5_A|M2_full": {
+   "circuit": "ro5_A",
+   "arm": "M2_full",
+   "kind": "ring",
+   "devices": {
+    "nmos_L0p15_W1p6": "nfet_01v8_W1p68_L0p15_m6p7",
+    "pmos_L0p35_W1p6": "pfet_01v8_W1p68_L0p5_m16p1"
+   },
+   "bins": {
+    "nmos_L0p15_W1p6": 44,
+    "pmos_L0p35_W1p6": 41
+   },
+   "wall": [
+    0.9675607499666512,
+    0.8763551249867305,
+    0.8750869589857757
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 7,
+   "period_s": 8.233380603226685e-10,
+   "freq_hz": 1214567925.6077354,
+   "period_spread": 7.645843937214082e-06,
+   "ok": true
+  },
+  "ro5_B|published": {
+   "circuit": "ro5_B",
+   "arm": "published",
+   "kind": "ring",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.2731637080432847
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 1,
+   "period_s": 1.4591858210761398e-08,
+   "freq_hz": 68531367.66793051,
+   "period_spread": 0.0,
+   "ok": false
+  },
+  "ro5_B|C0_refit": {
+   "circuit": "ro5_B",
+   "arm": "C0_refit",
+   "kind": "ring",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.28099620796274394
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 3,
+   "period_s": 7.929446006137903e-09,
+   "freq_hz": 126112215.05587345,
+   "period_spread": 6.000575341455618e-07,
+   "ok": false
+  },
+  "ro5_B|M2_card": {
+   "circuit": "ro5_B",
+   "arm": "M2_card",
+   "kind": "ring",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.2910885000019334,
+    0.2293599999975413,
+    0.22746083297533914
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 3,
+   "period_s": 7.964575015273479e-09,
+   "freq_hz": 125555977.32237105,
+   "period_spread": 1.0645453719412262e-07,
+   "ok": false
+  },
+  "ro5_B|M2_full": {
+   "circuit": "ro5_B",
+   "arm": "M2_full",
+   "kind": "ring",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2",
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40,
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.9092430000309832,
+    0.8726153329480439,
+    0.8720946669927798
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 10008,
+   "n_periods": 3,
+   "period_s": 7.820914719833308e-09,
+   "freq_hz": 127862281.56459345,
+   "period_spread": 7.552647945968393e-07,
+   "ok": false
+  },
+  "mirror_n|published": {
+   "circuit": "mirror_n",
+   "arm": "published",
+   "kind": "mirror",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40
+   },
+   "wall": [
+    0.0158801669604145
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.8023653438208,
+   "ratio_at_0p9": 1.007614714269,
+   "ratio_at_vref": 0.9999991975385875,
+   "ok": true
+  },
+  "mirror_n|C0_refit": {
+   "circuit": "mirror_n",
+   "arm": "C0_refit",
+   "kind": "mirror",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40
+   },
+   "wall": [
+    0.02178337494842708
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.9136012811722,
+   "ratio_at_0p9": 0.9943474916704999,
+   "ratio_at_vref": 1.0000015331655177,
+   "ok": true
+  },
+  "mirror_n|M2_card": {
+   "circuit": "mirror_n",
+   "arm": "M2_card",
+   "kind": "mirror",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40
+   },
+   "wall": [
+    0.01104862499050796,
+    0.010639874963089824,
+    0.011179708992131054
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.9121482667576,
+   "ratio_at_0p9": 0.994981741721,
+   "ratio_at_vref": 1.0000006355672364,
+   "ok": true
+  },
+  "mirror_n|M2_full": {
+   "circuit": "mirror_n",
+   "arm": "M2_full",
+   "kind": "mirror",
+   "devices": {
+    "nmos_L1_W1p6": "nfet_01v8_W1p68_L1_m7p2"
+   },
+   "bins": {
+    "nmos_L1_W1p6": 40
+   },
+   "wall": [
+    0.015835166967008263,
+    0.020552833972033113,
+    0.018484207976143807
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.9151808720677,
+   "ratio_at_0p9": 0.9946301464401,
+   "ratio_at_vref": 0.9999892748728333,
+   "ok": true
+  },
+  "mirror_p|published": {
+   "circuit": "mirror_p",
+   "arm": "published",
+   "kind": "mirror",
+   "devices": {
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.012838624999858439
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.4441757380907,
+   "ratio_at_0p9": 0.9925249546327999,
+   "ratio_at_vref": 0.9999998841414295,
+   "ok": true
+  },
+  "mirror_p|C0_refit": {
+   "circuit": "mirror_p",
+   "arm": "C0_refit",
+   "kind": "mirror",
+   "devices": {
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.011695249995682389
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.2323529470764,
+   "ratio_at_0p9": 0.9724028364159,
+   "ratio_at_vref": 0.9999997261822959,
+   "ok": true
+  },
+  "mirror_p|M2_card": {
+   "circuit": "mirror_p",
+   "arm": "M2_card",
+   "kind": "mirror",
+   "devices": {
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.018237332988064736,
+    0.015409957966767251,
+    0.013985208002850413
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.2323923219837,
+   "ratio_at_0p9": 0.9725889212458,
+   "ratio_at_vref": 0.9999997244666076,
+   "ok": true
+  },
+  "mirror_p|M2_full": {
+   "circuit": "mirror_p",
+   "arm": "M2_full",
+   "kind": "mirror",
+   "devices": {
+    "pmos_L2_W5": "pfet_01v8_W5_L2_m18p5"
+   },
+   "bins": {
+    "pmos_L2_W5": 12
+   },
+   "wall": [
+    0.01655545801622793,
+    0.019448167004156858,
+    0.01830787496874109
+   ],
+   "msgs": [],
+   "finite": true,
+   "n_rows": 181,
+   "v_ref": 0.2329281650308,
+   "ratio_at_0p9": 1.03875890589,
+   "ratio_at_vref": 0.9999935739152596,
+   "ok": true
+  }
+ }
+}

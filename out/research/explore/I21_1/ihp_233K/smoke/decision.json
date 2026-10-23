@@ -1,0 +1,373 @@
+{
+ "T_K": 233,
+ "validity": {
+  "valid": false,
+  "fails": [
+   "VC1 C0_refit / M_bias v1 reruns reproduce I5-1 rows",
+   "VC3 18 rows per arm / inner selection complete"
+  ]
+ },
+ "outcome": "invalid",
+ "secondary": null,
+ "primary_gmr_selected_vs_C0_refit": {
+  "n": 2,
+  "n_used": 2,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 1,
+  "ties": 0,
+  "ratio": 0.9952134063974898,
+  "resample_unit": "device",
+  "ci_low": 0.9369283733008819,
+  "ci_high": 1.0571242717133784,
+  "n_boot": 10000
+ },
+ "secondary_gmr_selected_vs_v1": {
+  "n": 2,
+  "n_used": 2,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 0,
+  "ties": 0,
+  "ratio": 1.0037650244374943,
+  "resample_unit": "device",
+  "ci_low": 1.0004922989765865,
+  "ci_high": 1.0070484553600567,
+  "n_boot": 10000
+ },
+ "gmr_v1_vs_C0_refit": {
+  "n": 2,
+  "n_used": 2,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 1,
+  "ties": 0,
+  "ratio": 0.9914804582429073,
+  "resample_unit": "device",
+  "ci_low": 0.9303706969749492,
+  "ci_high": 1.0566041065930456,
+  "n_boot": 10000
+ },
+ "n_failed_selected_C0": 0,
+ "prediction_check": {
+  "ln GMR(selected, C0_refit)": false,
+  "ln GMR(selected, M_bias v1)": true,
+  "primary label": false,
+  "secondary label": false
+ },
+ "lambda_star": {
+  "lv_nmos_W0p15_L0p18": 1.0,
+  "hv_nmos_W0p3_L0p5": 2.0
+ },
+ "lambda_star_counts": {
+  "2": 1,
+  "1": 1
+ },
+ "rows": {
+  "C0_refit": {
+   "lv_nmos_W0p15_L0p18": 0.0309656825171903,
+   "hv_nmos_W0p3_L0p5": 0.028084827753451908
+  },
+  "M_bias_v1": {
+   "lv_nmos_W0p15_L0p18": 0.03271846731111975,
+   "hv_nmos_W0p3_L0p5": 0.026129300771400448
+  },
+  "selected": {
+   "lv_nmos_W0p15_L0p18": 0.03273457457909249,
+   "hv_nmos_W0p3_L0p5": 0.026313471981477158
+  }
+ },
+ "table": {
+  "C0_refit": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.029525255135321102,
+   "valid_only_mean": 0.029525255135321102,
+   "median": 0.029525255135321102,
+   "combined": NaN,
+   "gmr_vs_v1": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 1.008592748032766,
+    "resample_unit": "device",
+    "ci_low": 0.9464282731442696,
+    "ci_high": 1.0748403870107333,
+    "n_boot": 10000
+   },
+   "gmr_vs_v1_cluster": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 1.008592748032766,
+    "resample_unit": "cluster (2)",
+    "ci_low": 0.9464282731442696,
+    "ci_high": 1.0748403870107333,
+    "n_boot": 10000
+   }
+  },
+  "M_bias_v1": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.029423884041260097,
+   "valid_only_mean": 0.029423884041260097,
+   "median": 0.029423884041260097,
+   "combined": NaN,
+   "gmr_vs_C0_refit": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 0.9914804582429073,
+    "resample_unit": "device",
+    "ci_low": 0.9303706969749492,
+    "ci_high": 1.0566041065930456,
+    "n_boot": 10000
+   },
+   "gmr_vs_C0_refit_cluster": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 0.9914804582429073,
+    "resample_unit": "cluster (2)",
+    "ci_low": 0.9303706969749492,
+    "ci_high": 1.0566041065930456,
+    "n_boot": 10000
+   }
+  },
+  "selected": {
+   "n": 2,
+   "n_failed": 0,
+   "all_device_mean": 0.029524023280284827,
+   "valid_only_mean": 0.029524023280284827,
+   "median": 0.029524023280284827,
+   "combined": NaN,
+   "gmr_vs_C0_refit": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 0.9952134063974898,
+    "resample_unit": "device",
+    "ci_low": 0.9369283733008819,
+    "ci_high": 1.0571242717133784,
+    "n_boot": 10000
+   },
+   "gmr_vs_C0_refit_cluster": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 0.9952134063974898,
+    "resample_unit": "cluster (2)",
+    "ci_low": 0.9369283733008819,
+    "ci_high": 1.0571242717133784,
+    "n_boot": 10000
+   },
+   "gmr_vs_v1": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.0037650244374943,
+    "resample_unit": "device",
+    "ci_low": 1.0004922989765865,
+    "ci_high": 1.0070484553600567,
+    "n_boot": 10000
+   },
+   "gmr_vs_v1_cluster": {
+    "n": 2,
+    "n_used": 2,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.0037650244374943,
+    "resample_unit": "cluster (2)",
+    "ci_low": 1.0004922989765865,
+    "ci_high": 1.0070484553600567,
+    "n_boot": 10000
+   }
+  }
+ },
+ "by_class": {
+  "lv": {
+   "n": 1,
+   "agg": {
+    "C0_refit": {
+     "n": 1,
+     "n_failed": 0,
+     "all_device_mean": 0.0309656825171903,
+     "valid_only_mean": 0.0309656825171903,
+     "median": 0.0309656825171903,
+     "combined": NaN
+    },
+    "M_bias_v1": {
+     "n": 1,
+     "n_failed": 0,
+     "all_device_mean": 0.03271846731111975,
+     "valid_only_mean": 0.03271846731111975,
+     "median": 0.03271846731111975,
+     "combined": NaN
+    },
+    "selected": {
+     "n": 1,
+     "n_failed": 0,
+     "all_device_mean": 0.03273457457909249,
+     "valid_only_mean": 0.03273457457909249,
+     "median": 0.03273457457909249,
+     "combined": NaN
+    }
+   },
+   "selected_vs_C0_refit": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.0571242717133784,
+    "resample_unit": "device",
+    "ci_low": 1.0571242717133784,
+    "ci_high": 1.0571242717133784,
+    "n_boot": 10000
+   },
+   "selected_vs_v1": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.0004922989765865,
+    "resample_unit": "device",
+    "ci_low": 1.0004922989765865,
+    "ci_high": 1.0004922989765865,
+    "n_boot": 10000
+   }
+  },
+  "hv": {
+   "n": 1,
+   "agg": {
+    "C0_refit": {
+     "n": 1,
+     "n_failed": 0,
+     "all_device_mean": 0.028084827753451908,
+     "valid_only_mean": 0.028084827753451908,
+     "median": 0.028084827753451908,
+     "combined": NaN
+    },
+    "M_bias_v1": {
+     "n": 1,
+     "n_failed": 0,
+     "all_device_mean": 0.026129300771400448,
+     "valid_only_mean": 0.026129300771400448,
+     "median": 0.026129300771400448,
+     "combined": NaN
+    },
+    "selected": {
+     "n": 1,
+     "n_failed": 0,
+     "all_device_mean": 0.026313471981477158,
+     "valid_only_mean": 0.026313471981477158,
+     "median": 0.026313471981477158,
+     "combined": NaN
+    }
+   },
+   "selected_vs_C0_refit": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 1,
+    "ties": 0,
+    "ratio": 0.9369283733008819,
+    "resample_unit": "device",
+    "ci_low": 0.9369283733008819,
+    "ci_high": 0.9369283733008819,
+    "n_boot": 10000
+   },
+   "selected_vs_v1": {
+    "n": 1,
+    "n_used": 1,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 0,
+    "ties": 0,
+    "ratio": 1.0070484553600567,
+    "resample_unit": "device",
+    "ci_low": 1.0070484553600567,
+    "ci_high": 1.0070484553600567,
+    "n_boot": 10000
+   }
+  }
+ },
+ "clusters": {
+  "hv_nmos_W0p3_L0p5": "hv_W0p3_L0p5",
+  "lv_nmos_W0p15_L0p18": "lv_W0p15_L0p18"
+ },
+ "negative_fractions": {
+  "M_bias_v1": {
+   "train_mean_gm": 0.0,
+   "train_mean_gds": 0.02839657667862312,
+   "heldout_mean_gm": 0.0,
+   "heldout_mean_gds": 0.0
+  },
+  "selected": {
+   "train_mean_gm": 0.0,
+   "train_mean_gds": 0.008463910389528664,
+   "heldout_mean_gm": 0.0,
+   "heldout_mean_gds": 0.0
+  },
+  "card_only": {
+   "frac_neg_gm_card": 0.0,
+   "frac_neg_gds_card": 0.0,
+   "n_points": 80068
+  }
+ },
+ "inner_timing": {
+  "train_s": 15.0,
+  "refit_s": 25.5,
+  "n_train": 30,
+  "n_refit": 80
+ },
+ "sel_timing": {
+  "train_s": 6.1,
+  "refit_s": 2.3,
+  "n_seed_tasks": 2
+ },
+ "base_timing": {
+  "train_s": 1.3,
+  "refit_s": 2.4
+ },
+ "stored_I5_1": {
+  "n": 18,
+  "n_used": 18,
+  "n_method_failed": 0,
+  "n_control_failed": 0,
+  "wins": 11,
+  "ties": 0,
+  "ratio": 1.106443093108062,
+  "resample_unit": "device",
+  "ci_low": 0.9077194232533247,
+  "ci_high": 1.4253355434124946,
+  "n_boot": 10000
+ }
+}

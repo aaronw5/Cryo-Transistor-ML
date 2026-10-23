@@ -1,0 +1,142 @@
+{
+ "ds": "nist4",
+ "validity": {
+  "valid": false,
+  "fails": [
+   "VA2 53 M2 refits, 0 failed",
+   "VA4 53 Part B rows, 24 Q3 runs"
+  ]
+ },
+ "unit_tests": {
+  "files": [
+   "tests.test_i21_1_close",
+   "tests.test_i14_1_chan",
+   "tests.test_i12_1_symm",
+   "tests.test_i20_1_nist_clamp"
+  ],
+  "rc": 0,
+  "passed": true,
+  "tail": [
+   "Ran 78 tests in 4.009s",
+   "",
+   "OK"
+  ]
+ },
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 1.818894792095644e-18,
+  "g_text_max": 1.3877787807814457e-16,
+  "g_sym_text_max": 2.498001805406602e-16,
+  "swap_asym_max": 6.167757948346519e-07,
+  "q2_ac_max": 1.5893433977044333e-07,
+  "cap_max": 1.893827326966089e-15,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.0012503480820062504,
+  "q2_gds_sign": 0,
+  "runtime_ratio_max": 3.9199197090811673
+ },
+ "decision": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "runtime overhead > 2x"
+  ]
+ },
+ "label": "invalid",
+ "vds0": {
+  "default": {
+   "elem_max": 6.707602372693646e-13,
+   "at": [
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+    1.1
+   ],
+   "card_rep_max": 2.15853335752155e-15,
+   "n_above": 0,
+   "n_points": 146,
+   "n_nonfinite": 0
+  },
+  "r4": {
+   "elem_max": 6.707602372693646e-13,
+   "at": [
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+    1.1
+   ],
+   "card_rep_max": 2.15853335752155e-15,
+   "n_above": 0,
+   "n_points": 146,
+   "n_nonfinite": 0
+  },
+  "tight": {
+   "elem_max": 1.818894792095644e-18,
+   "at": [
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+    1.8
+   ],
+   "card_rep_max": 1.8562202553139846e-18,
+   "n_above": 0,
+   "n_points": 146,
+   "n_nonfinite": 0
+  }
+ },
+ "vds0_added_tight_max": 8.069456061325469e-19,
+ "runtime_grid": {
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1": 1.9571947966374668,
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": 1.9591379194687908
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": 1.7293889983016095,
+  "inv_B_vtc": 1.9571670450467695,
+  "ro5_A": 3.802138287027142,
+  "ro5_B": 3.9199197090811673,
+  "mirror_n": 0.9579172915068205,
+  "mirror_p": 1.2248354187476167
+ },
+ "gds_curves_introduced": [],
+ "gm_curves_introduced": [],
+ "n_gds_curves": 10,
+ "n_gm_curves": 6,
+ "q3_not_ok": [],
+ "q3_devices": {
+  "nmos_L0p15_W1p6": "nfet_01v8_lvt_W1p65_L0p18_m23p3",
+  "pmos_L0p35_W1p6": "pfet_01v8_lvt_W1_L0p35_m28p6",
+  "nmos_L1_W1p6": "nfet_01v8_lvt_W1p65_L1_m23p6",
+  "pmos_L2_W5": "pfet_01v8_lvt_W5_L1p5_m30p6"
+ },
+ "replica_nonchannel_max": {
+  "isub": 0.0,
+  "igidl": 0.0,
+  "igisl": 0.0,
+  "igs": 0.0,
+  "igd": 0.0,
+  "igb": 0.0,
+  "igcs": 0.0,
+  "igcd": 0.0
+ },
+ "replica_nonchannel_n_values": 2336,
+ "nonchannel_share_fwd_max": 0.0017682861808721892,
+ "card_rep_vs_card_default_max_abs": 3.094094060129837e-08,
+ "g_grid_range": [
+  -0.2897342170288012,
+  0.20752751721297016
+ ],
+ "m2_in_sample_python_mean": 0.04806463106735429,
+ "n_devices": 2,
+ "accuracy": {
+  "va1_max_diff": 0.0,
+  "mean_native": 0.06242114863529423,
+  "mean_python_channel": 0.062435384951829015,
+  "mean_card_python": 0.06243538598526064,
+  "mean_stored_python": 0.06243538598526064,
+  "max_abs_native_minus_stored": 2.2184955707646448e-05,
+  "n_msgs": 0
+ },
+ "dev_check": {
+  "n": 2,
+  "n_in_TEST": 0,
+  "n_not_in_DEV": 0,
+  "ok": true
+ }
+}
