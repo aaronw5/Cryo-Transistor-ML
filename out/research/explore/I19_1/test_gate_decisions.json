@@ -1,0 +1,285 @@
+{
+ "id": "I19_1_test_gate_decisions",
+ "prereg": "out/research/explore/I19_1/prereg.json",
+ "written": "2026-10-23 02:52:22",
+ "git_head_at_run": "4da313cb0d8c56ea505d3b9c96b04676d86cca44",
+ "threshold": 0.0,
+ "rule": "apply the correction to every TEST device of the split iff the DEV S3_D < 0 (strict); else C0_refit for every TEST device",
+ "test_data_not_opened": "only DEV records loaded; every loaded tag is in the DEV list and not in the TEST list of the split file (dev_check per row)",
+ "sky130_77K": "no locked TEST since 2026-10-21 (user decision); no Part P row",
+ "evaluation_at_TEST": "decision correct iff it equals the sign of the TEST ln GMR(correction, C0_refit)",
+ "decisions": [
+  {
+   "name": "nist_4K",
+   "test_split": "NIST 4 K lvt TEST (I8-1 split)",
+   "split_file": "out/research/explore/I8_1/split.json",
+   "n_test": 38,
+   "n_dev": 57,
+   "n_dev_records_used": 53,
+   "arm": "M_bias v1",
+   "S3_D": -0.1026841666204108,
+   "decision": "apply",
+   "decision_sensitivity_0.02455": "apply",
+   "s3_file": "out/research/explore/I19_1/s3/nist4_v1.json",
+   "dev_check": {
+    "split_file": "I8_1/split.json",
+    "n_records": 53,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "dev_P_c": {
+    "file": "out/research/explore/I8_1/prediction_v2.json",
+    "S3_fold_mean": -0.10807669712328591,
+    "predicted_sign": "gain",
+    "note": "DEV prediction (no committed TEST prediction for this split)"
+   }
+  },
+  {
+   "name": "nist_rt_card_4K",
+   "test_split": "NIST 4 K room-temperature card TEST (I9-1 split)",
+   "split_file": "out/research/explore/I9_1/split.json",
+   "n_test": 58,
+   "n_dev": 87,
+   "n_dev_records_used": 87,
+   "arm": "M_bias v1",
+   "S3_D": -0.06888665622789505,
+   "decision": "apply",
+   "decision_sensitivity_0.02455": "apply",
+   "s3_file": "out/research/explore/I19_1/s3/nistrt_v1.json",
+   "dev_check": {
+    "split_file": "I9_1/split.json",
+    "n_records": 87,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "dev_P_c": {
+    "file": "out/research/explore/I9_1/prediction.json",
+    "S3_fold_mean": -0.07096405736127097,
+    "predicted_sign": "gain",
+    "note": "DEV prediction (no committed TEST prediction for this split)"
+   }
+  },
+  {
+   "name": "ihp_233K",
+   "test_split": "IHP SG13G2 TEST 233 K",
+   "split_file": "out/research/explore/I5_1/split.json",
+   "n_test": 10,
+   "n_dev": 18,
+   "n_dev_records_used": 18,
+   "arm": "M_bias v1",
+   "S3_D": 0.18659060000650346,
+   "decision": "C0_refit",
+   "decision_sensitivity_0.02455": "C0_refit",
+   "s3_file": "out/research/explore/I19_1/s3/ihp233_v1.json",
+   "dev_check": {
+    "split_file": "I5_1/split.json",
+    "n_records": 18,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "I8_2": {
+    "S3_stored": 0.254485375298053,
+    "S3_predicts": "loss",
+    "S1_predicts": "loss",
+    "arm": "M_bias v1"
+   }
+  },
+  {
+   "name": "ihp_300K",
+   "test_split": "IHP SG13G2 TEST 300 K",
+   "split_file": "out/research/explore/I5_1/split.json",
+   "n_test": 10,
+   "n_dev": 18,
+   "n_dev_records_used": 18,
+   "arm": "selected g v2 (I17-2)",
+   "S3_D": 0.3078446804774083,
+   "decision": "C0_refit",
+   "decision_sensitivity_0.02455": "C0_refit",
+   "s3_file": "out/research/explore/I19_1/s3/ihp300_v2.json",
+   "dev_check": {
+    "split_file": "I5_1/split.json",
+    "n_records": 18,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "secondary_v1": {
+    "arm": "M_bias v1",
+    "S3_D": 0.3114442093379213,
+    "decision": "C0_refit",
+    "s3_file": "out/research/explore/I19_1/s3/ihp300_v1.json"
+   },
+   "I8_2": {
+    "S3_stored": 0.3661898446841472,
+    "S3_predicts": "loss",
+    "S1_predicts": "loss",
+    "arm": "M_bias v1"
+   }
+  },
+  {
+   "name": "ihp_343K",
+   "test_split": "IHP SG13G2 TEST 343 K",
+   "split_file": "out/research/explore/I5_1/split.json",
+   "n_test": 10,
+   "n_dev": 18,
+   "n_dev_records_used": 18,
+   "arm": "M_bias v1",
+   "S3_D": 0.3669350897412326,
+   "decision": "C0_refit",
+   "decision_sensitivity_0.02455": "C0_refit",
+   "s3_file": "out/research/explore/I19_1/s3/ihp343_v1.json",
+   "dev_check": {
+    "split_file": "I5_1/split.json",
+    "n_records": 18,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "I8_2": {
+    "S3_stored": 0.3749413207884927,
+    "S3_predicts": "loss",
+    "S1_predicts": "loss",
+    "arm": "M_bias v1"
+   }
+  },
+  {
+   "name": "ihp_398K",
+   "test_split": "IHP SG13G2 TEST 398 K",
+   "split_file": "out/research/explore/I5_1/split.json",
+   "n_test": 10,
+   "n_dev": 18,
+   "n_dev_records_used": 18,
+   "arm": "M_bias v1",
+   "S3_D": 0.36665281869482086,
+   "decision": "C0_refit",
+   "decision_sensitivity_0.02455": "C0_refit",
+   "s3_file": "out/research/explore/I19_1/s3/ihp398_v1.json",
+   "dev_check": {
+    "split_file": "I5_1/split.json",
+    "n_records": 18,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "I8_2": {
+    "S3_stored": 0.39454247331233255,
+    "S3_predicts": "loss",
+    "S1_predicts": "loss",
+    "arm": "M_bias v1"
+   }
+  },
+  {
+   "name": "tudelft_4K",
+   "test_split": "TU Delft TEST 4.13 K",
+   "split_file": "out/research/explore/I6_1/split.json",
+   "n_test": 24,
+   "n_dev": 45,
+   "n_dev_records_used": 45,
+   "arm": "selected g v2 (I18-2, state C)",
+   "S3_D": 0.008023927414598314,
+   "decision": "C0_refit",
+   "decision_sensitivity_0.02455": "apply",
+   "s3_file": "out/research/explore/I19_1/s3/tud4_v2.json",
+   "dev_check": {
+    "split_file": "I6_1/split.json",
+    "n_records": 45,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "secondary_v1": {
+    "arm": "M_bias v1",
+    "S3_D": -0.029237998681334147,
+    "decision": "apply",
+    "s3_file": "out/research/explore/I19_1/s3/tud4_v1.json"
+   },
+   "I8_2": {
+    "S3_stored": -0.032894979436669775,
+    "S3_predicts": "gain",
+    "S1_predicts": "gain",
+    "arm": "M_bias v1"
+   }
+  },
+  {
+   "name": "tudelft_295K",
+   "test_split": "TU Delft TEST 295.0 K",
+   "split_file": "out/research/explore/I6_1/split.json",
+   "n_test": 24,
+   "n_dev": 45,
+   "n_dev_records_used": 45,
+   "arm": "selected g v2 (I18-2, state C)",
+   "S3_D": 0.26395489649994885,
+   "decision": "C0_refit",
+   "decision_sensitivity_0.02455": "C0_refit",
+   "s3_file": "out/research/explore/I19_1/s3/tud295_v2.json",
+   "dev_check": {
+    "split_file": "I6_1/split.json",
+    "n_records": 45,
+    "n_in_TEST": 0,
+    "n_not_in_DEV": 0,
+    "ok": true,
+    "in_TEST": [],
+    "not_in_DEV": []
+   },
+   "secondary_v1": {
+    "arm": "M_bias v1",
+    "S3_D": -0.05098787045944309,
+    "decision": "apply",
+    "s3_file": "out/research/explore/I19_1/s3/tud295_v1.json"
+   },
+   "I8_2": {
+    "S3_stored": -0.0408894324969139,
+    "S3_predicts": "gain",
+    "S1_predicts": "gain",
+    "arm": "M_bias v1"
+   }
+  }
+ ],
+ "disagreements_with_I8_2": [
+  {
+   "name": "tudelft_4K",
+   "I19_1": "primary",
+   "I19_1_decision": "C0_refit",
+   "I8_2": "S3_predicts",
+   "I8_2_prediction": "gain"
+  },
+  {
+   "name": "tudelft_4K",
+   "I19_1": "primary",
+   "I19_1_decision": "C0_refit",
+   "I8_2": "S1_predicts",
+   "I8_2_prediction": "gain"
+  },
+  {
+   "name": "tudelft_295K",
+   "I19_1": "primary",
+   "I19_1_decision": "C0_refit",
+   "I8_2": "S3_predicts",
+   "I8_2_prediction": "gain"
+  },
+  {
+   "name": "tudelft_295K",
+   "I19_1": "primary",
+   "I19_1_decision": "C0_refit",
+   "I8_2": "S1_predicts",
+   "I8_2_prediction": "gain"
+  }
+ ]
+}
