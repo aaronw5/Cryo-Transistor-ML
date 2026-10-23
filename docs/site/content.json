@@ -6709,6 +6709,102 @@
    "updated": "2026-10-22"
   },
   {
+   "id": "i19-1",
+   "tab": "explore",
+   "statement": "I19-1: a dataset-level gate (one decision per dataset: apply the correction to every device iff S3_D < 0, with S3_D the I7-1 S3 statistic computed once on all DEV devices of the dataset; else C0_refit) is never worse than C0_refit on 9 measured DEV datasets, has a pooled GMR below correction always, and predicts the sign of the gain on at least 19 of 20 simulated datasets.",
+   "status": "verified",
+   "headline": {
+    "value": "supported by the pre-registered rule: Part R (retrospective) R1 GMR(gated_D, C0_refit) <= 1 on 9/9, R2 pooled 0.921 vs correction always 0.958 (per-fold gate I18-1 0.929); Part C 19/20 simulated signs (constant apply 18/20). Decisions: apply on sky130 (S3_D -0.133), NIST 4 K (-0.103), NIST RT card (-0.069); C0_refit on IHP x4 (+0.187 .. +0.367) and TU Delft g v2 (+0.008, +0.264). On TU Delft the correction lowers the error (0.826 / 0.829) and the gate does not apply it: decision = realised sign 7/9.",
+    "convention": "GMR(gated_D, C0_refit), I18-1 rows, strict paper RRMS; bootstrap 10,000, device unit (TU Delft 7 groups); threshold 0 fixed before any S3_D"
+   },
+   "numbers": [
+    {
+     "label": "Part P: committed TEST gate decisions (TEST not evaluated)",
+     "value": "NIST 4 K lvt TEST (38) apply; NIST RT card TEST (58) apply; IHP TEST 233 / 300 / 343 / 398 K C0_refit; TU Delft TEST 4.13 / 295.0 K C0_refit (g v2); v1 secondary TU Delft apply (S3_D -0.029 / -0.051). Disagreements with I8-2 (M_bias v1 sign predictions): TU Delft primary at both temperatures; none for v1.",
+     "convention": "apply iff DEV S3_D < 0",
+     "source": "out/research/explore/I19_1/test_gate_decisions.md"
+    },
+    {
+     "label": "v1 secondary (M_bias v1 rows, v1 S3_D)",
+     "value": "pooled 0.892 vs v1 always 0.965; decision = realised sign 9/9 (TU Delft state-L rows applied: 0.939 / 0.797)",
+     "convention": "exp(mean ln GMR), 9 datasets",
+     "source": "out/research/explore/I19_1/decision.json"
+    },
+    {
+     "label": "Part C (20 simulated I7-1 datasets, v1)",
+     "value": "Spearman(S3_D, y_D) +0.985; OLS y = -0.021 + 1.217 S3_D (R^2 0.993); wrong: GF180 r0 lambda 0 (S3_D +0.0003, y -0.045); pooled gated_D 0.590, M_bias always 0.591, oracle 0.588; S3_D vs I7-1 fold-mean S3 Spearman 1.000",
+     "convention": "sign of S3_D vs sign of y_D",
+     "source": "out/research/explore/I19_1/decision.json"
+    },
+    {
+     "label": "compute",
+     "value": "327 inner fits on measured data 556 s; 320 on simulated data 289 s",
+     "convention": "queue wall time, 6 workers",
+     "source": "out/research/done.txt"
+    }
+   ],
+   "what": [
+    "Question: does one gate decision per dataset, the level at which S3 tracked the gain in I7-1, avoid the within-dataset sign reversal that made the I18-1 per-fold gate choose against the outcome on TU Delft?",
+    "Pre-registered (45b4f37): S3_D = mean over all DEV records of the post-hoc ln RRMS ratio of the reduced correction (gated arm's recipe, seed 0, 500 steps) trained on the LOGO fold that holds out the record's group (IHP: same class); threshold 0; R1, R2 (Part R, retrospective), C >= 19/20 (Part C); Part P TEST decisions committed before any TEST evaluation."
+   ],
+   "did": [
+    "Code 4da313c (12 unit tests); V2: the S3 code reproduces stored I7-1 / I18-1 fold values with difference 0 on 3 folds. Part P file committed alone (a755e18) before the decide step. Decide c644b9a; report batch 2026-10-23_i19_1 recomputes 94 values."
+   ],
+   "result": {
+    "text": [
+     "Outcome by rule: supported. The dataset-level decisions equal the I8-2 gate G decisions on 9/9 datasets; the gain over the per-fold gate (0.921 vs 0.929) comes from TU Delft, where gated_D keeps C0_refit (GMR 1.000) instead of the per-fold 0.981 / 1.099.",
+     "With the g v2 recipe, S3_D on TU Delft is positive (+0.008 at 4.13 K, +0.264 at 295.0 K) while the correction lowers the held-out error; with the v1 recipe on the I6-1 rows S3_D is negative and the decision matches. At the sensitivity threshold +0.02455 (no rule) the 4.13 K decision flips to apply."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "01_table_i19_1_rule.png"
+     },
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "02_table_i19_1_part_r.png"
+     },
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "03_table_i19_1_pooled.png"
+     },
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "04_table_i19_1_secondary_v1.png"
+     },
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "05_table_i19_1_test_decisions.png"
+     },
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "06_table_i19_1_part_c.png"
+     },
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "07_i19_1_forest.png"
+     },
+     {
+      "batch": "2026-10-23_i19_1",
+      "file": "08_i19_1_s3d_scatter.png"
+     }
+    ]
+   },
+   "caveats": [
+    "Part R is retrospective: DEV outcomes and the I8-2 gate G values were known; S3_D decisions were close to predictable from them.",
+    "On DEV each scored device's starting-card record enters S3_D (held-out refit rows do not); on TEST the scored devices are not in the DEV set.",
+    "R1 holds on IHP and TU Delft because the gate never applies the correction there (GMR exactly 1); the gate misses the TU Delft gain with the g v2 recipe.",
+    "The 4 IHP temperatures share DUTs and the 2 TU Delft temperatures share devices."
+   ],
+   "sources": [
+    "out/research/explore/I19_1/prereg.md",
+    "out/research/explore/I19_1/decision.json",
+    "out/research/explore/I19_1/test_gate_decisions.json",
+    "out/research/report/2026-10-23_i19_1/README.md"
+   ],
+   "updated": "2026-10-23"
+  },
+  {
    "id": "i15-2",
    "tab": "explore",
    "statement": "I15-2: on 18 sky130 77 K devices (18-fold LODO, state C) the symmetric inputs and EPS = 0.01 V of g v2 change the held-out RRMS by less than 1 % relative to M_bias v1; the accuracy difference of g v2 follows the gm/gds penalty weight lambda = 10 V. A lambda chosen per fold from {0, 1, 2, 5, 10} V by nested 3-fold selection on training devices only (lambda* 1 or 2 V on 16 of 18 folds) is non-inferior to M_bias v1 (margin 1.05).",

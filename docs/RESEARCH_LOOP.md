@@ -2473,3 +2473,50 @@ Report batch `out/research/report/2026-10-22_i18_1/` (`scripts/research/plot_exp
 gated row and GMR recomputed from the stored rows and S3 values; I-V figures of TU Delft devices in a gated-on and
 a gated-off group per temperature); site claim `i18-1` (verified, with the 295.0 K bound and the within-dataset sign
 reversal as caveats). Site rebuilt, not published.
+
+## I19-1 pre-registration in force (2026-10-23 02:30): dataset-level gate, one decision per dataset from S3_D on all DEV devices
+
+Iteration 19, default option 1 (no user reply). Pre-registration `out/research/explore/I19_1/prereg.md` / `prereg.json`,
+commit 45b4f37 (alone, before any I19-1 code or S3_D value). Method: S3_D = mean over all DEV records r of the dataset
+of ln(RRMS(r, I_start x exp(g_{-k(r)})) / RRMS(r, I_start)), g_{-k(r)} trained with the gated arm's recipe (I18-1 arms;
+seed 0, 500 steps) on the training set of the LOGO fold that holds out the group k(r) (IHP: same class), lambda =
+lambda*_k of that fold for g v2; the correction is applied to every device of the dataset iff S3_D < 0, else
+C0_refit. Threshold 0 fixed before any S3_D: same threshold as I8-2 G and I18-1; the I7-1 OLS zero crossing
+(+0.02455) was fitted to the fold-mean S3 with the v1 recipe and is reported as a sensitivity column only.
+Part R (retrospective; DEV outcomes and I8-2 G values known): R1 GMR(gated_D, C0_refit) <= 1 on each of the 9 I18-1
+datasets; R2 pooled exp(mean ln GMR) below correction always (0.958). Part P: TEST gate decisions for the 8 locked TEST
+splits with a DEV counterpart (NIST 4 K lvt 38, NIST RT card 58, IHP 10 x 4 temperatures, TU Delft 24 x 2), committed
+alone before the decide step; TEST not evaluated. Part C: sign accuracy on the 20 I7-1 simulated datasets (v1) at
+least 19/20 (constant apply gets 18/20). Outcome supported iff R and C. Validity V1 rows equal I18-1, V2 S3 code
+reproduces 3 stored fold values, V3 complete, V4 unit tests, V5 TEST closed (every loaded tag in the DEV list).
+Code 4da313c (`src/cryoml/explore/i19_1_dataset_gate.py`, `scripts/research/explore/i19_1_dataset_gate.py`, 12 unit
+tests); smoke 0f7734a (2 fits per part, 50 steps).
+
+## I19-1 outcome (2026-10-23 03:00): dataset-level gate supported by the pre-registered rule; on TU Delft the g v2 gate keeps C0_refit where the correction lowers the error
+
+Queue: I19_1_s3_real 556 s (327 inner fits, incl. V2 checks), I19_1_testgate 0 s, I19_1_s3_sim 289 s (320 fits),
+I19_1_decide, I19_1_figs. Valid: V1 rows 18 / 53 / 87 / 18 x 4 / 45 x 2 equal to I18-1, V2 difference 0.0 on 3 folds
+(IHP 300 K v1 x 2, sky130 g v2 x 1), V3 complete, V4 12 tests pass, V5 all loaded tags in DEV lists.
+Part P (commit a755e18, before decide; TEST not opened): NIST 4 K lvt TEST apply (S3_D -0.103), NIST RT card TEST
+apply (-0.069), IHP TEST 233 / 300 (g v2) / 343 / 398 K C0_refit (+0.187 / +0.308 / +0.367 / +0.367), TU Delft TEST
+4.13 / 295.0 K (g v2) C0_refit (+0.008 / +0.264); v1 secondary: IHP 300 K C0_refit (+0.311), TU Delft apply (-0.029 /
+-0.051). Disagreements with the I8-2 committed TEST predictions (M_bias v1): TU Delft primary decisions at both
+temperatures (I8-2 S3 and S1 rule predict gain); none for the v1 secondary. At +0.02455 the TU Delft 4.13 K primary
+decision is apply.
+Part R (retrospective): S3_D sky130 -0.133, NIST -0.103 / -0.069, IHP 300 K +0.308 (hv +0.225, lv +0.374), 233 /
+343 / 398 K +0.187 / +0.367 / +0.367, TU Delft g v2 +0.008 / +0.264. GMR(gated_D, C0_refit): sky130 0.743 [0.654,
+0.855], NIST 0.806 / 0.797, IHP 1.000 x 4, TU Delft 1.000 / 1.000. R1 holds (9/9 <= 1), R2 holds: pooled gated_D 0.921
+vs correction always 0.958 (per-fold gate 0.929, I8-2 G 0.921, post hoc oracle 0.883; without TU Delft 0.900 /
+0.999 / 0.900). Part R supported (retrospective). The decisions equal the I8-2 gate G on 9/9. Decision = realised
+sign of ln GMR(correction, C0_refit) on 7/9 (TU Delft g v2: correction always 0.826 / 0.829, gate keeps C0_refit).
+v1 secondary: S3_D sky130 -0.178, IHP 300 K +0.311, TU Delft (I6-1 state-L records) -0.029 / -0.051; pooled gated_D
+0.892 vs v1 always 0.965; decision = realised sign 9/9 (TU Delft applied: 0.939 / 0.797).
+Part C: 19/20 correct (wrong GF180 r0 lambda 0: S3_D +0.0003, y -0.045): holds. Spearman(S3_D, y_D) +0.985; OLS y =
+-0.021 + 1.217 S3_D (R^2 0.993, zero crossing +0.0176); S3_D vs I7-1 fold-mean S3 Spearman 1.000; pooled gated_D
+0.590, M_bias always 0.591, oracle 0.588; at +0.02455: 20/20.
+Outcome: **supported** (Part R retrospective, Part C). With the g v2 recipe on TU Delft, S3_D is positive at both
+temperatures while the correction lowers the held-out error; the dataset-level gate avoids the per-fold losses of
+I18-1 (0.981 / 1.099 -> 1.000 / 1.000) but does not recover the gain. The v1 recipe gives the realised sign on all 9.
+Report batch `out/research/report/2026-10-23_i19_1/` (`scripts/research/plot_explore_i19_1.py`; 6 tables, forest
+plot, S3_D vs realised gain scatter; 94 values recomputed); site claim `i19-1` (verified, caveats: retrospective
+Part R, DEV leakage of starting records, TU Delft gain missed). Site rebuilt, not published.
