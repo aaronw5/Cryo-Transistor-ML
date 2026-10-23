@@ -1,9 +1,9 @@
 # Method freeze and TEST plan: draft (2026-10-23)
 
-Status: **proposed, not frozen.** The final freeze is planned for about 2026-12-10. This file is not a
+Status: **proposed, not frozen.** Updated 2026-10-23 after I20-1 (NIST rows in state C, NIST g v2 rows, frozen S3_D rule). The final freeze is planned for about 2026-12-10. This file is not a
 pre-registration. No TEST split was opened or evaluated for this draft; no NGSpice run and no training were done
 for it. Every number below is copied from a stored file named next to it or recomputed from stored per-device rows
-by `scripts/research/plot_freeze_draft.py` (88 values checked against the stored decision files).
+by `scripts/research/plot_freeze_draft.py` (99 values checked against the stored decision files after the I20-1 update; 88 before).
 
 Sources read: `docs/RESEARCH_LOOP.md` (I3-2 to I19-1), `out/research/explore/I19_1/test_gate_decisions.md`,
 `out/research/explore/I8_2/prereg_test_predictions.md` (commit 08d23e3), `out/research/explore/real_split.json`,
@@ -46,10 +46,13 @@ max_nfev 3000, irls 3 (`out/research/explore/I6_1/prereg.json`), rescored in sta
   `i18_2_tud.clamp_params` (254e77d).
 - Required property (unit-tested, `tests/test_i13_1_clamp.py`): published cards and cards with 0.01 <= a2 <= 1 give
   identical scores in state C and in the legacy state L (difference 0).
-- Not yet applied: the NIST decks (`i8_1_nist.simulate`, `i9_1_nist_rt.simulate`) run all sweeps of a device in one
-  ngspice process and do not write the clamp. Stored base a2 > 1 on 16 of 57 I8-1 starting cards and 34 of 87 I9-1
-  starting cards (file check of `I8_1/start/summary.json`, `I9_1/start/summary.json`; the effective size-dependent
-  value with the bin's l/w/p terms was not computed). See open item 4.1.
+- NIST decks (I20-1, prereg a516fe3, code 572e39e): `i8_1_nist.simulate` and `i9_1_nist_rt.simulate` take
+  `bsim4_state` (default "clamped"); `i8_1_nist.bsim4_clamp_params` (77 K bins, no size terms) and
+  `i9_1_nist_rt.bsim4_clamp_params` / `effective_a1a2` (room-temperature pMOS bins with la2 / wa2 / pa2 terms; the
+  effective A2 of the instance geometry, b4temp.c binning, binunit 2; state C writes a2 = clamp value and
+  la2 = wa2 = pa2 = 0). Unit tests `tests/test_i20_1_nist_clamp.py` (17). A2_eff > 1 on 16 of 57 I8-1 and 35 of 87
+  I9-1 starting cards, 0 cards with A2_eff < 0.01, 0 stock cards; the b4check.c printed value equals the computed
+  A2_eff on every clamped card. Audit of 1798 stored NIST cards: state L reproduces every stored row (difference 0).
 
 ### 1.C Correction g v2, selected recipe
 
@@ -58,7 +61,7 @@ max_nfev 3000, irls 3 (`out/research/explore/I6_1/prereg.json`), rescored in sta
 | form | I = I_card x exp(g), g = mean over 5 ensemble members of OUT_SCALE x tanh(h(z)), OUT_SCALE = 1 | `src/cryoml/explore/i12_1_symm.py` (`SymCorrection.g_x`); `e1_correction.OUT_SCALE` |
 | inputs | s = +1 nMOS / -1 pMOS; a = s V(g,s), b = s V(g,d), m = sqrt(V(d,s)^2 + EPS^2); x = (is_pmos 0/1, x1 = (a + b + m) / (2 VDD), x2 = m / VDD) | `i12_1_symm.sym_inputs` |
 | EPS | 0.01 V (smooth abs) | `i12_1_symm.EPS`; I15-2 contrast EPS 0 -> 0.01: GMR 0.994 [0.982, 1.003] |
-| VDD (input scale) | sky130 1.85 V; IHP class supply 1.2 V (LV) / 3.3 V (HV); TU Delft 1.1 V | `VDD_NORM`; `i17_2_ihp`; `i18_2_tud.VDD` |
+| VDD (input scale) | sky130 1.85 V; IHP class supply 1.2 V (LV) / 3.3 V (HV); TU Delft 1.1 V; NIST 1.8 V | `VDD_NORM`; `i17_2_ihp`; `i18_2_tud.VDD`; `i20_1_nist_clamp.VDD` |
 | standardization | x1, x2 by training-point mean / std; is_pmos kept 0/1 | `fit_v2` |
 | network | 3-16-16-1, tanh hidden layers, last layer zero-initialized (weights and bias), float64 | `HYPER_V2`, `fit_v2` |
 | seeds | 0, 1, 2, 3, 4 (one member each; g = member mean) | `HYPER_V2` |
@@ -72,7 +75,10 @@ max_nfev 3000, irls 3 (`out/research/explore/I6_1/prereg.json`), rescored in sta
 
 Selected lambda values stored: sky130 full-data lambda* 1 V (per fold 1 V x10, 2 V x6, 0 V x1, 10 V x1;
 `I15_2/decision.json`); IHP 300 K per fold 0 V x2, 1 V x3, 2 V x6, 5 V x2, 10 V x5, no full-data value stored
-(`I17_2/decision.json`); TU Delft full-data lambda* 10 V (4.13 K), 5 V (295.0 K) (`I18_2/decision.json`).
+(`I17_2/decision.json`); TU Delft full-data lambda* 10 V (4.13 K), 5 V (295.0 K) (`I18_2/decision.json`); NIST lvt
+per device 0 V x36, 1 V x17 (6 selection blocks), full-data 0 V; NIST RT card 0 V x87, full-data 0 V
+(`I20_1/select_{nist4,nistrt}/select.json`; I20-1 selects lambda in 6 blocks instead of per outer fold, for compute;
+penalty grid 73 x 73, 0 to 1.8 V).
 
 ### 1.D Held-out card refit with g frozen
 
@@ -100,6 +106,12 @@ Selected lambda values stored: sky130 full-data lambda* 1 V (per fold 1 V x10, 2
   reported sensitivity column only (`SENS_THRESHOLD`).
 - Leakage stated in I19-1: the scored DEV devices' own starting records enter S3_D (through the folds where they are
   training devices). At TEST the gate uses DEV records only.
+- Recipe of S3_D in the frozen method (proposed in the I20-1 pre-registration a516fe3, fixed before the NIST I20-1
+  values): S3_D is computed with the v1 recipe (M_bias v1, seed 0, 500 steps) on the state-C starting records for
+  every dataset, and decides whether the selected g v2 correction is applied. Reasons: the threshold 0 and the S3
+  calibration (I7-1, I19-1 Part C) exist for the v1 recipe only; no lambda selection is needed. Sign agreement with
+  the realised ln GMR(selected g v2, C0_refit): retrospective 4/4 (sky130, IHP 300 K, TU Delft x2; known when the
+  rule was chosen) against 2/4 for the g v2-recipe S3_D; NIST after the rule 2/2 for both statistics (I20-1).
 
 ### 1.F Verilog-A element and deployment checks
 
@@ -169,28 +181,34 @@ Table PNG: `out/research/report/2026-10-23_freeze_draft/01_table_freeze_draft_de
 combined (mean of the nMOS and pMOS family means). GMR = exp(mean ln ratio) with 95% percentile bootstrap CI
 (10000 resamples, seed 0; unit device; TU Delft 7 geometry groups), followed by devices lower / devices paired.
 
-| dataset | n (unit) | C0_refit | M_bias v1 | selected g v2 | gated (I19-1) | GMR(v1, C0_refit) | GMR(selected, C0_refit) | GMR(gated, C0_refit) | GMR(selected, v1) | I19-1 decision (S3_D) | Part B label |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| sky130 77 K (all 18, LODO) | 18 (device) | 0.1051 / 0.0984 | 0.0735 / 0.0695 | 0.0739 / 0.0700 | 0.0739 / 0.0700 | 0.745 [0.660, 0.850] 17/18 | 0.743 [0.654, 0.855] 17/18 | 0.743 [0.654, 0.855] 17/18 | 0.997 [0.962, 1.027] 7/18 | apply (-0.133) | deployable with restrictions (I17-1, lambda 1 V) |
-| NIST sky130 4 K lvt (I8-1) | 53 (device) | 0.0400 / 0.0428 | 0.0315 / 0.0337 | not run | 0.0315 / 0.0337 | 0.806 [0.758, 0.864] 48/53 | - | 0.806 [0.758, 0.864] 48/53 | - | apply (-0.103) | not tested (g v2 not run; v1 element not deployable, I11-1) |
-| NIST sky130 4 K, RT card (I9-1) | 87 (device) | 0.0555 / 0.0580 | 0.0455 / 0.0480 | not run | 0.0455 / 0.0480 | 0.797 [0.748, 0.859] 77/87 | - | 0.797 [0.748, 0.859] 77/87 | - | apply (-0.069) | not tested |
-| IHP SG13G2 300 K | 18 (device) | 0.0191 / 0.0191 | 0.0203 / 0.0203 | 0.0205 / 0.0205 | 0.0191 / 0.0191 | 1.214 [1.008, 1.537] 9/18 | 1.255 [1.026, 1.600] 9/18 | 1.000 [1.000, 1.000] 0/18 | 1.034 [0.990, 1.107] 7/18 | C0_refit (+0.308) | Part B not run (PSP103) |
-| IHP SG13G2 233 K | 18 (device) | 0.0273 / 0.0273 | 0.0281 / 0.0281 | not run | 0.0273 / 0.0273 | 1.106 [0.908, 1.425] 11/18 | - | 1.000 [1.000, 1.000] 0/18 | - | C0_refit (+0.187) | Part B not run (PSP103) |
-| IHP SG13G2 343 K | 18 (device) | 0.0190 / 0.0190 | 0.0194 / 0.0194 | not run | 0.0190 / 0.0190 | 1.181 [0.983, 1.502] 8/18 | - | 1.000 [1.000, 1.000] 0/18 | - | C0_refit (+0.367) | Part B not run (PSP103) |
-| IHP SG13G2 398 K | 18 (device) | 0.0197 / 0.0197 | 0.0202 / 0.0202 | not run | 0.0197 / 0.0197 | 1.272 [1.030, 1.627] 11/18 | - | 1.000 [1.000, 1.000] 0/18 | - | C0_refit (+0.367) | Part B not run (PSP103) |
-| TU Delft 4.13 K | 45 (7 groups) | 0.0602 / 0.0532 | 0.0534 / 0.0491 | 0.0484 / 0.0449 | 0.0602 / 0.0532 | 0.909 [0.766, 1.077] 30/45 | 0.826 [0.669, 1.014] 30/45 | 1.000 [1.000, 1.000] 0/45 | 0.908 [0.848, 0.965] 33/45 | C0_refit (+0.008) | not deployable (Q3 not run; lambda 10 V) |
-| TU Delft 295.0 K | 45 (7 groups) | 0.0265 / 0.0251 | 0.0208 / 0.0210 | 0.0215 / 0.0218 | 0.0265 / 0.0251 | 0.811 [0.532, 1.190] 29/45 | 0.829 [0.523, 1.247] 29/45 | 1.000 [1.000, 1.000] 0/45 | 1.022 [0.975, 1.056] 22/45 | C0_refit (+0.264) | deployable with restrictions (Q3 not run; lambda 5 V) |
+Columns as in `tables.md` of that batch (regenerated 2026-10-23 after I20-1; 99 values checked). "gated (I19-1)":
+committed I19-1 decisions and arms. "gated (frozen rule)": v1-recipe S3_D decides, arm selected g v2 where run.
 
-Pooled exp(mean ln GMR vs C0_refit), equal weight over the 9 rows: gated 0.921 (`I19_1/decision.json`
-`part_R.rule.pooled_gated_D`), correction always 0.958, M_bias v1 always 0.963 (computed by the script), per-fold
-gate (I18-1) 0.929.
+| dataset | n (CI unit) | RRMS all-device / combined: C0_refit | RRMS all-device / combined: M_bias v1 | RRMS all-device / combined: selected g v2 | RRMS all-device / combined: gated (I19-1) | GMR vs C0_refit [95% CI] lower/n: v1 | GMR vs C0_refit [95% CI] lower/n: selected g v2 | GMR vs C0_refit [95% CI] lower/n: gated (I19-1) | GMR vs C0_refit [95% CI] lower/n: gated (frozen rule) | GMR(selected, v1) | I19-1 decision (S3_D) | frozen-rule decision (v1 S3_D) | Part B deployment label |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| sky130 77 K (all 18, LODO) | 18 (device) | 0.1051 / 0.0984 | 0.0735 / 0.0695 | 0.0739 / 0.0700 | 0.0739 / 0.0700 | 0.745 [0.660, 0.850] 17/18 | 0.743 [0.654, 0.855] 17/18 | 0.743 [0.654, 0.855] 17/18 | 0.743 [0.654, 0.855] 17/18 | 0.997 [0.962, 1.027] 7/18 | apply (-0.133) | apply (-0.178) | deployable with restrictions (I17-1, lambda 1 V full-data model) |
+| NIST sky130 4 K lvt (I8-1) | 53 (device) | 0.0399 / 0.0427 | 0.0312 / 0.0334 | 0.0318 / 0.0340 | 0.0312 / 0.0334 | 0.798 [0.750, 0.857] 50/53 | 0.803 [0.757, 0.857] 50/53 | 0.798 [0.750, 0.857] 50/53 | 0.803 [0.757, 0.857] 50/53 | 1.006 [0.986, 1.024] 18/53 | apply (-0.103) | apply (-0.117) | not tested (Part B not run for the NIST cards; v1 element not deployable, I11-1) |
+| NIST sky130 4 K, RT card (I9-1) | 87 (device) | 0.0567 / 0.0593 | 0.0466 / 0.0491 | 0.0466 / 0.0491 | 0.0466 / 0.0491 | 0.809 [0.759, 0.873] 78/87 | 0.811 [0.761, 0.871] 77/87 | 0.809 [0.759, 0.873] 78/87 | 0.811 [0.761, 0.871] 77/87 | 1.002 [0.989, 1.015] 40/87 | apply (-0.069) | apply (-0.073) | not tested (Part B not run for the NIST cards; v1 element not deployable, I11-1) |
+| IHP SG13G2 300 K | 18 (device) | 0.0191 / 0.0191 | 0.0203 / 0.0203 | 0.0205 / 0.0205 | 0.0191 / 0.0191 | 1.214 [1.008, 1.537] 9/18 | 1.255 [1.026, 1.600] 9/18 | 1.000 [1.000, 1.000] 0/18 | 1.000 [1.000, 1.000] 0/18 | 1.034 [0.990, 1.107] 7/18 | C0_refit (+0.308) | C0_refit (+0.311) | Part B not run (PSP103 replica, I17-2) |
+| IHP SG13G2 233 K | 18 (device) | 0.0273 / 0.0273 | 0.0281 / 0.0281 | not run | 0.0273 / 0.0273 | 1.106 [0.908, 1.425] 11/18 | - | 1.000 [1.000, 1.000] 0/18 | 1.000 [1.000, 1.000] 0/18 | - | C0_refit (+0.187) | C0_refit (+0.187) | Part B not run (PSP103 replica) |
+| IHP SG13G2 343 K | 18 (device) | 0.0190 / 0.0190 | 0.0194 / 0.0194 | not run | 0.0190 / 0.0190 | 1.181 [0.983, 1.502] 8/18 | - | 1.000 [1.000, 1.000] 0/18 | 1.000 [1.000, 1.000] 0/18 | - | C0_refit (+0.367) | C0_refit (+0.367) | Part B not run (PSP103 replica) |
+| IHP SG13G2 398 K | 18 (device) | 0.0197 / 0.0197 | 0.0202 / 0.0202 | not run | 0.0197 / 0.0197 | 1.272 [1.030, 1.627] 11/18 | - | 1.000 [1.000, 1.000] 0/18 | 1.000 [1.000, 1.000] 0/18 | - | C0_refit (+0.367) | C0_refit (+0.367) | Part B not run (PSP103 replica) |
+| TU Delft 4.13 K | 45 (7 groups) | 0.0602 / 0.0532 | 0.0534 / 0.0491 | 0.0484 / 0.0449 | 0.0602 / 0.0532 | 0.909 [0.766, 1.077] 30/45 | 0.826 [0.669, 1.014] 30/45 | 1.000 [1.000, 1.000] 0/45 | 0.826 [0.669, 1.014] 30/45 | 0.908 [0.848, 0.965] 33/45 | C0_refit (+0.008) | apply (-0.029) | not deployable (Q3 not run) (I18-2, lambda 10 V full-data model) |
+| TU Delft 295.0 K | 45 (7 groups) | 0.0265 / 0.0251 | 0.0208 / 0.0210 | 0.0215 / 0.0218 | 0.0265 / 0.0251 | 0.811 [0.532, 1.190] 29/45 | 0.829 [0.523, 1.247] 29/45 | 1.000 [1.000, 1.000] 0/45 | 0.829 [0.523, 1.247] 29/45 | 1.022 [0.975, 1.056] 22/45 | C0_refit (+0.264) | apply (-0.051) | deployable with restrictions (Q3 not run) (I18-2, lambda 5 V full-data model) |
+
+Pooled exp(mean ln GMR vs C0_refit), equal weight over the 9 rows (NIST rows in state C from I20-1): gated I19-1
+0.922 (stored state-L value 0.921, `I19_1/decision.json`), gated frozen rule 0.884, correction always (selected g v2
+where run, else v1) 0.960, M_bias v1 always 0.964 (computed by the script); per-fold gate (I18-1, state L NIST rows)
+0.929.
 
 Row sources (per-device rows; the stored decision files hold the GMRs that the script reproduces):
 
 - sky130: `out/research/explore/I13_1/lodo/results.json` (C0_refit, state C), `I13_1/all18/results.json` (M_bias v1,
   state C), `I15_2/decision.json` (`selected_rows`, primary and C0_refit GMRs), `I17_1/decision.json` (Part B).
-- NIST: `I8_1/lodo/results.json`, `I8_1/decision.json` (P_b); `I9_1/lodo/results.json`, `I9_1/decision.json` (P_b).
-  4 I8-1 devices with non-finite starting records (amendment A1) are not paired.
+- NIST (state C, I20-1): `I20_1/base_{nist4,nistrt}/results.json` (C0_refit, M_bias v1),
+  `I20_1/lodo_{nist4,nistrt}/results.json` (selected g v2), `I20_1/decision.json`. Stored state-L rows:
+  `I8_1/lodo/results.json`, `I9_1/lodo/results.json`. 4 I8-1 devices with non-finite starting records (amendment A1)
+  are not paired.
 - IHP 300 K: `I17_2/base/results.json` (C0_refit), `I5_1/lodo_300K/results.json` (M_bias v1), `I17_2/decision.json`.
   IHP 233 / 343 / 398 K: `I5_1/lodo_{233,343,398}K/results.json`.
 - TU Delft: `I18_2/decision.json` (`per_temperature.{4,295}.rows`, `selected_rows`, GMRs),
@@ -198,7 +216,8 @@ Row sources (per-device rows; the stored decision files hold the GMRs that the s
 - Gate: `I19_1/decision.json` (`part_R.datasets.*`).
 
 Evidence status: every row is DEV. sky130 rows were used for method design from I3-2 on; NIST rows (I8-1, I9-1)
-were prospective for M_bias v1 when run; IHP and TU Delft rows were seen before the gate was defined; I19-1 Part R
+were prospective for M_bias v1 when run; the NIST g v2 rows (I20-1) were run under a pre-registration but after the
+NIST v1 outcomes were known; IHP and TU Delft rows were seen before the gate was defined; I19-1 Part R
 is retrospective.
 
 ## 3. TEST plan (proposal)
@@ -207,8 +226,8 @@ is retrospective.
 
 | TEST split | devices | temperatures | DEV counterpart | committed I19-1 decision (a755e18) | gated arm |
 |---|---|---|---|---|---|
-| NIST 4 K lvt (I8-1 split, seed 20261021) | 38: nfet_01v8_lvt 22 (covered 8, bin-uncovered 14), pfet_01v8_lvt 16 (covered 9, uncovered 7) | 4 K (deck 77 K card at 77 K) | 53 DEV | apply (S3_D -0.1027) | M_bias v1 |
-| NIST 4 K room-temperature card (I9-1 split, seed 20261022) | 58: nfet_01v8 32, pfet_01v8 26 | 4 K (deck 30 C) | 87 DEV | apply (S3_D -0.0689) | M_bias v1 |
+| NIST 4 K lvt (I8-1 split, seed 20261021) | 38: nfet_01v8_lvt 22 (covered 8, bin-uncovered 14), pfet_01v8_lvt 16 (covered 9, uncovered 7) | 4 K (deck 77 K card at 77 K) | 53 DEV | apply (S3_D -0.1027); I20-1 state C: v1 -0.1172, g v2 -0.1163, both apply, no amendment | M_bias v1 (committed); selected g v2 under the frozen rule |
+| NIST 4 K room-temperature card (I9-1 split, seed 20261022) | 58: nfet_01v8 32, pfet_01v8 26 | 4 K (deck 30 C) | 87 DEV | apply (S3_D -0.0689); I20-1 state C: v1 -0.0730, g v2 -0.0706, both apply, no amendment | M_bias v1 (committed); selected g v2 under the frozen rule |
 | IHP SG13G2 (I5-1 split, seed 20261020) | 10 DUTs: hv_nmos_W10_L10, hv_nmos_W2_L3, hv_pmos_W0p3_L0p35, hv_pmos_W10_L10, lv_nmos_W0p15_L0p13, lv_nmos_W10_L0p13, lv_nmos_W10_L0p18, lv_pmos_W0p15_L0p13, lv_pmos_W10_L0p13, lv_pmos_W10_L0p18 | 233 / 300 / 343 / 398 K (4 splits, same DUTs) | 18 DEV | C0_refit at all 4 (S3_D +0.1866 / +0.3078 / +0.3669 / +0.3667) | v1 (233, 343, 398 K); selected g v2 (300 K) |
 | TU Delft 40 nm (I6-1 split, seed 20261020) | 24: t40_nmos_W1_L0p36 (8), t40_nmos_W4_L4 (8), t40_pmos_W4_L4 (8); 3 geometry groups | 4.13 K and 295.0 K (2 splits, same devices) | 45 DEV | C0_refit at both (S3_D +0.0080 / +0.2640) | selected g v2 (state C) |
 
@@ -304,10 +323,10 @@ card, C0_refit and the correction-arm curves re-simulated in NGSpice; NGSpice ca
 
 ## 4. Open items before the freeze
 
-1. **NIST clamp state.** The NIST decks do not write the BSIM4 A2 clamp; stored base a2 > 1 on 16/57 (I8-1) and 34/87
-   (I9-1) starting cards. The NIST DEV rows and the committed NIST S3_D values (-0.103, -0.069) come from these decks.
-   Needed: an I13-1-style audit (states L / C / U) of the NIST rows and a decision on which state the TEST run uses;
-   if state C changes S3_D sign, a dated amendment to the Part P decisions.
+1. **NIST clamp state (closed by I20-1).** Audit, fix and state-C reruns done (section 1.B; report
+   `out/research/report/2026-10-23_i20_1/`). State C changes the NIST rows by small amounts (lvt C0_refit / M_bias v1
+   0.0400 / 0.0315 -> 0.0399 / 0.0312; RT card 0.0555 / 0.0455 -> 0.0567 / 0.0466) and no S3_D sign (lvt -0.103 ->
+   -0.117, RT card -0.069 -> -0.073); no amendment of the a755e18 decisions was triggered. The TEST run uses state C.
 2. **IHP PSP103 element.** Part B not run: PSP103 contributes Qg, Qb, Qd unconditionally, so a replica carries
    displacement current; ngspice-41 loads OSDI 0.3 only; no IHP circuits. On DEV the gate keeps C0_refit on all IHP
    temperatures, so the method on IHP is the card refit alone.
@@ -324,13 +343,19 @@ card, C0_refit and the correction-arm curves re-simulated in NGSpice; NGSpice ca
    evaluation is about 0.6 s of the 0.89 s added on ro5_A (I15-1). No runtime variant registered.
 7. **TU Delft TEST bootstrap unit.** 3 geometry groups on TEST; the DEV analyses used a 7-group cluster bootstrap.
    The TEST pre-registration has to fix the unit (proposal in 3.3).
-8. **g v2 recipe not run on 5 of 9 DEV datasets.** NIST (both) and IHP 233 / 343 / 398 K have M_bias v1 rows only, so
-   the gate applies M_bias v1 there, and M_bias v1 failed the deployment checks on sky130 (I11-1; reference arm of
-   I14-1 / I15-1). The frozen method has one correction recipe only if g v2 is run on these datasets (with new
-   S3_D values and amended Part P decisions) or if the paper states two recipes.
-9. **TU Delft gate miss.** With the g v2 recipe S3_D is +0.008 / +0.264 while the DEV correction lowers the error
-   (0.826 / 0.829); the v1 recipe gives -0.029 / -0.051 and the realised sign on 9/9 DEV datasets. Which recipe
-   computes S3_D for a g v2 arm is part of the freeze.
+8. **g v2 recipe not run on 3 of 9 DEV datasets.** I20-1 ran the selected g v2 recipe on both NIST datasets (state C):
+   GMR(selected g v2, C0_refit) 0.803 [0.757, 0.857] 50/53 (lvt) and 0.811 [0.761, 0.871] 77/87 (RT card), both
+   "gain over C0_refit replicated"; GMR(selected g v2, M_bias v1) 1.006 [0.986, 1.024] and 1.002 [0.989, 1.015], both
+   non-inferior (margin 1.05). IHP 233 / 343 / 398 K still have M_bias v1 rows only (the gate keeps C0_refit there on
+   DEV, so no correction is applied). Open for the single-recipe method: g v2 on IHP 233 / 343 / 398 K, or a statement
+   that IHP uses C0_refit only. NIST Part B (element deployment of the NIST g v2 models) was not run.
+9. **TU Delft gate miss (rule proposed in I20-1).** With the g v2 recipe S3_D is +0.008 / +0.264 while the DEV
+   correction lowers the error (0.826 / 0.829). The I20-1 pre-registration fixes the frozen-method rule: the v1-recipe
+   S3_D on state-C records decides whether the selected g v2 correction is applied (section 1.E). Under it TU Delft
+   becomes apply at both temperatures, which differs from the committed a755e18 TU Delft primary decisions (C0_refit);
+   a dated amendment of those decisions (or keeping the committed ones as the scored prediction) is needed before the
+   TEST run. Remaining gap: the TU Delft v1 S3_D was computed on the I6-1 state-L records; the state-C value is not
+   computed.
 10. **IHP 300 K full-data lambda.** Not stored (I17-2 has per-fold lambda* only); needed for the TEST g v2 arm.
 11. **Pending user question.** Whether to open the IHP and TU Delft TEST devices (asked 2026-10-21, no reply). If they
     are opened, their I8-2 and I19-1 predictions become void as for sky130, and the locked TEST is NIST only (96

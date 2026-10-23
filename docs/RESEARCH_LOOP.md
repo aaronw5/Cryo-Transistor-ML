@@ -2556,3 +2556,36 @@ g v2-recipe S3_D, known when the rule was chosen). Code 572e39e (driver `scripts
 17 unit tests in `tests/test_i20_1_nist_clamp.py`); smoke on 6 devices per dataset. Amendment A1 (1f14eda, after the
 audit, before any rerun result): V2 is read on unclamped cards without a fatal model check (7 cards of I8-1 A1 devices
 with "Pclm is not positive" have U != L because the warm-up op takes the fatal check; C = L on all 1238).
+
+## I20-1 outcome (2026-10-23 13:16): NIST clamp audit and fix; selected g v2 recipe gains over C0_refit on both NIST DEV datasets and is non-inferior to M_bias v1 (pre-registered rule)
+
+Queue (8 workers): I20_1_audit 31 s (first attempt rc=1 on a NaN-handling bug in the stored stock rows, fixed and
+requeued unchanged), I20_1_start 2 s, I20_1_s3v1 148 s, I20_1_base_nist4 950 s, I20_1_base_nistrt 2263 s,
+I20_1_pens 2 s, I20_1_select_nist4 4845 s, I20_1_select_nistrt 7084 s, I20_1_s3v2 309 s, I20_1_lodo_nist4 4242 s,
+I20_1_lodo_nistrt 2176 s, I20_1_decide 197 s. Valid (V1-V8; V2 read per amendment A1).
+Audit (`I20_1/audit/audit.json`, 1798 stored cards x 3 states): state L reproduces every stored row of every arm
+(difference 0, incl. B1, B2, B3_d3, the I9-2 classes and M_bias_lvt); A2_eff > 1 on 16/57 I8-1 and 35/87 I9-1
+starting cards (and on 8-41 cards of the other arms), no card with A2_eff < 0.01, no stock card clamped, no other
+size-dependent b4check.c clamp; b4check.c printed A2 = computed A2_eff (max rel 4.9e-6); C = L on all 1238 unclamped
+cards, U != L only on the 7 fatal-PCLM cards (amendment A1). Stored cards rescored L -> C (finite-start all-device):
+I8-1 C0_refit 0.0400 -> 0.0407, M_bias v1 0.0315 -> 0.0321; I9-1 C0_refit 0.0555 -> 0.0604, M_bias v1 0.0455 ->
+0.0498 (cards fitted in L, not refit). Both NIST simulators default to state C.
+Reruns in state C (state-L refits of 2 devices per dataset reproduce the stored rows, difference 0): NIST lvt (53)
+start 0.0411 -> 0.0418, C0_refit 0.0400 -> 0.0399, M_bias v1 0.0315 -> 0.0312, GMR(v1, C0_refit) 0.806 -> 0.798
+[0.750, 0.857] 50/53; NIST RT card (87) start 0.0576 -> 0.0614, C0_refit 0.0555 -> 0.0567, M_bias v1 0.0455 ->
+0.0466, GMR 0.797 -> 0.809 [0.759, 0.873] 78/87.
+Selected g v2 (6-block selection; lambda* lvt 0 V x36 / 1 V x17, full 0 V; RT card 0 V x87, full 0 V): NIST lvt
+0.0318 / 0.0340 / 0.0165 (all-device / combined / median), **GMR(selected g v2, C0_refit) 0.803 [0.757, 0.857] 50/53:
+gain over C0_refit replicated**; GMR(selected, M_bias v1) 1.006 [0.986, 1.024] 18/53: non-inferior. NIST RT card
+0.0466 / 0.0491 / 0.0275, **0.811 [0.761, 0.871] 77/87: gain replicated**; vs v1 1.002 [0.989, 1.015] 40/87:
+non-inferior. Per family GMR vs C0_refit: lvt nMOS 0.808, pMOS 0.798; RT card nMOS 0.708, pMOS 0.958. Negative
+corrected gds on the held-out grids: lvt v1 10.4% vs selected 8.7%; RT card 13.0% vs 13.2% (card only 0).
+Gate: S3_D v1 state C -0.1172 (lvt; committed -0.1027) and -0.0730 (RT card; committed -0.0689); S3_D g v2 -0.1163
+and -0.0706. All four decisions are "apply", equal to a755e18: no amendment. Frozen S3_D rule (v1 recipe, state C)
+sign = realised g v2 sign on 2/2 NIST datasets (g v2-recipe S3_D also 2/2). Method-freeze draft updated: evidence
+table with NIST state-C rows and a "gated (frozen rule)" column; pooled over 9 DEV rows: gated frozen rule 0.884,
+gated I19-1 0.922, correction always 0.960, v1 0.964; open items 1 (closed), 8 and 9 rewritten (the frozen rule makes
+TU Delft "apply", which differs from the committed TU Delft decisions). Report batch
+`out/research/report/2026-10-23_i20_1/` (`scripts/research/plot_explore_i20_1.py`; 7 tables, forest plot, per-device
+log ratios, A2_eff figure, 6 I-V figures with every re-simulated RRMS checked); site claim `i20-1` (verified). Site
+rebuilt, not published.

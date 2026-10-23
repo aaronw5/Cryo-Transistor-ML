@@ -6805,6 +6805,135 @@
    "updated": "2026-10-23"
   },
   {
+   "id": "i20-1",
+   "tab": "explore",
+   "statement": "I20-1: the NIST decks (I8-1 lvt 77 K card, I9-1 room-temperature card) are audited for the BSIM4 A2 clamp state and moved to state C; in state C the selected g v2 recipe (symmetric inputs, EPS 0.01 V, VDD 1.8 V, nested lambda selection) lowers the held-out RRMS against C0_refit on both NIST DEV datasets and is non-inferior to M_bias v1 (margin 1.05).",
+   "status": "verified",
+   "headline": {
+    "value": "gain over C0_refit replicated on both NIST DEV datasets: GMR(selected g v2, C0_refit) 0.803 [0.757, 0.857] 50/53 (lvt), 0.811 [0.761, 0.871] 77/87 (RT card); non-inferior to M_bias v1: 1.006 [0.986, 1.024], 1.002 [0.989, 1.015]. Audit: A2_eff > 1 on 16/57 and 35/87 starting cards; state L reproduces every stored row; S3_D signs unchanged (v1 state C -0.117 / -0.073, g v2 -0.116 / -0.071), no TEST gate amendment.",
+    "convention": "state C, strict paper RRMS, LODO, device bootstrap 10,000 (seed 0), finite-start devices (53 / 87)"
+   },
+   "numbers": [
+    {
+     "label": "state-C reruns vs stored state L (all-device mean)",
+     "value": "NIST lvt C0_refit 0.0400 -> 0.0399, M_bias v1 0.0315 -> 0.0312, GMR(v1, C0_refit) 0.806 -> 0.798; NIST RT card C0_refit 0.0555 -> 0.0567, M_bias v1 0.0455 -> 0.0466, GMR 0.797 -> 0.809",
+     "convention": "I8-1 / I9-1 recipe rerun in state C",
+     "source": "out/research/explore/I20_1/decision.json"
+    },
+    {
+     "label": "lambda selection (6 blocks)",
+     "value": "NIST lvt 0 V on 36 devices, 1 V on 17, full-data 0 V; NIST RT card 0 V on 87, full-data 0 V",
+     "convention": "I15-2 inner rule within 6 selection blocks (deviation from per-fold selection, for compute)",
+     "source": "out/research/explore/I20_1/select_nist4/select.json"
+    },
+    {
+     "label": "frozen-method S3_D rule (pre-registered in I20-1)",
+     "value": "v1-recipe S3_D on state-C records decides whether selected g v2 is applied; NIST sign check 2/2 (both statistics); pooled over 9 DEV rows: gated frozen rule 0.884, gated I19-1 0.922, correction always 0.960",
+     "convention": "exp(mean ln GMR vs C0_refit)",
+     "source": "out/research/report/2026-10-23_freeze_draft/tables.md"
+    },
+    {
+     "label": "compute",
+     "value": "audit 31 s; C0_refit / M_bias v1 reruns 950 s + 2263 s; selection 4845 s + 7084 s; S3_D g v2 309 s; g v2 LODO 4242 s + 2176 s",
+     "convention": "queue wall time, 8 workers",
+     "source": "out/research/done.txt"
+    }
+   ],
+   "what": [
+    "Question: do the NIST DEV rows and the committed NIST S3_D values depend on the BSIM4 A2 clamp state of the NIST decks, and does the selected g v2 recipe keep the NIST gain so that the frozen method has one correction recipe?",
+    "Pre-registered (a516fe3): audit in states L / C / U, fix (state C default), state-C reruns, g v2 recipe with a 6-block nested lambda selection, primary GMR(selected g v2, C0_refit) per dataset, secondary vs M_bias v1 margin 1.05, TEST gate amendment rule, frozen S3_D recipe = v1 recipe in state C."
+   ],
+   "did": [
+    "Code 572e39e (17 unit tests); amendment A1 1f14eda (audit V2 read without the 7 fatal-PCLM cards, where only U differs); decide a52ce32; report batch 2026-10-23_i20_1 re-simulates 6 devices with every RRMS checked against the stored rows."
+   ],
+   "result": {
+    "text": [
+     "Outcome by rule: gain over C0_refit replicated and non-inferior to M_bias v1 on both NIST DEV datasets. With lambda* = 0 on the RT card the selected g v2 rows are close to M_bias v1 (ratio 1.002).",
+     "State C moves the stored NIST scores by 0.0001-0.0012 RRMS and keeps every S3_D sign; the committed a755e18 NIST decisions (apply) stand."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "01_table_i20_1_audit.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "02_table_i20_1_audit_gmr.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "03_table_i20_1_headline.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "04_table_i20_1_decision.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "05_table_i20_1_gate.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "06_table_i20_1_family.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "07_table_i20_1_selection.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "08_i20_1_forest.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "09_i20_1_per_device.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "10_i20_1_a2_eff.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "11_i20_1_iv_nist4_nfet_01v8_lvt_W0p64_L0p25_m21p4.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "12_i20_1_iv_nist4_nfet_01v8_lvt_W1_L0p15_m22p2.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "13_i20_1_iv_nist4_pfet_01v8_lvt_W1_L0p35_m28p6.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "14_i20_1_iv_nistrt_pfet_01v8_W1_L0p25_m14p4.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "15_i20_1_iv_nistrt_nfet_01v8_W0p42_L1_m1p7.png"
+     },
+     {
+      "batch": "2026-10-23_i20_1",
+      "file": "16_i20_1_iv_nistrt_pfet_01v8_W0p42_L1_m11p5.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The lambda selection uses 6 blocks instead of per outer fold (pre-registered deviation for compute).",
+    "The NIST g v2 rows were run after the NIST M_bias v1 outcomes were known (I8-1, I9-1).",
+    "The frozen S3_D rule was chosen with the TU Delft retrospective result known; under it the TU Delft TEST decision becomes apply, which differs from the committed a755e18 decision.",
+    "Part B (deployment of a NIST g v2 element) was not run."
+   ],
+   "sources": [
+    "out/research/explore/I20_1/prereg.md",
+    "out/research/explore/I20_1/prereg_amendment_A1_2026-10-23.md",
+    "out/research/explore/I20_1/decision.json",
+    "out/research/explore/I20_1/audit/audit.json",
+    "out/research/report/2026-10-23_i20_1/README.md"
+   ],
+   "updated": "2026-10-23"
+  },
+  {
    "id": "i15-2",
    "tab": "explore",
    "statement": "I15-2: on 18 sky130 77 K devices (18-fold LODO, state C) the symmetric inputs and EPS = 0.01 V of g v2 change the held-out RRMS by less than 1 % relative to M_bias v1; the accuracy difference of g v2 follows the gm/gds penalty weight lambda = 10 V. A lambda chosen per fold from {0, 1, 2, 5, 10} V by nested 3-fold selection on training devices only (lambda* 1 or 2 V on 16 of 18 folds) is non-inferior to M_bias v1 (margin 1.05).",

@@ -7,9 +7,38 @@
    "01_table_freeze_draft_dev_evidence.png"
   ],
   "summary": [
-   "Method-freeze draft DEV evidence table (9 measured DEV datasets): C0_refit, M_bias v1, selected g v2, I19-1 dataset-level gate; pooled GMR vs C0_refit gated 0.921, v1 0.963. Draft: docs/research/method_freeze_draft_2026-10-23.md."
+   "Method-freeze draft DEV evidence table (9 measured DEV datasets; NIST rows state C from I20-1): C0_refit, M_bias v1, selected g v2, gated I19-1 and gated frozen rule; pooled GMR vs C0_refit gated I19-1 0.922, frozen rule 0.884, v1 0.964. Draft: docs/research/method_freeze_draft_2026-10-23.md."
   ],
-  "generated": "2026-10-23T06:38:04"
+  "generated": "2026-10-23T13:17:07"
+ },
+ {
+  "date": "2026-10-23",
+  "topic": "i20_1",
+  "folder": "2026-10-23_i20_1",
+  "pngs": [
+   "01_table_i20_1_audit.png",
+   "02_table_i20_1_audit_gmr.png",
+   "03_table_i20_1_headline.png",
+   "04_table_i20_1_decision.png",
+   "05_table_i20_1_gate.png",
+   "06_table_i20_1_family.png",
+   "07_table_i20_1_selection.png",
+   "08_i20_1_forest.png",
+   "09_i20_1_per_device.png",
+   "10_i20_1_a2_eff.png",
+   "11_i20_1_iv_nist4_nfet_01v8_lvt_W0p64_L0p25_m21p4.png",
+   "12_i20_1_iv_nist4_nfet_01v8_lvt_W1_L0p15_m22p2.png",
+   "13_i20_1_iv_nist4_pfet_01v8_lvt_W1_L0p35_m28p6.png",
+   "14_i20_1_iv_nistrt_pfet_01v8_W1_L0p25_m14p4.png",
+   "15_i20_1_iv_nistrt_nfet_01v8_W0p42_L1_m1p7.png",
+   "16_i20_1_iv_nistrt_pfet_01v8_W0p42_L1_m11p5.png"
+  ],
+  "summary": [
+   "I20-1 NIST clamp audit and selected g v2 recipe on both NIST DEV datasets (state C).",
+   "NIST 4 K lvt (I8-1, 77 K card): GMR(selected g v2, C0_refit) 0.803 [0.757, 0.857] (gain over C0_refit replicated); GMR(selected g v2, M_bias v1) 1.006 [0.986, 1.024] (non-inferior to M_bias v1); S3_D committed -0.1027, v1 state C -0.1172, g v2 -0.1163.",
+   "NIST 4 K regular-Vt (I9-1, room-temperature card): GMR(selected g v2, C0_refit) 0.811 [0.761, 0.871] (gain over C0_refit replicated); GMR(selected g v2, M_bias v1) 1.002 [0.989, 1.015] (non-inferior to M_bias v1); S3_D committed -0.0689, v1 state C -0.0730, g v2 -0.0706."
+  ],
+  "generated": "2026-10-23T13:16:54"
  },
  {
   "date": "2026-10-23",
