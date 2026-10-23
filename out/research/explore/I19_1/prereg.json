@@ -1,0 +1,142 @@
+{
+ "id": "I19_1",
+ "title": "dataset-level gate: one decision per dataset from S3_D on all DEV devices",
+ "written": "2026-10-23",
+ "status": "in force from the commit that adds this file (committed alone, before any I19-1 code or S3_D value)",
+ "test_locked": [
+  "NIST 4 K lvt TEST (I8-1, 38)",
+  "NIST 4 K room-temperature card TEST (I9-1, 58)",
+  "IHP SG13G2 TEST 10 DUTs x 233/300/343/398 K",
+  "TU Delft 40 nm TEST 24 x 4.13/295.0 K"
+ ],
+ "no_locked_test": [
+  "sky130 77 K (user decision 2026-10-21)"
+ ],
+ "statistic": {
+  "name": "S3_D",
+  "definition": "mean over DEV records r of the dataset of ln(RRMS(r, I_start*exp(g_{-k(r)})) / RRMS(r, I_start)); g_{-k(r)} = gated arm's recipe, seed 0, 500 steps, trained on the training set of the leave-one-group-out fold holding out k(r) (all DEV records outside k(r); IHP: same class outside k(r)), record load order, applied post hoc; nanmean",
+  "inner_group": {
+   "sky130": "device",
+   "nist": "device",
+   "ihp": "device",
+   "tudelft": "geometry group",
+   "simulated": "geometry"
+  },
+  "lambda_g_v2": "lambda*_f of the outer fold that holds out k(r) (I15-2 / I17-2 inner / I18-2 lambda_star)",
+  "records": {
+   "sky130_77K": "I13_1/records (state C)",
+   "nist_4K": "I8_1/start/records finite (53)",
+   "nist_rt_card_4K": "I9_1/start/records finite (87)",
+   "ihp_{T}K": "I5_1/start/records_{T}K",
+   "tudelft_{T}K g v2": "I18-2 state-C starting records",
+   "tudelft_{T}K v1": "I6_1/start/records_{T}K (state L)",
+   "simulated": "I7_1 new datasets records"
+  }
+ },
+ "decision": {
+  "apply_iff": "S3_D < threshold (strict)",
+  "threshold": 0.0,
+  "sensitivity_threshold_reported_only": 0.02455,
+  "sensitivity_source": "zero crossing of I7-1 OLS y = -0.0298 + 1.214 S3 on the 20 simulated datasets",
+  "threshold_reason": "direct meaning (post-hoc inner gain); same threshold as I8-2 G and I18-1; OLS crossing fitted to a different statistic (fold-mean S3) and v1 recipe only"
+ },
+ "arms": {
+  "sky130_77K": "selected g v2 (I15-2)",
+  "nist_4K": "M_bias v1",
+  "nist_rt_card_4K": "M_bias v1",
+  "ihp_300K": "selected g v2 (I17-2)",
+  "ihp_233K": "M_bias v1",
+  "ihp_343K": "M_bias v1",
+  "ihp_398K": "M_bias v1",
+  "tudelft_4K": "selected g v2 (I18-2, state C)",
+  "tudelft_295K": "selected g v2 (I18-2, state C)"
+ },
+ "secondary_v1": [
+  "sky130_77K",
+  "ihp_300K",
+  "tudelft_4K",
+  "tudelft_295K"
+ ],
+ "part_R": {
+  "label": "retrospective (DEV outcomes and I8-2 G values known)",
+  "rows": "I18-1 rows; gated_D = correction row if S3_D < 0 else C0_refit row",
+  "gmr": "i3_2_bias.paired_ratio, 10000 resamples, seed 0, percentile 95% CI; device; 7-group cluster for TU Delft",
+  "R1": "GMR(gated_D, C0_refit) point value <= 1 on each of the 9 datasets",
+  "R2": "pooled exp(mean ln GMR(gated_D, C0_refit)) over 9 datasets < pooled exp(mean ln GMR(correction always, C0_refit)) (I18-1 0.958)",
+  "outcome": "supported (retrospective) iff R1 and R2",
+  "leakage": "scored DEV devices' starting-card records enter S3_D; held-out refit rows do not"
+ },
+ "part_P": {
+  "splits": {
+   "nist_4K": {
+    "n_test": 38,
+    "arm": "M_bias v1"
+   },
+   "nist_rt_card_4K": {
+    "n_test": 58,
+    "arm": "M_bias v1"
+   },
+   "ihp_233K": {
+    "n_test": 10,
+    "arm": "M_bias v1"
+   },
+   "ihp_300K": {
+    "n_test": 10,
+    "arm": "selected g v2",
+    "secondary": "M_bias v1"
+   },
+   "ihp_343K": {
+    "n_test": 10,
+    "arm": "M_bias v1"
+   },
+   "ihp_398K": {
+    "n_test": 10,
+    "arm": "M_bias v1"
+   },
+   "tudelft_4K": {
+    "n_test": 24,
+    "arm": "selected g v2",
+    "secondary": "M_bias v1"
+   },
+   "tudelft_295K": {
+    "n_test": 24,
+    "arm": "selected g v2",
+    "secondary": "M_bias v1"
+   }
+  },
+  "file": "test_gate_decisions.json/.md, committed alone before any TEST evaluation and before the decide step",
+  "comparison": "I8-2 committed TEST sign predictions (S3 sign, frozen S1_lodo rule); NIST: DEV P_c of I8-1 / I9-1 for reference",
+  "evaluation_at_TEST": "decision correct iff it equals sign of TEST ln GMR(correction, C0_refit); not part of I19-1"
+ },
+ "part_C": {
+  "datasets": "20 I7-1 simulated datasets",
+  "recipe": "v1",
+  "realised": "I7_1/decision.json y",
+  "C": "sign accuracy (S3_D < 0) == (y_D < 0) on at least 19 of 20",
+  "x_reason": "constant apply decision gets 18/20"
+ },
+ "outcome": {
+  "supported": "valid, Part R supported and Part C holds",
+  "partially supported": "exactly one",
+  "not supported": "neither",
+  "invalid": "any validity check fails"
+ },
+ "validity": {
+  "V1": "Part R row counts 18/53/87/18x4/45x2, rows equal I18-1 rows",
+  "V2": "S3 code reproduces stored fold values: IHP 300 K v1 folds hv_nmos_W0p3_L0p5, lv_nmos_W0p15_L0p18 (I7-1); sky130 g v2 fold nmos_L0p15_W1p6 (I18-1); |diff| <= 1e-9",
+  "V3": "S3_D finite on every primary, v1 secondary and simulated dataset; one inner fit per inner group",
+  "V4": "tests.test_i19_1_dataset_gate passes",
+  "V5": "every loaded record tag in DEV list and not in TEST list (NIST, IHP, TU Delft)"
+ },
+ "known_before_registration": "I18-1 rows and GMRs; I8-2 G values (fold-mean S3) of every dataset (sky130 -0.175, NIST -0.108/-0.071, IHP +0.353/+0.254/+0.375/+0.395, TU Delft g v2 +0.018/+0.201; v1 -0.033/-0.041); I7-1 simulated y_D and fold-mean S3 (19/20 sign agreement)",
+ "order": [
+  "prereg alone",
+  "code + unit tests",
+  "smoke",
+  "I19_1_s3_real",
+  "I19_1_testgate (commit alone)",
+  "I19_1_s3_sim",
+  "I19_1_decide",
+  "I19_1_figs"
+ ]
+}
