@@ -2520,3 +2520,19 @@ I18-1 (0.981 / 1.099 -> 1.000 / 1.000) but does not recover the gain. The v1 rec
 Report batch `out/research/report/2026-10-23_i19_1/` (`scripts/research/plot_explore_i19_1.py`; 6 tables, forest
 plot, S3_D vs realised gain scatter; 94 values recomputed); site claim `i19-1` (verified, caveats: retrospective
 Part R, DEV leakage of starting records, TU Delft gain missed). Site rebuilt, not published.
+
+## Method-freeze draft and TEST plan (2026-10-23): proposed, not frozen
+
+Default option run (no user reply); documents only, no TEST split opened, no NGSpice run, no training. Draft
+`docs/research/method_freeze_draft_2026-10-23.md` (status "proposed, not frozen"; final freeze about 2026-12-10):
+(1) method specification with code and commit per part (direct43_r3_fd starting cards, BSIM4 state C, selected g v2
+recipe with nested lambda selection, held-out TRF refit, I19-1 dataset-level S3 gate, channel-replica OSDI element,
+deployment checks with I17-1 and I18-2 A1 rules); (2) DEV evidence table for the 9 measured DEV datasets; (3) TEST
+plan for the 8 locked splits (NIST lvt 38, NIST RT card 58, IHP 10 DUTs x 4 temperatures, TU Delft 24 x 2) with the
+committed I19-1 decisions (a755e18) and I8-2 predictions (08d23e3) to be scored, proposed rules, order of operations
+and a compute estimate of about 2.2-2.8 h; (4) open items. New finding from a file check: the NIST decks
+(`i8_1_nist`, `i9_1_nist_rt`) run all sweeps in one ngspice process without the A2 clamp, and the stored base a2 > 1 on
+16/57 (I8-1) and 34/87 (I9-1) starting cards; the NIST rows were not audited for the clamp state (open item 4.1).
+Pooled exp(mean ln GMR vs C0_refit) over the 9 DEV datasets: gated 0.921, correction always 0.958, M_bias v1 always
+0.963 (TU Delft v1 rows in state C). Table batch `out/research/report/2026-10-23_freeze_draft/`
+(`scripts/research/plot_freeze_draft.py`; 88 values checked against the stored decision files).

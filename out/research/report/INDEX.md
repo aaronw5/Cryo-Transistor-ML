@@ -2,6 +2,14 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-23 · freeze_draft
+
+Folder: [2026-10-23_freeze_draft/](2026-10-23_freeze_draft/) · [tables.md](2026-10-23_freeze_draft/tables.md) · [README.md](2026-10-23_freeze_draft/README.md)
+
+- Method-freeze draft DEV evidence table (9 measured DEV datasets): C0_refit, M_bias v1, selected g v2, I19-1 dataset-level gate; pooled GMR vs C0_refit gated 0.921, v1 0.963. Draft: docs/research/method_freeze_draft_2026-10-23.md.
+
+Figures and tables: [01_table_freeze_draft_dev_evidence.png](2026-10-23_freeze_draft/01_table_freeze_draft_dev_evidence.png)
+
 ## 2026-10-23 · i19_1
 
 Folder: [2026-10-23_i19_1/](2026-10-23_i19_1/) · [tables.md](2026-10-23_i19_1/tables.md) · [README.md](2026-10-23_i19_1/README.md)
