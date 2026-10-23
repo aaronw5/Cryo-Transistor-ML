@@ -1,0 +1,21 @@
+{
+ "id": "I20_1_A1",
+ "written": "2026-10-23",
+ "after": [
+  "audit",
+  "state-C starting records",
+  "S3_D v1 state C"
+ ],
+ "before": [
+  "C0_refit / M_bias v1 reruns",
+  "g v2 selection, S3_D, LODO"
+ ],
+ "changes_no": [
+  "rerun quantity",
+  "contrast",
+  "label rule",
+  "gate rule"
+ ],
+ "observation": "C = L on all 1238 cards with 0.01 <= A2_eff <= 1; U != L on 7 of them: 5 stock + 2 starting cards of I8-1 devices with the fatal model check 'Pclm is not positive' (W0.55/L0.25, W3.01/L0.15, W5/L2, W7/L0.15, W7/L2); in U the fatal check stops the warm-up op instead of the first curve",
+ "reading": "V2 evaluated on unclamped cards without a fatal model-check line (1231); on the 7 fatal-check cards C = L required and U reported; unrestricted V2 reported"
+}
