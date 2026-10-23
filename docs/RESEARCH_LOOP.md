@@ -2589,3 +2589,26 @@ TU Delft "apply", which differs from the committed TU Delft decisions). Report b
 `out/research/report/2026-10-23_i20_1/` (`scripts/research/plot_explore_i20_1.py`; 7 tables, forest plot, per-device
 log ratios, A2_eff figure, 6 I-V figures with every re-simulated RRMS checked); site claim `i20-1` (verified). Site
 rebuilt, not published.
+
+## I21-1 pre-registration in force (2026-10-23 13:30): open items without a user decision (NIST Part B, TU Delft S3_D in state C, IHP 233 / 343 / 398 K g v2)
+
+Pre-registration `out/research/explore/I21_1/prereg.md` / `prereg.json`, commit 1808a01 (alone, before any I21-1
+code or run). DEV only; no amendment of the I19-1 TEST gate decisions (a755e18) is written (pending user decision).
+Part A: Part B deployment checks (I17-1 rules) of the I20-1 full-data g v2 models (lambda*_full 0 V, VDD 1.8 V) on
+NIST lvt (53 devices, sky130 77 K lvt library, explicit bins, 77 K) and NIST RT card (87 devices, open_pdks tt card,
+one explicit bin, 30 C); M2 cards = state-C starting cards refit with the full-data g in the loop; I14-1 channel
+replica (RT card: subcircuit block renamed `_ch`, REPLICA written into the bin); igcmod = igbmod = 0 in every bin, so
+the V(d,s) = 0 check uses the raw element current (I18-2 amendment A1 not applicable); Q1 73 x 145 grid to 1.8 V,
+Q2 gm sets |V(d,s)| {0.05, 0.9, 1.8} V and gds sets |V(g,s)| {0.6, 0.9, 1.2, 1.5, 1.8} V; Q3 sky130 circuits at
+1.8 V on the NIST DEV devices nearest in (ln L, ln W) to the sky130 circuit devices (lvt: W1p65_L0p18 bin 0,
+W1_L0p35 bin 0, W1p65_L1 bin 3, W5_L1p5 bin 11 (bin-uncovered); RT card: W1p68_L0p15 bin 44, W1p68_L0p5 bin 41,
+W1p68_L1 bin 40, W5_L2 bin 12). Part B: TU Delft v1-recipe S3_D (I19-1 definition) on the I18-2 state-C records,
+report only. Part C: selected g v2 recipe on IHP SG13G2 233 / 343 / 398 K with the I17-2 setup (ngspice-46 +
+psp103.osdi, class-supply inputs, 75 x 75 penalty grids, nested lambda selection); primary GMR(selected, C0_refit)
+per temperature, secondary vs M_bias v1 margin 1.05; the fixed-lambda arms are run only at lambda*_f (selected rows
+identical by construction). Predictions: Part A deployable with restrictions on both datasets with gds sign changes;
+Part B S3_D < 0 at both temperatures; Part C ln GMR(selected, C0_refit) > 0 at all three, labels inconclusive /
+inconclusive / worse, secondary not shown non-inferior. Code 0688e64 (`src/cryoml/explore/i21_1_close.py`,
+`scripts/research/explore/i21_1_close.py`, `tests/test_i21_1_close.py`); smoke ran every stage. First Part A run
+(NIST lvt) stopped in q12 (rc=1) on an all-NaN V(d,s) = 0 column (numpy nanargmax); fix 3900f47 (NaN-safe
+evaluation; a non-finite tight value fails the check as the rule states), M2 cards kept, q12 onwards requeued.

@@ -61,13 +61,17 @@ def datasets() -> dict:
                         "src": [rel(i13 / "lodo/results.json"), rel(i13 / "all18/results.json"),
                                 rel(EXP / "I15_2/decision.json"), rel(EXP / "I17_1/decision.json")]}
     i20 = EXP / "I20_1"
+    i21 = EXP / "I21_1"
     for name, d in (("nist_4K", "nist4"), ("nist_rt_card_4K", "nistrt")):
         p = i20 / f"base_{d}/results.json"
         q = i20 / f"lodo_{d}/results.json"
+        pb = i21 / f"partA_{d}/summary.json"
+        dep = "not tested (Part B not run for the NIST cards; v1 element not deployable, I11-1)"
+        if pb.exists():
+            dep = f"{load(pb)['label']} (I21-1, lambda 0 V full-data model; Q3 sky130 circuits on NIST devices)"
         ds[name] = {"c0": pd_rows(p, "C0_refit"), "v1": pd_rows(p, "M_bias"), "sel": fl(load(q)["per_device"]),
-                    "unit": None, "i20": d,
-                    "deploy": "not tested (Part B not run for the NIST cards; v1 element not deployable, I11-1)",
-                    "src": [rel(p), rel(q), rel(i20 / "decision.json")]}
+                    "unit": None, "i20": d, "deploy": dep,
+                    "src": [rel(p), rel(q), rel(i20 / "decision.json")] + ([rel(pb)] if pb.exists() else [])}
     i17_2 = load(EXP / "I17_2/decision.json")
     ds["ihp_300K"] = {"c0": pd_rows(EXP / "I17_2/base/results.json", "C0_refit"),
                       "v1": pd_rows(EXP / "I5_1/lodo_300K/results.json", "M_bias"),
@@ -77,8 +81,11 @@ def datasets() -> dict:
                               rel(EXP / "I17_2/decision.json")]}
     for t in (233, 343, 398):
         p = EXP / f"I5_1/lodo_{t}K/results.json"
-        ds[f"ihp_{t}K"] = {"c0": pd_rows(p, "C0_refit"), "v1": pd_rows(p, "M_bias"), "sel": None, "unit": None,
-                           "deploy": "Part B not run (PSP103 replica)", "src": [rel(p)]}
+        q = i21 / f"ihp_{t}K/decision.json"
+        sel = fl(load(q)["rows"]["selected"]) if q.exists() else None
+        ds[f"ihp_{t}K"] = {"c0": pd_rows(p, "C0_refit"), "v1": pd_rows(p, "M_bias"), "sel": sel, "unit": None,
+                           "i19_arm": "v1", "i21": q if q.exists() else None,
+                           "deploy": "Part B not run (PSP103 replica)", "src": [rel(p)] + ([rel(q)] if q.exists() else [])}
     i18 = load(EXP / "I18_2/decision.json")
     pb = load(EXP / "I18_2/partB_decision.json")
     for t in (4, 295):
@@ -126,8 +133,11 @@ V1_S3 = {"sky130_77K": "sky130_v1", "ihp_300K": "ihp300_v1", "ihp_233K": "ihp233
 
 
 def frozen_s3(name: str) -> tuple[float, str]:
-    """v1-recipe S3_D used by the frozen-method rule (I20-1): NIST from the I20-1 state-C records, the
-    other datasets from the I19-1 v1 files (TU Delft: I6-1 state-L records)."""
+    """v1-recipe S3_D used by the frozen-method rule (I20-1): NIST from the I20-1 state-C records, TU Delft
+    from the I21-1 state-C records (I18-2 starting records), the other datasets from the I19-1 v1 files."""
+    if name.startswith("tudelft") and (EXP / "I21_1/s3tud/s3tud.json").exists():
+        t = name.split("_")[1][:-1]
+        return float(load(EXP / "I21_1/s3tud/s3tud.json")["per_temperature"][t]["S3_D_state_C"]), "I21_1/s3tud/s3tud.json"
     if name.startswith("nist"):
         d = {"nist_4K": "nist4", "nist_rt_card_4K": "nistrt"}[name]
         return float(load(EXP / f"I20_1/s3/{d}_v1.json")["S3_D"]), f"I20_1/s3/{d}_v1.json"
@@ -149,7 +159,8 @@ def compute() -> tuple[list[dict], int, dict]:
         x19 = D19[name]
         apply = bool(x19["apply"])
         nist = "i20" in d
-        arm_rows = d["v1"] if nist else (d["sel"] if d["sel"] is not None else d["v1"])   # I19-1 arm
+        arm_rows = d["v1"] if (nist or d.get("i19_arm") == "v1") else (d["sel"] if d["sel"] is not None
+                                                                         else d["v1"])   # I19-1 arm
         gated = {t: (arm_rows[t] if apply else d["c0"][t]) for t in d["c0"] if t in arm_rows}
         s3f, s3src = frozen_s3(name)
         apply_f = bool(s3f < 0.0)
@@ -185,6 +196,15 @@ def compute() -> tuple[list[dict], int, dict]:
                     check(g_sel[k], P["primary_gmr_selected_vs_C0_refit"][k], f"{name} selected {k}")
                     check(g_sv1[k], P["secondary_gmr_selected_vs_v1"][k], f"{name} selected vs v1 {k}")
                 n_checks += 6
+                out.append(row)
+                continue
+            if d.get("i21") is not None:      # IHP 233 / 343 / 398 K: I21-1 selected rows, I19-1 arm v1
+                P = load(d["i21"])
+                for k in ("ratio", "ci_low", "ci_high"):
+                    check(g_sel[k], P["primary_gmr_selected_vs_C0_refit"][k], f"{name} selected {k}")
+                    check(g_sv1[k], P["secondary_gmr_selected_vs_v1"][k], f"{name} selected vs v1 {k}")
+                    check(g_v1[k], x19["gmr_correction_vs_C0_refit"][k], f"{name} v1 {k}")
+                n_checks += 9
                 out.append(row)
                 continue
             for k in ("ratio", "ci_low", "ci_high"):
@@ -253,14 +273,15 @@ def table(rows: list[dict], pooled: dict) -> rf.Table:
              "devices with a lower RRMS than the reference.",
              "gated (I19-1): committed I19-1 decisions and arms (apply iff S3_D < 0, S3_D with the gated arm's "
              "recipe); arm selected g v2 on sky130, IHP 300 K and TU Delft, M_bias v1 on NIST and IHP 233 / 343 / "
-             "398 K. gated (frozen rule, pre-registered in I20-1): the v1-recipe S3_D decides, the arm is selected "
-             "g v2 where it was run (sky130, NIST x2, IHP 300 K, TU Delft x2), M_bias v1 on IHP 233 / 343 / 398 K "
-             "(g v2 not run); TU Delft v1 S3_D from the I6-1 state-L records. Pooled exp(mean ln GMR vs C0_refit) "
+             "398 K. gated (frozen rule, pre-registered in I20-1): the v1-recipe S3_D on state-C records decides "
+             "(TU Delft: I21-1 state-C value; IHP: PSP103, no clamp state), the arm is selected g v2 (run on all 9 "
+             "rows after I21-1). Pooled exp(mean ln GMR vs C0_refit) "
              f"over the 9 rows: gated I19-1 {pooled['g_gate']:.3f}, gated frozen rule {pooled['g_gate_f']:.3f}, "
              f"correction always (selected g v2 where run, else v1) {pooled['g_corr']:.3f}, v1 {pooled['g_v1']:.3f}.",
              "sky130 v1 and selected rows: I13-1 / I15-2 state C (BSIM4 A2 clamp written in the card); TU Delft rows: "
              "I18-2 state C; NIST rows: I20-1 state C (C0_refit and M_bias v1 rerun, selected g v2 with 6-block "
-             "lambda selection); IHP: PSP103 (no BSIM4 clamp)."]
+             "lambda selection); IHP: PSP103 (no BSIM4 clamp); IHP 233 / 343 / 398 K selected g v2 rows: I21-1 "
+             "(I17-2 setup); NIST Part B labels: I21-1."]
     return rf.Table("01_table_freeze_draft_dev_evidence",
                     "Method-freeze draft (proposed, not frozen): DEV evidence per measured dataset", cols, trs, notes)
 
