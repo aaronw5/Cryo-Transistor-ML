@@ -1,0 +1,198 @@
+{
+ "id": "I20_1",
+ "title": "BSIM4 A2 clamp state of the NIST decks, audit and fix; selected g v2 recipe on both NIST DEV datasets",
+ "written": "2026-10-23",
+ "status": "in force from the commit that adds this file (committed alone, before any I20-1 RRMS value, rerun, training or S3_D value)",
+ "test_locked": [
+  "NIST 4 K lvt TEST (I8-1, 38)",
+  "NIST 4 K room-temperature card TEST (I9-1, 58)",
+  "IHP SG13G2 TEST",
+  "TU Delft 40 nm TEST"
+ ],
+ "datasets": {
+  "nist_4K": {
+   "source": "I8-1",
+   "dev": 57,
+   "finite_start": 53,
+   "card": "sky130 77 K lvt",
+   "deck": "77 K"
+  },
+  "nist_rt_card_4K": {
+   "source": "I9-1",
+   "dev": 87,
+   "finite_start": 87,
+   "card": "sky130 room-temperature tt",
+   "deck": "30 C"
+  }
+ },
+ "states": {
+  "L": "stored deck: all sweeps in one process, b4check.c clamp in the first analysis only",
+  "C": "clamp written into the card: A2_eff > 1 -> a2 = 1, la2 = wa2 = pa2 = 0, a1 = la1 = wa1 = pa1 = 0 if A1_eff != 0; A2_eff < 0.01 -> a2 = 0.01, la2 = wa2 = pa2 = 0; unclamped card unchanged",
+  "U": "one op before the curves (audit only)"
+ },
+ "effective_a2": {
+  "nist_4K": "bin a2 (77 K bins: no l/w/p A1/A2 terms, asserted)",
+  "nist_rt_card_4K": "a2 + la2 Inv_L + wa2 Inv_W + pa2 Inv_LW, Leff = L + xl - 2 dl, Weff = W/nf + xw - 2 dw, binunit 2"
+ },
+ "part_A_audit": {
+  "arms": {
+   "nist_4K": [
+    "stock",
+    "start",
+    "C0_refit",
+    "T1_inloop",
+    "M_bias_v1",
+    "B1",
+    "B2",
+    "B3_d3",
+    "I9_2:gp",
+    "I9_2:const",
+    "I9_2:lin",
+    "I9_2:poly2",
+    "I9_2:poly4",
+    "I9_2:poly5",
+    "I9_2:gam",
+    "I9_2:mlp8",
+    "I9_2:mlp32",
+    "I9_2:mlp16_s1",
+    "I9_2:mlp16_rep"
+   ],
+   "nist_rt_card_4K": [
+    "stock",
+    "start",
+    "C0_refit",
+    "T1_inloop",
+    "M_bias_v1",
+    "M_bias_lvt",
+    "B1",
+    "B2",
+    "B3_d3"
+   ]
+  },
+  "not_rescored": {
+   "I9_2 lc_nist_4K": "no stored cards"
+  },
+  "reported": [
+   "per-device RRMS L/C/U",
+   "C - L, U - L",
+   "all-device mean, combined, median",
+   "A2_eff and clamp class per card",
+   "b4check.c lines per card",
+   "GMR M_bias v1 vs C0_refit, B3_d3 vs C0_refit, M_bias v1 vs B3_d3 per state",
+   "other size-dependent b4check.c clamps per stored card"
+  ],
+  "other_clamp_rule": "if a stored card triggers another b4check.c clamp, the fix is extended by an amendment before the reruns",
+  "validity": {
+   "V1": "state L reproduces start, C0_refit, M_bias v1 rows (|diff| <= 1e-12, NaN = NaN); other arms per arm, 'not reproduced' arms not reported as audit values",
+   "V2": "C = L = U (difference 0) for every card with 0.01 <= A2_eff <= 1",
+   "V3": "clamped cards: A2_eff = b4check.c printed value (rel 1e-5); no A2 message on other cards; state-C curve 1 = state-L curve 1 where finite"
+  }
+ },
+ "part_B_fix": {
+  "default_state": "clamped",
+  "functions": [
+   "i8_1_nist.simulate(bsim4_state)",
+   "i9_1_nist_rt.simulate(bsim4_state)",
+   "i8_1_nist.bsim4_clamp_params",
+   "i9_1_nist_rt.bsim4_clamp_params",
+   "i9_1_nist_rt.effective_a1a2",
+   "MeasProblem.bsim4_state"
+  ],
+  "unit_tests": "tests/test_i20_1_nist_clamp.py",
+  "test_run_state": "C"
+ },
+ "part_C_reruns": {
+  "start_records": "state C from the stored starting cards, no refit; unclamped start cards identical to stored records",
+  "lodo": "C0_refit and M_bias v1, I8-1 / I9-1 recipe (5 seeds, 2000 steps; refit max_nfev 400, irls 2, diff_step 0.01), amendment A1 exclusion; T1_inloop and baselines not rerun",
+  "s3_v1": "I19-1 v1 definition (seed 0, 500 steps, leave-one-device-out over finite DEV records, no refit), state-C records"
+ },
+ "part_D_g_v2": {
+  "inputs": "sym_v2",
+  "eps_V": 0.01,
+  "vdd_V": 1.8,
+  "network": "3-16-16-1 tanh, zero-init last layer",
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "optimizer": "Adam 3e-3, 2000 steps, L2 1e-4",
+  "loss": "E1 loss + lambda P",
+  "penalty_grid": "73 x 73, 0 .. 1.8 V, 25 mV, forward quadrant of the state-C starting card, u_d > 0, I > 1e-9 A",
+  "lambda_grid_V": [
+   0,
+   1,
+   2,
+   5,
+   10
+  ],
+  "selection": {
+   "deviation": "6 selection blocks instead of per-outer-fold selection (compute)",
+   "blocks": "finite DEV devices sorted by (polarity nMOS first, tag); device i -> block i mod 6",
+   "per_block": "training = finite DEV devices outside the block; 3 inner folds (I15-2 rule); per inner fold and lambda one member (seed 0) on the other inner folds (load order); inner held-out refits (state C); score mean ln RRMS (non-finite = 0); argmin, ties within 1e-12 to the larger lambda",
+   "lambda_h": "lambda* of the block holding h",
+   "full_data": "same selection over all finite DEV devices; 5-seed full-data model at lambda*_full stored (TEST), not scored",
+   "cost_of_per_fold_selection": {
+    "nist_4K": {
+     "trainings": 795,
+     "refits": 13780
+    },
+    "nist_rt_card_4K": {
+     "trainings": 1305,
+     "refits": 37410
+    }
+   }
+  },
+  "lodo": "per finite DEV device h: 5-seed model at lambda*_h on all other finite DEV records (load order); held-out refit with g frozen; strict paper RRMS",
+  "s3_g_v2": "I19-1 definition: per device k one member (seed 0, 500 steps, lambda*_k) on all other finite DEV records, applied without refit; S3_D = mean ln ratio"
+ },
+ "part_E": {
+  "primary": "GMR(selected g v2, C0_refit), state C, device bootstrap 10000 seed 0, per NIST dataset; label I17-2 primary_label (gain over C0_refit replicated: CI upper < 1 and 0 failed rows among finite-start devices; worse: CI lower > 1; else inconclusive)",
+  "secondary": "GMR(selected g v2, M_bias v1), state C, margin 1.05 (I17-2 secondary_label)",
+  "reported": [
+   "GMR(M_bias v1, C0_refit) state C vs stored",
+   "aggregates per arm",
+   "per-device rows",
+   "per family",
+   "lambda* per block and full",
+   "negative gm/gds fractions",
+   "NGSpice calls, wall time"
+  ]
+ },
+ "part_F_gate": {
+  "amendment_rule": "decisions recomputed from S3_D v1 state C and S3_D g v2 for both NIST datasets; if any of the 4 decisions differs from the committed (a755e18: apply, apply), a dated amendment out/research/explore/I19_1/test_gate_amendment_<date>.{json,md} is committed before any TEST run, listing the changed decisions, S3_D values and the frozen-rule decision; a755e18 files not edited; otherwise no amendment",
+  "frozen_s3_recipe": "v1 recipe (I19-1 v1 definition, state-C starting records) for every dataset; the gate applies the selected g v2 correction iff this S3_D < 0",
+  "frozen_s3_reasons": [
+   "threshold 0 and S3 calibration (I7-1 OLS, I19-1 Part C 19/20) exist for the v1 recipe only",
+   "no lambda selection needed"
+  ],
+  "known_retrospective": {
+   "v1_recipe_sign_vs_realised_g_v2": "4/4 (sky130 -0.178/0.743, IHP 300 K +0.311/1.255, TU Delft 4.13 K -0.029/0.826, 295.0 K -0.051/0.829)",
+   "g_v2_recipe_sign_vs_realised_g_v2": "2/4 (-0.133, +0.308, +0.008, +0.264)"
+  },
+  "nist_check": "k/2 per statistic: sign(S3_D) vs realised sign of ln GMR(selected g v2, C0_refit), no threshold"
+ },
+ "validity_reruns": {
+  "V4": "unit tests pass",
+  "V5": "rows complete (C0_refit, M_bias v1, selected g v2 for every finite-start device; 6 x 15 + 15 selection trainings per dataset; S3_D for every finite record)",
+  "V6": "TEST closed (loaded tags in DEV list, not in TEST list)",
+  "V7": "penalty grids 73 x 73 finite, forward corner current > 0",
+  "V8": "state-C starting records of unclamped starting cards identical to stored records",
+  "on_failure": "invalid: stop, fix and re-register"
+ },
+ "known_before_registration": [
+  "mechanism check: A2_eff > 1 on 16/57 (I8-1) and 35/87 (I9-1) starting cards, 0 stock cards, 0 low clamps; b4check.c value = computed A2_eff on 51/51 clamped cards; other lines are warnings without a clamp and the I8-1 A1 Pclm fatal",
+  "g v2 training timing on I9-1 records (synthetic grid): 0.038 s/step lambda 0, 0.24 s/step lambda > 0, 86 devices",
+  "I8-1, I9-1, I9-2, I18-1, I19-1 DEV outcomes; I19-1 TEST gate decisions a755e18"
+ ],
+ "order": [
+  "prereg alone",
+  "code, unit tests, smoke",
+  "queue: audit, start C, S3_D v1 C, LODO C0_refit/M_bias v1 C, pens, block selection, full selection, S3_D g v2, g v2 LODO nist_4K, g v2 LODO nist_rt_card_4K, decide, figures",
+  "amendment if triggered",
+  "report batch, site, RESEARCH_LOOP, freeze draft"
+ ],
+ "compute_estimate": "8 workers, one job at a time: about 13-14 h wall (g v2 LODO about 10 h)"
+}
