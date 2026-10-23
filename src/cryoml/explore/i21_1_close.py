@@ -329,6 +329,52 @@ def dense_control(polarity: str, prefix: Path) -> list[str]:
     return lines
 
 
+def vds0_values(arrays: dict, j0: int, grid_vgs) -> dict:
+    """``i17_1_vds0.vds0_values`` with non-finite columns allowed: per
+    tolerance max |I| of the element run and of the card + replica run at
+    the V(d,s) = 0 column (NaN ignored), |V(g,s)| at the element maximum
+    (NaN if no finite value), points above 1e-12 A and non-finite points."""
+    from .i17_1_vds0 import TOLS, VDS0_THR
+    out = {}
+    for tol in TOLS:
+        el = np.abs(np.asarray(arrays[f"grid_fwd_{tol}_elem"], float)[:, j0])
+        cr = np.abs(np.asarray(arrays[f"grid_fwd_{tol}_card_rep"], float)[:, j0])
+        fin = np.isfinite(el)
+        k = int(np.argmax(np.where(fin, el, -np.inf))) if fin.any() else None
+        out[tol] = {"elem_max": float(np.max(el[fin])) if fin.any() else float("nan"),
+                    "vgs_abs_at_max": float(np.asarray(grid_vgs)[k]) if k is not None else float("nan"),
+                    "card_rep_max": float(np.nanmax(cr)) if np.isfinite(cr).any() else float("nan"),
+                    "n_above": int(np.sum(el[fin] > VDS0_THR)), "n_points": int(el.size),
+                    "n_nonfinite": int(np.sum(~fin))}
+    return out
+
+
+def summarize_vds0(per_device: dict) -> dict:
+    """Max over devices per tolerance (finite values; NaN-only devices are
+    counted in n_nonfinite)."""
+    from .i17_1_vds0 import TOLS
+    out = {}
+    for tol in TOLS:
+        fin = {t: v[tol] for t, v in per_device.items() if np.isfinite(v[tol]["elem_max"])}
+        best = max(fin, key=lambda t: fin[t]["elem_max"]) if fin else None
+        cr = [v[tol]["card_rep_max"] for v in per_device.values() if np.isfinite(v[tol]["card_rep_max"])]
+        out[tol] = {"elem_max": fin[best]["elem_max"] if best else float("nan"),
+                    "at": [best, fin[best]["vgs_abs_at_max"]] if best else None,
+                    "card_rep_max": max(cr) if cr else float("nan"),
+                    "n_above": sum(v[tol]["n_above"] for v in per_device.values()),
+                    "n_points": sum(v[tol]["n_points"] for v in per_device.values()),
+                    "n_nonfinite": sum(v[tol]["n_nonfinite"] for v in per_device.values()),
+                    "devices_nonfinite": sorted(t for t, v in per_device.items() if v[tol]["n_nonfinite"])}
+    return out
+
+
+def vds0_rule_value(summary: dict) -> float:
+    """I17-1 V(d,s) = 0 value: tight-tolerance element maximum; any
+    non-finite tight value fails the check (inf)."""
+    t = summary["tight"]
+    return float(t["elem_max"]) if t["n_nonfinite"] == 0 and np.isfinite(t["elem_max"]) else float("inf")
+
+
 NONCHANNEL_OUTPUTS = ("isub", "igidl", "igisl", "igs", "igd", "igb", "igcs", "igcd")
 
 

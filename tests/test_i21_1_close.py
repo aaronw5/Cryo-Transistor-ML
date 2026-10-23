@@ -197,5 +197,35 @@ class TestDecisions(unittest.TestCase):
         self.assertFalse(m.validity_part_c({**ok, "rows": {"selected": 17}})["valid"])
 
 
+class TestVds0(unittest.TestCase):
+    def arrays(self, nan_tight=False):
+        a = {}
+        for tol in ("default", "r4", "tight"):
+            el = np.zeros((4, 5))
+            el[:, 2] = [1e-18, -3e-13, 2e-19, 5e-14]
+            if nan_tight and tol == "tight":
+                el[:, 2] = np.nan
+            a[f"grid_fwd_{tol}_elem"] = el
+            a[f"grid_fwd_{tol}_card_rep"] = np.full((4, 5), 1e-19)
+        return a
+
+    def test_values_and_rule(self):
+        v = m.vds0_values(self.arrays(), 2, [0.0, 0.1, 0.2, 0.3])
+        self.assertEqual(v["tight"]["elem_max"], 3e-13)
+        self.assertEqual(v["tight"]["vgs_abs_at_max"], 0.1)
+        self.assertEqual(v["tight"]["n_nonfinite"], 0)
+        s = m.summarize_vds0({"a": v})
+        self.assertEqual(m.vds0_rule_value(s), 3e-13)
+
+    def test_all_nan_column(self):
+        v = m.vds0_values(self.arrays(nan_tight=True), 2, [0.0, 0.1, 0.2, 0.3])
+        self.assertTrue(math.isnan(v["tight"]["elem_max"]))
+        self.assertEqual(v["tight"]["n_nonfinite"], 4)
+        ok = m.vds0_values(self.arrays(), 2, [0.0, 0.1, 0.2, 0.3])
+        s = m.summarize_vds0({"a": v, "b": ok})
+        self.assertEqual(s["tight"]["devices_nonfinite"], ["a"])
+        self.assertEqual(m.vds0_rule_value(s), float("inf"))
+
+
 if __name__ == "__main__":
     unittest.main()

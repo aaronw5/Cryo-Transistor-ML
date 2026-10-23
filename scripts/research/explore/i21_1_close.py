@@ -294,9 +294,10 @@ def q12_metrics(dev, corr, pts, a) -> dict:
     out["card_rep_vs_card_default_max_abs"] = float(np.nanmax(np.abs(
         a["grid_fwd_default_card_rep"] - a["grid_fwd_default_card"])))
     j0 = m17.vds0_column(m.GRID_VDS)
-    out["vds0"] = m17.vds0_values(a, j0, m.GRID_VGS)          # raw element current per tolerance (I17-1)
+    out["vds0"] = m.vds0_values(a, j0, m.GRID_VGS)            # raw element current per tolerance (I17-1)
     add = {tol: np.abs(a[f"grid_fwd_{tol}_elem"][:, j0] - a[f"grid_fwd_{tol}_card_rep"][:, j0]) for tol, _ in TOLS}
-    out["q1_vds0_added_by_tol"] = {tol: float(np.nanmax(v)) for tol, v in add.items()}   # reported
+    out["q1_vds0_added_by_tol"] = {tol: (float(np.nanmax(v)) if np.isfinite(v).any() else float("nan"))
+                                   for tol, v in add.items()}   # reported
     out["g_grid_min"], out["g_grid_max"] = float(np.min(g_fwd)), float(np.max(g_fwd))
     fw = (s * VD) > 0
     cc, rp = a["grid_fwd_tight_card_rep"], a["grid_fwd_tight_card_rep_rep"]
@@ -597,8 +598,8 @@ def stage_report(ds: str) -> dict:
               for r in D}
     names = [n for n, *_ in m.CIRCUITS]
     circ = v2.circuit_runtime_ratios(q3["rows"], names)
-    vds0 = m17.summarize_vds0({r["tag"]: r["vds0"] for r in D})
-    tight = vds0["tight"]["elem_max"] if vds0["tight"]["n_nonfinite"] == 0 else float("inf")
+    vds0 = m.summarize_vds0({r["tag"]: r["vds0"] for r in D})
+    tight = m.vds0_rule_value(vds0)
     values = {"q1_tight_viol": int(sum(r["q1_tight_viol"] for r in D)),
               "q1_bad": int(elem_msgs + sum(r["q1_nonfinite"] for r in D)),
               "q1_vds0_max": tight,
@@ -625,7 +626,7 @@ def stage_report(ds: str) -> dict:
                                   "n_q3": len(q3["rows"]), "dev_ok": dev_check_a(ds, tags)["ok"]}, ds)
     out = {"ds": ds, "validity": validity, "unit_tests": unit, "values": values, "decision": dec,
            "label": dec["deploy"] if validity["valid"] else "invalid", "vds0": vds0,
-           "vds0_added_tight_max": max(r["q1_vds0_added_by_tol"]["tight"] for r in D),
+           "vds0_added_tight_max": float(np.nanmax([r["q1_vds0_added_by_tol"]["tight"] for r in D])),
            "runtime_grid": ratios, "runtime_circuits": circ, "gds_curves_introduced": gds_curves,
            "gm_curves_introduced": gm_curves, "n_gds_curves": len(D) * len(m.GDS_VGS),
            "n_gm_curves": len(D) * len(m.GM_VDS),
@@ -647,7 +648,7 @@ def stage_report(ds: str) -> dict:
 
 def stage_partA(ds: str, sub: str, workers: int) -> None:
     rdir(ds).mkdir(parents=True, exist_ok=True)
-    subs = ("compile", "m2", "q12", "q3", "acc", "report") if sub == "all" else (sub,)
+    subs = ("compile", "m2", "q12", "q3", "acc", "report") if sub == "all" else tuple(sub.split(","))
     timing = {}
     for st in subs:
         t1 = time.time()
