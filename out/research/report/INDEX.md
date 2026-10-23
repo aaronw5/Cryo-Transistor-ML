@@ -2,6 +2,15 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-23 · i19_1
+
+Folder: [2026-10-23_i19_1/](2026-10-23_i19_1/) · [tables.md](2026-10-23_i19_1/tables.md) · [README.md](2026-10-23_i19_1/README.md)
+
+- I19-1 dataset-level gate: supported. Part R (retrospective): supported (retrospective); pooled GMR gated_D 0.921 vs correction always 0.958 and per-fold gate 0.929. Part C: 19/20 sign correct.
+- Part P TEST decisions: nist_4K apply, nist_rt_card_4K apply, ihp_233K C0_refit, ihp_300K C0_refit, ihp_343K C0_refit, ihp_398K C0_refit, tudelft_4K C0_refit, tudelft_295K C0_refit.
+
+Figures and tables: [01_table_i19_1_rule.png](2026-10-23_i19_1/01_table_i19_1_rule.png) · [02_table_i19_1_part_r.png](2026-10-23_i19_1/02_table_i19_1_part_r.png) · [03_table_i19_1_pooled.png](2026-10-23_i19_1/03_table_i19_1_pooled.png) · [04_table_i19_1_secondary_v1.png](2026-10-23_i19_1/04_table_i19_1_secondary_v1.png) · [05_table_i19_1_test_decisions.png](2026-10-23_i19_1/05_table_i19_1_test_decisions.png) · [06_table_i19_1_part_c.png](2026-10-23_i19_1/06_table_i19_1_part_c.png) · [07_i19_1_forest.png](2026-10-23_i19_1/07_i19_1_forest.png) · [08_i19_1_s3d_scatter.png](2026-10-23_i19_1/08_i19_1_s3d_scatter.png)
+
 ## 2026-10-22 · i18_1
 
 Folder: [2026-10-22_i18_1/](2026-10-22_i18_1/) · [tables.md](2026-10-22_i18_1/tables.md) · [README.md](2026-10-22_i18_1/README.md)
