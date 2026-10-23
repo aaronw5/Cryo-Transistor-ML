@@ -257,8 +257,24 @@ def datasets(fallback_tud: bool = False) -> dict:
         if "s3" not in d:
             p = OUT / d["s3_src"]
             d["s3"] = dict(jload(p)["S3"]) if p.exists() else {}
+        drop_unpaired(d)
         d["clusters"] = ({t: d["fold_of"](t) for t in d["corr"]} if d["unit"] == "cluster" else None)
     return ds
+
+
+def _fin(x) -> bool:
+    return x is not None and bool(np.isfinite(float(x)))
+
+
+def drop_unpaired(d: dict) -> None:
+    """Leave out devices whose rows are non-finite in both arms and whose fold
+    has no S3 (NIST 4 K: the 4 records excluded by I8-1 amendment A1)."""
+    drop = [t for t in d["corr"] if d["fold_of"](t) not in d["s3"]
+            and not _fin(d["corr"][t]) and not _fin(d["c0"].get(t))]
+    for t in drop:
+        d["corr"].pop(t)
+        d["c0"].pop(t, None)
+    d["dropped_unpaired"] = drop
 
 
 def secondary_v1() -> dict:
@@ -282,6 +298,8 @@ def secondary_v1() -> dict:
         out[f"tudelft_{t}K"] = {"corr": dict(pd["M_bias"]), "c0": dict(pd["C0_refit"]), "fold_of": group_of,
                                 "s3": stored_s3_i7(f"tudelft_{t}K"), "unit": "cluster"}
     for d in out.values():
+        if d["s3"]:
+            drop_unpaired(d)
         d["clusters"] = ({t: d["fold_of"](t) for t in d["corr"]} if d["unit"] == "cluster" else None)
     return out
 
@@ -322,7 +340,8 @@ def stage_decide(smoke: bool = False) -> dict:
     tud_ok = (EXP / "I18_2/decision.json").exists() and jload(EXP / "I18_2/decision.json")["validity"]["valid"]
     ds = datasets(fallback_tud=not tud_ok)
     res = {name: {"arm": d["arm"], "s3_source": d["s3_src"], "unit": d["unit"] or "device",
-                  "fallback": bool(d.get("fallback")), **evaluate(d)} for name, d in ds.items()}
+                  "fallback": bool(d.get("fallback")), "dropped_unpaired": d["dropped_unpaired"],
+                  **evaluate(d)} for name, d in ds.items()}
     # validity
     sel_diff = 0.0
     for name, d in ds.items():
