@@ -1,0 +1,33 @@
+{
+ "part": "check_ihp_v1",
+ "recipe": "v1",
+ "steps": 50,
+ "seed": 0,
+ "smoke": true,
+ "n_inner_fits": 2,
+ "n_planned": 16,
+ "wall_s": 8.3,
+ "groups": {
+  "hv_nmos_W0p3_L0p5|hv_nmos_W0p3_L10": {
+   "scored": [
+    "hv_nmos_W0p3_L10"
+   ],
+   "log_ratios": [
+    0.6932141237376855
+   ],
+   "seconds": 0.07
+  },
+  "hv_nmos_W0p3_L0p5|hv_nmos_W0p6_L1p2": {
+   "scored": [
+    "hv_nmos_W0p6_L1p2"
+   ],
+   "log_ratios": [
+    -0.02746918724862498
+   ],
+   "seconds": 0.06
+  }
+ },
+ "S3_fold": {
+  "hv_nmos_W0p3_L0p5": 0.33287246824453026
+ }
+}

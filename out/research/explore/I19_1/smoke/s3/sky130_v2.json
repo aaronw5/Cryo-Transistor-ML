@@ -1,0 +1,44 @@
+{
+ "part": "sky130_v2",
+ "recipe": "v2",
+ "steps": 50,
+ "seed": 0,
+ "smoke": true,
+ "n_inner_fits": 2,
+ "n_planned": 18,
+ "wall_s": 4.6,
+ "groups": {
+  "nmos_L0p15_W1p6": {
+   "scored": [
+    "nmos_L0p15_W1p6"
+   ],
+   "log_ratios": [
+    0.5083090711973192
+   ],
+   "seconds": 3.67
+  },
+  "nmos_L0p19_W7": {
+   "scored": [
+    "nmos_L0p19_W7"
+   ],
+   "log_ratios": [
+    -0.051311017603441915
+   ],
+   "seconds": 3.62
+  }
+ },
+ "S3_D": 0.22849902679693862,
+ "n_records": 18,
+ "n_scored": 2,
+ "n_finite": 2,
+ "n_groups": 18,
+ "per_record": {
+  "nmos_L0p15_W1p6": 0.5083090711973192,
+  "nmos_L0p19_W7": -0.051311017603441915
+ },
+ "dev_check": null,
+ "lambda_by_group": {
+  "nmos_L0p15_W1p6": 1.0,
+  "nmos_L0p19_W7": 1.0
+ }
+}
