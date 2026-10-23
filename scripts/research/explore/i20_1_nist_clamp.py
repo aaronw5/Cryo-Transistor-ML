@@ -199,9 +199,9 @@ def audit_inputs(ds: str) -> dict:
     bc = jload(E / "baselines" / "cards.json")
     bco = jload(E / "baselines" / "corrections.json")
     tags = sorted(start)
-    out = {"stock": {t: {"params": None, "corr": None, "stored": start[t]["stock_rrms"], "kind": "stock"}
+    out = {"stock": {t: {"params": None, "corr": None, "stored": _nan(start[t]["stock_rrms"]), "kind": "stock"}
                      for t in tags},
-           "start": {t: {"params": start[t]["params"], "corr": None, "stored": start[t]["start_rrms"],
+           "start": {t: {"params": start[t]["params"], "corr": None, "stored": _nan(start[t]["start_rrms"]),
                          "kind": "plain"} for t in tags}}
     lpd = lodo["per_device"]
     for arm, ckey in (("C0_refit", None), ("T1_inloop", "T1_inloop"), ("M_bias_v1", "M_bias")):
@@ -338,6 +338,7 @@ def stage_audit(workers: int) -> dict:
         res = pool.map(audit_task, tasks, chunksize=4)
     out = {"datasets": {}, "runtime_s": None}
     v1_core, v1_by_arm, v2_n, v2_bad, v3_rel, v3_unc_msgs, v3_c1 = 0.0, {}, 0, 0, 0.0, 0, 0.0
+    v2_fatal_n = v2_fatal_cl_bad = v2_fatal_ul_bad = v2r_n = v2r_bad = 0
     other_clamps = []
     for ds in m.DATASETS:
         rows = [r for r in res if r["ds"] == ds]
@@ -373,6 +374,14 @@ def stage_audit(workers: int) -> dict:
                     v2_n += 1
                     if not (r["sims_equal"]["CL"] and r["sims_equal"]["UL"]):
                         v2_bad += 1
+                    fatal = any(ln.lower().startswith("fatal") for ln in r["b4check"])
+                    if fatal:          # amendment A1: fatal model check (first analysis stopped)
+                        v2_fatal_n += 1
+                        v2_fatal_cl_bad += int(not r["sims_equal"]["CL"])
+                        v2_fatal_ul_bad += int(not r["sims_equal"]["UL"])
+                    else:
+                        v2r_n += 1
+                        v2r_bad += int(not (r["sims_equal"]["CL"] and r["sims_equal"]["UL"]))
                     if r["a2_msg"] is not None:
                         v3_unc_msgs += 1
                 else:
@@ -396,7 +405,10 @@ def stage_audit(workers: int) -> dict:
         d["gmr"] = gm
         out["datasets"][ds] = d
     out["validity"] = {"v1_core_max": v1_core, "v1_by_arm": v1_by_arm, "v2_n": v2_n, "v2_n_unequal": v2_bad,
-                       "v2_max": 0.0 if v2_bad == 0 else 1.0, "v3_a2_rel_max": v3_rel,
+                       "v2_max": 0.0 if v2_bad == 0 else 1.0, "v2_restricted_n": v2r_n,
+                       "v2_restricted_n_unequal": v2r_bad, "v2_restricted_max": 0.0 if v2r_bad == 0 else 1.0,
+                       "v2_fatal_cards": v2_fatal_n, "v2_fatal_CL_unequal": v2_fatal_cl_bad,
+                       "v2_fatal_UL_unequal": v2_fatal_ul_bad, "v3_a2_rel_max": v3_rel,
                        "v3_unclamped_msgs": v3_unc_msgs, "v3_curve1_max": v3_c1, "other_clamps": other_clamps}
     out["runtime_s"] = round(time.time() - t0, 1)
     jdump(out, base_dir() / "audit" / "audit.json")
@@ -981,7 +993,9 @@ def stage_decide() -> dict:
                       "select_refits": sel["n_sim_refit"],
                       "lodo_refits": int(sum(r["n_sim"] for r in lodo["heldout_rows"].values()))}}
     av = audit["validity"]
-    validity = m.decide_validity({"v1_max": av["v1_core_max"], "v2_max": av["v2_max"], "v2_n": av["v2_n"],
+    v2_ok = av["v2_restricted_max"] == 0.0 and av["v2_fatal_CL_unequal"] == 0      # amendment A1
+    validity = m.decide_validity({"v1_max": av["v1_core_max"], "v2_max": 0.0 if v2_ok else 1.0,
+                                  "v2_n": av["v2_restricted_n"],
                                   "v3_a2_rel_max": av["v3_a2_rel_max"], "v3_unclamped_msgs": av["v3_unclamped_msgs"],
                                   "v3_curve1_max": av["v3_curve1_max"], "v4_unit_tests_pass": v4,
                                   "v5_complete": v5, "v6_test_closed": v6})
