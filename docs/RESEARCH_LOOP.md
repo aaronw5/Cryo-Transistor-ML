@@ -2536,3 +2536,23 @@ and a compute estimate of about 2.2-2.8 h; (4) open items. New finding from a fi
 Pooled exp(mean ln GMR vs C0_refit) over the 9 DEV datasets: gated 0.921, correction always 0.958, M_bias v1 always
 0.963 (TU Delft v1 rows in state C). Table batch `out/research/report/2026-10-23_freeze_draft/`
 (`scripts/research/plot_freeze_draft.py`; 88 values checked against the stored decision files).
+
+## I20-1 pre-registration in force (2026-10-23 06:55): NIST deck A2 clamp audit and fix; selected g v2 recipe on both NIST DEV datasets
+
+Pre-registration `out/research/explore/I20_1/prereg.md` / `prereg.json`, commit a516fe3 (alone, before any I20-1 RRMS
+value). Part A: every stored NIST DEV arm (I8-1: stock, start, C0_refit, T1_inloop, M_bias v1, B1, B2, B3_d3, the 10
+I9-2 class arms and mlp16_rep; I9-1: the same without I9-2 plus M_bias_lvt) rescored in states L / C / U with
+validity V1 (L reproduces the stored rows), V2 (C = L = U on unclamped cards), V3 (computed A2_eff = b4check.c value;
+state-C curve 1 = state-L curve 1). Effective A2: 77 K bins have no size terms; room-temperature pMOS bins carry
+la2 / wa2 / pa2 (b4temp.c binning, binunit 2). Part B: both NIST simulators default to state C. Part C: state-C
+starting records, C0_refit and M_bias v1 LODO, S3_D v1. Part D: selected g v2 recipe (VDD 1.8 V, 73 x 73 grid at
+25 mV), lambda selection with 6 blocks instead of per outer fold (the I15-2 per-fold selection needs 795 / 1,305
+trainings and 13,780 / 37,410 refits), 5-seed LODO at lambda*_h, S3_D g v2. Part E: primary GMR(selected g v2,
+C0_refit) per dataset (I17-2 label), secondary vs M_bias v1 margin 1.05. Part F: a dated amendment of the I19-1 TEST
+gate decisions (a755e18) iff any of the four NIST decisions (S3_D v1 state C, S3_D g v2) differs from the committed
+one; frozen-method S3_D recipe fixed before the NIST values: the v1 recipe on state-C records decides whether the
+selected g v2 correction is applied (retrospective sign agreement with the realised g v2 gain 4/4 vs 2/4 for the
+g v2-recipe S3_D, known when the rule was chosen). Code 572e39e (driver `scripts/research/explore/i20_1_nist_clamp.py`,
+17 unit tests in `tests/test_i20_1_nist_clamp.py`); smoke on 6 devices per dataset. Amendment A1 (1f14eda, after the
+audit, before any rerun result): V2 is read on unclamped cards without a fatal model check (7 cards of I8-1 A1 devices
+with "Pclm is not positive" have U != L because the warm-up op takes the fatal check; C = L on all 1238).
