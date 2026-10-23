@@ -733,15 +733,35 @@ def changed_params(params: dict | None, stock: dict) -> dict:
     return out
 
 
+BSIM4_STATES = ("clamped", "legacy", "unclamped")
+
+
+def bsim4_clamp_params(polarity: str, bin_index: int, params: dict | None) -> tuple[dict, dict]:
+    """State C of the 77 K card (I20-1): ``spice_pdk.bsim4_clamp_params``
+    (the 77 K bins have no la1/wa1/pa1/la2/wa2/pa2 terms, so the effective
+    A2 is the bin a2; the function raises if a term is present).  Forced
+    bins of bin-uncovered geometries use the same bin text."""
+    return _sp().bsim4_clamp_params(polarity, bin_index, params)
+
+
 def simulate(polarity: str, W_um: float, L_um: float, bin_index: int, curves,
              params: dict | None = None, rs_ext_ohm: float = 0.0,
-             timeout_s: float = TIMEOUT_S) -> list[np.ndarray]:
+             timeout_s: float = TIMEOUT_S, bsim4_state: str = "clamped") -> list[np.ndarray]:
     """All sweeps of ``curves`` (pipeline Curves) in one ngspice process at
-    77 K; pMOS currents negated (magnitude convention)."""
+    77 K; pMOS currents negated (magnitude convention).
+
+    ``bsim4_state`` (I20-1): "clamped" (default) writes the b4check.c A1/A2
+    clamp into the bin (every curve in the fresh-process state); "legacy"
+    is the I8-1 deck (first curve clamped, later curves with the card
+    values); "unclamped" runs one ``op`` before the curves (audit only)."""
     import subprocess
     import tempfile
+    if bsim4_state not in BSIM4_STATES:
+        raise ValueError(f"bsim4_state {bsim4_state!r} not in {BSIM4_STATES}")
     sp = _sp()
     curves = list(curves)
+    if bsim4_state == "clamped":
+        params = bsim4_clamp_params(polarity, bin_index, params)[0] or params
     with tempfile.TemporaryDirectory(prefix="i8_1_sim_") as td_s:
         td = Path(td_s)
         lib = _write_lib(td, polarity, bin_index, params)
@@ -749,6 +769,8 @@ def simulate(polarity: str, W_um: float, L_um: float, bin_index: int, curves,
                  f".options temp={DECK_TEMP_K - 273.15:.4f}\n", f'.lib "{lib.as_posix()}" tt_77k\n',
                  instance_line(polarity, W_um, L_um, rs_ext_ohm), "VG ng 0 DC 0\n", "VD nd 0 DC 0\n",
                  ".control\n", "set filetype=ascii\n"]
+        if bsim4_state == "unclamped":
+            lines.append("op\n")
         lines += sp._sweep_lines(curves, td, "raw_")
         lines += ["quit\n", ".endc\n", ".end\n"]
         deck = td / "deck.sp"
@@ -838,6 +860,8 @@ def base_box(stock: dict[str, float]):
 class MeasProblem:
     """``ngspice_fit.polish`` interface for one NIST device."""
 
+    bsim4_state = "clamped"       # I20-1: state C default; "legacy" reproduces I8-1 / I9-1
+
     def __init__(self, dev: NistDevice, binfo: dict, stock: dict, box):
         self.dev = self.device = dev
         self.tag = dev.tag
@@ -865,7 +889,8 @@ class MeasProblem:
     def simulate_params(self, params: dict | None, rs_ext_ohm: float = 0.0) -> list[np.ndarray]:
         self.n_sim += 1
         return simulate(self.dev.polarity, self.dev.W_um, self.dev.L_um, self.bin_index,
-                        self.curves, changed_params(params, self.stock), rs_ext_ohm)
+                        self.curves, changed_params(params, self.stock), rs_ext_ohm,
+                        bsim4_state=self.bsim4_state)
 
     def simulate(self, local) -> list[np.ndarray]:
         return self.simulate_params(self.params(local))

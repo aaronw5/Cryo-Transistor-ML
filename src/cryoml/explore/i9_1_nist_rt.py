@@ -360,6 +360,83 @@ def instance_line(polarity: str, W_um: float, L_um: float, rs_ext_ohm: float = 0
             f"nrd={sq:.6g} nrs={sq:.6g} sa=0 sb=0 sd=0 mult=1 m=1\n") + ext
 
 
+# ---------------------------------------------------------------------------
+# BSIM4 model-check clamp state (I20-1; I13-1 definitions)
+# ---------------------------------------------------------------------------
+# ngspice-41 b4check.c clamps the size-dependent A2 (A2 > 1 -> A2 = 1 and
+# A1 = 0; A2 < 0.01 -> A2 = 0.01) once per process per model name, while
+# b4temp.c rebuilds the size-dependent values at every analysis.  The
+# room-temperature pMOS bins carry la2 / wa2 / pa2 terms, so the effective
+# A2 depends on the instance geometry:
+#   A2_eff = a2 + la2 Inv_L + wa2 Inv_W + pa2 Inv_LW   (b4temp.c binning),
+# with Inv_L = 1 / Leff (binunit 2) or 1e-6 / Leff (binunit 1), Leff = L + xl
+# - 2 dl, Weff = W / nf + xw - 2 dw, dl = lint + ll / L^lln + lw / W^lwn +
+# lwl / (L^lln W^lwn), dw = wint + wl / L^wln + ww / W^wwn + wwl / (L^wln W^wwn).
+# State C ("clamped") writes the fresh-process value into the bin:
+# a2 = A2 clamp value and la2 = wa2 = pa2 = 0 (and a1 = la1 = wa1 = pa1 = 0
+# when the high clamp applies and A1_eff != 0).  An unclamped card is
+# returned unchanged (identical deck text).
+BSIM4_STATES = ("clamped", "legacy", "unclamped")
+A2_LOW, A2_HIGH = 0.01, 1.0
+_GEOM_KEYS = {"xl": 0.0, "xw": 0.0, "lint": 0.0, "wint": 0.0, "ll": 0.0, "lw": 0.0, "lwl": 0.0,
+              "lln": 1.0, "lwn": 1.0, "wl": 0.0, "ww": 0.0, "wwl": 0.0, "wln": 1.0, "wwn": 1.0,
+              "binunit": 1.0}
+_A_KEYS = {"a1": 0.0, "la1": 0.0, "wa1": 0.0, "pa1": 0.0, "a2": 1.0, "la2": 0.0, "wa2": 0.0, "pa2": 0.0}
+
+
+def _block_number(block: str, key: str, default: float) -> float:
+    m = re.search(rf"^\+\s*{re.escape(key)}\s*=\s*(\S+)\s*$", block, re.IGNORECASE | re.MULTILINE)
+    if not m:
+        return float(default)
+    try:
+        return float(m.group(1))
+    except ValueError as exc:
+        raise NotImplementedError(f"{key} = {m.group(1)} is not a number") from exc
+
+
+def effective_a1a2(polarity: str, bin_index: int, W_um: float, L_um: float,
+                   params: dict | None = None, nf: float = 1.0) -> dict:
+    """Size-dependent A1 / A2 of the instance (b4temp.c binning) for the bin
+    with ``params`` written into it (parameters absent from ``params`` take
+    the bin text value, else the BSIM4 default)."""
+    blk = card_parts(polarity)["blocks"][bin_index]
+    p = dict(params or {})
+    v = {k: float(p[k]) if k in p else _block_number(blk, k, d) for k, d in {**_GEOM_KEYS, **_A_KEYS}.items()}
+    lnew = L_um * 1e-6 + v["xl"]
+    wnew = W_um * 1e-6 / nf + v["xw"]
+    t0, t1 = lnew ** v["lln"], wnew ** v["lwn"]
+    dl = v["lint"] + v["ll"] / t0 + v["lw"] / t1 + v["lwl"] / (t0 * t1)
+    t2, t3 = lnew ** v["wln"], wnew ** v["wwn"]
+    dw = v["wint"] + v["wl"] / t2 + v["ww"] / t3 + v["wwl"] / (t2 * t3)
+    leff, weff = lnew - 2.0 * dl, wnew - 2.0 * dw
+    if v["binunit"] == 1.0:
+        il, iw, ilw = 1e-6 / leff, 1e-6 / weff, 1e-12 / (leff * weff)
+    else:
+        il, iw, ilw = 1.0 / leff, 1.0 / weff, 1.0 / (leff * weff)
+    a1 = v["a1"] + v["la1"] * il + v["wa1"] * iw + v["pa1"] * ilw
+    a2 = v["a2"] + v["la2"] * il + v["wa2"] * iw + v["pa2"] * ilw
+    return {"a1": a1, "a2": a2, "leff": leff, "weff": weff, "a2_card": v["a2"],
+            "size_terms": any(v[k] != 0.0 for k in ("la1", "wa1", "pa1", "la2", "wa2", "pa2"))}
+
+
+def bsim4_clamp_params(polarity: str, bin_index: int, W_um: float, L_um: float,
+                       params: dict | None) -> tuple[dict, dict]:
+    """(params with the b4check.c A1/A2 clamp written, changes) for the
+    room-temperature card; ``params`` returned unchanged when A2_eff is in
+    [0.01, 1]."""
+    out = dict(params or {})
+    e = effective_a1a2(polarity, bin_index, W_um, L_um, out)
+    changes: dict = {}
+    if e["a2"] > A2_HIGH or e["a2"] < A2_LOW:
+        target = A2_HIGH if e["a2"] > A2_HIGH else A2_LOW
+        changes["a2_eff"] = (e["a2"], target)
+        out.update({"a2": target, "la2": 0.0, "wa2": 0.0, "pa2": 0.0})
+        if e["a2"] > A2_HIGH and e["a1"] != 0.0:
+            changes["a1_eff"] = (e["a1"], 0.0)
+            out.update({"a1": 0.0, "la1": 0.0, "wa1": 0.0, "pa1": 0.0})
+    return out, changes
+
+
 def _run(deck: Path, td: Path, timeout_s: float) -> tuple[bool, str]:
     global N_TIMEOUT
     try:
@@ -375,12 +452,23 @@ def _run(deck: Path, td: Path, timeout_s: float) -> tuple[bool, str]:
 def simulate(polarity: str, W_um: float, L_um: float, bin_index: int, curves,
              params: dict | None = None, rs_ext_ohm: float = 0.0,
              timeout_s: float = TIMEOUT_S, temp_c: float | None = None,
-             all_bins: bool = False, return_log: bool = False):
+             all_bins: bool = False, return_log: bool = False,
+             bsim4_state: str = "clamped"):
     """All sweeps of ``curves`` in one ngspice process at ``temp_c`` (default
-    DECK_TEMP_C); pMOS currents negated (magnitude convention)."""
+    DECK_TEMP_C); pMOS currents negated (magnitude convention).
+
+    ``bsim4_state`` (I20-1): "clamped" (default) writes the b4check.c A1/A2
+    clamp of the instance into the bin, so every curve runs in the
+    fresh-process state; "legacy" is the I9-1 deck (first curve clamped,
+    later curves with the card values); "unclamped" runs one ``op`` before
+    the curves (every curve with the card values; audit only)."""
+    if bsim4_state not in BSIM4_STATES:
+        raise ValueError(f"bsim4_state {bsim4_state!r} not in {BSIM4_STATES}")
     sp = base._sp()
     curves = list(curves)
     t = DECK_TEMP_C if temp_c is None else float(temp_c)
+    if bsim4_state == "clamped":
+        params = bsim4_clamp_params(polarity, bin_index, W_um, L_um, params)[0] or params
     with tempfile.TemporaryDirectory(prefix="i9_1_sim_") as td_s:
         td = Path(td_s)
         lib = write_lib(td, polarity, bin_index, params, all_bins)
@@ -388,6 +476,8 @@ def simulate(polarity: str, W_um: float, L_um: float, bin_index: int, curves,
                  ".options scale=1.0\n", f".options temp={t:.4f}\n", f'.lib "{lib.as_posix()}" tt_rt\n',
                  instance_line(polarity, W_um, L_um, rs_ext_ohm), "VG ng 0 DC 0\n", "VD nd 0 DC 0\n",
                  ".control\n", "set filetype=ascii\n"]
+        if bsim4_state == "unclamped":
+            lines.append("op\n")
         lines += sp._sweep_lines(curves, td, "raw_")
         lines += ["quit\n", ".endc\n", ".end\n"]
         deck = td / "deck.sp"
@@ -461,7 +551,8 @@ class MeasProblemRT(base.MeasProblem):
     def simulate_params(self, params: dict | None, rs_ext_ohm: float = 0.0) -> list[np.ndarray]:
         self.n_sim += 1
         return simulate(self.dev.polarity, self.dev.W_um, self.dev.L_um, self.bin_index,
-                        self.curves, base.changed_params(params, self.stock), rs_ext_ohm)
+                        self.curves, base.changed_params(params, self.stock), rs_ext_ohm,
+                        bsim4_state=self.bsim4_state)
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,173 @@
+{
+ "ds": "nist4",
+ "smoke": true,
+ "inputs": "sym_v2",
+ "eps": 0.01,
+ "vdd": 1.8,
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {
+  "steps": 100
+ },
+ "seeds": [
+  0,
+  1
+ ],
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 1,
+  "diff_step": 0.01
+ },
+ "order": [
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+  "nfet_01v8_lvt_W0p55_L0p15_m20p6",
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+  "pfet_01v8_lvt_W0p42_L20_m27p7",
+  "pfet_01v8_lvt_W0p42_L4_m27p5"
+ ],
+ "lambda_by_device": {
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1": 5.0,
+  "nfet_01v8_lvt_W0p55_L0p15_m20p6": 10.0,
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": 1.0,
+  "pfet_01v8_lvt_W0p42_L20_m27p7": 10.0,
+  "pfet_01v8_lvt_W0p42_L4_m27p5": 5.0
+ },
+ "per_device": {
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.01903098742699891,
+  "nfet_01v8_lvt_W0p55_L0p15_m20p6": 0.018072866554450243,
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.13394482203070024,
+  "pfet_01v8_lvt_W0p42_L20_m27p7": 0.02257618085029609,
+  "pfet_01v8_lvt_W0p42_L4_m27p5": 0.07818852201617921
+ },
+ "aggregate": {
+  "n": 5,
+  "n_failed": 0,
+  "all_device_mean": 0.054362675775724935,
+  "valid_only_mean": 0.054362675775724935,
+  "median": 0.02257618085029609,
+  "combined": 0.048394217644891546
+ },
+ "heldout_rows": {
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "label": "selected",
+   "ds": "nist4",
+   "tag": "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+   "state": "C",
+   "rrms": 0.01903098742699891,
+   "failed": [],
+   "n_sim": 43,
+   "history": [
+    0.019057035664174424,
+    0.01903098742699891
+   ],
+   "runtime_s": 1.67,
+   "n_sim_timeout": 0
+  },
+  "nfet_01v8_lvt_W0p55_L0p15_m20p6": {
+   "label": "selected",
+   "ds": "nist4",
+   "tag": "nfet_01v8_lvt_W0p55_L0p15_m20p6",
+   "state": "C",
+   "rrms": 0.018072866554450243,
+   "failed": [],
+   "n_sim": 43,
+   "history": [
+    0.018097757857600386,
+    0.018072866554450243
+   ],
+   "runtime_s": 1.67,
+   "n_sim_timeout": 0
+  },
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "label": "selected",
+   "ds": "nist4",
+   "tag": "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+   "state": "C",
+   "rrms": 0.13394482203070024,
+   "failed": [],
+   "n_sim": 46,
+   "history": [
+    0.1381603180411246,
+    0.13394482203070024
+   ],
+   "runtime_s": 1.76,
+   "n_sim_timeout": 0
+  },
+  "pfet_01v8_lvt_W0p42_L20_m27p7": {
+   "label": "selected",
+   "ds": "nist4",
+   "tag": "pfet_01v8_lvt_W0p42_L20_m27p7",
+   "state": "C",
+   "rrms": 0.02257618085029609,
+   "failed": [],
+   "n_sim": 46,
+   "history": [
+    0.022912310859304803,
+    0.02257618085029609
+   ],
+   "runtime_s": 2.04,
+   "n_sim_timeout": 0
+  },
+  "pfet_01v8_lvt_W0p42_L4_m27p5": {
+   "label": "selected",
+   "ds": "nist4",
+   "tag": "pfet_01v8_lvt_W0p42_L4_m27p5",
+   "state": "C",
+   "rrms": 0.07818852201617921,
+   "failed": [],
+   "n_sim": 87,
+   "history": [
+    0.08000625279517508,
+    0.07818852201617921
+   ],
+   "runtime_s": 3.13,
+   "n_sim_timeout": 0
+  }
+ },
+ "train_seconds_per_member": {
+  "nfet_01v8_lvt_W0p55_L0p15_m20p6": [
+   1.7,
+   1.7
+  ],
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1": [
+   1.7,
+   1.7
+  ],
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": [
+   1.8,
+   1.9
+  ],
+  "pfet_01v8_lvt_W0p42_L20_m27p7": [
+   1.8,
+   1.9
+  ],
+  "pfet_01v8_lvt_W0p42_L4_m27p5": [
+   0.9,
+   0.9
+  ]
+ },
+ "dev_check": {
+  "n": 5,
+  "n_in_TEST": 0,
+  "n_not_in_DEV": 0,
+  "ok": true
+ },
+ "timing": {
+  "train_s": 3.4,
+  "refit_s": 3.3,
+  "n_seed_tasks": 10,
+  "runtime_s": 6.8
+ }
+}
