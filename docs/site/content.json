@@ -6468,6 +6468,247 @@
    "updated": "2026-10-22"
   },
   {
+   "id": "i18-1",
+   "tab": "explore",
+   "statement": "I18-1: a gated correction (the correction arm's held-out row is used for an outer fold only if the fold's training-only S3 statistic, computed with the gated arm's recipe, is negative; else C0_refit) is never worse than C0_refit on 9 measured DEV datasets and lower on sky130 77 K.",
+   "status": "verified",
+   "headline": {
+    "value": "supported by the pre-registered rule (C1 CI lower <= 1 on 9/9 datasets, C2 sky130 CI upper < 1): sky130 0.743 [0.654, 0.855] (18/18 folds applied), NIST 4 K 0.806, NIST RT card 0.797, IHP 233/300/343/398 K 1.000 (0/18), TU Delft 4.13 K 0.981 [0.863, 1.097] (2/7 groups), 295.0 K 1.099 [1.000, 1.327] (1/7). C1 holds on TU Delft 295.0 K only at the bound (cluster CI lower 1.000; device CI [1.029, 1.190]).",
+    "convention": "GMR(gated, C0_refit), strict paper RRMS, stored held-out rows; bootstrap 10,000, device unit (TU Delft: 7 geometry groups); gate S3_f < 0 (strict)"
+   },
+   "numbers": [
+    {
+     "label": "S3_v2 per fold (g v2 recipe at lambda*_f, seed 0, 500 steps)",
+     "value": "sky130 < 0 on 18/18 (-0.214 .. -0.100); IHP 300 K 0/18 (0.184 .. 0.642); TU Delft 4.13 K 2/7 (-0.039 .. 0.091); 295.0 K 1/7 (-0.106 .. 0.471)",
+     "convention": "mean ln(RRMS corrected / RRMS start) on inner held-out training records",
+     "source": "out/research/explore/I18_1/s3/"
+    },
+    {
+     "label": "gated vs correction always (TU Delft)",
+     "value": "4.13 K 1.188, 295.0 K 1.326 (the gate kept C0_refit on the groups with the largest held-out gains); within-dataset Spearman(S3_f, y_f) -0.21 / -0.68",
+     "convention": "GMR, point estimates",
+     "source": "out/research/explore/I18_1/decision.json"
+    },
+    {
+     "label": "secondary: v1 gate",
+     "value": "sky130 0.745, NIST 0.806 / 0.797, IHP 1.000 x4, TU Delft (I6-1 rows, state L) 1.027 / 1.040",
+     "convention": "M_bias v1 rows with the v1-recipe S3",
+     "source": "out/research/explore/I18_1/decision.json"
+    },
+    {
+     "label": "pooled (9 datasets, equal weight)",
+     "value": "gated 0.929, correction always 0.958",
+     "convention": "exp(mean ln GMR)",
+     "source": "out/research/explore/I18_1/decision.json"
+    }
+   ],
+   "what": [
+    "Question: can a training-only gate keep the correction where it helps (sky130, NIST) and switch it off where it hurts (IHP), so that the method is never worse than C0_refit?",
+    "Pre-registered (b384a42): threshold S3_f < 0, recipe matched to the gated arm (S3_v2 recomputed for the g v2 datasets), predicted decisions per dataset, rule C1 + C2. The v1-arm datasets are retrospective (stored S3 and rows); TU Delft g v2 (I18-2) is prospective."
+   ],
+   "did": [
+    "Code 8fc4f32; queue I18_1_s3 2035 s (V2: the v1-recipe S3 reproduces the stored I7-1 values, difference 0), I18_1_s3_tud 536 s; decide (fix: the 4 NIST records excluded by I8-1 A1 left out, 53 paired as registered).",
+    "Report batch 2026-10-22_i18_1 recomputes every gated row and GMR from the stored rows and S3 values; I-V figures of TU Delft devices from a gated-on and a gated-off group per temperature."
+   ],
+   "result": {
+    "text": [
+     "Outcome by rule: supported. Decisions matched the prediction on sky130, NIST and IHP; TU Delft applied the correction on 2/7 and 1/7 groups (predicted 5/7 and 3/7).",
+     "On TU Delft the gate selected against the outcome: the groups with S3_f < 0 are the groups where the correction raised the held-out error (295.0 K: pmos W1/L1, y_f +0.53), and the groups with the largest held-out gains (nMOS W0.12 groups, y_f -0.58 to -1.08) had S3_f > 0.3. The fold-level gate repeats the I7-1 finding that S3 reverses sign within a dataset."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "01_table_i18_1_rule.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "02_table_i18_1_datasets.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "03_table_i18_1_secondary_v1.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "04_table_i18_1_s3_v2.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "05_i18_1_forest.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "06_i18_1_s3_per_fold.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "07_i18_1_s3_scatter.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "08_i18_1_iv_tudelft_4K_nmos_W1_L1_d128.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "09_i18_1_iv_tudelft_4K_nmos_W0p12_L0p04_d152.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "10_i18_1_iv_tudelft_295K_pmos_W1_L1_d328.png"
+     },
+     {
+      "batch": "2026-10-22_i18_1",
+      "file": "11_i18_1_iv_tudelft_295K_nmos_W0p12_L0p04_d152.png"
+     }
+    ]
+   },
+   "caveats": [
+    "C1 on TU Delft 295.0 K holds at the CI bound (1.000) under the 7-cluster bootstrap; with the device bootstrap the gated method is worse than C0_refit (CI [1.029, 1.190]).",
+    "7 of 9 datasets are retrospective: their S3 values, decisions and rows were stored before the rule was written.",
+    "The IHP datasets pass C1 because the gate never applies the correction (GMR exactly 1)."
+   ],
+   "sources": [
+    "out/research/explore/I18_1/prereg.md",
+    "out/research/explore/I18_1/decision.json",
+    "out/research/report/2026-10-22_i18_1/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
+   "id": "i18-2",
+   "tab": "explore",
+   "statement": "I18-2: the selected g v2 recipe lowers held-out error relative to C0_refit on a second BSIM4 dataset (measured TU Delft 40 nm, 45 DEV devices, 4.13 K and 295.0 K, leave-one-geometry-group-out), and the full-data element passes the I17-1 deployment checks there.",
+   "status": "refuted",
+   "headline": {
+    "value": "accuracy inconclusive at both temperatures (7-group cluster CIs span 1): GMR(selected, C0_refit) 4.13 K 0.826 [0.669, 1.014], 295.0 K 0.829 [0.523, 1.247]; vs M_bias v1 0.908 [0.848, 0.965] (non-inferior) and 1.022 [0.975, 1.056] (not shown non-inferior). Part B: 4.13 K not deployable (3 gmin / source stepping messages in one dense deck; the card alone prints the same), 295.0 K deployable with restrictions; Q3 not run.",
+    "convention": "strict paper RRMS, I6-1 inclusion, BSIM4 clamp state C, held-out refit with g frozen; cluster bootstrap over 7 geometry groups; ngspice-41 / ngspice-41 OSDI"
+   },
+   "numbers": [
+    {
+     "label": "all-device C0_refit / v1 / selected",
+     "value": "4.13 K 0.0602 / 0.0534 / 0.0484; 295.0 K 0.0265 / 0.0208 / 0.0215",
+     "convention": "state C (I6-1 state L: 0.0575 / 0.0533 and 0.0255 / 0.0196)",
+     "source": "out/research/explore/I18_2/decision.json"
+    },
+    {
+     "label": "device-bootstrap CI (reported)",
+     "value": "selected vs C0_refit 4.13 K [0.756, 0.905], 295.0 K [0.691, 0.999]",
+     "convention": "45 devices",
+     "source": "out/research/explore/I18_2/decision.json"
+    },
+    {
+     "label": "lambda*",
+     "value": "4.13 K 10 V on 6 groups, 5 V on 1, full 10 V; 295.0 K 5 V x3, 1 V x2, 2 V x1, 10 V x1, full 5 V",
+     "convention": "3 inner folds over groups",
+     "source": "out/research/explore/I18_2/decision.json"
+    },
+    {
+     "label": "Part B core values",
+     "value": "element-added |I(Vds=0)| <= 9.7e-19 A (A1), asymmetry <= 3.8e-10, Q2 <= 1.0e-7, capacitance 0, gm 0; default tolerance 1.64e-3 / 1.46e-3; runtime 1.95 / 1.93; gds 0 / 1 curve",
+     "convention": "45 devices per temperature",
+     "source": "out/research/explore/I18_2/partB_decision.json"
+    }
+   ],
+   "what": [
+    "Question: does the deployable element (selected g v2 with the BSIM4 channel replica) replicate on a second measured BSIM4 dataset, in accuracy and in the deployment checks?",
+    "Pre-registered (2454b15) with amendment A1 (1795e10, before any full run: the V(d,s) = 0 check uses the element-added current because the card's gate tunneling current flows at V(d,s) = 0). Clamp state C: 25/45 and 20/45 starting cards have a2 > 1."
+   ],
+   "did": [
+    "Code 254e77d; queue about 6.5 h (lodo lambda > 0 about 18 min each, inner 72 min per temperature, full 16-19 min, Part B 159 s per temperature). Validity: V1a 0, V1b identical, V1c 0.0, unit tests, 45 rows, inner / full complete, 90 grids; VB 0 failed M2 refits.",
+    "Report batch 2026-10-22_i18_2 re-simulates stock, C0_refit, v1 and selected cards for 4 devices; RRMS equals the stored rows."
+   ],
+   "result": {
+    "text": [
+     "Primary labels: inconclusive at both temperatures (point estimates 0.83, device CIs below 1, cluster CIs span 1). Secondary: non-inferior to v1 at 4.13 K, not at 295.0 K. Predicted signs: 5 of 6 correct (selected vs v1 at 4.13 K predicted > 0, observed 0.908).",
+     "Part B: the 4.13 K failure is in the dense gm sweep deck of t40_nmos_W1_L0p04_d192; the card-only dense deck of the same M2 card prints the same three lines, so the element did not add the messages; by the registered rule the label is not deployable. Prediction for Part B: 1 of 2 correct."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "01_table_i18_2_setup.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "02_table_i18_2_validity.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "03_table_i18_2_rules.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "04_table_i18_2_arms.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "05_table_i18_2_groups.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "06_table_i18_2_lambda.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "07_table_i18_2_negative.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "08_table_i18_2_partb.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "09_table_i18_2_partb_accuracy.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "10_i18_2_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "11_i18_2_ratio_by_group.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "12_i18_2_lambda_curve.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "13_i18_2_partb_per_device.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "14_i18_2_iv_4K_nmos_W0p12_L0p04_d158.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "15_i18_2_iv_4K_pmos_W1_L1_d331.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "16_i18_2_iv_295K_nmos_W0p12_L0p05_d162.png"
+     },
+     {
+      "batch": "2026-10-22_i18_2",
+      "file": "17_i18_2_iv_295K_pmos_W1_L1_d335.png"
+     }
+    ]
+   },
+   "caveats": [
+    "TU Delft uses a generic CMOSedu 50 nm example card, not a foundry PDK card.",
+    "7 geometry groups give wide cluster CIs; the rule uses them.",
+    "Q3 circuits not run (1.8 V sky130 circuits vs a 1 V card).",
+    "Clamp state C changes the starting cards of the I6-1 study (295.0 K start 0.0271 -> 0.0463)."
+   ],
+   "sources": [
+    "out/research/explore/I18_2/prereg.md",
+    "out/research/explore/I18_2/prereg_amendment_A1.json",
+    "out/research/explore/I18_2/decision.json",
+    "out/research/explore/I18_2/partB_decision.json",
+    "out/research/report/2026-10-22_i18_2/README.md"
+   ],
+   "updated": "2026-10-22"
+  },
+  {
    "id": "i15-2",
    "tab": "explore",
    "statement": "I15-2: on 18 sky130 77 K devices (18-fold LODO, state C) the symmetric inputs and EPS = 0.01 V of g v2 change the held-out RRMS by less than 1 % relative to M_bias v1; the accuracy difference of g v2 follows the gm/gds penalty weight lambda = 10 V. A lambda chosen per fold from {0, 1, 2, 5, 10} V by nested 3-fold selection on training devices only (lambda* 1 or 2 V on 16 of 18 folds) is non-inferior to M_bias v1 (margin 1.05).",

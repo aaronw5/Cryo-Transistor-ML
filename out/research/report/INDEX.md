@@ -2,6 +2,24 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-22 · i18_1
+
+Folder: [2026-10-22_i18_1/](2026-10-22_i18_1/) · [tables.md](2026-10-22_i18_1/tables.md) · [README.md](2026-10-22_i18_1/README.md)
+
+- I18-1 gated correction over 9 measured DEV datasets: supported (C1 holds, C2 holds).
+- sky130 GMR(gated, C0_refit) 0.743 [0.654, 0.855]; folds applied: sky130 77 K (all 18) 18/18, NIST sky130 4 K lvt (I8-1) 53/53, NIST sky130 4 K, RT card (I9-1) 87/87, IHP SG13G2 300 K 0/18, IHP SG13G2 233 K 0/18, IHP SG13G2 343 K 0/18, IHP SG13G2 398 K 0/18, TU Delft 4.13 K 2/7, TU Delft 295.0 K 1/7.
+
+Figures and tables: [01_table_i18_1_rule.png](2026-10-22_i18_1/01_table_i18_1_rule.png) · [02_table_i18_1_datasets.png](2026-10-22_i18_1/02_table_i18_1_datasets.png) · [03_table_i18_1_secondary_v1.png](2026-10-22_i18_1/03_table_i18_1_secondary_v1.png) · [04_table_i18_1_s3_v2.png](2026-10-22_i18_1/04_table_i18_1_s3_v2.png) · [05_i18_1_forest.png](2026-10-22_i18_1/05_i18_1_forest.png) · [06_i18_1_s3_per_fold.png](2026-10-22_i18_1/06_i18_1_s3_per_fold.png) · [07_i18_1_s3_scatter.png](2026-10-22_i18_1/07_i18_1_s3_scatter.png) · [08_i18_1_iv_tudelft_4K_nmos_W1_L1_d128.png](2026-10-22_i18_1/08_i18_1_iv_tudelft_4K_nmos_W1_L1_d128.png) · [09_i18_1_iv_tudelft_4K_nmos_W0p12_L0p04_d152.png](2026-10-22_i18_1/09_i18_1_iv_tudelft_4K_nmos_W0p12_L0p04_d152.png) · [10_i18_1_iv_tudelft_295K_pmos_W1_L1_d328.png](2026-10-22_i18_1/10_i18_1_iv_tudelft_295K_pmos_W1_L1_d328.png) · [11_i18_1_iv_tudelft_295K_nmos_W0p12_L0p04_d152.png](2026-10-22_i18_1/11_i18_1_iv_tudelft_295K_nmos_W0p12_L0p04_d152.png)
+
+## 2026-10-22 · i18_2
+
+Folder: [2026-10-22_i18_2/](2026-10-22_i18_2/) · [tables.md](2026-10-22_i18_2/tables.md) · [README.md](2026-10-22_i18_2/README.md)
+
+- I18-2 TU Delft 4.13 K (45 DEV, 7 groups): inconclusive; non-inferior to M_bias v1; GMR(selected, C0_refit) 0.826 [0.669, 1.014]; GMR(selected, v1) 0.908 [0.848, 0.965]; Part B: not deployable (Q3 not run).
+- I18-2 TU Delft 295.0 K (45 DEV, 7 groups): inconclusive; not shown non-inferior to M_bias v1; GMR(selected, C0_refit) 0.829 [0.523, 1.247]; GMR(selected, v1) 1.022 [0.975, 1.056]; Part B: deployable with restrictions (Q3 not run).
+
+Figures and tables: [01_table_i18_2_setup.png](2026-10-22_i18_2/01_table_i18_2_setup.png) · [02_table_i18_2_validity.png](2026-10-22_i18_2/02_table_i18_2_validity.png) · [03_table_i18_2_rules.png](2026-10-22_i18_2/03_table_i18_2_rules.png) · [04_table_i18_2_arms.png](2026-10-22_i18_2/04_table_i18_2_arms.png) · [05_table_i18_2_groups.png](2026-10-22_i18_2/05_table_i18_2_groups.png) · [06_table_i18_2_lambda.png](2026-10-22_i18_2/06_table_i18_2_lambda.png) · [07_table_i18_2_negative.png](2026-10-22_i18_2/07_table_i18_2_negative.png) · [08_table_i18_2_partb.png](2026-10-22_i18_2/08_table_i18_2_partb.png) · [09_table_i18_2_partb_accuracy.png](2026-10-22_i18_2/09_table_i18_2_partb_accuracy.png) · [10_i18_2_per_device.png](2026-10-22_i18_2/10_i18_2_per_device.png) · [11_i18_2_ratio_by_group.png](2026-10-22_i18_2/11_i18_2_ratio_by_group.png) · [12_i18_2_lambda_curve.png](2026-10-22_i18_2/12_i18_2_lambda_curve.png) · [13_i18_2_partb_per_device.png](2026-10-22_i18_2/13_i18_2_partb_per_device.png) · [14_i18_2_iv_4K_nmos_W0p12_L0p04_d158.png](2026-10-22_i18_2/14_i18_2_iv_4K_nmos_W0p12_L0p04_d158.png) · [15_i18_2_iv_4K_pmos_W1_L1_d331.png](2026-10-22_i18_2/15_i18_2_iv_4K_pmos_W1_L1_d331.png) · [16_i18_2_iv_295K_nmos_W0p12_L0p05_d162.png](2026-10-22_i18_2/16_i18_2_iv_295K_nmos_W0p12_L0p05_d162.png) · [17_i18_2_iv_295K_pmos_W1_L1_d335.png](2026-10-22_i18_2/17_i18_2_iv_295K_pmos_W1_L1_d335.png)
+
 ## 2026-10-22 · i17_2
 
 Folder: [2026-10-22_i17_2/](2026-10-22_i17_2/) · [tables.md](2026-10-22_i17_2/tables.md) · [README.md](2026-10-22_i17_2/README.md)

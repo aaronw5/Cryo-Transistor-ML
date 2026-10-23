@@ -2409,3 +2409,67 @@ decisions) ran every stage; it found the serpentine default-tolerance grid file 
 cards; state-C starting RRMS 4.13 K 0.0628 -> 0.0722, 295.0 K 0.0271 -> 0.0463), I18_2_pens (90 grids, V4 ok),
 I18_2_base_4 (V1c |diff| 0.0 on 4 rows), then base_295, lodo x 10, inner x 2, full x 2, decide, I18_1_s3_tud,
 I18_1_decide, partB x 2, decideB.
+
+## I18-2 outcome (2026-10-22 23:15): TU Delft 40 nm, selected g v2 inconclusive at both temperatures; Part B not deployable at 4.13 K, deployable with restrictions at 295.0 K (Q3 not run)
+
+Queue: I18_2_start 6 s, pens 2 s, base_4 653 s, lodo_4 l0 572 s, l1 / l2 / l5 / l10 1054-1082 s, inner_4 4293 s (105
+trainings 1707 s, 1350 inner refits 2586 s), full_4 about 16 min, base_295, lodo_295 x 5, inner_295 (training 2093
+s), full_295 1115 s, decide 21 s; partB_4 158 s, partB_295 159 s. Outputs `out/research/explore/I18_2/{start, pens,
+base_*, lodo_*, inner_*, full_*, partB_*, decision.json, partB_decision.json}`.
+Validity: V1a max |diff| 0 (90 cards), V1b state C = state L on the 45 unclamped cards, V1c 0.0 on 4 rows (state-L
+refits of C0_refit and the stored I6-1 v1 fold correction), unit tests pass, 45 rows per arm and temperature, inner
+and full selection complete, 90 grids finite; VB 0 failed M2 refits, 45 Part B rows: valid. Clamp state C: 25/45
+(4.13 K) and 20/45 (295.0 K) starting cards clamped; starting RRMS state L -> C 0.0628 -> 0.0722 and 0.0271 ->
+0.0463; after the clamp no b4check message remains.
+All-device / combined / median (state C): 4.13 K C0_refit 0.0602 / 0.0532 / 0.0441, M_bias v1 0.0534 / 0.0491 /
+0.0396, sym_e1_l0 0.0509, l1 0.0507, l2 0.0476, l5 0.0492, l10 0.0483, selected 0.0484 / 0.0449 / 0.0374; 295.0 K
+C0_refit 0.0265 / 0.0251 / 0.0256, v1 0.0208 / 0.0210 / 0.0184, l0 0.0211, l1 0.0220, l2 0.0219, l5 0.0212, l10
+0.0218, selected 0.0215 / 0.0218 / 0.0188. I6-1 stored (state L): 4.13 K C0_refit 0.0575, M_bias 0.0533; 295.0 K
+0.0255, 0.0196.
+Primary (7-group cluster bootstrap): 4.13 K GMR(selected, C0_refit) **0.826 [0.669, 1.014]**, 30/45 lower:
+**inconclusive** (device CI [0.756, 0.905]); 295.0 K **0.829 [0.523, 1.247]**, 29/45: **inconclusive** (device CI
+[0.691, 0.999]). Secondary GMR(selected, v1): 4.13 K 0.908 [0.848, 0.965] non-inferior (CI upper below 1); 295.0 K
+1.022 [0.975, 1.056] not shown non-inferior. GMR(v1, C0_refit) 0.909 [0.766, 1.077] and 0.811 [0.532, 1.190].
+lambda*: 4.13 K 10 V on 6 groups, 5 V on 1, lambda*_full 10 V; 295.0 K 5 V x3, 1 V x2, 2 V x1, 10 V x1, lambda*_full
+5 V. Contrast K (selected / C0_refit, 4.13 K over 295.0 K) 0.997. Predicted signs 5 of 6 correct (selected vs v1 at
+4.13 K predicted > 0, observed 0.908).
+Part B (ngspice-41 OSDI, M2 cards, 45 devices per temperature; amendment A1 V(d,s) = 0 check on the element-added
+current): 4.13 K **not deployable (Q3 not run)**: the only core failure is 'Q1 convergence / non-finite', 3 lines
+(dynamic gmin, true gmin and source stepping failed) in the dense_elem deck of t40_nmos_W1_L0p04_d192; the
+card-only dense deck of the same M2 card prints the same 3 lines (rule counts element decks; outcome stays not
+deployable). Other core values: tight equivalence 0 violations, element-added |I(Vds = 0)| 9.7e-19 A (raw element
+and card both 9.58e-9 A, gate tunneling), g text 4.4e-16, exchanged 1.7e-15, asymmetry 3.8e-10, Q2 1.0e-7,
+capacitance 0, gm 0; restrictions default tolerance 1.64e-3; runtime 1.95. 295.0 K **deployable with restrictions
+(Q3 not run)**: every core check passes; restrictions default tolerance 1.46e-3 and 1 gds curve
+(t40_nmos_W1_L1_d134, |V(g,s)| 0.725 V); runtime 1.93. Replica non-channel outputs 0 at the op points. Element-deck
+RRMS vs Python rows: M2 0.04108 vs 0.04108 (4.13 K), 0.01662 vs 0.01662 (295.0 K); selected held-out pairs 0.04836
+vs 0.04835 and 0.02150 vs 0.02149 (max per-device |d| 2.5e-4). Part B predictions 1 of 2 correct.
+Report batch `out/research/report/2026-10-22_i18_2/` (`scripts/research/plot_explore_i18_2.py`, 17 PNGs; the I-V
+figures re-simulate the stock, C0_refit, v1 and selected cards in state C and reproduce the stored rows); site claim
+`i18-2` (refuted: accuracy inconclusive, Part B not deployable at 4.13 K).
+
+## I18-1 outcome (2026-10-22 23:15): gated correction, supported by the pre-registered rule; on TU Delft the gate chose against the outcome
+
+Queue: I18_1_s3 2035 s, I18_1_s3_tud 536 s (84 inner fits); I18_1_decide failed once (KeyError: the 4 NIST 4 K
+records excluded by I8-1 amendment A1 have null rows and no S3); fix: devices with non-finite rows in both arms and
+no fold S3 are left out (53 paired, as registered); decide rerun by hand. Valid (V1 row counts 18 / 53 / 87 / 18 x 4
+/ 45 x 2 and selected rows equal; V2 difference 0 on 2 folds; V3 S3_v2 finite on every fold; V4 tests pass). TU
+Delft rows from I18-2 (no fallback).
+S3_v2 per fold: sky130 < 0 on 18/18 (-0.214 .. -0.100), IHP 300 K 0/18 (0.184 .. 0.642), TU Delft 4.13 K 2/7 (-0.039
+.. 0.091; applied on nMOS W1/L1 and pMOS W1/L1), 295.0 K 1/7 (-0.106 .. 0.471; applied on pMOS W1/L1).
+GMR(gated, C0_refit) [95% CI], folds applied: sky130 0.743 [0.654, 0.855] 18/18; NIST 4 K 0.806 [0.758, 0.864]
+53/53; NIST RT card 0.797 [0.748, 0.859] 87/87; IHP 300 / 233 / 343 / 398 K 1.000 [1.000, 1.000] 0/18 each; TU
+Delft 4.13 K 0.981 [0.863, 1.097] 2/7; 295.0 K 1.099 [1.000, 1.327] 1/7. Rule: C1 holds (every CI lower <= 1), C2
+holds: **supported**. The TU Delft 295.0 K CI lower bound equals 1.000 (resamples without the applied group give 1);
+the device-bootstrap CI is [1.029, 1.190]. Correction always vs C0_refit: TU Delft 0.826 / 0.829; gated vs
+correction always 1.188 / 1.326. Within-dataset Spearman(S3_f, y_f): TU Delft -0.21 / -0.68, sky130 -0.37, NIST
+-0.38 / -0.60: the fold-level gate keeps C0_refit on the TU Delft groups with the largest held-out gains (295.0 K
+nMOS W0.12 groups, y_f -0.58 .. -1.08, S3_f 0.34 .. 0.47) and applies the correction to the group where it raised
+the error (pMOS W1/L1, y_f +0.53). Pooled exp(mean ln GMR) over 9 datasets: gated 0.929, correction always 0.958.
+Secondary v1 gate: sky130 0.745, NIST 0.806 / 0.797, IHP 1.000 x 4, TU Delft (I6-1 state L) 1.027 / 1.040.
+Predictions: decisions correct on 7/9 datasets (TU Delft predicted 5/7 and 3/7 groups, observed 2/7 and 1/7);
+GMR signs: TU Delft 4.13 K < 1 correct, 295.0 K predicted < 1, observed 1.099; outcome predicted supported.
+Report batch `out/research/report/2026-10-22_i18_1/` (`scripts/research/plot_explore_i18_1.py`, 11 PNGs; every
+gated row and GMR recomputed from the stored rows and S3 values; I-V figures of TU Delft devices in a gated-on and
+a gated-off group per temperature); site claim `i18-1` (verified, with the 295.0 K bound and the within-dataset sign
+reversal as caveats). Site rebuilt, not published.
