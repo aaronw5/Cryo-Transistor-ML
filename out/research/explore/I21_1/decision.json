@@ -1,0 +1,889 @@
+{
+ "prereg": "out/research/explore/I21_1/prereg.json",
+ "part_A": {
+  "nist4": {
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "label": "not deployable",
+   "core_fail": [
+    "Q1 equivalence |dI| <= 1e-6 |I| + 1e-13 A (tight)",
+    "Q1 convergence / non-finite",
+    "Q1 I_D at Vds = 0",
+    "Q2 derivative agreement",
+    "Q2 capacitances differ from the card",
+    "Q2 gm sign change in strong inversion"
+   ],
+   "restrictions": [
+    "default tolerance above 1e-3",
+    "gds sign changes introduced",
+    "runtime overhead > 2x"
+   ],
+   "values": {
+    "q1_tight_viol": 21405,
+    "q1_bad": 22287,
+    "q1_vds0_max": Infinity,
+    "g_text_max": 1.3877787807814457e-16,
+    "g_sym_text_max": 2.498001805406602e-16,
+    "swap_asym_max": 4.539291863611271e-05,
+    "q2_ac_max": 1.7866631036536116,
+    "cap_max": Infinity,
+    "q2_gm_sign": 5,
+    "q3_fail": 0,
+    "q1_default_max": 0.0019475035017974072,
+    "q2_gds_sign": 44,
+    "runtime_ratio_max": 3.9621731886880664
+   },
+   "gds_curves_introduced": [
+    [
+     "nfet_01v8_lvt_W1_L8_m23p1",
+     0.9
+    ],
+    [
+     "nfet_01v8_lvt_W1_L8_m23p1",
+     1.2
+    ],
+    [
+     "nfet_01v8_lvt_W1_L8_m23p1",
+     1.5
+    ],
+    [
+     "nfet_01v8_lvt_W1p65_L8_m23p8",
+     1.5
+    ],
+    [
+     "nfet_01v8_lvt_W3_L8_m24p8",
+     1.2
+    ],
+    [
+     "nfet_01v8_lvt_W7_L8_m26p8",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W0p42_L20_m27p7",
+     0.9
+    ],
+    [
+     "pfet_01v8_lvt_W0p42_L20_m27p7",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W0p42_L20_m27p7",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W0p42_L20_m27p7",
+     1.8
+    ],
+    [
+     "pfet_01v8_lvt_W0p42_L4_m27p5",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W0p42_L4_m27p5",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W0p42_L4_m27p5",
+     1.8
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L1_m28p2",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L2_m28p3",
+     0.9
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L2_m28p3",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L2_m28p3",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L4_m28p4",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L4_m28p4",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L4_m28p4",
+     1.8
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L8_m28p5",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L8_m28p5",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W0p55_L8_m28p5",
+     1.8
+    ],
+    [
+     "pfet_01v8_lvt_W1_L20_m29p4",
+     0.9
+    ],
+    [
+     "pfet_01v8_lvt_W1_L20_m29p4",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W1_L20_m29p4",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W1_L20_m29p4",
+     1.8
+    ],
+    [
+     "pfet_01v8_lvt_W1_L2_m29p1",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W1_L2_m29p1",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W1_L4_m29p2",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W3_L0p35_m29p5",
+     0.9
+    ],
+    [
+     "pfet_01v8_lvt_W3_L0p35_m29p5",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W3_L0p35_m29p5",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W3_L1_m29p6",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W3_L2_m29p8",
+     0.6
+    ],
+    [
+     "pfet_01v8_lvt_W3_L2_m29p8",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W3_L4_m30p1",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W3_L4_m30p1",
+     1.8
+    ],
+    [
+     "pfet_01v8_lvt_W5_L4_m30p8",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W5_L4_m30p8",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W5_L4_m30p8",
+     1.8
+    ],
+    [
+     "pfet_01v8_lvt_W7_L8_m31p7",
+     1.2
+    ],
+    [
+     "pfet_01v8_lvt_W7_L8_m31p7",
+     1.5
+    ],
+    [
+     "pfet_01v8_lvt_W7_L8_m31p7",
+     1.8
+    ]
+   ],
+   "n_gds_curves": 265,
+   "q3_not_ok": [],
+   "runtime_circuits": {
+    "inv_A_vtc": 2.306975990979193,
+    "inv_B_vtc": 1.7069644541518558,
+    "ro5_A": 3.726358264476341,
+    "ro5_B": 3.9621731886880664,
+    "mirror_n": 1.12348489993377,
+    "mirror_p": 1.0915460861934505
+   },
+   "accuracy": {
+    "va1_max_diff": 0.0,
+    "mean_native": 0.030479200616820884,
+    "mean_python_channel": 0.030477770066276208,
+    "mean_card_python": 0.03045491354568319,
+    "mean_stored_python": 0.03045491354568319,
+    "max_abs_native_minus_stored": 8.899006097598527e-05,
+    "n_msgs": 0
+   },
+   "prediction_label_correct": false,
+   "prediction_gds_correct": true
+  },
+  "nistrt": {
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "label": "not deployable",
+   "core_fail": [
+    "Q1 equivalence |dI| <= 1e-6 |I| + 1e-13 A (tight)",
+    "terminal-exchange asymmetry > 1e-3"
+   ],
+   "restrictions": [
+    "default tolerance above 1e-3",
+    "gds sign changes introduced",
+    "runtime overhead > 2x"
+   ],
+   "values": {
+    "q1_tight_viol": 2477,
+    "q1_bad": 0,
+    "q1_vds0_max": 2.6691332353451112e-17,
+    "g_text_max": 1.942890293094024e-16,
+    "g_sym_text_max": 2.732189474663471e-16,
+    "swap_asym_max": 0.001293422382538141,
+    "q2_ac_max": 6.968951295762176e-06,
+    "cap_max": 4.249651394502776e-14,
+    "q2_gm_sign": 0,
+    "q3_fail": 0,
+    "q1_default_max": 0.00194130443845457,
+    "q2_gds_sign": 94,
+    "runtime_ratio_max": 3.354816931550001
+   },
+   "gds_curves_introduced": [
+    [
+     "nfet_01v8_W0p42_L0p5_m1p6",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p42_L4_m2p1",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p42_L4_m2p1",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p42_L8_m2p2",
+     0.6
+    ],
+    [
+     "nfet_01v8_W0p42_L8_m2p2",
+     0.9
+    ],
+    [
+     "nfet_01v8_W0p42_L8_m2p2",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p42_L8_m2p2",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p42_L8_m2p2",
+     1.8
+    ],
+    [
+     "nfet_01v8_W0p55_L1_m3p2",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p55_L2_m3p3",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p55_L2_m3p3",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p55_L4_m3p4",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p55_L4_m3p4",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p55_L8_m3p5",
+     0.9
+    ],
+    [
+     "nfet_01v8_W0p55_L8_m3p5",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p55_L8_m3p5",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p65_L20_m5p2",
+     0.9
+    ],
+    [
+     "nfet_01v8_W0p65_L20_m5p2",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p65_L20_m5p2",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p65_L20_m5p2",
+     1.8
+    ],
+    [
+     "nfet_01v8_W0p65_L4_m4p8",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p65_L4_m4p8",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p65_L8_m5p1",
+     0.9
+    ],
+    [
+     "nfet_01v8_W0p65_L8_m5p1",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p65_L8_m5p1",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p65_L8_m5p1",
+     1.8
+    ],
+    [
+     "nfet_01v8_W0p74_L8_m5p5",
+     0.9
+    ],
+    [
+     "nfet_01v8_W0p74_L8_m5p5",
+     1.2
+    ],
+    [
+     "nfet_01v8_W0p74_L8_m5p5",
+     1.5
+    ],
+    [
+     "nfet_01v8_W0p74_L8_m5p5",
+     1.8
+    ],
+    [
+     "nfet_01v8_W1_L2_m6p3",
+     1.2
+    ],
+    [
+     "nfet_01v8_W1_L2_m6p3",
+     1.5
+    ],
+    [
+     "nfet_01v8_W1_L8_m6p5",
+     0.9
+    ],
+    [
+     "nfet_01v8_W1_L8_m6p5",
+     1.2
+    ],
+    [
+     "nfet_01v8_W1_L8_m6p5",
+     1.5
+    ],
+    [
+     "nfet_01v8_W1_L8_m6p5",
+     1.8
+    ],
+    [
+     "nfet_01v8_W1p68_L20_m7p6",
+     0.9
+    ],
+    [
+     "nfet_01v8_W1p68_L20_m7p6",
+     1.2
+    ],
+    [
+     "nfet_01v8_W1p68_L20_m7p6",
+     1.5
+    ],
+    [
+     "nfet_01v8_W1p68_L20_m7p6",
+     1.8
+    ],
+    [
+     "nfet_01v8_W1p68_L2_m7p3",
+     1.2
+    ],
+    [
+     "nfet_01v8_W1p68_L2_m7p3",
+     1.5
+    ],
+    [
+     "nfet_01v8_W1p68_L4_m7p4",
+     1.2
+    ],
+    [
+     "nfet_01v8_W1p68_L4_m7p4",
+     1.5
+    ],
+    [
+     "nfet_01v8_W1p68_L8_m7p5",
+     1.2
+    ],
+    [
+     "nfet_01v8_W1p68_L8_m7p5",
+     1.5
+    ],
+    [
+     "nfet_01v8_W1p68_L8_m7p5",
+     1.8
+    ],
+    [
+     "nfet_01v8_W3_L2_m8p5",
+     1.2
+    ],
+    [
+     "nfet_01v8_W3_L2_m8p5",
+     1.5
+    ],
+    [
+     "nfet_01v8_W7_L0p5_m10p3",
+     1.5
+    ],
+    [
+     "nfet_01v8_W7_L1_m10p4",
+     1.5
+    ],
+    [
+     "nfet_01v8_W7_L8_m10p7",
+     1.2
+    ],
+    [
+     "nfet_01v8_W7_L8_m10p7",
+     1.5
+    ],
+    [
+     "nfet_01v8_W7_L8_m10p7",
+     1.8
+    ],
+    [
+     "pfet_01v8_W0p42_L0p5_m11p4",
+     1.5
+    ],
+    [
+     "pfet_01v8_W0p42_L0p5_m11p4",
+     1.8
+    ],
+    [
+     "pfet_01v8_W0p42_L1_m11p5",
+     1.8
+    ],
+    [
+     "pfet_01v8_W0p55_L1_m12p5",
+     1.5
+    ],
+    [
+     "pfet_01v8_W0p55_L8_m12p8",
+     1.5
+    ],
+    [
+     "pfet_01v8_W0p55_L8_m12p8",
+     1.8
+    ],
+    [
+     "pfet_01v8_W0p64_L1_m13p6",
+     1.2
+    ],
+    [
+     "pfet_01v8_W0p64_L1_m13p6",
+     1.5
+    ],
+    [
+     "pfet_01v8_W0p64_L1_m13p6",
+     1.8
+    ],
+    [
+     "pfet_01v8_W0p64_L4_m13p7",
+     1.2
+    ],
+    [
+     "pfet_01v8_W0p64_L4_m13p7",
+     1.5
+    ],
+    [
+     "pfet_01v8_W0p64_L4_m13p7",
+     1.8
+    ],
+    [
+     "pfet_01v8_W1_L4_m14p8",
+     1.5
+    ],
+    [
+     "pfet_01v8_W1_L4_m14p8",
+     1.8
+    ],
+    [
+     "pfet_01v8_W1p68_L4_m16p3",
+     1.5
+    ],
+    [
+     "pfet_01v8_W1p68_L4_m16p3",
+     1.8
+    ],
+    [
+     "pfet_01v8_W3_L0p5_m17p2",
+     1.5
+    ],
+    [
+     "pfet_01v8_W3_L1_m17p3",
+     1.5
+    ],
+    [
+     "pfet_01v8_W3_L1_m17p3",
+     1.8
+    ],
+    [
+     "pfet_01v8_W3_L20_m17p7",
+     1.5
+    ],
+    [
+     "pfet_01v8_W3_L20_m17p7",
+     1.8
+    ],
+    [
+     "pfet_01v8_W3_L2_m17p4",
+     1.5
+    ],
+    [
+     "pfet_01v8_W3_L2_m17p4",
+     1.8
+    ],
+    [
+     "pfet_01v8_W3_L4_m17p5",
+     1.5
+    ],
+    [
+     "pfet_01v8_W3_L4_m17p5",
+     1.8
+    ],
+    [
+     "pfet_01v8_W5_L0p5_m18p3",
+     1.5
+    ],
+    [
+     "pfet_01v8_W5_L1_m18p4",
+     1.5
+    ],
+    [
+     "pfet_01v8_W5_L2_m18p5",
+     1.2
+    ],
+    [
+     "pfet_01v8_W5_L2_m18p5",
+     1.5
+    ],
+    [
+     "pfet_01v8_W5_L2_m18p5",
+     1.8
+    ],
+    [
+     "pfet_01v8_W5_L8_m18p7",
+     1.5
+    ],
+    [
+     "pfet_01v8_W5_L8_m18p7",
+     1.8
+    ],
+    [
+     "pfet_01v8_W7_L1_m19p4",
+     1.5
+    ],
+    [
+     "pfet_01v8_W7_L1_m19p4",
+     1.8
+    ],
+    [
+     "pfet_01v8_W7_L2_m19p5",
+     1.5
+    ],
+    [
+     "pfet_01v8_W7_L2_m19p5",
+     1.8
+    ],
+    [
+     "pfet_01v8_W7_L4_m19p6",
+     1.5
+    ],
+    [
+     "pfet_01v8_W7_L4_m19p6",
+     1.8
+    ],
+    [
+     "pfet_01v8_W7_L8_m19p7",
+     1.5
+    ],
+    [
+     "pfet_01v8_W7_L8_m19p7",
+     1.8
+    ]
+   ],
+   "n_gds_curves": 435,
+   "q3_not_ok": [
+    "ro5_B|published",
+    "ro5_B|C0_refit",
+    "ro5_B|M2_card",
+    "ro5_B|M2_full"
+   ],
+   "runtime_circuits": {
+    "inv_A_vtc": 2.0654565738241644,
+    "inv_B_vtc": 1.6877971128332645,
+    "ro5_A": 3.354816931550001,
+    "mirror_n": 0.8757021572608528,
+    "mirror_p": 1.0820954647649155
+   },
+   "accuracy": {
+    "va1_max_diff": 0.0,
+    "mean_native": 0.04584717270463409,
+    "mean_python_channel": 0.045849287979663436,
+    "mean_card_python": 0.04577660920096377,
+    "mean_stored_python": 0.04577660920096377,
+    "max_abs_native_minus_stored": 0.00042689465794103904,
+    "n_msgs": 0
+   },
+   "prediction_label_correct": false,
+   "prediction_gds_correct": true
+  }
+ },
+ "part_B": {
+  "4": {
+   "S3_D_state_C": 0.0054727943396055,
+   "S3_D_state_L": -0.029237998681334147,
+   "decision_state_C": "C0_refit",
+   "decision_state_L": "apply",
+   "sign_differs": true,
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "n_records": 45,
+   "n_scored": 45,
+   "state_L_check_group": "t40_nmos_W0p12_L0p04",
+   "n_groups": 7,
+   "prediction_sign_correct": false
+  },
+  "295": {
+   "S3_D_state_C": 0.25367196904672257,
+   "S3_D_state_L": -0.05098787045944309,
+   "decision_state_C": "C0_refit",
+   "decision_state_L": "apply",
+   "sign_differs": true,
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "n_records": 45,
+   "n_scored": 45,
+   "state_L_check_group": "t40_nmos_W0p12_L0p04",
+   "n_groups": 7,
+   "prediction_sign_correct": false
+  }
+ },
+ "part_C": {
+  "233": {
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "outcome": "inconclusive",
+   "secondary": "non-inferior to M_bias v1",
+   "primary_gmr_selected_vs_C0_refit": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 11,
+    "ties": 0,
+    "ratio": 1.0840373287709977,
+    "resample_unit": "device",
+    "ci_low": 0.8982908681706714,
+    "ci_high": 1.3707046789969997,
+    "n_boot": 10000
+   },
+   "secondary_gmr_selected_vs_v1": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 7,
+    "ties": 0,
+    "ratio": 0.9797497363609318,
+    "resample_unit": "device",
+    "ci_low": 0.9567654944307536,
+    "ci_high": 0.9991796810078621,
+    "n_boot": 10000
+   },
+   "gmr_v1_vs_C0_refit": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 11,
+    "ties": 0,
+    "ratio": 1.106443093108062,
+    "resample_unit": "device",
+    "ci_low": 0.9077194232533247,
+    "ci_high": 1.4253355434124946,
+    "n_boot": 10000
+   },
+   "lambda_star_counts": {
+    "1": 4,
+    "10": 7,
+    "5": 2,
+    "2": 4,
+    "0": 1
+   },
+   "prediction_check": {
+    "ln GMR(selected, C0_refit)": true,
+    "ln GMR(selected, M_bias v1)": false,
+    "primary label": true,
+    "secondary label": false
+   }
+  },
+  "343": {
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "outcome": "inconclusive",
+   "secondary": "non-inferior to M_bias v1",
+   "primary_gmr_selected_vs_C0_refit": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 10,
+    "ties": 0,
+    "ratio": 1.1881335102951047,
+    "resample_unit": "device",
+    "ci_low": 0.9899810154493519,
+    "ci_high": 1.5033510135041654,
+    "n_boot": 10000
+   },
+   "secondary_gmr_selected_vs_v1": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 10,
+    "ties": 0,
+    "ratio": 1.0059692663368363,
+    "resample_unit": "device",
+    "ci_low": 0.9840829566950474,
+    "ci_high": 1.0334854763945387,
+    "n_boot": 10000
+   },
+   "gmr_v1_vs_C0_refit": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 8,
+    "ties": 0,
+    "ratio": 1.181083309454976,
+    "resample_unit": "device",
+    "ci_low": 0.982846784143978,
+    "ci_high": 1.501605975665429,
+    "n_boot": 10000
+   },
+   "lambda_star_counts": {
+    "1": 8,
+    "0": 1,
+    "2": 1,
+    "10": 4,
+    "5": 4
+   },
+   "prediction_check": {
+    "ln GMR(selected, C0_refit)": true,
+    "ln GMR(selected, M_bias v1)": true,
+    "primary label": true,
+    "secondary label": false
+   }
+  },
+  "398": {
+   "validity": {
+    "valid": true,
+    "fails": []
+   },
+   "outcome": "worse than C0_refit",
+   "secondary": "non-inferior to M_bias v1",
+   "primary_gmr_selected_vs_C0_refit": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 11,
+    "ties": 0,
+    "ratio": 1.2600829159159037,
+    "resample_unit": "device",
+    "ci_low": 1.025695606196192,
+    "ci_high": 1.6065736200877985,
+    "n_boot": 10000
+   },
+   "secondary_gmr_selected_vs_v1": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 9,
+    "ties": 0,
+    "ratio": 0.9907277582021292,
+    "resample_unit": "device",
+    "ci_low": 0.9753521608532141,
+    "ci_high": 1.0043494600590106,
+    "n_boot": 10000
+   },
+   "gmr_v1_vs_C0_refit": {
+    "n": 18,
+    "n_used": 18,
+    "n_method_failed": 0,
+    "n_control_failed": 0,
+    "wins": 11,
+    "ties": 0,
+    "ratio": 1.2718760582650601,
+    "resample_unit": "device",
+    "ci_low": 1.0297606306572942,
+    "ci_high": 1.6266939688739095,
+    "n_boot": 10000
+   },
+   "lambda_star_counts": {
+    "0": 3,
+    "2": 4,
+    "1": 2,
+    "10": 6,
+    "5": 3
+   },
+   "prediction_check": {
+    "ln GMR(selected, C0_refit)": true,
+    "ln GMR(selected, M_bias v1)": false,
+    "primary label": true,
+    "secondary label": false
+   }
+  }
+ }
+}

@@ -1,0 +1,515 @@
+{
+ "T_K": 398,
+ "smoke": false,
+ "lambda_star": {
+  "hv_nmos_W0p3_L0p5": 0.0,
+  "hv_nmos_W0p3_L10": 0.0,
+  "hv_nmos_W0p6_L1p2": 0.0,
+  "hv_nmos_W10_L0p5": 2.0,
+  "hv_pmos_W0p3_L10": 2.0,
+  "hv_pmos_W0p6_L0p5": 2.0,
+  "hv_pmos_W10_L0p35": 1.0,
+  "hv_pmos_W2_L1p2": 1.0,
+  "lv_nmos_W0p15_L0p18": 2.0,
+  "lv_nmos_W0p15_L10": 10.0,
+  "lv_nmos_W0p3_L0p13": 10.0,
+  "lv_nmos_W0p3_L10": 10.0,
+  "lv_nmos_W10_L10": 5.0,
+  "lv_pmos_W0p15_L0p18": 5.0,
+  "lv_pmos_W0p15_L10": 10.0,
+  "lv_pmos_W0p3_L0p13": 10.0,
+  "lv_pmos_W0p3_L10": 10.0,
+  "lv_pmos_W10_L10": 5.0
+ },
+ "names": {
+  "hv_nmos_W0p3_L0p5": "sym_e1_l0|hv_nmos_W0p3_L0p5",
+  "hv_nmos_W0p3_L10": "sym_e1_l0|hv_nmos_W0p3_L10",
+  "hv_nmos_W0p6_L1p2": "sym_e1_l0|hv_nmos_W0p6_L1p2",
+  "hv_nmos_W10_L0p5": "sym_e1_l2|hv_nmos_W10_L0p5",
+  "hv_pmos_W0p3_L10": "sym_e1_l2|hv_pmos_W0p3_L10",
+  "hv_pmos_W0p6_L0p5": "sym_e1_l2|hv_pmos_W0p6_L0p5",
+  "hv_pmos_W10_L0p35": "sym_e1_l1|hv_pmos_W10_L0p35",
+  "hv_pmos_W2_L1p2": "sym_e1_l1|hv_pmos_W2_L1p2",
+  "lv_nmos_W0p15_L0p18": "sym_e1_l2|lv_nmos_W0p15_L0p18",
+  "lv_nmos_W0p15_L10": "sym_e1_l10|lv_nmos_W0p15_L10",
+  "lv_nmos_W0p3_L0p13": "sym_e1_l10|lv_nmos_W0p3_L0p13",
+  "lv_nmos_W0p3_L10": "sym_e1_l10|lv_nmos_W0p3_L10",
+  "lv_nmos_W10_L10": "sym_e1_l5|lv_nmos_W10_L10",
+  "lv_pmos_W0p15_L0p18": "sym_e1_l5|lv_pmos_W0p15_L0p18",
+  "lv_pmos_W0p15_L10": "sym_e1_l10|lv_pmos_W0p15_L10",
+  "lv_pmos_W0p3_L0p13": "sym_e1_l10|lv_pmos_W0p3_L0p13",
+  "lv_pmos_W0p3_L10": "sym_e1_l10|lv_pmos_W0p3_L10",
+  "lv_pmos_W10_L10": "sym_e1_l5|lv_pmos_W10_L10"
+ },
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {},
+ "opts": {
+  "heldout_nfev": 400,
+  "heldout_irls": 2,
+  "diff_step": 0.01
+ },
+ "per_device": {
+  "hv_nmos_W0p3_L0p5": 0.01149411270311733,
+  "hv_nmos_W0p3_L10": 0.0082711176428825,
+  "hv_nmos_W0p6_L1p2": 0.006046107865241707,
+  "hv_nmos_W10_L0p5": 0.026122968840616195,
+  "hv_pmos_W0p3_L10": 0.0054473811337720154,
+  "hv_pmos_W0p6_L0p5": 0.010632283652897076,
+  "hv_pmos_W10_L0p35": 0.020067880218823504,
+  "hv_pmos_W2_L1p2": 0.0073773779462256535,
+  "lv_nmos_W0p15_L0p18": 0.03258732179659766,
+  "lv_nmos_W0p15_L10": 0.00858280330730512,
+  "lv_nmos_W0p3_L0p13": 0.024295392765686062,
+  "lv_nmos_W0p3_L10": 0.0123368769051334,
+  "lv_nmos_W10_L10": 0.015444991740009687,
+  "lv_pmos_W0p15_L0p18": 0.054734291201482294,
+  "lv_pmos_W0p15_L10": 0.003395752930817447,
+  "lv_pmos_W0p3_L0p13": 0.09835283817765833,
+  "lv_pmos_W0p3_L10": 0.0034916753135775776,
+  "lv_pmos_W10_L10": 0.014418643201897844
+ },
+ "mean": 0.0201722120746523,
+ "heldout_rows": {
+  "hv_nmos_W0p3_L0p5": {
+   "label": "selected",
+   "tag": "hv_nmos_W0p3_L0p5",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.011851445491797558,
+   "rrms": 0.01149411270311733,
+   "failed": [],
+   "n_sim": 188,
+   "history": [
+    0.011851445491797558,
+    0.011630757797848675,
+    0.01149411270311733
+   ],
+   "runtime_s": 9.6
+  },
+  "hv_nmos_W0p3_L10": {
+   "label": "selected",
+   "tag": "hv_nmos_W0p3_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.008962807362613828,
+   "rrms": 0.0082711176428825,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.008962807362613828,
+    0.008634846201782393,
+    0.0082711176428825
+   ],
+   "runtime_s": 19.9
+  },
+  "hv_nmos_W0p6_L1p2": {
+   "label": "selected",
+   "tag": "hv_nmos_W0p6_L1p2",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.008177885242258983,
+   "rrms": 0.006046107865241707,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.008177885242258983,
+    0.006141228539095421,
+    0.006046107865241707
+   ],
+   "runtime_s": 20.16
+  },
+  "hv_nmos_W10_L0p5": {
+   "label": "selected",
+   "tag": "hv_nmos_W10_L0p5",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.0355155478203044,
+   "rrms": 0.026122968840616195,
+   "failed": [],
+   "n_sim": 253,
+   "history": [
+    0.0355155478203044,
+    0.02616235294244996,
+    0.026122968840616195
+   ],
+   "runtime_s": 12.92
+  },
+  "hv_pmos_W0p3_L10": {
+   "label": "selected",
+   "tag": "hv_pmos_W0p3_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.006003725794946686,
+   "rrms": 0.0054473811337720154,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.006003725794946686,
+    0.0054878027582363,
+    0.0054473811337720154
+   ],
+   "runtime_s": 19.94
+  },
+  "hv_pmos_W0p6_L0p5": {
+   "label": "selected",
+   "tag": "hv_pmos_W0p6_L0p5",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.010685947177145844,
+   "rrms": 0.010632283652897076,
+   "failed": [],
+   "n_sim": 173,
+   "history": [
+    0.010685947177145844,
+    0.01065139934540492,
+    0.010632283652897076
+   ],
+   "runtime_s": 8.73
+  },
+  "hv_pmos_W10_L0p35": {
+   "label": "selected",
+   "tag": "hv_pmos_W10_L0p35",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.020174185181171686,
+   "rrms": 0.020067880218823504,
+   "failed": [],
+   "n_sim": 214,
+   "history": [
+    0.020174185181171686,
+    0.020102358917865513,
+    0.020067880218823504
+   ],
+   "runtime_s": 10.94
+  },
+  "hv_pmos_W2_L1p2": {
+   "label": "selected",
+   "tag": "hv_pmos_W2_L1p2",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.007664749501147753,
+   "rrms": 0.0073773779462256535,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.007664749501147753,
+    0.007412312660533073,
+    0.0073773779462256535
+   ],
+   "runtime_s": 20.13
+  },
+  "lv_nmos_W0p15_L0p18": {
+   "label": "selected",
+   "tag": "lv_nmos_W0p15_L0p18",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.03273259858425291,
+   "rrms": 0.03258732179659766,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.03273259858425291,
+    0.03259437482074043,
+    0.03258732179659766
+   ],
+   "runtime_s": 18.88
+  },
+  "lv_nmos_W0p15_L10": {
+   "label": "selected",
+   "tag": "lv_nmos_W0p15_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.0095814880993693,
+   "rrms": 0.00858280330730512,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.0095814880993693,
+    0.008873459983357822,
+    0.00858280330730512
+   ],
+   "runtime_s": 18.86
+  },
+  "lv_nmos_W0p3_L0p13": {
+   "label": "selected",
+   "tag": "lv_nmos_W0p3_L0p13",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.024965764381623946,
+   "rrms": 0.024295392765686062,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.024965764381623946,
+    0.02451741257252871,
+    0.024295392765686062
+   ],
+   "runtime_s": 18.69
+  },
+  "lv_nmos_W0p3_L10": {
+   "label": "selected",
+   "tag": "lv_nmos_W0p3_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.013423632456395163,
+   "rrms": 0.0123368769051334,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.013423632456395163,
+    0.013177052388564252,
+    0.0123368769051334
+   ],
+   "runtime_s": 18.36
+  },
+  "lv_nmos_W10_L10": {
+   "label": "selected",
+   "tag": "lv_nmos_W10_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.01572452354958572,
+   "rrms": 0.015444991740009687,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.01572452354958572,
+    0.015599891223870578,
+    0.015444991740009687
+   ],
+   "runtime_s": 16.89
+  },
+  "lv_pmos_W0p15_L0p18": {
+   "label": "selected",
+   "tag": "lv_pmos_W0p15_L0p18",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.0585282838878011,
+   "rrms": 0.054734291201482294,
+   "failed": [],
+   "n_sim": 84,
+   "history": [
+    0.0585282838878011,
+    0.055995014406167165,
+    0.054734291201482294
+   ],
+   "runtime_s": 4.04
+  },
+  "lv_pmos_W0p15_L10": {
+   "label": "selected",
+   "tag": "lv_pmos_W0p15_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.005980797075660692,
+   "rrms": 0.003395752930817447,
+   "failed": [],
+   "n_sim": 370,
+   "history": [
+    0.005980797075660692,
+    0.004386406144661224,
+    0.003395752930817447
+   ],
+   "runtime_s": 15.74
+  },
+  "lv_pmos_W0p3_L0p13": {
+   "label": "selected",
+   "tag": "lv_pmos_W0p3_L0p13",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.135214563690735,
+   "rrms": 0.09835283817765833,
+   "failed": [],
+   "n_sim": 71,
+   "history": [
+    0.135214563690735,
+    0.099572732571052,
+    0.09835283817765833
+   ],
+   "runtime_s": 3.45
+  },
+  "lv_pmos_W0p3_L10": {
+   "label": "selected",
+   "tag": "lv_pmos_W0p3_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.0053475084135612885,
+   "rrms": 0.0034916753135775776,
+   "failed": [],
+   "n_sim": 357,
+   "history": [
+    0.0053475084135612885,
+    0.0036056021935925316,
+    0.0034916753135775776
+   ],
+   "runtime_s": 14.52
+  },
+  "lv_pmos_W10_L10": {
+   "label": "selected",
+   "tag": "lv_pmos_W10_L10",
+   "T_K": 398,
+   "n_active": 12,
+   "rrms_start": 0.02182384311311229,
+   "rrms": 0.014418643201897844,
+   "failed": [],
+   "n_sim": 396,
+   "history": [
+    0.02182384311311229,
+    0.01527888273529803,
+    0.014418643201897844
+   ],
+   "runtime_s": 15.58
+  }
+ },
+ "train_seconds_per_member": {
+  "sym_e1_l0|hv_nmos_W0p3_L0p5": [
+   4.4,
+   4.4,
+   4.4,
+   4.5,
+   4.4
+  ],
+  "sym_e1_l0|hv_nmos_W0p3_L10": [
+   4.5,
+   4.6,
+   4.5,
+   3.1,
+   3.2
+  ],
+  "sym_e1_l0|hv_nmos_W0p6_L1p2": [
+   3.4,
+   3.4,
+   3.0,
+   3.4,
+   3.4
+  ],
+  "sym_e1_l2|hv_nmos_W10_L0p5": [
+   57.8,
+   57.9,
+   58.5,
+   58.1,
+   58.2
+  ],
+  "sym_e1_l2|hv_pmos_W0p3_L10": [
+   59.3,
+   59.3,
+   58.9,
+   59.5,
+   58.9
+  ],
+  "sym_e1_l2|hv_pmos_W0p6_L0p5": [
+   58.6,
+   58.1,
+   58.4,
+   59.1,
+   58.1
+  ],
+  "sym_e1_l1|hv_pmos_W10_L0p35": [
+   58.2,
+   58.4,
+   57.6,
+   58.0,
+   58.1
+  ],
+  "sym_e1_l1|hv_pmos_W2_L1p2": [
+   58.7,
+   58.1,
+   59.3,
+   58.4,
+   57.6
+  ],
+  "sym_e1_l2|lv_nmos_W0p15_L0p18": [
+   75.9,
+   76.4,
+   76.0,
+   75.7,
+   76.0
+  ],
+  "sym_e1_l10|lv_nmos_W0p15_L10": [
+   75.9,
+   76.0,
+   76.3,
+   75.1,
+   76.1
+  ],
+  "sym_e1_l10|lv_nmos_W0p3_L0p13": [
+   76.3,
+   76.2,
+   76.3,
+   76.9,
+   76.0
+  ],
+  "sym_e1_l10|lv_nmos_W0p3_L10": [
+   76.0,
+   75.4,
+   75.4,
+   75.6,
+   75.7
+  ],
+  "sym_e1_l5|lv_nmos_W10_L10": [
+   75.6,
+   76.3,
+   75.5,
+   75.8,
+   75.5
+  ],
+  "sym_e1_l5|lv_pmos_W0p15_L0p18": [
+   76.5,
+   76.6,
+   75.6,
+   76.1,
+   76.3
+  ],
+  "sym_e1_l10|lv_pmos_W0p15_L10": [
+   76.1,
+   75.8,
+   75.4,
+   76.0,
+   75.9
+  ],
+  "sym_e1_l10|lv_pmos_W0p3_L0p13": [
+   76.7,
+   76.7,
+   76.9,
+   76.7,
+   76.3
+  ],
+  "sym_e1_l10|lv_pmos_W0p3_L10": [
+   77.1,
+   77.0,
+   77.4,
+   76.8,
+   77.1
+  ],
+  "sym_e1_l5|lv_pmos_W10_L10": [
+   75.8,
+   76.1,
+   62.0,
+   55.5,
+   54.6
+  ]
+ },
+ "timing": {
+  "train_s": 694.7,
+  "refit_s": 39.8,
+  "n_seed_tasks": 90
+ }
+}
