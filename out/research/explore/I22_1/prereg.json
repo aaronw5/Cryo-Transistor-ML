@@ -1,0 +1,191 @@
+{
+ "id": "I22-1",
+ "status": "in force",
+ "date": "2026-10-26",
+ "base_commit": "ca81768",
+ "title": "matched-budget baselines: correction-stage B1/B2/B3_d3/B4 under the selected g v2 protocol on 9 DEV datasets; NGSpice-call accounting; CMA-ES and TuRBO at the C0_refit budget on sky130 77 K",
+ "test_locked": true,
+ "no_amendment": "no amendment of the I19-1 TEST gate decisions (a755e18)",
+ "known_before": "v1-era baseline rows of I4-1, I5-1, I6-1, I8-1, I9-1 (see prereg.md); no I22-1 value",
+ "part_A": {
+  "datasets": {
+   "sky130": {
+    "records": "I13_1/records",
+    "folds": "LODO 18",
+    "train": "i12_1_symm.fold_train_tags (load_records_all18 order)",
+    "unit": "device"
+   },
+   "nist4": {
+    "records": "I20_1/start/records_nist4",
+    "n": 53,
+    "folds": "LODO",
+    "train": "other finite, sorted",
+    "unit": "device"
+   },
+   "nistrt": {
+    "records": "I20_1/start/records_nistrt",
+    "n": 87,
+    "folds": "LODO",
+    "train": "other finite, sorted",
+    "unit": "device"
+   },
+   "ihp233": {
+    "records": "I5_1/start/records_233K",
+    "folds": "LODO within class",
+    "train": "i17_2_ihp.fold_train",
+    "unit": "device"
+   },
+   "ihp300": {
+    "records": "I5_1/start/records_300K",
+    "folds": "LODO within class",
+    "train": "i17_2_ihp.fold_train",
+    "unit": "device"
+   },
+   "ihp343": {
+    "records": "I5_1/start/records_343K",
+    "folds": "LODO within class",
+    "train": "i17_2_ihp.fold_train",
+    "unit": "device"
+   },
+   "ihp398": {
+    "records": "I5_1/start/records_398K",
+    "folds": "LODO within class",
+    "train": "i17_2_ihp.fold_train",
+    "unit": "device"
+   },
+   "tud4": {
+    "records": "I18_2/start/records_4K",
+    "folds": "LOGO 7 groups",
+    "train": "i18_2_tud.fold_train",
+    "unit": "cluster (7 groups)"
+   },
+   "tud295": {
+    "records": "I18_2/start/records_295K",
+    "folds": "LOGO 7 groups",
+    "train": "i18_2_tud.fold_train",
+    "unit": "cluster (7 groups)"
+   }
+  },
+  "arms": {
+   "C0_refit_rerun": "no correction, polish max_nfev 400 irls 2 diff_step 0.01, state C; validity VA1 and cost",
+   "B1": "base box + extras of the I4-1 edge screen (threshold 1e-4) recomputed on state-C starting records of all DEV devices (IHP: stored I5-1 per-class 300 K screen); max_nfev matched_nfev",
+   "B2": "base box + rext_ohm [0, 4 x series R per side / W] + heat_kappa [-0.5, 0.5]; max_nfev matched_nfev",
+   "B3_d3": "PolyCorrection degree 3 per polarity, HYPER_POLY (l2 1e-4, lr 3e-3, 2000 steps), per-fold training records, frozen in refit (max_nfev 400)",
+   "B4": "GPCorrection fit_gp (2000 points, rng 0, L-BFGS-B maxiter 200), per fold, frozen in refit (max_nfev 400)"
+  },
+  "comparison_rows": "stored C0_refit, M_bias v1, selected g v2 rows via scripts/research/plot_freeze_draft.py datasets()",
+  "statistic": "GMR = exp(mean ln ratio), percentile bootstrap 10000 seed 0, device unit (TU Delft 7-group cluster); i3_2_bias.paired_ratio",
+  "labels_vs_C0_refit": {
+   "gain": "CI upper < 1",
+   "worse": "CI lower > 1",
+   "inconclusive": "otherwise"
+  },
+  "labels_vs_g_v2": {
+   "X better than g v2": "CI upper < 1",
+   "g v2 better than X": "CI lower > 1",
+   "inconclusive": "otherwise",
+   "non_inferior_flag": "CI upper < 1.05"
+  },
+  "gain_set_G": [
+   "sky130",
+   "nist4",
+   "nistrt"
+  ],
+  "outcome_rule": "X matches g v2 iff non-inferior on all 3 of G; g v2 ahead of X iff 'g v2 better than X' on all 3 of G; outcome 'selected g v2 not matched by a correction-stage baseline' iff no X matches, else 'matched by X'",
+  "pooled": "exp(mean ln GMR vs C0_refit) over 9 datasets per arm",
+  "validity": {
+   "VA1": "C0_refit rerun = stored C0_refit rows, max |diff| <= 1e-12",
+   "VA2": "row for every DEV device per arm; non-finite <= 10% per arm",
+   "VA3": "unit tests pass",
+   "VA4": "DEV tags only",
+   "VA5_reported": "IHP B1/B2/B3_d3 reruns vs I5-1 rows"
+  },
+  "invalid_dataset": "left out of the outcome; an invalid dataset of G makes the outcome 'not evaluated'"
+ },
+ "part_B": {
+  "unit": "one NGSpice call = one simulation of a device's measured bias set (polish n_sim)",
+  "items": [
+   "starting cards (stored)",
+   "B1 screen calls",
+   "g v2 penalty-grid decks (count, points)",
+   "g v2 inner selection refits (stored n_sim or estimate = n_inner_refits x median held-out n_sim, labeled)",
+   "S3_D: 0 calls",
+   "held-out refit calls",
+   "wall times with worker count"
+  ],
+  "rule": null
+ },
+ "part_C": {
+  "devices": "sky130 77 K, 18",
+  "problem": "C0_refit stage: state-C starting card direct43_r3_fd, 43-parameter round-3 box, local [-1, 1], DeviceProblem",
+  "objective": "device paper RRMS = mean frozen included curve RRMS; non-finite = 10",
+  "LS": {
+   "polish": "TRF max_nfev 400 irls 2 diff_step 0.01",
+   "budget": "B_d = n_sim of the traced LS run",
+   "secondary": "max_nfev 1600 trace"
+  },
+  "CMA_ES": {
+   "package": "pycma 4.4.4",
+   "sigma0": 0.1,
+   "secondary_sigma0": 0.03,
+   "popsize": "default (15)",
+   "objective": "ln f",
+   "seeds": [
+    1,
+    2,
+    3
+   ],
+   "first_call": "starting card"
+  },
+  "TuRBO_1": {
+   "package": "BoTorch 0.18.1 + GPyTorch",
+   "gp": "SingleTaskGP default priors, Standardize",
+   "objective": "-ln f",
+   "n_init": "start + 9 Sobol in initial TR",
+   "q": 4,
+   "n_candidates": 5000,
+   "perturb_prob": "min(1, 20/43)",
+   "L_init": 0.1,
+   "secondary_L_init": 0.03,
+   "L_min": 0.0078125,
+   "L_max": 1.6,
+   "success_tol": 3,
+   "failure_tol": 11,
+   "restart": "L_init around best point",
+   "seeds": [
+    1,
+    2,
+    3
+   ]
+  },
+  "budget": "each CMA-ES / TuRBO run 4 B_d calls; matched result = best-so-far at B_d; secondary at 4 B_d",
+  "statistic": "per device exp(mean over 3 seeds ln best-so-far f at B_d); GMR(method, LS), device bootstrap 10000 seed 0",
+  "labels": {
+   "LS better": "CI lower > 1",
+   "method better": "CI upper < 1",
+   "inconclusive": "otherwise"
+  },
+  "validity": {
+   "VC1": "traced LS = stored C0_refit rows, max |diff| <= 1e-12",
+   "VC2": "exact budgets; re-simulated best card = traced value within 1e-12",
+   "VC3": "unit tests pass"
+  },
+  "scope": "full (estimate under 2 h)"
+ },
+ "predictions": {
+  "P1": "sky130: g v2 better than B1, B2, B3_d3, B4",
+  "P2": "NIST lvt and RT card: g v2 better than B1, B2, B4; B3_d3 non-inferior to g v2 on both",
+  "P3": "IHP each temperature: B1 gains over C0_refit and is better than g v2",
+  "P4": "TU Delft each temperature: g v2 better than B1 by point estimate; every label vs g v2 inconclusive",
+  "P5": "outcome 'selected g v2 not matched by a correction-stage baseline'",
+  "P6": "Part C: LS better than CMA-ES and than TuRBO at the matched budget (primary configurations)",
+  "P7": "g v2 nested selection uses more NGSpice calls than all held-out refits of the g v2 arm on every dataset where it was run"
+ },
+ "order": [
+  "prereg commit alone + push",
+  "code, unit tests, smoke, BoTorch install, commit",
+  "queue: screens, Part A per dataset, Part C, cost, decide",
+  "decision.json, report batch, site claim, RESEARCH_LOOP outcome, freeze draft item 12, memory, commit + push"
+ ],
+ "compute_estimate": "Part A 2-3 h, Part C 1-2 h (8 workers)"
+}

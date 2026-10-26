@@ -2650,3 +2650,21 @@ S3_D; pooled gated frozen rule 0.923 (0.884 before), correction always 0.957, v1
 items 3, 5, 6, 8 (closed), 9 rewritten. Report batch `out/research/report/2026-10-23_i21_1/`
 (`scripts/research/plot_explore_i21_1.py`; 11 tables, forest, per-DUT ratios, S3 scatter, gds and Q3 figures,
 10 I-V figures with every re-simulated RRMS checked); site claim `i21-1`. Site rebuilt, not published.
+
+## I22-1 pre-registration in force (2026-10-26): matched-budget baselines (correction stage, cost accounting, parameter-extraction stage)
+
+Iteration 22, user default option "matched-budget baselines" (method-freeze draft open item 12). Pre-registration
+`out/research/explore/I22_1/prereg.md` / `prereg.json`, committed alone before any I22-1 code or run; DEV only; no
+amendment of a755e18. Part A: B1 (wider card set; I4-1 edge screen recomputed on the state-C starting records; IHP
+stored I5-1 screen), B2 (extrinsic resistance and self-heating), B3_d3 (cubic polynomial g) and B4 (GP discrepancy)
+rerun under the selected g v2 protocol (state-C records, the g v2 LODO / LOGO folds and training order, held-out
+refit max_nfev 400 (B1 / B2 matched per IRLS round), frozen inclusion) on the 9 measured DEV datasets (sky130 77 K 18,
+NIST lvt 53, NIST RT card 87, IHP 233 / 300 / 343 / 398 K 18 each, TU Delft 4.13 / 295.0 K 45 each); C0_refit rerun
+for validity (VA1: equal to the stored rows). GMR of each baseline vs selected g v2 and vs C0_refit (device bootstrap;
+TU Delft 7-group cluster). Outcome rule over the gain set G = {sky130, NIST lvt, NIST RT card}: baseline X matches g v2
+iff GMR(X, g v2) CI upper < 1.05 on all 3; outcome "selected g v2 not matched by a correction-stage baseline" iff no
+X matches. Part B: NGSpice calls and wall time per arm (starting cards, B1 screen, g v2 penalty grids, nested lambda
+selection, S3_D, held-out refits), report only. Part C: sky130 77 K C0_refit stage, LS (TRF refit, traced) vs CMA-ES
+(pycma, sigma0 0.1) and TuRBO-1 (BoTorch, L_init 0.1), each at the per-device LS NGSpice-call budget B_d (runs to
+4 B_d), 3 seeds; GMR(method, LS) with labels LS better / method better / inconclusive. Predictions P1-P7 in the
+pre-registration (P5: not matched; P6: LS better than both).
