@@ -2683,3 +2683,43 @@ per dataset, max_nfev 20, `I22_1/smoke`) ran every stage. Amendment A1 (`I22_1/p
 run of the registered configuration): TuRBO runs stop at B_d instead of 4 B_d (43-dimensional GP fits take 16 s at
 1600 points; 4 B_d runs would need about 40 h of CPU time); the matched-budget statistic is unchanged; BLAS threads
 1 per worker.
+
+## I22-1 outcome (2026-10-26): matched-budget baselines; selected g v2 not matched by a correction-stage baseline (pre-registered rule); B1 better than g v2 on IHP; TRF refit not beaten by CMA-ES or TuRBO-1 at its call budget
+
+Queue (8-9 workers): screens 0-42 s (IHP stored I5-1 screen); Part A sky130 467 s, IHP 233 / 300 / 343 / 398 K
+463 / 464 / 443 / 462 s, TU Delft 4.13 / 295.0 K 739 / 698 s, NIST lvt 863 s, NIST RT card 1163 s; Part C LS 430 s,
+CMA-ES 1713 / 1364 s, TuRBO-1 6427 / 2725 s (system load from other processes up to about 330 during the TuRBO runs);
+cost and decide. Outputs `out/research/explore/I22_1/`.
+Part A (valid on all 9 datasets: VA1 C0_refit rerun = stored C0_refit rows, difference 0 on every device; 0
+non-finite rows in every arm; unit tests pass; DEV only; VA5 IHP B1 / B2 / B3_d3 reruns = I5-1 rows, difference 0).
+B1 screens in state C select 19 (sky130), 18 (NIST lvt), 19 (NIST RT card), 17 / 16 (TU Delft 4.13 / 295.0 K) extras.
+GMR(X, selected g v2) [95% CI]: sky130 B1 1.373 [1.191, 1.556], B2 1.363 [1.182, 1.547], B3_d3 1.227 [1.125, 1.331],
+B4 1.576 [1.355, 1.867] (g v2 better than all four); NIST lvt B1 1.285 [1.205, 1.364], B2 1.241 [1.158, 1.318], B3_d3
+1.019 [0.987, 1.053] (inconclusive, not non-inferior), B4 1.086 [0.964, 1.236] (inconclusive); NIST RT card B1 1.259,
+B2 1.223, B3_d3 1.036 [1.002, 1.072], B4 1.343 (g v2 better than all four); IHP 233 / 300 / 343 / 398 K B1 0.733
+[0.551, 0.938] / 0.617 [0.476, 0.786] / 0.585 [0.439, 0.755] / 0.642 [0.475, 0.837] (B1 better than g v2 at all
+four), B2 0.845 (inconclusive) / 0.753 / 0.748 / 0.703 (B2 better at 300 / 343 / 398 K), B3_d3 1.142 / 1.096 / 1.104 /
+1.083, B4 1.338 / 1.128 / 1.470 / 1.601; TU Delft 4.13 K B1 1.288 [1.030, 1.637], B2 1.181 [0.903, 1.543], B3_d3 1.139
+[1.034, 1.271], B4 2.795 [1.585, 4.744]; 295.0 K B1 1.340 [0.848, 2.159], B2 1.180, B3_d3 1.112 [0.967, 1.307], B4
+1.643 [1.476, 1.806] (7-group cluster CI). GMR(X, C0_refit): B3_d3 gains on sky130 0.912, NIST 0.819 / 0.840; B1 gains
+on IHP 0.794 / 0.775 / 0.695 / 0.809 and is worse on NIST (1.032 / 1.021) and TU Delft (1.064 / 1.110); B2 gains on IHP
+(0.916 / 0.946 / 0.889 / 0.886); B4 worse on 6 of 9. Pooled exp(mean ln GMR vs C0_refit) over 9 datasets: B1 0.913,
+B2 0.954, B3_d3 1.058, B4 1.432, selected g v2 0.957, M_bias v1 0.964. **Outcome: selected g v2 not matched by a
+correction-stage baseline** (no baseline non-inferior on all of sky130, NIST lvt, NIST RT card; g v2 ahead of B1, B2
+on all three).
+Part B (report only): NGSpice calls per held-out device (arm total; ratio to C0_refit): sky130 C0_refit 316, M_bias v1
+326, selected g v2 28,191 (89x; nested selection 27,880, estimated from 1530 inner refits), B1 657 (2.1x), B2-B4
+334-335; NIST lvt / RT card g v2 6,683 / 6,232 (28x; stored selection n_sim), B1 641 / 635; IHP g v2 14,258-16,379
+(46-53x), B1 1,906-2,131 (6.0-6.6x); TU Delft g v2 7,504 / 8,652 (36-42x), B1 517 / 576. S3_D: 0 calls. Starting
+cards: 44,219 calls per device on sky130 (direct r1-r3 + FD polish), 1,053-2,128 on the other datasets.
+Part C (valid: VC1 traced LS = stored C0_refit rows, difference 0; VC2 exact budgets, re-simulated best cards =
+traced values, difference 0; VC3): B_d 165-403 calls. GMR(method, LS) at B_d over 18 devices (3-seed geometric mean):
+CMA-ES sigma0 0.1 **1.048 [1.000, 1.117] (LS better)**, sigma0 0.03 1.021 [0.999, 1.055]; TuRBO-1 L_init 0.1
+**1.002 [0.994, 1.011] (inconclusive)**, L_init 0.03 1.007 [0.997, 1.019]; LS vs starting card 0.868. At 4 B_d CMA-ES
+vs LS max_nfev 1600: 1.040 [1.003, 1.094] / 1.019 [1.001, 1.052]. Mean run time LS about 19 s, CMA-ES 114-119 s
+(4 B_d), TuRBO-1 437-1004 s (B_d).
+Predictions: P1 yes, P2 no, P3 4/4, P4 0/2, P5 yes, P6 no (TuRBO inconclusive), P7 9/9.
+Method-freeze draft open item 12 rewritten with these numbers. Report batch `out/research/report/2026-10-26_i22_1/`
+(`scripts/research/plot_explore_i22_1.py`; 9 tables, forest plots vs g v2 and vs C0_refit, cost figure, Part C
+best-so-far curves, per-device ratios, 10 Part A and 1 Part C I-V figures with every re-simulated RRMS checked);
+site claim `i22-1` (verified). Site rebuilt, not published.

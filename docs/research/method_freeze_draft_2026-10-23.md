@@ -1,6 +1,6 @@
 # Method freeze and TEST plan: draft (2026-10-23)
 
-Status: **proposed, not frozen.** Updated 2026-10-23 after I20-1 (NIST rows in state C, NIST g v2 rows, frozen S3_D rule) and 2026-10-26 after I21-1 (NIST Part B, TU Delft v1 S3_D in state C, IHP 233 / 343 / 398 K g v2 rows). The final freeze is planned for about 2026-12-10. This file is not a
+Status: **proposed, not frozen.** Updated 2026-10-23 after I20-1 (NIST rows in state C, NIST g v2 rows, frozen S3_D rule) and 2026-10-26 after I21-1 (NIST Part B, TU Delft v1 S3_D in state C, IHP 233 / 343 / 398 K g v2 rows) and I22-1 (matched-budget baselines, open item 12). The final freeze is planned for about 2026-12-10. This file is not a
 pre-registration. No TEST split was opened or evaluated for this draft; no NGSpice run and no training were done
 for it. Every number below is copied from a stored file named next to it or recomputed from stored per-device rows
 by `scripts/research/plot_freeze_draft.py` (117 values checked against the stored decision files after the I21-1 update; 99 after I20-1; 88 before).
@@ -395,13 +395,29 @@ card, C0_refit and the correction-arm curves re-simulated in NGSpice; NGSpice ca
     - Second PDK: the correction does not transfer to IHP SG13G2 (worse than C0_refit at 300 K: 1.255 [1.026, 1.600] and at 398 K: 1.260 [1.026, 1.607]; inconclusive at 233 / 343 K, I21-1);
       TU Delft uses a generic CMOSedu example card, not a foundry PDK, and its result is inconclusive with the
       cluster CI; GF180 has simulated data only. The gain is shown on sky130 data (77 K and NIST 4 K).
-    - Matched-budget baselines: the held-out refit budget is matched across arms (max_nfev 400), but B1 (wider card
-      set), B2 (extrinsic resistance and self-heating), B3_d3 (cubic polynomial g) and B4 (GP) were run with the v1
-      recipe on sky130 REAL_DEV, NIST, IHP 300 K and TU Delft only, not with the selected g v2 recipe; B3_d3 is close
-      to M_bias on NIST (0.981 [0.961, 1.000] and 0.955 [0.926, 0.985]). The memory-listed ML baselines (NPE,
-      TuRBO / BO, CMA-ES, neural operators) are for the parameter-extraction stage and have no matched-budget runs
-      in the current method.
-    - Training and gate cost (g training, S3_D inner fits, nested lambda selection) are not reported in NGSpice
-      calls next to the refit budget.
+    - Matched-budget baselines (I22-1, prereg 02113d4, `out/research/explore/I22_1/decision.json`, report
+      `out/research/report/2026-10-26_i22_1/`): B1 (wider card set), B2 (extrinsic resistance and self-heating),
+      B3_d3 (cubic polynomial g) and B4 (GP discrepancy) rerun under the selected g v2 protocol (state C, g v2
+      folds and training order, held-out refit max_nfev 400, B1 / B2 matched per TRF iteration) on all 9 DEV
+      datasets; all 9 valid (C0_refit rerun = stored rows, difference 0). Pre-registered outcome: **selected g v2
+      not matched by a correction-stage baseline** on the gain set. GMR(X, selected g v2): sky130 B1 1.373 [1.191,
+      1.556], B2 1.363 [1.182, 1.547], B3_d3 1.227 [1.125, 1.331], B4 1.576 [1.355, 1.867]; NIST lvt B1 1.285, B2
+      1.241, B3_d3 1.019 [0.987, 1.053], B4 1.086 [0.964, 1.236]; NIST RT card B1 1.259, B2 1.223, B3_d3 1.036
+      [1.002, 1.072], B4 1.343. IHP: B1 is better than g v2 at 233 / 300 / 343 / 398 K (0.733 [0.551, 0.938], 0.617
+      [0.476, 0.786], 0.585 [0.439, 0.755], 0.642 [0.475, 0.837]) and gains over C0_refit (0.794, 0.775, 0.695,
+      0.809); B2 gains over C0_refit at all four (0.886-0.946). TU Delft: g v2 better than B1, B3_d3, B4 at 4.13 K,
+      than B4 at 295.0 K, other labels inconclusive. Pooled exp(mean ln GMR vs C0_refit) over 9 datasets: B1 0.913,
+      B2 0.954, B3_d3 1.058, B4 1.432, selected g v2 0.957, M_bias v1 0.964. B1 uses 2.1-6.6x the C0_refit NGSpice
+      calls (6.0-6.6x on IHP); a C0_refit at equal call count was not run.
+    - Parameter-extraction stage (I22-1 Part C, sky130 77 K, 18 devices, from the starting cards): at the C0_refit
+      NGSpice-call budget B_d (165-403 calls), GMR(method, TRF refit): CMA-ES sigma0 0.1 1.048 [1.000, 1.117] (TRF
+      better), sigma0 0.03 1.021 [0.999, 1.055], TuRBO-1 (BoTorch) L_init 0.1 1.002 [0.994, 1.011], L_init 0.03
+      1.007 [0.997, 1.019] (inconclusive). NPE and neural-operator baselines and a matched-budget comparison of the
+      44,219-call starting-card extraction are not run.
+    - Training and gate cost (I22-1 Part B, `out/research/explore/I22_1/cost.json`): NGSpice calls per held-out
+      device, selected g v2 arm total vs C0_refit: sky130 28,191 (89x), NIST 6,683 / 6,232 (28x), IHP 14,258-16,379
+      (46-53x), TU Delft 7,504 / 8,652 (36-42x); the nested lambda selection is 96-99% of these (estimated from
+      inner refit counts except NIST); the S3_D gate uses 0 calls; B2-B4 use 1.0-1.5x. Starting cards: 44,219 calls
+      per device on sky130, 1,053-2,128 on the other datasets.
     - Dependence: 8 TEST splits from 4 device sets; the paper's TEST claims rest on NIST (2 splits, sky130 4 K) for
       the applied correction.

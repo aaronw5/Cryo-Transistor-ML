@@ -1,0 +1,971 @@
+{
+ "unit": "one NGSpice call = one simulation of a device's measured bias set (polish n_sim)",
+ "datasets": {
+  "sky130": {
+   "name": "sky130 77 K (18, LODO)",
+   "n": 18,
+   "n_folds": 18,
+   "starting_cards": {
+    "per_device_mean": 44218.88888888889,
+    "parts": {
+     "direct r1": 21213.333333333332,
+     "direct r2": 14287.166666666666,
+     "direct r3": 8404.611111111111,
+     "FD polish": 313.77777777777777
+    },
+    "source": "out/research/ngspice_direct/full_r{1_seeded,2,3}_direct, polished/direct43_r3_fd"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 315.72222222222223,
+     "refit_calls_total": 5683,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 372.8,
+     "total_calls": 5683.0,
+     "total_calls_per_device": 315.72222222222223,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 549.1666666666666,
+     "refit_calls_total": 9885,
+     "pre_calls_total": 1944,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 555.7,
+     "pre_note": "edge screen, this run",
+     "total_calls": 11829.0,
+     "total_calls_per_device": 657.1666666666666,
+     "ratio_to_C0_refit_refit_calls": 2.0814710540207635
+    },
+    "B2": {
+     "refit_calls_mean": 334.94444444444446,
+     "refit_calls_total": 6029,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 345.4,
+     "total_calls": 6029.0,
+     "total_calls_per_device": 334.94444444444446,
+     "ratio_to_C0_refit_refit_calls": 1.0608833362660566
+    },
+    "B3_d3": {
+     "refit_calls_mean": 333.6111111111111,
+     "refit_calls_total": 6005,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 115.33,
+     "refit_cpu_s": 408.7,
+     "total_calls": 6005.0,
+     "total_calls_per_device": 333.6111111111111,
+     "ratio_to_C0_refit_refit_calls": 1.0566602146753474
+    },
+    "B4": {
+     "refit_calls_mean": 333.94444444444446,
+     "refit_calls_total": 6011,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 530.33,
+     "refit_cpu_s": 1003.1,
+     "total_calls": 6011.0,
+     "total_calls_per_device": 333.94444444444446,
+     "ratio_to_C0_refit_refit_calls": 1.0577159950730248
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 325.72222222222223,
+     "refit_calls_total": 5863,
+     "pre_calls_total": 0,
+     "trainings": 90,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I13_1/all18/results.json",
+     "total_calls": 5863.0,
+     "total_calls_per_device": 325.72222222222223,
+     "ratio_to_C0_refit_refit_calls": 1.0316734119303186
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 310.72222222222223,
+     "refit_calls_total": 5593,
+     "pre_calls_total": 501840.0,
+     "pre_note": "estimate: inner refits x median held-out n_sim of the selected g v2 arm",
+     "selection_refits": 1530,
+     "penalty_grid_decks": 18,
+     "penalty_grid_points": 5625,
+     "trainings": 360,
+     "train_cpu_s": 28109.699999999997,
+     "full_data_selection_refits": 90,
+     "full_data_selection_calls": 29520.0,
+     "full_data_selection_trainings": 15,
+     "source": [
+      "I15_2/decision.json",
+      "I15_2/lodo_sym_e1_l*/results.json",
+      "I13_1/lodo/results.json",
+      "I15_2/inner/inner.json"
+     ],
+     "total_calls": 507433.0,
+     "total_calls_per_device": 28190.722222222223,
+     "ratio_to_C0_refit_refit_calls": 89.2896357557628
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 18,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "nist4": {
+   "name": "NIST sky130 4 K lvt (53)",
+   "n": 53,
+   "n_folds": 53,
+   "starting_cards": {
+    "per_device_mean": 1568.9622641509434,
+    "n": 53,
+    "source": "out/research/explore/I8_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 237.9433962264151,
+     "refit_calls_total": 12611,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 543.8,
+     "total_calls": 12611.0,
+     "total_calls_per_device": 237.9433962264151,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 533.1698113207547,
+     "refit_calls_total": 28258,
+     "pre_calls_total": 5695,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1249.9,
+     "pre_note": "edge screen, this run",
+     "total_calls": 33953.0,
+     "total_calls_per_device": 640.622641509434,
+     "ratio_to_C0_refit_refit_calls": 2.692332091031639
+    },
+    "B2": {
+     "refit_calls_mean": 346.0377358490566,
+     "refit_calls_total": 18340,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 813.0,
+     "total_calls": 18340.0,
+     "total_calls_per_device": 346.0377358490566,
+     "ratio_to_C0_refit_refit_calls": 1.4542859408452937
+    },
+    "B3_d3": {
+     "refit_calls_mean": 262.35849056603774,
+     "refit_calls_total": 13905,
+     "pre_calls_total": 0,
+     "trainings": 53,
+     "train_cpu_s": 373.15,
+     "refit_cpu_s": 629.5,
+     "total_calls": 13905.0,
+     "total_calls_per_device": 262.35849056603774,
+     "ratio_to_C0_refit_refit_calls": 1.1026088335580049
+    },
+    "B4": {
+     "refit_calls_mean": 259.188679245283,
+     "refit_calls_total": 13737,
+     "pre_calls_total": 0,
+     "trainings": 53,
+     "train_cpu_s": 1688.05,
+     "refit_cpu_s": 1427.6,
+     "total_calls": 13737.0,
+     "total_calls_per_device": 259.188679245283,
+     "ratio_to_C0_refit_refit_calls": 1.0892871302830862
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 261.7169811320755,
+     "refit_calls_total": 13871,
+     "pre_calls_total": 0,
+     "trainings": 265,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I20_1/base_nist4/results.json",
+     "total_calls": 13871.0,
+     "total_calls_per_device": 261.7169811320755,
+     "ratio_to_C0_refit_refit_calls": 1.0999127745618904
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 259.47169811320754,
+     "refit_calls_total": 13752,
+     "pre_calls_total": 340438.3333333333,
+     "pre_note": "stored total n_sim (I20-1 select), split between blocks and full-data by refit count",
+     "selection_refits": 1325,
+     "penalty_grid_decks": 53,
+     "penalty_grid_points": 5329,
+     "trainings": 355,
+     "train_cpu_s": 46069.4,
+     "full_data_selection_refits": 265,
+     "full_data_selection_calls": 68087.66666666667,
+     "full_data_selection_trainings": 15,
+     "source": [
+      "I20_1/lodo_nist4/results.json",
+      "I20_1/select_nist4/select.json"
+     ],
+     "total_calls": 354190.3333333333,
+     "total_calls_per_device": 6682.836477987421,
+     "ratio_to_C0_refit_refit_calls": 28.085824544709645
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 53,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "nistrt": {
+   "name": "NIST sky130 4 K RT card (87)",
+   "n": 87,
+   "n_folds": 87,
+   "starting_cards": {
+    "per_device_mean": 1573.3908045977012,
+    "n": 87,
+    "source": "out/research/explore/I9_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 218.8505747126437,
+     "refit_calls_total": 19040,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 687.8,
+     "total_calls": 19040.0,
+     "total_calls_per_device": 218.8505747126437,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 515.8620689655172,
+     "refit_calls_total": 44880,
+     "pre_calls_total": 10395,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1660.4,
+     "pre_note": "edge screen, this run",
+     "total_calls": 55275.0,
+     "total_calls_per_device": 635.3448275862069,
+     "ratio_to_C0_refit_refit_calls": 2.9030987394957983
+    },
+    "B2": {
+     "refit_calls_mean": 283.2183908045977,
+     "refit_calls_total": 24640,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 914.0,
+     "total_calls": 24640.0,
+     "total_calls_per_device": 283.2183908045977,
+     "ratio_to_C0_refit_refit_calls": 1.2941176470588236
+    },
+    "B3_d3": {
+     "refit_calls_mean": 241.45977011494253,
+     "refit_calls_total": 21007,
+     "pre_calls_total": 0,
+     "trainings": 87,
+     "train_cpu_s": 867.61,
+     "refit_cpu_s": 790.8,
+     "total_calls": 21007.0,
+     "total_calls_per_device": 241.45977011494253,
+     "ratio_to_C0_refit_refit_calls": 1.1033088235294117
+    },
+    "B4": {
+     "refit_calls_mean": 252.2183908045977,
+     "refit_calls_total": 21943,
+     "pre_calls_total": 0,
+     "trainings": 87,
+     "train_cpu_s": 2179.1,
+     "refit_cpu_s": 2026.8,
+     "total_calls": 21943.0,
+     "total_calls_per_device": 252.2183908045977,
+     "ratio_to_C0_refit_refit_calls": 1.152468487394958
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 244.86206896551724,
+     "refit_calls_total": 21303,
+     "pre_calls_total": 0,
+     "trainings": 435,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I20_1/base_nistrt/results.json",
+     "total_calls": 21303.0,
+     "total_calls_per_device": 244.86206896551724,
+     "ratio_to_C0_refit_refit_calls": 1.1188550420168066
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 241.71264367816093,
+     "refit_calls_total": 21029,
+     "pre_calls_total": 521151.6666666667,
+     "pre_note": "stored total n_sim (I20-1 select), split between blocks and full-data by refit count",
+     "selection_refits": 2175,
+     "penalty_grid_decks": 87,
+     "penalty_grid_points": 5329,
+     "trainings": 525,
+     "train_cpu_s": 37685.0,
+     "full_data_selection_refits": 435,
+     "full_data_selection_calls": 104230.33333333333,
+     "full_data_selection_trainings": 15,
+     "source": [
+      "I20_1/lodo_nistrt/results.json",
+      "I20_1/select_nistrt/select.json"
+     ],
+     "total_calls": 542180.6666666667,
+     "total_calls_per_device": 6231.961685823756,
+     "ratio_to_C0_refit_refit_calls": 28.47587535014006
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 87,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "ihp233": {
+   "name": "IHP SG13G2 233 K",
+   "n": 18,
+   "n_folds": 18,
+   "starting_cards": {
+    "per_device_mean": 1389.1666666666667,
+    "n": 18,
+    "source": "out/research/explore/I5_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 312.94444444444446,
+     "refit_calls_total": 5633,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 240.6,
+     "total_calls": 5633.0,
+     "total_calls_per_device": 312.94444444444446,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 1938.3333333333333,
+     "refit_calls_total": 34890,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1789.8,
+     "pre_note": "edge screen, stored I5-1 screen, counted for 300 K only",
+     "total_calls": 34890.0,
+     "total_calls_per_device": 1938.3333333333333,
+     "ratio_to_C0_refit_refit_calls": 6.193857624711521
+    },
+    "B2": {
+     "refit_calls_mean": 358.6111111111111,
+     "refit_calls_total": 6455,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 282.1,
+     "total_calls": 6455.0,
+     "total_calls_per_device": 358.6111111111111,
+     "ratio_to_C0_refit_refit_calls": 1.1459257944257057
+    },
+    "B3_d3": {
+     "refit_calls_mean": 313.6666666666667,
+     "refit_calls_total": 5646,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 27.41,
+     "refit_cpu_s": 248.6,
+     "total_calls": 5646.0,
+     "total_calls_per_device": 313.6666666666667,
+     "ratio_to_C0_refit_refit_calls": 1.0023078288656133
+    },
+    "B4": {
+     "refit_calls_mean": 312.22222222222223,
+     "refit_calls_total": 5620,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 535.9,
+     "refit_cpu_s": 370.6,
+     "total_calls": 5620.0,
+     "total_calls_per_device": 312.22222222222223,
+     "ratio_to_C0_refit_refit_calls": 0.9976921711343867
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 310.77777777777777,
+     "refit_calls_total": 5594,
+     "pre_calls_total": 0,
+     "trainings": 90,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I21_1/ihp_233K/base/results.json",
+     "total_calls": 5594.0,
+     "total_calls_per_device": 310.77777777777777,
+     "ratio_to_C0_refit_refit_calls": 0.9930765134031599
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 307.1666666666667,
+     "refit_calls_total": 5529,
+     "pre_calls_total": 251120.0,
+     "pre_note": "estimate: inner refits x median held-out n_sim of the selected g v2 arm",
+     "selection_refits": 730,
+     "penalty_grid_decks": 18,
+     "penalty_grid_points": 5625,
+     "trainings": 360,
+     "train_cpu_s": 14630.2,
+     "full_data_selection_refits": 0,
+     "full_data_selection_calls": 0.0,
+     "full_data_selection_trainings": 0,
+     "source": [
+      "I21_1/ihp_233K/sel/results.json",
+      "I21_1/ihp_233K/inner/inner.json"
+     ],
+     "total_calls": 256649.0,
+     "total_calls_per_device": 14258.277777777777,
+     "ratio_to_C0_refit_refit_calls": 45.56169004083082
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 18,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "ihp300": {
+   "name": "IHP SG13G2 300 K",
+   "n": 18,
+   "n_folds": 18,
+   "starting_cards": {
+    "per_device_mean": 1367.6666666666667,
+    "n": 18,
+    "source": "out/research/explore/I5_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 324.5,
+     "refit_calls_total": 5841,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 244.2,
+     "total_calls": 5841.0,
+     "total_calls_per_device": 324.5,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 1957.4444444444443,
+     "refit_calls_total": 35234,
+     "pre_calls_total": 3116,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1825.2,
+     "pre_note": "edge screen, stored I5-1 screen, counted for 300 K only",
+     "total_calls": 38350.0,
+     "total_calls_per_device": 2130.5555555555557,
+     "ratio_to_C0_refit_refit_calls": 6.565656565656566
+    },
+    "B2": {
+     "refit_calls_mean": 335.6666666666667,
+     "refit_calls_total": 6042,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 266.5,
+     "total_calls": 6042.0,
+     "total_calls_per_device": 335.6666666666667,
+     "ratio_to_C0_refit_refit_calls": 1.034411915767848
+    },
+    "B3_d3": {
+     "refit_calls_mean": 320.1666666666667,
+     "refit_calls_total": 5763,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 27.75,
+     "refit_cpu_s": 253.3,
+     "total_calls": 5763.0,
+     "total_calls_per_device": 320.1666666666667,
+     "ratio_to_C0_refit_refit_calls": 0.9866461222393426
+    },
+    "B4": {
+     "refit_calls_mean": 324.5,
+     "refit_calls_total": 5841,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 526.18,
+     "refit_cpu_s": 386.0,
+     "total_calls": 5841.0,
+     "total_calls_per_device": 324.5,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 317.27777777777777,
+     "refit_calls_total": 5711,
+     "pre_calls_total": 0,
+     "trainings": 90,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I17_2/base/results.json",
+     "total_calls": 5711.0,
+     "total_calls_per_device": 317.27777777777777,
+     "ratio_to_C0_refit_refit_calls": 0.9777435370655709
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 319.44444444444446,
+     "refit_calls_total": 5750,
+     "pre_calls_total": 289080.0,
+     "pre_note": "estimate: inner refits x median held-out n_sim of the selected g v2 arm",
+     "selection_refits": 730,
+     "penalty_grid_decks": 18,
+     "penalty_grid_points": 5625,
+     "trainings": 360,
+     "train_cpu_s": 12904.8,
+     "full_data_selection_refits": 0,
+     "full_data_selection_calls": 0.0,
+     "full_data_selection_trainings": 0,
+     "source": [
+      "I17_2/decision.json",
+      "I17_2/lodo_sym_e1_l*/results.json",
+      "I17_2/inner/inner.json"
+     ],
+     "total_calls": 294830.0,
+     "total_calls_per_device": 16379.444444444445,
+     "ratio_to_C0_refit_refit_calls": 50.47594589967471
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 18,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "ihp343": {
+   "name": "IHP SG13G2 343 K",
+   "n": 18,
+   "n_folds": 18,
+   "starting_cards": {
+    "per_device_mean": 1053.1666666666667,
+    "n": 18,
+    "source": "out/research/explore/I5_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 306.44444444444446,
+     "refit_calls_total": 5516,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 228.9,
+     "total_calls": 5516.0,
+     "total_calls_per_device": 306.44444444444446,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 1906.2777777777778,
+     "refit_calls_total": 34313,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1757.0,
+     "pre_note": "edge screen, stored I5-1 screen, counted for 300 K only",
+     "total_calls": 34313.0,
+     "total_calls_per_device": 1906.2777777777778,
+     "ratio_to_C0_refit_refit_calls": 6.220630891950689
+    },
+    "B2": {
+     "refit_calls_mean": 308.44444444444446,
+     "refit_calls_total": 5552,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 242.5,
+     "total_calls": 5552.0,
+     "total_calls_per_device": 308.44444444444446,
+     "ratio_to_C0_refit_refit_calls": 1.0065264684554025
+    },
+    "B3_d3": {
+     "refit_calls_mean": 320.1666666666667,
+     "refit_calls_total": 5763,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 27.5,
+     "refit_cpu_s": 253.8,
+     "total_calls": 5763.0,
+     "total_calls_per_device": 320.1666666666667,
+     "ratio_to_C0_refit_refit_calls": 1.044778825235678
+    },
+    "B4": {
+     "refit_calls_mean": 325.22222222222223,
+     "refit_calls_total": 5854,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 497.44,
+     "refit_cpu_s": 386.6,
+     "total_calls": 5854.0,
+     "total_calls_per_device": 325.22222222222223,
+     "ratio_to_C0_refit_refit_calls": 1.061276287164612
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 320.8888888888889,
+     "refit_calls_total": 5776,
+     "pre_calls_total": 0,
+     "trainings": 90,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I21_1/ihp_343K/base/results.json",
+     "total_calls": 5776.0,
+     "total_calls_per_device": 320.8888888888889,
+     "ratio_to_C0_refit_refit_calls": 1.04713560551124
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 331.0,
+     "refit_calls_total": 5958,
+     "pre_calls_total": 284335.0,
+     "pre_note": "estimate: inner refits x median held-out n_sim of the selected g v2 arm",
+     "selection_refits": 730,
+     "penalty_grid_decks": 18,
+     "penalty_grid_points": 5625,
+     "trainings": 360,
+     "train_cpu_s": 15365.8,
+     "full_data_selection_refits": 0,
+     "full_data_selection_calls": 0.0,
+     "full_data_selection_trainings": 0,
+     "source": [
+      "I21_1/ihp_343K/sel/results.json",
+      "I21_1/ihp_343K/inner/inner.json"
+     ],
+     "total_calls": 290293.0,
+     "total_calls_per_device": 16127.388888888889,
+     "ratio_to_C0_refit_refit_calls": 52.62744742567077
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 18,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "ihp398": {
+   "name": "IHP SG13G2 398 K",
+   "n": 18,
+   "n_folds": 18,
+   "starting_cards": {
+    "per_device_mean": 1273.1666666666667,
+    "n": 18,
+    "source": "out/research/explore/I5_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 320.8888888888889,
+     "refit_calls_total": 5776,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 244.7,
+     "total_calls": 5776.0,
+     "total_calls_per_device": 320.8888888888889,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 1939.7222222222222,
+     "refit_calls_total": 34915,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1778.8,
+     "pre_note": "edge screen, stored I5-1 screen, counted for 300 K only",
+     "total_calls": 34915.0,
+     "total_calls_per_device": 1939.7222222222222,
+     "ratio_to_C0_refit_refit_calls": 6.044840720221607
+    },
+    "B2": {
+     "refit_calls_mean": 336.6666666666667,
+     "refit_calls_total": 6060,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 263.2,
+     "total_calls": 6060.0,
+     "total_calls_per_device": 336.6666666666667,
+     "ratio_to_C0_refit_refit_calls": 1.049168975069252
+    },
+    "B3_d3": {
+     "refit_calls_mean": 321.6111111111111,
+     "refit_calls_total": 5789,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 25.99,
+     "refit_cpu_s": 257.4,
+     "total_calls": 5789.0,
+     "total_calls_per_device": 321.6111111111111,
+     "ratio_to_C0_refit_refit_calls": 1.0022506925207757
+    },
+    "B4": {
+     "refit_calls_mean": 326.6666666666667,
+     "refit_calls_total": 5880,
+     "pre_calls_total": 0,
+     "trainings": 18,
+     "train_cpu_s": 560.54,
+     "refit_cpu_s": 388.1,
+     "total_calls": 5880.0,
+     "total_calls_per_device": 326.6666666666667,
+     "ratio_to_C0_refit_refit_calls": 1.018005540166205
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 312.22222222222223,
+     "refit_calls_total": 5620,
+     "pre_calls_total": 0,
+     "trainings": 90,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I21_1/ihp_398K/base/results.json",
+     "total_calls": 5620.0,
+     "total_calls_per_device": 312.22222222222223,
+     "ratio_to_C0_refit_refit_calls": 0.9729916897506925
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 315.0,
+     "refit_calls_total": 5670,
+     "pre_calls_total": 289080.0,
+     "pre_note": "estimate: inner refits x median held-out n_sim of the selected g v2 arm",
+     "selection_refits": 730,
+     "penalty_grid_decks": 18,
+     "penalty_grid_points": 5625,
+     "trainings": 360,
+     "train_cpu_s": 15322.4,
+     "full_data_selection_refits": 0,
+     "full_data_selection_calls": 0.0,
+     "full_data_selection_trainings": 0,
+     "source": [
+      "I21_1/ihp_398K/sel/results.json",
+      "I21_1/ihp_398K/inner/inner.json"
+     ],
+     "total_calls": 294750.0,
+     "total_calls_per_device": 16375.0,
+     "ratio_to_C0_refit_refit_calls": 51.03012465373961
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 18,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "tud4": {
+   "name": "TU Delft 4.13 K",
+   "n": 45,
+   "n_folds": 7,
+   "starting_cards": {
+    "per_device_mean": 1846.1555555555556,
+    "n": 45,
+    "source": "out/research/explore/I6_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 210.0,
+     "refit_calls_total": 9450,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 503.3,
+     "total_calls": 9450.0,
+     "total_calls_per_device": 210.0,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 420.02222222222224,
+     "refit_calls_total": 18901,
+     "pre_calls_total": 4365,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1030.8,
+     "pre_note": "edge screen, this run",
+     "total_calls": 23266.0,
+     "total_calls_per_device": 517.0222222222222,
+     "ratio_to_C0_refit_refit_calls": 2.462010582010582
+    },
+    "B2": {
+     "refit_calls_mean": 290.4888888888889,
+     "refit_calls_total": 13072,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 710.2,
+     "total_calls": 13072.0,
+     "total_calls_per_device": 290.4888888888889,
+     "ratio_to_C0_refit_refit_calls": 1.3832804232804232
+    },
+    "B3_d3": {
+     "refit_calls_mean": 224.86666666666667,
+     "refit_calls_total": 10119,
+     "pre_calls_total": 0,
+     "trainings": 7,
+     "train_cpu_s": 144.51,
+     "refit_cpu_s": 555.2,
+     "total_calls": 10119.0,
+     "total_calls_per_device": 224.86666666666667,
+     "ratio_to_C0_refit_refit_calls": 1.0707936507936509
+    },
+    "B4": {
+     "refit_calls_mean": 304.15555555555557,
+     "refit_calls_total": 13687,
+     "pre_calls_total": 0,
+     "trainings": 7,
+     "train_cpu_s": 191.22,
+     "refit_cpu_s": 2615.1,
+     "total_calls": 13687.0,
+     "total_calls_per_device": 304.15555555555557,
+     "ratio_to_C0_refit_refit_calls": 1.4483597883597883
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 226.6,
+     "refit_calls_total": 10197,
+     "pre_calls_total": 0,
+     "trainings": 35,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I18_2/base_4K/results.json",
+     "total_calls": 10197.0,
+     "total_calls_per_device": 226.6,
+     "ratio_to_C0_refit_refit_calls": 1.079047619047619
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 243.9111111111111,
+     "refit_calls_total": 10976,
+     "pre_calls_total": 326700.0,
+     "pre_note": "estimate: inner refits x median held-out n_sim of the selected g v2 arm",
+     "selection_refits": 1350,
+     "penalty_grid_decks": 45,
+     "penalty_grid_points": 2025,
+     "trainings": 140,
+     "train_cpu_s": 15674.300000000001,
+     "full_data_selection_refits": 225,
+     "full_data_selection_calls": 54450.0,
+     "full_data_selection_trainings": 15,
+     "source": [
+      "I18_2/decision.json",
+      "I18_2/lodo_4K_sym_e1_l*/results.json",
+      "I18_2/inner_4K/inner.json",
+      "I18_2/full_4K/full.json"
+     ],
+     "total_calls": 337676.0,
+     "total_calls_per_device": 7503.9111111111115,
+     "ratio_to_C0_refit_refit_calls": 35.73291005291005
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 7,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  },
+  "tud295": {
+   "name": "TU Delft 295.0 K",
+   "n": 45,
+   "n_folds": 7,
+   "starting_cards": {
+    "per_device_mean": 2127.8,
+    "n": 45,
+    "source": "out/research/explore/I6_1/start/summary.json"
+   },
+   "arms": {
+    "C0_refit": {
+     "refit_calls_mean": 207.9111111111111,
+     "refit_calls_total": 9356,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 493.4,
+     "total_calls": 9356.0,
+     "total_calls_per_device": 207.9111111111111,
+     "ratio_to_C0_refit_refit_calls": 1.0
+    },
+    "B1": {
+     "refit_calls_mean": 479.02222222222224,
+     "refit_calls_total": 21556,
+     "pre_calls_total": 4365,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 1176.9,
+     "pre_note": "edge screen, this run",
+     "total_calls": 25921.0,
+     "total_calls_per_device": 576.0222222222222,
+     "ratio_to_C0_refit_refit_calls": 2.770521590423258
+    },
+    "B2": {
+     "refit_calls_mean": 242.57777777777778,
+     "refit_calls_total": 10916,
+     "pre_calls_total": 0,
+     "trainings": 0,
+     "train_cpu_s": 0.0,
+     "refit_cpu_s": 597.4,
+     "total_calls": 10916.0,
+     "total_calls_per_device": 242.57777777777778,
+     "ratio_to_C0_refit_refit_calls": 1.1667379221889695
+    },
+    "B3_d3": {
+     "refit_calls_mean": 247.3111111111111,
+     "refit_calls_total": 11129,
+     "pre_calls_total": 0,
+     "trainings": 7,
+     "train_cpu_s": 142.34,
+     "refit_cpu_s": 622.4,
+     "total_calls": 11129.0,
+     "total_calls_per_device": 247.3111111111111,
+     "ratio_to_C0_refit_refit_calls": 1.1895040615647712
+    },
+    "B4": {
+     "refit_calls_mean": 254.6888888888889,
+     "refit_calls_total": 11461,
+     "pre_calls_total": 0,
+     "trainings": 7,
+     "train_cpu_s": 180.44,
+     "refit_cpu_s": 2192.1,
+     "total_calls": 11461.0,
+     "total_calls_per_device": 254.6888888888889,
+     "ratio_to_C0_refit_refit_calls": 1.2249893116716546
+    },
+    "M_bias_v1": {
+     "refit_calls_mean": 254.44444444444446,
+     "refit_calls_total": 11450,
+     "pre_calls_total": 0,
+     "trainings": 35,
+     "train_cpu_s": null,
+     "source": "out/research/explore/I18_2/base_295K/results.json",
+     "total_calls": 11450.0,
+     "total_calls_per_device": 254.44444444444446,
+     "ratio_to_C0_refit_refit_calls": 1.2238135955536553
+    },
+    "selected_g_v2": {
+     "refit_calls_mean": 251.95555555555555,
+     "refit_calls_total": 11338,
+     "pre_calls_total": 378000.0,
+     "pre_note": "estimate: inner refits x median held-out n_sim of the selected g v2 arm",
+     "selection_refits": 1350,
+     "penalty_grid_decks": 45,
+     "penalty_grid_points": 2025,
+     "trainings": 140,
+     "train_cpu_s": 19257.4,
+     "full_data_selection_refits": 225,
+     "full_data_selection_calls": 63000.0,
+     "full_data_selection_trainings": 15,
+     "source": [
+      "I18_2/decision.json",
+      "I18_2/lodo_295K_sym_e1_l*/results.json",
+      "I18_2/inner_295K/inner.json",
+      "I18_2/full_295K/full.json"
+     ],
+     "total_calls": 389338.0,
+     "total_calls_per_device": 8651.955555555556,
+     "ratio_to_C0_refit_refit_calls": 41.613723813595556
+    }
+   },
+   "s3_gate": {
+    "ngspice_calls": 0,
+    "trainings": 7,
+    "note": "v1 recipe, seed 0, 500 steps, applied to starting records"
+   },
+   "P7_selection_gt_heldout": true
+  }
+ }
+}

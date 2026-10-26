@@ -6805,6 +6805,185 @@
    "updated": "2026-10-23"
   },
   {
+   "id": "i22-1",
+   "tab": "explore",
+   "statement": "I22-1: matched-budget baselines. (A) B1 (wider card set), B2 (extrinsic resistance and self-heating), B3_d3 (cubic polynomial g) and B4 (GP discrepancy) rerun under the selected g v2 protocol (state C, g v2 folds, held-out refit max_nfev 400) on the 9 measured DEV datasets; (B) NGSpice calls per arm; (C) CMA-ES and TuRBO-1 at the C0_refit NGSpice-call budget on sky130 77 K.",
+   "status": "verified",
+   "headline": {
+    "value": "Outcome (pre-registered): selected g v2 not matched by a correction-stage baseline on the gain set (sky130, NIST lvt, NIST RT card); closest is B3_d3 on NIST lvt, GMR(B3_d3, g v2) 1.019 [0.987, 1.053] (not non-inferior at 1.05). On IHP the wider card set B1 is better than g v2 at all four temperatures (GMR 0.733 / 0.617 / 0.585 / 0.642) and gains over C0_refit (0.794 / 0.775 / 0.695 / 0.809); pooled over 9 datasets B1 0.913 vs g v2 0.957 vs C0_refit. Part C: at the C0_refit call budget, CMA-ES 1.048 [1.000, 1.117] (LS better), TuRBO-1 1.002 [0.994, 1.011] (inconclusive) vs the TRF refit.",
+    "convention": "DEV only; GMR = exp(mean ln RRMS ratio), 95% bootstrap CI (10,000, seed 0; device, TU Delft 7-group cluster); strict paper RRMS, frozen inclusion"
+   },
+   "numbers": [
+    {
+     "label": "sky130 77 K GMR(X, g v2)",
+     "value": "B1 1.373 [1.191, 1.556], B2 1.363 [1.182, 1.547], B3_d3 1.227 [1.125, 1.331], B4 1.576 [1.355, 1.867]",
+     "convention": "18 devices, LODO",
+     "source": "out/research/explore/I22_1/decision.json"
+    },
+    {
+     "label": "NIST GMR(X, g v2) lvt / RT card",
+     "value": "B1 1.285 / 1.259, B2 1.241 / 1.223, B3_d3 1.019 [0.987, 1.053] / 1.036 [1.002, 1.072], B4 1.086 [0.964, 1.236] / 1.343",
+     "convention": "53 / 87 devices",
+     "source": "out/research/explore/I22_1/decision.json"
+    },
+    {
+     "label": "pooled GMR vs C0_refit (9 datasets)",
+     "value": "B1 0.913, B2 0.954, B3_d3 1.058, B4 1.432, selected g v2 0.957, M_bias v1 0.964",
+     "convention": "exp(mean ln GMR), equal weight",
+     "source": "out/research/explore/I22_1/decision.json"
+    },
+    {
+     "label": "NGSpice calls per held-out device (arm total / C0_refit)",
+     "value": "selected g v2 28,191 on sky130 (89x; nested selection 27,880), NIST 28x, IHP 46-53x, TU Delft 36-42x; B1 2.1-6.6x (screen + matched per-iteration budget); B2-B4 1.0-1.5x; starting cards 44,219 (sky130), 1,053-2,128 (others)",
+     "convention": "one call = one simulation of the device's measured bias set; g v2 selection calls estimated except NIST",
+     "source": "out/research/explore/I22_1/cost.json"
+    },
+    {
+     "label": "Part C secondary",
+     "value": "CMA-ES sigma0 0.03 1.021 [0.999, 1.055]; TuRBO L_init 0.03 1.007 [0.997, 1.019]; at 4 B_d CMA-ES vs LS max_nfev 1600 1.040 [1.003, 1.094] / 1.019 [1.001, 1.052]",
+     "convention": "3 seeds per device, seed geometric mean",
+     "source": "out/research/explore/I22_1/decision.json"
+    }
+   ],
+   "what": [
+    "Question (ICML target gap, freeze draft open item 12): do the correction-stage baselines match the selected g v2 recipe when run under the same protocol, what does each arm cost in NGSpice calls, and do CMA-ES or BO beat the TRF refit at the same call budget?",
+    "Pre-registered (02113d4) with outcome rule over the gain set and predictions P1-P7; amendment A1 (before any run): TuRBO runs stop at B_d (43-D GP fit cost)."
+   ],
+   "did": [
+    "Code 422551a (11 unit tests; each dataset's own refit and screen tasks, TU Delft I18-2 ProblemC); 9 Part A jobs (VA1: C0_refit rerun = stored rows, difference 0 on all 9; IHP B1/B2/B3_d3 reruns = I5-1 rows); B1 screens recomputed in state C; Part C 18 devices x 3 seeds x 2 configurations per method (BoTorch 0.18.1, pycma 4.4.4); report batch 2026-10-26_i22_1 re-simulates 10 Part A devices and 1 Part C device with every RRMS checked."
+   ],
+   "result": {
+    "text": [
+     "Part A: no baseline matches g v2 on the gain set; B4 is worse than C0_refit on 6 of 9 datasets; B3_d3 gains over C0_refit on sky130 and NIST only.",
+     "On IHP the wider card set B1 (and B2 at 3 of 4 temperatures) lowers the error where g v2 does not; B1 uses 6.0-6.6x the C0_refit calls there.",
+     "Part B: the nested lambda selection is 96-99% of the g v2 arm's NGSpice calls; the S3_D gate uses none.",
+     "Part C: the TRF refit is not beaten by CMA-ES or TuRBO-1 at its own call budget on sky130 77 K."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "01_table_i22_1_setup.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "02_table_i22_1_a_validity.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "03_table_i22_1_a_rrms.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "04_table_i22_1_a_vs_g_v2.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "05_table_i22_1_a_vs_c0.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "06_table_i22_1_a_outcome.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "07_table_i22_1_b_cost.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "08_table_i22_1_c.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "09_table_i22_1_a_b1_b2.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "10_i22_1_forest_vs_g_v2.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "11_i22_1_forest_vs_c0.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "12_i22_1_cost.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "13_i22_1_partc_curves.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "14_i22_1_per_device_sky130.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "15_i22_1_per_device_nist4.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "16_i22_1_per_device_nistrt.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "17_i22_1_iv_sky130_nmos_L0p15_W1p6.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "18_i22_1_iv_sky130_pmos_L8_W5.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "19_i22_1_iv_nist4_pfet_01v8_lvt_W0p42_L20_m27p7.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "20_i22_1_iv_nist4_pfet_01v8_lvt_W0p55_L4_m28p4.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "21_i22_1_iv_nistrt_pfet_01v8_W3_L20_m17p7.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "22_i22_1_iv_nistrt_nfet_01v8_W0p65_L4_m4p8.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "23_i22_1_iv_ihp300_lv_nmos_W0p15_L10.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "24_i22_1_iv_tud4_t40_pmos_W1_L1_d328.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "25_i22_1_iv_tud295_t40_pmos_W1_L1_d335.png"
+     },
+     {
+      "batch": "2026-10-26_i22_1",
+      "file": "26_i22_1_iv_partc_nmos_L0p19_W7.png"
+     }
+    ]
+   },
+   "caveats": [
+    "Prediction scores: P1 yes, P2 no (B3_d3 not non-inferior on NIST; B4 inconclusive on lvt), P3 4/4, P4 0/2, P5 yes, P6 no (TuRBO inconclusive), P7 9/9.",
+    "B1 and B2 budgets are matched per TRF iteration (I4-1 matched_nfev), not per NGSpice call; on IHP B1 uses 6x the C0_refit calls, so a C0_refit at the same call count was not run.",
+    "Selected g v2 selection calls are estimated (inner refits x median held-out n_sim) except on NIST (stored).",
+    "Part C covers the local C0_refit stage from already fitted cards; the 44,219-call starting-card extraction was not compared at matched budget.",
+    "Pooled B1 (0.913) is lower than pooled g v2 (0.957) because of the 4 IHP rows; equal weight per dataset."
+   ],
+   "sources": [
+    "out/research/explore/I22_1/prereg.md",
+    "out/research/explore/I22_1/prereg_amendment_A1.md",
+    "out/research/explore/I22_1/decision.json",
+    "out/research/explore/I22_1/cost.json",
+    "out/research/report/2026-10-26_i22_1/README.md",
+    "docs/research/method_freeze_draft_2026-10-23.md"
+   ],
+   "updated": "2026-10-26"
+  },
+  {
    "id": "i21-1",
    "tab": "explore",
    "statement": "I21-1: open items without a user decision. (A) The I20-1 full-data g v2 element (lambda 0 V) is tested for deployment on both NIST DEV datasets with the I17-1 rules; (B) the TU Delft v1-recipe S3_D is recomputed on the state-C records; (C) the selected g v2 recipe is run on IHP SG13G2 233 / 343 / 398 K.",

@@ -411,12 +411,14 @@ def fig_cost(d: dict, path: Path) -> list[str]:
     return [rel(I22 / "cost.json")]
 
 
-def _curve(values, f0, B, xs):
+def _curve(values, f0, B, xs, carry: bool = False):
+    """best-so-far / f0 at round(x * B) calls; beyond the last call NaN, or the
+    last value when ``carry`` (an LS run that stopped before the horizon)."""
     b = m.best_so_far(values)
     out = []
     for x in xs:
         k = int(round(x * B))
-        out.append(b[min(max(k, 1), len(b)) - 1] / f0 if k <= len(b) else np.nan)
+        out.append(b[min(max(k, 1), len(b)) - 1] / f0 if (k <= len(b) or carry) else np.nan)
     return np.array(out)
 
 
@@ -438,7 +440,7 @@ def fig_partc_curves(d: dict, path: Path) -> list[str]:
     B = {t: ls["budget"][t] for t in tags}
     c = gm([_curve(ls["primary"][t]["trace"], f0[t], B[t], xs) for t in tags])
     ax.plot(xs, c, color=METH_COLOR["LS"], lw=2, label="LS (TRF, max_nfev 400) = C0_refit")
-    c = gm([_curve(ls["secondary"][t]["trace"], f0[t], B[t], xs) for t in tags])
+    c = gm([_curve(ls["secondary"][t]["trace"], f0[t], B[t], xs, carry=True) for t in tags])
     ax.plot(xs, c, color=METH_COLOR["LS_secondary"], lw=1.6, ls="--", label="LS (TRF, max_nfev 1600)")
     for k, R in d["opt"].items():
         cs = [_curve(r["values"], f0[r["tag"]], r["budget"], xs) for r in R["rows"]]
@@ -446,8 +448,10 @@ def fig_partc_curves(d: dict, path: Path) -> list[str]:
                 ls="-" if k.endswith("primary") else "-.", label=METH_LABEL[k] + " (3 seeds)")
     ax.axvline(1.0, color=GREY, lw=1, ls=":")
     ax.set_xlabel("NGSpice calls / B_d (B_d = LS calls on device d)")
-    ax.set_ylabel("geometric mean over devices (and seeds) of best-so-far RRMS / starting-card RRMS")
-    ax.set_title("best-so-far paper RRMS vs NGSpice calls (sky130 77 K, 18 devices, C0_refit stage)", fontsize=9.2)
+    ax.set_ylabel("geo. mean of best-so-far RRMS / start RRMS")
+    ax.set_title("best-so-far paper RRMS vs NGSpice calls (sky130 77 K, 18 devices, C0_refit stage;\n"
+                 "geometric mean over devices and seeds; LS max_nfev 1600 held at its final value after it stops)",
+                 fontsize=9.2)
     ax.legend(fontsize=7.8, frameon=False)
     ax = axes[1]
     style(ax)
