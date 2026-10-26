@@ -1,0 +1,469 @@
+{
+ "ds": "nist4",
+ "name": "NIST sky130 4 K lvt (53)",
+ "smoke": true,
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 1,
+  "diff_step": 0.01
+ },
+ "arms": [
+  "C0_refit",
+  "B1",
+  "B2",
+  "B3_d3",
+  "B4"
+ ],
+ "held_out": [
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2"
+ ],
+ "folds": {
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "held": [
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1"
+   ],
+   "train": [
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6",
+    "nfet_01v8_lvt_W0p55_L1_m20p8",
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2",
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3",
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4",
+    "nfet_01v8_lvt_W0p64_L1_m21p6",
+    "nfet_01v8_lvt_W1_L0p15_m22p2",
+    "nfet_01v8_lvt_W1_L0p18_m22p3",
+    "nfet_01v8_lvt_W1_L1_m22p6",
+    "nfet_01v8_lvt_W1_L4_m22p8",
+    "nfet_01v8_lvt_W1_L8_m23p1",
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3",
+    "nfet_01v8_lvt_W1p65_L1_m23p6",
+    "nfet_01v8_lvt_W1p65_L2_m23p7",
+    "nfet_01v8_lvt_W1p65_L8_m23p8",
+    "nfet_01v8_lvt_W3_L0p18_m24p2",
+    "nfet_01v8_lvt_W3_L0p25_m24p3",
+    "nfet_01v8_lvt_W3_L0p5_m24p4",
+    "nfet_01v8_lvt_W3_L2_m24p6",
+    "nfet_01v8_lvt_W3_L8_m24p8",
+    "nfet_01v8_lvt_W5_L0p25_m25p4",
+    "nfet_01v8_lvt_W5_L0p5_m25p5",
+    "nfet_01v8_lvt_W5_L1_m25p6",
+    "nfet_01v8_lvt_W5_L2_m25p7",
+    "nfet_01v8_lvt_W5_L4_m25p8",
+    "nfet_01v8_lvt_W5_L8_m26p1",
+    "nfet_01v8_lvt_W7_L0p25_m26p4",
+    "nfet_01v8_lvt_W7_L8_m26p8",
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+    "pfet_01v8_lvt_W0p42_L20_m27p7",
+    "pfet_01v8_lvt_W0p42_L4_m27p5",
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1",
+    "pfet_01v8_lvt_W0p55_L1_m28p2",
+    "pfet_01v8_lvt_W0p55_L2_m28p3",
+    "pfet_01v8_lvt_W0p55_L4_m28p4",
+    "pfet_01v8_lvt_W0p55_L8_m28p5",
+    "pfet_01v8_lvt_W1_L0p35_m28p6",
+    "pfet_01v8_lvt_W1_L20_m29p4",
+    "pfet_01v8_lvt_W1_L2_m29p1",
+    "pfet_01v8_lvt_W1_L4_m29p2",
+    "pfet_01v8_lvt_W3_L0p35_m29p5",
+    "pfet_01v8_lvt_W3_L1_m29p6",
+    "pfet_01v8_lvt_W3_L1p5_m29p7",
+    "pfet_01v8_lvt_W3_L2_m29p8",
+    "pfet_01v8_lvt_W3_L4_m30p1",
+    "pfet_01v8_lvt_W5_L0p35_m30p3",
+    "pfet_01v8_lvt_W5_L1_m30p5",
+    "pfet_01v8_lvt_W5_L1p5_m30p6",
+    "pfet_01v8_lvt_W5_L4_m30p8",
+    "pfet_01v8_lvt_W7_L0p35_m31p2",
+    "pfet_01v8_lvt_W7_L1p5_m31p5",
+    "pfet_01v8_lvt_W7_L8_m31p7"
+   ]
+  },
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "held": [
+    "pfet_01v8_lvt_W0p42_L0p5_m27p2"
+   ],
+   "train": [
+    "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+    "nfet_01v8_lvt_W0p55_L0p15_m20p6",
+    "nfet_01v8_lvt_W0p55_L1_m20p8",
+    "nfet_01v8_lvt_W0p64_L0p15_m21p2",
+    "nfet_01v8_lvt_W0p64_L0p18_m21p3",
+    "nfet_01v8_lvt_W0p64_L0p25_m21p4",
+    "nfet_01v8_lvt_W0p64_L1_m21p6",
+    "nfet_01v8_lvt_W1_L0p15_m22p2",
+    "nfet_01v8_lvt_W1_L0p18_m22p3",
+    "nfet_01v8_lvt_W1_L1_m22p6",
+    "nfet_01v8_lvt_W1_L4_m22p8",
+    "nfet_01v8_lvt_W1_L8_m23p1",
+    "nfet_01v8_lvt_W1p65_L0p18_m23p3",
+    "nfet_01v8_lvt_W1p65_L1_m23p6",
+    "nfet_01v8_lvt_W1p65_L2_m23p7",
+    "nfet_01v8_lvt_W1p65_L8_m23p8",
+    "nfet_01v8_lvt_W3_L0p18_m24p2",
+    "nfet_01v8_lvt_W3_L0p25_m24p3",
+    "nfet_01v8_lvt_W3_L0p5_m24p4",
+    "nfet_01v8_lvt_W3_L2_m24p6",
+    "nfet_01v8_lvt_W3_L8_m24p8",
+    "nfet_01v8_lvt_W5_L0p25_m25p4",
+    "nfet_01v8_lvt_W5_L0p5_m25p5",
+    "nfet_01v8_lvt_W5_L1_m25p6",
+    "nfet_01v8_lvt_W5_L2_m25p7",
+    "nfet_01v8_lvt_W5_L4_m25p8",
+    "nfet_01v8_lvt_W5_L8_m26p1",
+    "nfet_01v8_lvt_W7_L0p25_m26p4",
+    "nfet_01v8_lvt_W7_L8_m26p8",
+    "pfet_01v8_lvt_W0p42_L20_m27p7",
+    "pfet_01v8_lvt_W0p42_L4_m27p5",
+    "pfet_01v8_lvt_W0p55_L0p5_m28p1",
+    "pfet_01v8_lvt_W0p55_L1_m28p2",
+    "pfet_01v8_lvt_W0p55_L2_m28p3",
+    "pfet_01v8_lvt_W0p55_L4_m28p4",
+    "pfet_01v8_lvt_W0p55_L8_m28p5",
+    "pfet_01v8_lvt_W1_L0p35_m28p6",
+    "pfet_01v8_lvt_W1_L20_m29p4",
+    "pfet_01v8_lvt_W1_L2_m29p1",
+    "pfet_01v8_lvt_W1_L4_m29p2",
+    "pfet_01v8_lvt_W3_L0p35_m29p5",
+    "pfet_01v8_lvt_W3_L1_m29p6",
+    "pfet_01v8_lvt_W3_L1p5_m29p7",
+    "pfet_01v8_lvt_W3_L2_m29p8",
+    "pfet_01v8_lvt_W3_L4_m30p1",
+    "pfet_01v8_lvt_W5_L0p35_m30p3",
+    "pfet_01v8_lvt_W5_L1_m30p5",
+    "pfet_01v8_lvt_W5_L1p5_m30p6",
+    "pfet_01v8_lvt_W5_L4_m30p8",
+    "pfet_01v8_lvt_W7_L0p35_m31p2",
+    "pfet_01v8_lvt_W7_L1p5_m31p5",
+    "pfet_01v8_lvt_W7_L8_m31p7"
+   ]
+  }
+ },
+ "b1": {
+  "selected": [
+   "a1",
+   "alpha1",
+   "cdsc",
+   "dvtp0",
+   "fprout",
+   "minv",
+   "pdiblc1",
+   "pdits",
+   "phin",
+   "pscbe1",
+   "pvag",
+   "rdswmin",
+   "ud",
+   "up",
+   "voffl"
+  ]
+ },
+ "per_device": {
+  "C0_refit": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.01909196593725743,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.13525470870036851
+  },
+  "B1": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.019087983256311315,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.1352547086119238
+  },
+  "B2": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.01909208003712866,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.1352551353647629
+  },
+  "B3_d3": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.018275307899542573,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.11438165819222741
+  },
+  "B4": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.026154327382507003,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.3474499008443026
+  }
+ },
+ "validity": {
+  "VA1_c0_max_abs_diff": 0.0037482403469446535,
+  "VA1": false,
+  "VA2_complete": true,
+  "VA2_n_failed": {
+   "C0_refit": 0,
+   "B1": 0,
+   "B2": 0,
+   "B3_d3": 0,
+   "B4": 0
+  },
+  "VA2": true,
+  "VA3_unit_tests": true,
+  "VA4_dev_check": {
+   "n": 2,
+   "n_in_TEST": 0,
+   "n_not_in_DEV": 0,
+   "ok": true
+  },
+  "VA5_ihp_vs_I5_1": null,
+  "VA4": true,
+  "valid": false
+ },
+ "n_sim": {
+  "C0_refit": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 43,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 46
+  },
+  "B1": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 111,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 117
+  },
+  "B2": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 85,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 48
+  },
+  "B3_d3": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 43,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 46
+  },
+  "B4": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 43,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 87
+  }
+ },
+ "n_sim_total": {
+  "C0_refit": 89,
+  "B1": 228,
+  "B2": 133,
+  "B3_d3": 89,
+  "B4": 130
+ },
+ "refit_runtime_s_sum": {
+  "C0_refit": 3.3,
+  "B1": 8.7,
+  "B2": 5.7,
+  "B3_d3": 3.5,
+  "B4": 5.5
+ },
+ "train_seconds": {
+  "B4": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.31,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.3
+  },
+  "B3_d3": {
+   "nfet_01v8_lvt_W0p42_L0p15_m20p1": 0.57,
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.57
+  }
+ },
+ "b4_info": {
+  "nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "n_points": 156,
+   "nll": 157.76866287432557,
+   "converged": false,
+   "n_iter": 10,
+   "y_var": 0.788711996365006,
+   "ell": [
+    0.29692131174412406,
+    0.0756171048527159,
+    4.511147105525811
+   ],
+   "sf2": 0.742135422622183,
+   "sn2": 0.3123946519271159,
+   "mean": -0.7291968094381327
+  },
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "n_points": 156,
+   "nll": 141.0951786898956,
+   "converged": false,
+   "n_iter": 10,
+   "y_var": 0.7599055898178915,
+   "ell": [
+    0.2628333270172813,
+    0.07260633994272675,
+    9.663264669750033
+   ],
+   "sf2": 1.0613495921346199,
+   "sn2": 0.26754124204743773,
+   "mean": -0.6357062013295157
+  }
+ },
+ "rows": {
+  "B1|nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "label": "B1",
+   "tag": "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+   "n_active": 52,
+   "n_extra_active": 15,
+   "max_nfev": 108,
+   "rrms": 0.019087983256311315,
+   "failed": [],
+   "n_sim": 111,
+   "history": [
+    0.01909542777655172,
+    0.019087983256311315
+   ],
+   "runtime_s": 4.14,
+   "rrms_start_corrected": 0.01909542777655172,
+   "n_sim_timeout": 0,
+   "wall_s": 4.19
+  },
+  "B1|pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "label": "B1",
+   "tag": "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+   "n_active": 55,
+   "n_extra_active": 15,
+   "max_nfev": 114,
+   "rrms": 0.1352547086119238,
+   "failed": [],
+   "n_sim": 117,
+   "history": [
+    0.13953538228257148,
+    0.1352547086119238
+   ],
+   "runtime_s": 4.43,
+   "rrms_start_corrected": 0.13953538228257148,
+   "n_sim_timeout": 0,
+   "wall_s": 4.48
+  },
+  "B2|nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "label": "B2",
+   "tag": "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+   "n_active": 39,
+   "max_nfev": 82,
+   "rext_max_ohm": 1069.7780543799488,
+   "rext_ohm": 5.348890120622796e-07,
+   "heat_kappa": 0.0,
+   "rrms": 0.01909208003712866,
+   "failed": [],
+   "n_sim": 85,
+   "history": [
+    0.01909542777655172,
+    0.01909208003712866
+   ],
+   "runtime_s": 3.25,
+   "rrms_start_corrected": 0.01909542777655172,
+   "n_sim_timeout": 0,
+   "wall_s": 3.52
+  },
+  "B2|pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "label": "B2",
+   "tag": "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+   "n_active": 42,
+   "max_nfev": 88,
+   "rext_max_ohm": 14806.84824627678,
+   "rext_ohm": 7.403423913755257e-06,
+   "heat_kappa": 0.0,
+   "rrms": 0.1352551353647629,
+   "failed": [],
+   "n_sim": 48,
+   "history": [
+    0.13953538228257148,
+    0.1352551353647629
+   ],
+   "runtime_s": 1.94,
+   "rrms_start_corrected": 0.13953538228257148,
+   "n_sim_timeout": 0,
+   "wall_s": 2.22
+  },
+  "B4|nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "label": "B4",
+   "tag": "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+   "n_active": 37,
+   "rrms": 0.026154327382507003,
+   "failed": [],
+   "n_sim": 43,
+   "history": [
+    0.027386416543272965,
+    0.026154327382507003
+   ],
+   "runtime_s": 1.8,
+   "rrms_start_corrected": 0.027386416543272965,
+   "n_sim_timeout": 0,
+   "wall_s": 1.81
+  },
+  "B4|pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "label": "B4",
+   "tag": "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+   "n_active": 40,
+   "rrms": 0.3474499008443026,
+   "failed": [],
+   "n_sim": 87,
+   "history": [
+    0.35290320648841145,
+    0.3474499008443026
+   ],
+   "runtime_s": 3.71,
+   "rrms_start_corrected": 0.35290320648841145,
+   "n_sim_timeout": 0,
+   "wall_s": 3.71
+  },
+  "B3_d3|nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "label": "B3_d3",
+   "tag": "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+   "n_active": 37,
+   "rrms": 0.018275307899542573,
+   "failed": [],
+   "n_sim": 43,
+   "history": [
+    0.018358587262600062,
+    0.018275307899542573
+   ],
+   "runtime_s": 1.72,
+   "rrms_start_corrected": 0.018358587262600062,
+   "n_sim_timeout": 0,
+   "wall_s": 1.72
+  },
+  "B3_d3|pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "label": "B3_d3",
+   "tag": "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+   "n_active": 40,
+   "rrms": 0.11438165819222741,
+   "failed": [],
+   "n_sim": 46,
+   "history": [
+    0.11804256050506856,
+    0.11438165819222741
+   ],
+   "runtime_s": 1.8,
+   "rrms_start_corrected": 0.11804256050506856,
+   "n_sim_timeout": 0,
+   "wall_s": 1.8
+  },
+  "C0_refit|nfet_01v8_lvt_W0p42_L0p15_m20p1": {
+   "label": "C0_refit",
+   "tag": "nfet_01v8_lvt_W0p42_L0p15_m20p1",
+   "n_active": 37,
+   "rrms": 0.01909196593725743,
+   "failed": [],
+   "n_sim": 43,
+   "history": [
+    0.01909542777655172,
+    0.01909196593725743
+   ],
+   "runtime_s": 1.68,
+   "rrms_start_corrected": 0.01909542777655172,
+   "n_sim_timeout": 0,
+   "wall_s": 1.68
+  },
+  "C0_refit|pfet_01v8_lvt_W0p42_L0p5_m27p2": {
+   "label": "C0_refit",
+   "tag": "pfet_01v8_lvt_W0p42_L0p5_m27p2",
+   "n_active": 40,
+   "rrms": 0.13525470870036851,
+   "failed": [],
+   "n_sim": 46,
+   "history": [
+    0.13953538228257148,
+    0.13525470870036851
+   ],
+   "runtime_s": 1.59,
+   "rrms_start_corrected": 0.13953538228257148,
+   "n_sim_timeout": 0,
+   "wall_s": 1.59
+  }
+ },
+ "stored_sources": [
+  "out/research/explore/I20_1/base_nist4/results.json",
+  "out/research/explore/I20_1/lodo_nist4/results.json",
+  "out/research/explore/I20_1/decision.json",
+  "out/research/explore/I21_1/partA_nist4/summary.json"
+ ],
+ "timing": {
+  "train_wall_s": 1.4,
+  "refit_wall_s": 7.3,
+  "workers": 4,
+  "runtime_s": 14.0
+ }
+}

@@ -2668,3 +2668,18 @@ selection, S3_D, held-out refits), report only. Part C: sky130 77 K C0_refit sta
 (pycma, sigma0 0.1) and TuRBO-1 (BoTorch, L_init 0.1), each at the per-device LS NGSpice-call budget B_d (runs to
 4 B_d), 3 seeds; GMR(method, LS) with labels LS better / method better / inconclusive. Predictions P1-P7 in the
 pre-registration (P5: not matched; P6: LS better than both).
+
+## I22-1 code, unit tests, smoke, amendment A1 (2026-10-26)
+
+Code: `src/cryoml/explore/i22_1_baselines.py` (B1 screen selection, labels, outcome rule, pooled statistics,
+budget-exact traces, CMA-ES loop on pycma 4.4.4, TuRBO-1 loop on BoTorch 0.18.1 / GPyTorch 1.15.2, installed into
+the venv; optional dependency group `bo` in `pyproject.toml`), driver `scripts/research/explore/i22_1_baselines.py`
+(stages screen, partA, ls, opt, cost, decide; each dataset uses its own refit and screen tasks: sky130 I4-1, NIST
+I8-1 / I9-1 with the I20-1 state-C records, IHP I5-1, TU Delft I6-1 with the I18-2 `ProblemC` (state C) in place of
+`MeasProblem`), 11 unit tests in `tests/test_i22_1_baselines.py` (the screen selection reproduces the stored I4-1
+selections on sky130 REAL_DEV, GF180 and IHP). Pre-run check: the C0_refit path reproduces the stored C0_refit rows
+on 2 devices each of sky130, NIST lvt, NIST RT card, IHP 233 K and TU Delft 4.13 K (difference 0). Smoke (2 devices
+per dataset, max_nfev 20, `I22_1/smoke`) ran every stage. Amendment A1 (`I22_1/prereg_amendment_A1.md`, before any
+run of the registered configuration): TuRBO runs stop at B_d instead of 4 B_d (43-dimensional GP fits take 16 s at
+1600 points; 4 B_d runs would need about 40 h of CPU time); the matched-budget statistic is unchanged; BLAS threads
+1 per worker.

@@ -1,0 +1,450 @@
+{
+ "ds": "tud295",
+ "name": "TU Delft 295.0 K",
+ "smoke": true,
+ "opts": {
+  "heldout_nfev": 20,
+  "heldout_irls": 1,
+  "diff_step": 0.01
+ },
+ "arms": [
+  "C0_refit",
+  "B1",
+  "B2",
+  "B3_d3",
+  "B4"
+ ],
+ "held_out": [
+  "t40_nmos_W0p12_L0p04_d152",
+  "t40_pmos_W1_L0p04_d392"
+ ],
+ "folds": {
+  "t40_nmos_W0p12_L0p04": {
+   "held": [
+    "t40_nmos_W0p12_L0p04_d152"
+   ],
+   "train": [
+    "t40_nmos_W0p12_L0p05_d160",
+    "t40_nmos_W0p12_L0p05_d161",
+    "t40_nmos_W0p12_L0p05_d162",
+    "t40_nmos_W0p36_L0p04_d190",
+    "t40_nmos_W0p36_L0p04_d191",
+    "t40_nmos_W1_L0p04_d192",
+    "t40_nmos_W1_L0p04_d193",
+    "t40_nmos_W1_L0p04_d194",
+    "t40_nmos_W1_L0p04_d195",
+    "t40_nmos_W1_L0p04_d196",
+    "t40_nmos_W1_L0p04_d197",
+    "t40_nmos_W1_L0p04_d198",
+    "t40_nmos_W1_L0p04_d199",
+    "t40_nmos_W1_L1_d128",
+    "t40_nmos_W1_L1_d129",
+    "t40_nmos_W1_L1_d130",
+    "t40_nmos_W1_L1_d131",
+    "t40_nmos_W1_L1_d132",
+    "t40_nmos_W1_L1_d133",
+    "t40_nmos_W1_L1_d134",
+    "t40_nmos_W1_L1_d135",
+    "t40_pmos_W1_L0p04_d392",
+    "t40_pmos_W1_L0p04_d393",
+    "t40_pmos_W1_L0p04_d394",
+    "t40_pmos_W1_L0p04_d395",
+    "t40_pmos_W1_L0p04_d396",
+    "t40_pmos_W1_L0p04_d397",
+    "t40_pmos_W1_L0p04_d398",
+    "t40_pmos_W1_L0p04_d399",
+    "t40_pmos_W1_L1_d328",
+    "t40_pmos_W1_L1_d329",
+    "t40_pmos_W1_L1_d330",
+    "t40_pmos_W1_L1_d331",
+    "t40_pmos_W1_L1_d332",
+    "t40_pmos_W1_L1_d333",
+    "t40_pmos_W1_L1_d334",
+    "t40_pmos_W1_L1_d335"
+   ]
+  },
+  "t40_pmos_W1_L0p04": {
+   "held": [
+    "t40_pmos_W1_L0p04_d392"
+   ],
+   "train": [
+    "t40_nmos_W0p12_L0p04_d152",
+    "t40_nmos_W0p12_L0p04_d153",
+    "t40_nmos_W0p12_L0p04_d154",
+    "t40_nmos_W0p12_L0p04_d155",
+    "t40_nmos_W0p12_L0p04_d156",
+    "t40_nmos_W0p12_L0p04_d157",
+    "t40_nmos_W0p12_L0p04_d158",
+    "t40_nmos_W0p12_L0p04_d159",
+    "t40_nmos_W0p12_L0p05_d160",
+    "t40_nmos_W0p12_L0p05_d161",
+    "t40_nmos_W0p12_L0p05_d162",
+    "t40_nmos_W0p36_L0p04_d190",
+    "t40_nmos_W0p36_L0p04_d191",
+    "t40_nmos_W1_L0p04_d192",
+    "t40_nmos_W1_L0p04_d193",
+    "t40_nmos_W1_L0p04_d194",
+    "t40_nmos_W1_L0p04_d195",
+    "t40_nmos_W1_L0p04_d196",
+    "t40_nmos_W1_L0p04_d197",
+    "t40_nmos_W1_L0p04_d198",
+    "t40_nmos_W1_L0p04_d199",
+    "t40_nmos_W1_L1_d128",
+    "t40_nmos_W1_L1_d129",
+    "t40_nmos_W1_L1_d130",
+    "t40_nmos_W1_L1_d131",
+    "t40_nmos_W1_L1_d132",
+    "t40_nmos_W1_L1_d133",
+    "t40_nmos_W1_L1_d134",
+    "t40_nmos_W1_L1_d135",
+    "t40_pmos_W1_L1_d328",
+    "t40_pmos_W1_L1_d329",
+    "t40_pmos_W1_L1_d330",
+    "t40_pmos_W1_L1_d331",
+    "t40_pmos_W1_L1_d332",
+    "t40_pmos_W1_L1_d333",
+    "t40_pmos_W1_L1_d334",
+    "t40_pmos_W1_L1_d335"
+   ]
+  }
+ },
+ "b1": {
+  "selected": [
+   "a1",
+   "cdsc",
+   "dvtp0",
+   "dvtp1",
+   "fprout",
+   "minv",
+   "pdiblc1",
+   "pdits",
+   "pditsd",
+   "pditsl",
+   "phin",
+   "pscbe1",
+   "pscbe2",
+   "pvag",
+   "rdswmin",
+   "voffl"
+  ]
+ },
+ "per_device": {
+  "C0_refit": {
+   "t40_nmos_W0p12_L0p04_d152": 0.048915036026499305,
+   "t40_pmos_W1_L0p04_d392": 0.0438611362764524
+  },
+  "B1": {
+   "t40_nmos_W0p12_L0p04_d152": 0.04891503603315359,
+   "t40_pmos_W1_L0p04_d392": 0.043880768948948726
+  },
+  "B2": {
+   "t40_nmos_W0p12_L0p04_d152": 0.04252903644966189,
+   "t40_pmos_W1_L0p04_d392": 0.04385976469505345
+  },
+  "B3_d3": {
+   "t40_nmos_W0p12_L0p04_d152": 0.034396372756028144,
+   "t40_pmos_W1_L0p04_d392": 0.042263897765002355
+  },
+  "B4": {
+   "t40_nmos_W0p12_L0p04_d152": 0.041869917555131385,
+   "t40_pmos_W1_L0p04_d392": 0.0405963161755693
+  }
+ },
+ "validity": {
+  "VA1_c0_max_abs_diff": 0.027100670502410364,
+  "VA1": false,
+  "VA2_complete": true,
+  "VA2_n_failed": {
+   "C0_refit": 0,
+   "B1": 0,
+   "B2": 0,
+   "B3_d3": 0,
+   "B4": 0
+  },
+  "VA2": true,
+  "VA3_unit_tests": true,
+  "VA4_dev_check": {
+   "n": 2,
+   "n_in_TEST": 0,
+   "n_not_in_DEV": 0,
+   "ok": true
+  },
+  "VA5_ihp_vs_I5_1": null,
+  "VA4": true,
+  "valid": false
+ },
+ "n_sim": {
+  "C0_refit": {
+   "t40_nmos_W0p12_L0p04_d152": 42,
+   "t40_pmos_W1_L0p04_d392": 81
+  },
+  "B1": {
+   "t40_nmos_W0p12_L0p04_d152": 58,
+   "t40_pmos_W1_L0p04_d392": 113
+  },
+  "B2": {
+   "t40_nmos_W0p12_L0p04_d152": 83,
+   "t40_pmos_W1_L0p04_d392": 85
+  },
+  "B3_d3": {
+   "t40_nmos_W0p12_L0p04_d152": 42,
+   "t40_pmos_W1_L0p04_d392": 81
+  },
+  "B4": {
+   "t40_nmos_W0p12_L0p04_d152": 42,
+   "t40_pmos_W1_L0p04_d392": 81
+  }
+ },
+ "n_sim_total": {
+  "C0_refit": 123,
+  "B1": 171,
+  "B2": 168,
+  "B3_d3": 123,
+  "B4": 123
+ },
+ "refit_runtime_s_sum": {
+  "C0_refit": 5.2,
+  "B1": 7.8,
+  "B2": 8.1,
+  "B3_d3": 5.6,
+  "B4": 7.2
+ },
+ "train_seconds": {
+  "B4": {
+   "t40_nmos_W0p12_L0p04": 0.34,
+   "t40_pmos_W1_L0p04": 0.34
+  },
+  "B3_d3": {
+   "t40_nmos_W0p12_L0p04": 0.83,
+   "t40_pmos_W1_L0p04": 0.83
+  }
+ },
+ "b4_info": {
+  "t40_nmos_W0p12_L0p04": {
+   "n_points": 185,
+   "nll": -265.1953041284576,
+   "converged": false,
+   "n_iter": 10,
+   "y_var": 0.004218922230999746,
+   "ell": [
+    0.6867049432467468,
+    0.09185638758303255,
+    0.9910316092395989
+   ],
+   "sf2": 0.0032803563915076123,
+   "sn2": 0.0025978443857410907,
+   "mean": -0.04663300879303932
+  },
+  "t40_pmos_W1_L0p04": {
+   "n_points": 185,
+   "nll": -321.5967713502281,
+   "converged": false,
+   "n_iter": 10,
+   "y_var": 0.0024882051683870784,
+   "ell": [
+    1.3383862722406838,
+    0.07948991585085505,
+    1.2771217642046164
+   ],
+   "sf2": 0.002489228284437251,
+   "sn2": 0.0014345307030698216,
+   "mean": -0.022135954485658273
+  }
+ },
+ "rows": {
+  "B1|t40_nmos_W0p12_L0p04_d152": {
+   "label": "B1",
+   "tag": "t40_nmos_W0p12_L0p04_d152",
+   "T_K": 295,
+   "n_active": 52,
+   "n_extra_active": 16,
+   "max_nfev": 108,
+   "rrms_start": 0.04942448336615707,
+   "rrms": 0.04891503603315359,
+   "failed": [],
+   "n_sim": 58,
+   "history": [
+    0.04942448336615707,
+    0.04891503603315359
+   ],
+   "runtime_s": 2.61,
+   "n_sim_timeout": 0,
+   "wall_s": 2.61
+  },
+  "B1|t40_pmos_W1_L0p04_d392": {
+   "label": "B1",
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 295,
+   "n_active": 53,
+   "n_extra_active": 16,
+   "max_nfev": 110,
+   "rrms_start": 0.12154493432456723,
+   "rrms": 0.043880768948948726,
+   "failed": [],
+   "n_sim": 113,
+   "history": [
+    0.12154493432456723,
+    0.043880768948948726
+   ],
+   "runtime_s": 5.18,
+   "n_sim_timeout": 0,
+   "wall_s": 5.18
+  },
+  "B2|t40_nmos_W0p12_L0p04_d152": {
+   "label": "B2",
+   "tag": "t40_nmos_W0p12_L0p04_d152",
+   "T_K": 295,
+   "n_active": 38,
+   "max_nfev": 80,
+   "rext_max_ohm": 2108.9081783131314,
+   "pmax_w": 0.00011038896187,
+   "rext_ohm": 87.01701722367135,
+   "heat_kappa": -0.0060925549737386175,
+   "rrms_start": 0.04942448336615707,
+   "rrms": 0.04252903644966189,
+   "failed": [],
+   "n_sim": 83,
+   "history": [
+    0.04942448336615707,
+    0.04252903644966189
+   ],
+   "runtime_s": 3.84,
+   "n_sim_timeout": 0,
+   "wall_s": 4.06
+  },
+  "B2|t40_pmos_W1_L0p04_d392": {
+   "label": "B2",
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 295,
+   "n_active": 39,
+   "max_nfev": 82,
+   "rext_max_ohm": 136.48861480187566,
+   "pmax_w": 0.00034800612198000004,
+   "rext_ohm": 0.0009655970656296274,
+   "heat_kappa": -1.2734814761217184e-05,
+   "rrms_start": 0.12154493432456723,
+   "rrms": 0.04385976469505345,
+   "failed": [],
+   "n_sim": 85,
+   "history": [
+    0.12154493432456723,
+    0.04385976469505345
+   ],
+   "runtime_s": 3.86,
+   "n_sim_timeout": 0,
+   "wall_s": 4.09
+  },
+  "B4|t40_nmos_W0p12_L0p04_d152": {
+   "label": "B4",
+   "tag": "t40_nmos_W0p12_L0p04_d152",
+   "T_K": 295,
+   "n_active": 36,
+   "rrms_start": 0.04271778951771438,
+   "rrms": 0.041869917555131385,
+   "failed": [],
+   "n_sim": 42,
+   "history": [
+    0.04271778951771438,
+    0.041869917555131385
+   ],
+   "runtime_s": 2.52,
+   "n_sim_timeout": 0,
+   "wall_s": 2.52
+  },
+  "B4|t40_pmos_W1_L0p04_d392": {
+   "label": "B4",
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 295,
+   "n_active": 37,
+   "rrms_start": 0.1220419279744218,
+   "rrms": 0.0405963161755693,
+   "failed": [],
+   "n_sim": 81,
+   "history": [
+    0.1220419279744218,
+    0.0405963161755693
+   ],
+   "runtime_s": 4.67,
+   "n_sim_timeout": 0,
+   "wall_s": 4.67
+  },
+  "B3_d3|t40_nmos_W0p12_L0p04_d152": {
+   "label": "B3_d3",
+   "tag": "t40_nmos_W0p12_L0p04_d152",
+   "T_K": 295,
+   "n_active": 36,
+   "rrms_start": 0.03496795746005978,
+   "rrms": 0.034396372756028144,
+   "failed": [],
+   "n_sim": 42,
+   "history": [
+    0.03496795746005978,
+    0.034396372756028144
+   ],
+   "runtime_s": 2.07,
+   "n_sim_timeout": 0,
+   "wall_s": 2.07
+  },
+  "B3_d3|t40_pmos_W1_L0p04_d392": {
+   "label": "B3_d3",
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 295,
+   "n_active": 37,
+   "rrms_start": 0.12146481871818268,
+   "rrms": 0.042263897765002355,
+   "failed": [],
+   "n_sim": 81,
+   "history": [
+    0.12146481871818268,
+    0.042263897765002355
+   ],
+   "runtime_s": 3.5,
+   "n_sim_timeout": 0,
+   "wall_s": 3.5
+  },
+  "C0_refit|t40_nmos_W0p12_L0p04_d152": {
+   "label": "C0_refit",
+   "tag": "t40_nmos_W0p12_L0p04_d152",
+   "T_K": 295,
+   "n_active": 36,
+   "rrms_start": 0.04942448336615707,
+   "rrms": 0.048915036026499305,
+   "failed": [],
+   "n_sim": 42,
+   "history": [
+    0.04942448336615707,
+    0.048915036026499305
+   ],
+   "runtime_s": 1.86,
+   "n_sim_timeout": 0,
+   "wall_s": 1.86
+  },
+  "C0_refit|t40_pmos_W1_L0p04_d392": {
+   "label": "C0_refit",
+   "tag": "t40_pmos_W1_L0p04_d392",
+   "T_K": 295,
+   "n_active": 37,
+   "rrms_start": 0.12154493432456723,
+   "rrms": 0.0438611362764524,
+   "failed": [],
+   "n_sim": 81,
+   "history": [
+    0.12154493432456723,
+    0.0438611362764524
+   ],
+   "runtime_s": 3.39,
+   "n_sim_timeout": 0,
+   "wall_s": 3.39
+  }
+ },
+ "stored_sources": [
+  "out/research/explore/I18_2/decision.json",
+  "out/research/explore/I18_2/partB_decision.json"
+ ],
+ "timing": {
+  "train_wall_s": 2.0,
+  "refit_wall_s": 9.5,
+  "workers": 4,
+  "runtime_s": 17.1
+ }
+}

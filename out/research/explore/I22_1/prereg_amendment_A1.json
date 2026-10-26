@@ -1,0 +1,8 @@
+{
+ "id": "I22-1 A1",
+ "date": "2026-10-26",
+ "before_results": true,
+ "change": "Part C TuRBO-1 runs (both configurations) stop at B_d instead of 4 B_d; primary B_d statistic unchanged; 4 B_d secondary for CMA-ES vs LS max_nfev 1600 only",
+ "reason": "GP fit time in 43-D: 1.0/3.0/5.9/16.2 s at 100/400/800/1600 points; 4 B_d runs about 45 min each, 108 runs about 40 h CPU",
+ "threads": "OMP_NUM_THREADS=VECLIB_MAXIMUM_THREADS=1 on the queue command line"
+}

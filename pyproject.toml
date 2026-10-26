@@ -16,6 +16,10 @@ dependencies = [
     "cma>=4.0",
 ]
 
+[project.optional-dependencies]
+# I22-1 Part C (TuRBO-1 baseline)
+bo = ["botorch==0.18.1"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
