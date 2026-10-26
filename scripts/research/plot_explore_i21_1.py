@@ -84,7 +84,8 @@ def load_all() -> dict:
         dec = m.decide_part_a(S["values"])
         assert dec["deploy"] == S["decision"]["deploy"]
         q12 = list(d[ds]["q12"]["devices"].values())
-        check(S["values"]["q1_vds0_max"], max(r["vds0"]["tight"]["elem_max"] for r in q12), f"{ds} vds0")
+        rule = m.vds0_rule_value(m.summarize_vds0({r["tag"]: r["vds0"] for r in q12}))
+        assert rule == S["values"]["q1_vds0_max"], (ds, rule)
         assert S["values"]["q2_gds_sign"] == sum(sum(r["q2_gds_curves_introduced"]) for r in q12)
         assert S["values"]["q2_gm_sign"] == sum(sum(r["q2_gm_curves_introduced"]) for r in q12)
         n += 4
@@ -200,6 +201,52 @@ def t_a_checks(d: dict) -> rf.Table:
                      col("nist4", "NIST lvt"), col("nistrt", "NIST RT card")], rows, notes)
 
 
+def a_attrib_rows(d: dict, ds: str) -> list[dict]:
+    """Devices with a core-check contribution; whether the same bench's card
+    + replica (or card-only) run prints convergence messages."""
+    out = []
+    for t, r in sorted(d[ds]["q12"]["devices"].items()):
+        msgs = {k: len(v) for k, v in r["msgs"].items() if v}
+        parts = []
+        if r["q1_tight_fwd_viol"] or r["q1_tight_swap_viol"]:
+            parts.append(f"tight equivalence {r['q1_tight_fwd_viol']} fwd / {r['q1_tight_swap_viol']} exchanged")
+        if r["q1_nonfinite"]:
+            parts.append(f"{r['q1_nonfinite']} non-finite element grid values")
+        el = sum(v for k, v in msgs.items() if k.startswith("grid_") and k.endswith("_elem"))
+        if el:
+            parts.append(f"{el} element grid convergence lines")
+        if r["vds0"]["tight"]["n_nonfinite"]:
+            parts.append("V(d,s) = 0 tight non-finite")
+        if r["swap_asym_element_max"] > 1e-3:
+            parts.append(f"exchange asymmetry {r['swap_asym_element_max']:.2e}")
+        if max(r["q2_err_gm"], r["q2_err_gds"]) > 1e-3:
+            parts.append(f"Q2 error {max(r['q2_err_gm'], r['q2_err_gds']):.2e}")
+        if r["cap_max"] > 1e-3:
+            parts.append(f"capacitance error {r['cap_max']:.2e}")
+        if any(r["q2_gm_curves_introduced"]):
+            from cryoml.explore import i21_1_close as m
+            parts.append("gm sign change at |V(d,s)| " + ", ".join(f"{v:g}" for v, f in zip(m.GM_VDS,
+                                                                    r["q2_gm_curves_introduced"]) if f) + " V")
+        if not parts:
+            continue
+        card = {k: v for k, v in msgs.items() if k.endswith("_card_rep") or k.endswith("_card")}
+        out.append({"ds": DSS[ds].split(" (")[0], "t": t, "c": "; ".join(parts),
+                    "m": ", ".join(f"{k} {v}" for k, v in msgs.items()) or "none",
+                    "cl": "yes (" + ", ".join(card) + ")" if card else "no"})
+    return out
+
+
+def t_a_attrib(d: dict) -> rf.Table:
+    rows = a_attrib_rows(d, "nist4") + a_attrib_rows(d, "nistrt")
+    return rf.Table("05_table_i21_1_a_attrib", "Part A devices behind the core failures (reported attribution, no rule)",
+                    [col("ds", "dataset", kind="text"), col("t", "device", kind="text"),
+                     col("c", "core-check contributions", kind="text"), col("m", "convergence lines per run", kind="text"),
+                     col("cl", "card or card + replica run of the device prints lines", kind="text")], rows,
+                    ["The pre-registered rule counts element decks; a device listed with 'yes' has convergence lines "
+                     "also in decks without the element (the M2 card alone at tight tolerance). Lines are ngspice "
+                     "'dynamic gmin stepping failed', 'true gmin stepping failed', 'source stepping failed'."])
+
+
 def t_a_q3(d: dict) -> rf.Table:
     rows = []
     for ds in ("nist4", "nistrt"):
@@ -252,7 +299,7 @@ def t_a_gds(d: dict) -> rf.Table:
                          "pm": str(sum(1 for t in devs if t.startswith("p")))})
         rows.append({"ds": DSS[ds].split(" (")[0], "vg": "all", "n": f"{len(S['gds_curves_introduced'])} of "
                      f"{S['n_gds_curves']}", "p": "-", "nm": "-", "pm": "-"})
-    return rf.Table("05_table_i21_1_a_gds", "Part A gds curves with an introduced sign change (restriction)",
+    return rf.Table("06_table_i21_1_a_gds", "Part A gds curves with an introduced sign change (restriction)",
                     [col("ds", "dataset", kind="text"), col("vg", "|V(g,s)| (V)"), col("n", "curves (devices)"),
                      col("nm", "nMOS"), col("pm", "pMOS"), col("p", "dense 1 mV points with a sign change")], rows,
                     ["A curve counts when the element's gds (AC 1 MHz or the 1 mV dense sweep) changes sign at "
@@ -267,7 +314,7 @@ def t_a_acc(d: dict) -> rf.Table:
         rows.append({"ds": DSS[ds], "s": f"{A['mean_stored_python']:.5f}", "c": f"{A['mean_card_python']:.5f}",
                      "pc": f"{A['mean_python_channel']:.5f}", "n": f"{A['mean_native']:.5f}",
                      "x": e(A["max_abs_native_minus_stored"]), "m": str(A["n_msgs"])})
-    return rf.Table("06_table_i21_1_a_accuracy", "Part A element-deck accuracy of the M2 pairs (reported)",
+    return rf.Table("07_table_i21_1_a_accuracy", "Part A element-deck accuracy of the M2 pairs (reported)",
                     [col("ds", "dataset", kind="text"), col("s", "M2 row (Python, I20-1 simulator)"),
                      col("c", "card-only deck x exp(g)"), col("pc", "card + replica: I_card + (exp(g)-1) I_rep"),
                      col("n", "native element deck"), col("x", "max per-device |native - M2 row|"),
@@ -288,7 +335,7 @@ def t_b(d: dict) -> rf.Table:
                      "v": "valid" if r["validity"]["valid"] else "invalid",
                      "vb1": e(max(x["diff"] for x in d["s3"]["per_temperature"][t]["state_L_check"].values())
                               if "state_L_check" in d["s3"]["per_temperature"][t] else float("nan"))})
-    return rf.Table("07_table_i21_1_b_s3", "Part B: TU Delft v1-recipe S3_D, state-L (I19-1) vs state-C records",
+    return rf.Table("08_table_i21_1_b_s3", "Part B: TU Delft v1-recipe S3_D, state-L (I19-1) vs state-C records",
                     [col("t", "temperature"), col("l", "S3_D state L (I19-1)"), col("c", "S3_D state C"),
                      col("dl", "decision L"), col("dc", "decision C (apply iff S3_D < 0)"), col("s", "sign differs"),
                      col("p", "predicted sign"), col("vb1", "VB1 state-L check max |diff|"), col("v", "validity")],
@@ -309,7 +356,7 @@ def t_c_validity(d: dict) -> rf.Table:
                      "i": f"{d[T]['inner']['complete']} ({d[T]['inner']['timing']['n_train']} trainings, "
                           f"{d[T]['inner']['timing']['n_refit']} refits)", "g": str(d[T]["pens"]["v4_ok"]),
                      "v": "valid" if D["validity"]["valid"] else "invalid: " + "; ".join(D["validity"]["fails"])})
-    return rf.Table("08_table_i21_1_c_validity", "Part C validity (VC1-VC5) per temperature",
+    return rf.Table("09_table_i21_1_c_validity", "Part C validity (VC1-VC5) per temperature",
                     [col("t", "T"), col("c0", "VC1 C0_refit max |d|"), col("mb", "VC1 M_bias v1 max |d|"),
                      col("u", "VC2 unit tests"), col("r", "VC3 rows"), col("i", "VC3 inner selection"),
                      col("g", "VC4 grids"), col("v", "result", kind="text")], rows,
@@ -337,7 +384,7 @@ def t_c_rules(d: dict) -> rf.Table:
     rows.append({"t": "300 K (I17-2, stored)", "p": f"{ci(p)} {p['wins']}/18", "pl": i17["outcome"], "ppl": "-",
                  "s": f"{ci(s)} {s['wins']}/18", "sl": i17["secondary"], "psl": "-", "sg": "-",
                  "v1": f"{ci(g1)} {g1['wins']}/18"})
-    return rf.Table("09_table_i21_1_c_rules", "Part C pre-registered rules per temperature: selected g v2 on IHP SG13G2",
+    return rf.Table("10_table_i21_1_c_rules", "Part C pre-registered rules per temperature: selected g v2 on IHP SG13G2",
                     [col("t", "T"), col("p", "GMR(selected, C0_refit) lower/n"), col("pl", "primary label", kind="text"),
                      col("ppl", "predicted label", kind="text"), col("s", "GMR(selected, M_bias v1) lower/n"),
                      col("sl", "secondary label", kind="text"), col("psl", "secondary prediction"),
@@ -363,7 +410,7 @@ def t_c_arms(d: dict) -> rf.Table:
         rows.append({"t": f"{T} K", "a": "lambda* (folds)", "m": ", ".join(f"{k} V x{v}" for k, v in
                                                                             sorted(cnt.items(), key=lambda x: float(x[0]))),
                      "c": "", "md": "", "cl": "", "lv": "", "hv": ""})
-    return rf.Table("10_table_i21_1_c_arms", "Part C arms per temperature (RRMS all-device / combined / median, LV / HV)",
+    return rf.Table("11_table_i21_1_c_arms", "Part C arms per temperature (RRMS all-device / combined / median, LV / HV)",
                     [col("t", "T"), col("a", "arm", kind="text"), col("m", "all-device"), col("c", "combined"),
                      col("md", "median"), col("lv", "LV mean"), col("hv", "HV mean"),
                      col("cl", "GMR vs C0_refit, 12-cluster CI")], rows,
@@ -397,7 +444,8 @@ def fig_forest(d: dict, path: Path) -> list[str]:
     ax.set_yticklabels([f"{T} K" + (" (I17-2)" if T == 300 else " (I21-1)") for T, *_ in rows])
     ax.invert_yaxis()
     ax.set_xlabel("geometric-mean RRMS ratio (95% device-bootstrap CI); dashed 1, dotted 1.05 (non-inferiority margin)")
-    ax.legend(fontsize=8, frameon=False, loc="lower right")
+    ax.set_xlim(right=1.95)
+    ax.legend(fontsize=8, frameon=False, loc="center right")
     ax.set_title("IHP SG13G2, 18 DEV DUTs, LODO within class: selected g v2 vs C0_refit and M_bias v1 per temperature",
                  fontsize=9.5, color=INK, loc="left")
     fig.tight_layout()
@@ -540,10 +588,11 @@ def fig_a_q3(d: dict, ds: str, path: Path) -> list[str]:
             ax.set_ylabel("V_out (V)")
         ax.set_title(name, fontsize=9.5, color=INK, loc="left")
         ax.legend(fontsize=7, frameon=False)
-    fig.suptitle(f"Part A Q3 circuits, {DSS[ds]}: sky130 decks at 1.8 V on the nearest NIST DEV devices "
-                 f"(devices: {', '.join(f'{k} -> {v}' for k, v in d[ds]['q3']['devices'].items())})", fontsize=8.6,
-                 color=INK)
-    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    dv = d[ds]["q3"]["devices"]
+    fig.suptitle(f"Part A Q3 circuits, {DSS[ds]}: sky130 decks at 1.8 V on the nearest NIST DEV devices\n"
+                 + "; ".join(f"{k} -> {v}" for k, v in list(dv.items())[:2]) + "\n"
+                 + "; ".join(f"{k} -> {v}" for k, v in list(dv.items())[2:]), fontsize=8.8, color=INK)
+    fig.tight_layout(rect=(0, 0, 1, 0.91))
     fig.savefig(path, facecolor=BG)
     plt.close(fig)
     return [rel(I21 / f"partA_{ds}/q3.json"), f"out/research/explore/I21_1/partA_{ds}/arrays/q3_*.npz (not in git)"]
@@ -748,6 +797,8 @@ def main() -> int:
     add_table(t_a_checks(d), "Part A core checks and restrictions vs thresholds, labels and predictions", pa)
     add_table(t_a_q3(d), "Part A Q3 circuit metrics per arm and circuit runtime ratios",
               [rel(I21 / "partA_nist4/q3.json"), rel(I21 / "partA_nistrt/q3.json")])
+    add_table(t_a_attrib(d), "Part A devices behind the core failures and whether the card-level decks print "
+              "convergence lines (reported)", [rel(I21 / "partA_nist4/q12.json"), rel(I21 / "partA_nistrt/q12.json")])
     add_table(t_a_gds(d), "Part A gds curves with an introduced sign change per |V(g,s)|",
               [rel(I21 / "partA_nist4/q12.json"), rel(I21 / "partA_nistrt/q12.json")])
     add_table(t_a_acc(d), "Part A element-deck accuracy of the M2 pairs",

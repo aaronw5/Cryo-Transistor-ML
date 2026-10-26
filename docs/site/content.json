@@ -6805,6 +6805,183 @@
    "updated": "2026-10-23"
   },
   {
+   "id": "i21-1",
+   "tab": "explore",
+   "statement": "I21-1: open items without a user decision. (A) The I20-1 full-data g v2 element (lambda 0 V) is tested for deployment on both NIST DEV datasets with the I17-1 rules; (B) the TU Delft v1-recipe S3_D is recomputed on the state-C records; (C) the selected g v2 recipe is run on IHP SG13G2 233 / 343 / 398 K.",
+   "status": "refuted",
+   "headline": {
+    "value": "NIST Part B not deployable on both datasets (lvt: tight equivalence, non-finite, Q2, capacitance, 5 gm curves; RT card: 2477 exchanged-bench violations and asymmetry 1.29e-3 on one device whose card + replica run also fails). TU Delft v1 S3_D state C +0.0055 / +0.2537 (state L -0.0292 / -0.0510): sign changes, frozen rule gives C0_refit. IHP GMR(selected g v2, C0_refit) 1.084 [0.898, 1.371] (233 K, inconclusive), 1.188 [0.990, 1.503] (343 K, inconclusive), 1.260 [1.026, 1.607] (398 K, worse); non-inferior to M_bias v1 at all three.",
+    "convention": "DEV only; Part A ngspice-41 OSDI, state C; Part C ngspice-46 + psp103.osdi, device bootstrap 10,000 (seed 0), 18 DUTs"
+   },
+   "numbers": [
+    {
+     "label": "Part A restrictions",
+     "value": "default tolerance 1.95e-3 / 1.94e-3; gds sign changes 44 of 265 / 94 of 435 curves; runtime 3.96 / 3.35; Q3 0 element-only failures",
+     "convention": "NIST lvt / NIST RT card",
+     "source": "out/research/explore/I21_1/decision.json"
+    },
+    {
+     "label": "Part A attribution (reported)",
+     "value": "lvt: W3_L0p35 and W3_L1 pMOS fail at tight tolerance also without the element; W0p42_L20 pMOS element-only lines; nfet W3_L8, W5_L4 gm sign change. RT card: the one failing device has lines in the card + replica run",
+     "convention": "no rule",
+     "source": "out/research/report/2026-10-23_i21_1/tables.md"
+    },
+    {
+     "label": "freeze-draft pooled GMR vs C0_refit",
+     "value": "gated frozen rule 0.923 (0.884 before I21-1), correction always 0.957, gated I19-1 0.922, v1 0.964",
+     "convention": "exp(mean ln GMR) over 9 DEV rows",
+     "source": "out/research/report/2026-10-23_freeze_draft/tables.md"
+    },
+    {
+     "label": "compute",
+     "value": "Part A 203 + 172 s plus q12 rerun; Part B 50 s; Part C per temperature about 56 min (inner 2533-2632 s, selected 722-775 s)",
+     "convention": "queue wall time, 8 workers",
+     "source": "out/research/done.txt"
+    }
+   ],
+   "what": [
+    "Question: is the selected g v2 element deployable on the NIST cards, does the TU Delft gate value keep its sign in state C, and what does the selected g v2 recipe give on the IHP temperatures without g v2 rows?",
+    "Pre-registered (1808a01) with predicted labels: Part A deployable with restrictions on both datasets; Part B S3_D < 0; Part C inconclusive / inconclusive / worse, secondary not shown non-inferior."
+   ],
+   "did": [
+    "Code 0688e64 (19 unit tests after fix 3900f47); channel replica of the explicit-bin NIST cards; sky130 Q3 circuits on the nearest NIST DEV devices; I17-2 driver rebound per IHP temperature; report batch 2026-10-23_i21_1 re-simulates 4 NIST and 6 IHP devices with every RRMS checked."
+   ],
+   "result": {
+    "text": [
+     "Part A: not deployable on both NIST datasets by the pre-registered rule; on the RT card every core failure comes from one device whose card + replica tight run also prints convergence lines.",
+     "Part B: the TU Delft v1 S3_D is positive in state C at both temperatures, so the frozen rule agrees with the committed TU Delft decisions (C0_refit) and misses the realised DEV gain.",
+     "Part C: selected g v2 does not lower the IHP error against C0_refit at any temperature; it matches M_bias v1 (non-inferior)."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "01_table_i21_1_setup.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "02_table_i21_1_a_validity.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "03_table_i21_1_a_checks.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "04_table_i21_1_a_q3.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "05_table_i21_1_a_attrib.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "06_table_i21_1_a_gds.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "07_table_i21_1_a_accuracy.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "08_table_i21_1_b_s3.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "09_table_i21_1_c_validity.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "10_table_i21_1_c_rules.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "11_table_i21_1_c_arms.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "12_i21_1_forest.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "13_i21_1_c_per_device.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "14_i21_1_b_s3.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "15_i21_1_a_gds_nist4.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "16_i21_1_a_q3_nist4.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "17_i21_1_a_gds_nistrt.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "18_i21_1_a_q3_nistrt.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "19_i21_1_a_iv_nist4_nfet_01v8_lvt_W1p65_L1_m23p6.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "20_i21_1_a_iv_nist4_pfet_01v8_lvt_W5_L1p5_m30p6.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "21_i21_1_a_iv_nistrt_nfet_01v8_W1p68_L1_m7p2.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "22_i21_1_a_iv_nistrt_pfet_01v8_W5_L2_m18p5.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "23_i21_1_c_iv_233K_lv_pmos_W0p3_L10.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "24_i21_1_c_iv_233K_hv_pmos_W0p3_L10.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "25_i21_1_c_iv_343K_hv_nmos_W0p6_L1p2.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "26_i21_1_c_iv_343K_lv_pmos_W10_L10.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "27_i21_1_c_iv_398K_hv_nmos_W0p3_L0p5.png"
+     },
+     {
+      "batch": "2026-10-23_i21_1",
+      "file": "28_i21_1_c_iv_398K_lv_pmos_W10_L10.png"
+     }
+    ]
+   },
+   "caveats": [
+    "Prediction scores: Part A labels 0/2, Part B signs 0/2, Part C primary labels 3/3, secondary labels 0/3.",
+    "Part C runs the fixed-lambda arms only at lambda*_f (selected rows identical by construction).",
+    "The attribution of Part A failures to card-level convergence is reported without a rule; the registered check counts element decks.",
+    "No amendment of a755e18 is written; the TU Delft decision question is pending with the user."
+   ],
+   "sources": [
+    "out/research/explore/I21_1/prereg.md",
+    "out/research/explore/I21_1/decision.json",
+    "out/research/report/2026-10-23_i21_1/README.md",
+    "docs/research/method_freeze_draft_2026-10-23.md"
+   ],
+   "updated": "2026-10-26"
+  },
+  {
    "id": "i20-1",
    "tab": "explore",
    "statement": "I20-1: the NIST decks (I8-1 lvt 77 K card, I9-1 room-temperature card) are audited for the BSIM4 A2 clamp state and moved to state C; in state C the selected g v2 recipe (symmetric inputs, EPS 0.01 V, VDD 1.8 V, nested lambda selection) lowers the held-out RRMS against C0_refit on both NIST DEV datasets and is non-inferior to M_bias v1 (margin 1.05).",

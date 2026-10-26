@@ -1,15 +1,61 @@
 [
  {
   "date": "2026-10-23",
+  "topic": "i21_1",
+  "folder": "2026-10-23_i21_1",
+  "pngs": [
+   "01_table_i21_1_setup.png",
+   "02_table_i21_1_a_validity.png",
+   "03_table_i21_1_a_checks.png",
+   "04_table_i21_1_a_q3.png",
+   "05_table_i21_1_a_attrib.png",
+   "06_table_i21_1_a_gds.png",
+   "07_table_i21_1_a_accuracy.png",
+   "08_table_i21_1_b_s3.png",
+   "09_table_i21_1_c_validity.png",
+   "10_table_i21_1_c_rules.png",
+   "11_table_i21_1_c_arms.png",
+   "12_i21_1_forest.png",
+   "13_i21_1_c_per_device.png",
+   "14_i21_1_b_s3.png",
+   "15_i21_1_a_gds_nist4.png",
+   "16_i21_1_a_q3_nist4.png",
+   "17_i21_1_a_gds_nistrt.png",
+   "18_i21_1_a_q3_nistrt.png",
+   "19_i21_1_a_iv_nist4_nfet_01v8_lvt_W1p65_L1_m23p6.png",
+   "20_i21_1_a_iv_nist4_pfet_01v8_lvt_W5_L1p5_m30p6.png",
+   "21_i21_1_a_iv_nistrt_nfet_01v8_W1p68_L1_m7p2.png",
+   "22_i21_1_a_iv_nistrt_pfet_01v8_W5_L2_m18p5.png",
+   "23_i21_1_c_iv_233K_lv_pmos_W0p3_L10.png",
+   "24_i21_1_c_iv_233K_hv_pmos_W0p3_L10.png",
+   "25_i21_1_c_iv_343K_hv_nmos_W0p6_L1p2.png",
+   "26_i21_1_c_iv_343K_lv_pmos_W10_L10.png",
+   "27_i21_1_c_iv_398K_hv_nmos_W0p3_L0p5.png",
+   "28_i21_1_c_iv_398K_lv_pmos_W10_L10.png"
+  ],
+  "summary": [
+   "I21-1 open items without a user decision: NIST Part B, TU Delft S3_D in state C, IHP 233 / 343 / 398 K selected g v2.",
+   "Part A NIST lvt (I8-1, 77 K card): not deployable; core failures Q1 equivalence |dI| <= 1e-6 |I| + 1e-13 A (tight), Q1 convergence / non-finite, Q1 I_D at Vds = 0, Q2 derivative agreement, Q2 capacitances differ from the card, Q2 gm sign change in strong inversion; restrictions default tolerance above 1e-3, gds sign changes introduced, runtime overhead > 2x; gds curves 44 of 265.",
+   "Part A NIST RT card (I9-1, room-temperature card): not deployable; core failures Q1 equivalence |dI| <= 1e-6 |I| + 1e-13 A (tight), terminal-exchange asymmetry > 1e-3; restrictions default tolerance above 1e-3, gds sign changes introduced, runtime overhead > 2x; gds curves 94 of 435.",
+   "Part B TU Delft 4.13 K: v1-recipe S3_D state L -0.0292 -> state C +0.0055 (sign differs: True; decision C0_refit).",
+   "Part B TU Delft 295.0 K: v1-recipe S3_D state L -0.0510 -> state C +0.2537 (sign differs: True; decision C0_refit).",
+   "Part C IHP 233 K: GMR(selected g v2, C0_refit) 1.084 [0.898, 1.371] (inconclusive); GMR(selected, M_bias v1) 0.980 [0.957, 0.999] (non-inferior to M_bias v1).",
+   "Part C IHP 343 K: GMR(selected g v2, C0_refit) 1.188 [0.990, 1.503] (inconclusive); GMR(selected, M_bias v1) 1.006 [0.984, 1.033] (non-inferior to M_bias v1).",
+   "Part C IHP 398 K: GMR(selected g v2, C0_refit) 1.260 [1.026, 1.607] (worse than C0_refit); GMR(selected, M_bias v1) 0.991 [0.975, 1.004] (non-inferior to M_bias v1)."
+  ],
+  "generated": "2026-10-26T09:35:02"
+ },
+ {
+  "date": "2026-10-23",
   "topic": "freeze_draft",
   "folder": "2026-10-23_freeze_draft",
   "pngs": [
    "01_table_freeze_draft_dev_evidence.png"
   ],
   "summary": [
-   "Method-freeze draft DEV evidence table (9 measured DEV datasets; NIST rows state C from I20-1): C0_refit, M_bias v1, selected g v2, gated I19-1 and gated frozen rule; pooled GMR vs C0_refit gated I19-1 0.922, frozen rule 0.884, v1 0.964. Draft: docs/research/method_freeze_draft_2026-10-23.md."
+   "Method-freeze draft DEV evidence table (9 measured DEV datasets; NIST rows state C from I20-1): C0_refit, M_bias v1, selected g v2, gated I19-1 and gated frozen rule; pooled GMR vs C0_refit gated I19-1 0.922, frozen rule 0.923, v1 0.964. Draft: docs/research/method_freeze_draft_2026-10-23.md."
   ],
-  "generated": "2026-10-23T13:17:07"
+  "generated": "2026-10-26T09:35:02"
  },
  {
   "date": "2026-10-23",

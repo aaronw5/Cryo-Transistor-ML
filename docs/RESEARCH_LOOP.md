@@ -2612,3 +2612,41 @@ inconclusive / worse, secondary not shown non-inferior. Code 0688e64 (`src/cryom
 `scripts/research/explore/i21_1_close.py`, `tests/test_i21_1_close.py`); smoke ran every stage. First Part A run
 (NIST lvt) stopped in q12 (rc=1) on an all-NaN V(d,s) = 0 column (numpy nanargmax); fix 3900f47 (NaN-safe
 evaluation; a non-finite tight value fails the check as the rule states), M2 cards kept, q12 onwards requeued.
+
+## I21-1 outcome (2026-10-26): NIST Part B not deployable on both datasets; TU Delft v1 S3_D changes sign in state C; selected g v2 on IHP 233 / 343 / 398 K inconclusive / inconclusive / worse than C0_refit (pre-registered rules)
+
+Queue (8 workers): I21_1_s3tud 50 s; I21_1_partA_nist4 203 s (rc=1 in q12, NaN-handling bug, fix 3900f47; M2 cards
+kept), I21_1_partA_nistrt 172 s, I21_1_partA_nist4_q12 (q12 / q3 / acc / report), I21_1_partA_nistrt_report 4 s;
+IHP per temperature pens 1-2 s, base 104-106 s, inner 2533 / 2606 / 2632 s (270 trainings, 730 inner refits), sel
+722 / 775 / 735 s, decide 5 s; I21_1_decide. Outputs `out/research/explore/I21_1/`.
+Part A (valid: VA1 card-only deck = M2 Python rows, difference 0; 0 failed M2 refits of 53 / 87; unit tests pass;
+53 / 87 Part B rows, 24 Q3 runs; DEV only). **NIST lvt: not deployable.** Core: tight equivalence 21405 points,
+Q1 non-finite / convergence 22287, V(d,s) = 0 non-finite (finite tight maximum 2.9e-17 A), Q2 1.79, capacitance
+error inf, gm sign change on 5 of 159 curves; g text 1.4e-16, exchanged 2.5e-16, asymmetry 4.5e-5, Q3 0.
+Restrictions: default tolerance 1.95e-3, gds sign changes on 44 of 265 curves, runtime 3.96 (ro5_B). Attribution
+(reported, no rule): pfet_01v8_lvt_W3_L0p35_m29p5 fails at tight tolerance in card + replica and card-only decks too
+(source of the non-finite, Q2, capacitance failures and 3 gm curves); pfet_01v8_lvt_W3_L1_m29p6 3 lines in card +
+replica and element runs; pfet_01v8_lvt_W0p42_L20_m27p7 3 lines in the tight element run only (235 forward
+violations); nfet W3_L8 and W5_L4 g-introduced gm sign change at |V(d,s)| 0.05 V. **NIST RT card: not deployable.**
+Core: 2477 exchanged-bench tight violations and exchange asymmetry 1.29e-3, both on pfet_01v8_W0p55_L1_m12p5, whose
+exchanged card + replica tight run prints 3 convergence lines; every other core check passes (V(d,s) = 0 tight 2.7e-17
+A, Q2 7.0e-6, capacitance 4.2e-14, gm 0, Q3 0). Restrictions: default tolerance 1.94e-3, gds 94 of 435 curves,
+runtime 3.35. ro5_B fails at card level in every arm (RT card). Replica non-channel outputs 0 on both datasets.
+Element-deck RRMS of the M2 pairs: 0.03048 / 0.04585 vs Python 0.03045 / 0.04578 (max per-device |d| 8.9e-5 /
+4.3e-4). Predictions (deployable with restrictions; gds sign changes > 0): label 0 of 2 correct, gds 2 of 2.
+Part B (valid; state-L recompute of t40_nmos_W0p12_L0p04 reproduces I19-1, difference 0): TU Delft v1-recipe S3_D on
+state-C records **+0.0055 (4.13 K), +0.2537 (295.0 K)**; state L -0.0292 / -0.0510; sign differs at both;
+decision under threshold 0 C0_refit at both (prediction < 0: 0 of 2). Report only: the frozen rule gives C0_refit
+on TU Delft, equal to the committed a755e18 primary decisions; the realised DEV gain (0.826 / 0.829) is missed; no
+amendment written.
+Part C (valid at every temperature: VC1 reruns reproduce the I5-1 rows, difference 0): 233 K GMR(selected g v2,
+C0_refit) **1.084 [0.898, 1.371] 11/18 inconclusive**, vs M_bias v1 0.980 [0.957, 0.999] non-inferior; 343 K
+**1.188 [0.990, 1.503] 10/18 inconclusive**, vs v1 1.006 [0.984, 1.033] non-inferior; 398 K **1.260 [1.026, 1.607]
+11/18 worse than C0_refit**, vs v1 0.991 [0.975, 1.004] non-inferior. lambda* (folds): 233 K 0 x1, 1 x4, 2 x4, 5 x2,
+10 x7; 343 K 0 x1, 1 x8, 2 x1, 5 x4, 10 x4; 398 K 0 x3, 1 x2, 2 x4, 5 x3, 10 x6. Predictions: primary labels 3 of 3,
+ln GMR vs C0_refit signs 3 of 3, ln GMR vs v1 signs 1 of 3, secondary labels 0 of 3.
+Method-freeze draft updated (evidence table with g v2 on all 9 rows, NIST Part B labels, TU Delft state-C frozen-rule
+S3_D; pooled gated frozen rule 0.923 (0.884 before), correction always 0.957, v1 0.964; 117 values checked); open
+items 3, 5, 6, 8 (closed), 9 rewritten. Report batch `out/research/report/2026-10-23_i21_1/`
+(`scripts/research/plot_explore_i21_1.py`; 11 tables, forest, per-DUT ratios, S3 scatter, gds and Q3 figures,
+10 I-V figures with every re-simulated RRMS checked); site claim `i21-1`. Site rebuilt, not published.
