@@ -283,7 +283,7 @@ def fig_forest_a(d: dict, path: Path) -> list[str]:
     cmps = [k for k, _ in A_CMP]
     colors = {"B1_vs_C0_call": VIOLET, "C0_call_vs_C0_refit": "#1d3557", "B1_vs_C0_refit": "#9d4edd",
               "B1_cap_vs_C0_refit": "#c8b6ff", "B1_vs_B1_cap": GREY, "C0_call_vs_selected_g_v2": AQUA}
-    fig, ax = plt.subplots(figsize=(12, 7.5), dpi=DPI)
+    fig, ax = plt.subplots(figsize=(12, 8.3), dpi=DPI)
     fig.patch.set_facecolor(BG)
     style(ax)
     k = len(cmps) + 1
@@ -301,7 +301,7 @@ def fig_forest_a(d: dict, path: Path) -> list[str]:
     ax.set_yticklabels([NAME[ds] for ds in m.IHP], fontsize=8.5)
     ax.invert_yaxis()
     ax.set_xlabel("GMR, 95% bootstrap CI over 18 DUTs (log scale); < 1: first arm has lower held-out RRMS")
-    ax.legend(fontsize=7.5, frameon=False, loc="lower right")
+    ax.legend(fontsize=7.5, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.09), ncol=3)
     ax.set_title("Part A: B1 vs C0_refit at equal NGSpice calls (C0_call) and reverse control (B1_cap), IHP SG13G2",
                  fontsize=9.6, color=INK, loc="left")
     fig.tight_layout()
@@ -494,7 +494,8 @@ def fig_iv_a(d: dict, ds: str, tag: str, why: str, path: Path) -> list[str]:
                       label=f"NGSpice re-simulated, B1_cap held-out card ({calls['B1_cap'][tag]} calls): RRMS "
                             f"{sc['B1_cap']:.4f}")]
     p22.draw_iv(rec, sims, lines, handles,
-                f"{tag} ({NAME[ds]}, DEV; {why}): held-out cards re-simulated ({p22.SIMNAME['ihp']}). RRMS equals "
+                f"{tag} ({NAME[ds]}, DEV; {why}):\n"
+                f"held-out cards re-simulated ({p22.SIMNAME['ihp']}). RRMS equals "
                 "the stored rows.", path)
     return [rel(I22 / f"partA_{ds}/heldout_cards.json"), rel(I23 / f"partA_{ds}/heldout_cards.json")]
 
@@ -537,7 +538,8 @@ def fig_iv_b(d: dict, ds: str, tag: str, why: str, path: Path) -> list[str]:
                             f"{sc['fixed_l1']:.4f}")]
     k = "ihp" if ds.startswith("ihp") else "tud" if ds.startswith("tud") else ds
     p22.draw_iv(rec, sims, lines, handles,
-                f"{tag} ({NAME[ds]}, DEV; {why}): held-out cards re-simulated ({p22.SIMNAME[k]}); g applied in "
+                f"{tag} ({NAME[ds]}, DEV; {why}):\n"
+                f"held-out cards re-simulated ({p22.SIMNAME[k]}); g applied in "
                 "Python. RRMS equals the stored rows.", path)
     return ["stored C0_refit (I22-1), selected g v2 and fixed lambda 1 V held-out cards and corrections"]
 

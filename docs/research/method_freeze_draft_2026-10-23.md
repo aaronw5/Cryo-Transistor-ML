@@ -1,6 +1,6 @@
 # Method freeze and TEST plan: draft (2026-10-23)
 
-Status: **proposed, not frozen.** Updated 2026-10-23 after I20-1 (NIST rows in state C, NIST g v2 rows, frozen S3_D rule) and 2026-10-26 after I21-1 (NIST Part B, TU Delft v1 S3_D in state C, IHP 233 / 343 / 398 K g v2 rows) and I22-1 (matched-budget baselines, open item 12). The final freeze is planned for about 2026-12-10. This file is not a
+Status: **proposed, not frozen.** Updated 2026-10-23 after I20-1 (NIST rows in state C, NIST g v2 rows, frozen S3_D rule) and 2026-10-26 after I21-1 (NIST Part B, TU Delft v1 S3_D in state C, IHP 233 / 343 / 398 K g v2 rows) and I22-1 (matched-budget baselines, open item 12), and 2026-10-27 after I23-1 (IHP call-matched control, fixed-lambda g v2 arm, open item 12). The final freeze is planned for about 2026-12-10. This file is not a
 pre-registration. No TEST split was opened or evaluated for this draft; no NGSpice run and no training were done
 for it. Every number below is copied from a stored file named next to it or recomputed from stored per-device rows
 by `scripts/research/plot_freeze_draft.py` (117 values checked against the stored decision files after the I21-1 update; 99 after I20-1; 88 before).
@@ -408,7 +408,25 @@ card, C0_refit and the correction-arm curves re-simulated in NGSpice; NGSpice ca
       0.809); B2 gains over C0_refit at all four (0.886-0.946). TU Delft: g v2 better than B1, B3_d3, B4 at 4.13 K,
       than B4 at 295.0 K, other labels inconclusive. Pooled exp(mean ln GMR vs C0_refit) over 9 datasets: B1 0.913,
       B2 0.954, B3_d3 1.058, B4 1.432, selected g v2 0.957, M_bias v1 0.964. B1 uses 2.1-6.6x the C0_refit NGSpice
-      calls (6.0-6.6x on IHP); a C0_refit at equal call count was not run.
+      calls (6.0-6.6x on IHP).
+    - IHP call-matched control (I23-1 Part A, prereg a9aa227, `out/research/explore/I23_1/decision.json`, report
+      `out/research/report/2026-10-27_i23_1/`): C0_refit with max_nfev and a hard NGSpice-call limit equal to the B1
+      refit calls of each DUT (C0_call; 1906-1957 calls per DUT, of which C0_call used 56-66%): GMR(B1, C0_call)
+      0.796 [0.661, 0.927] / 0.776 [0.654, 0.905] / 0.696 [0.580, 0.818] / 0.811 [0.706, 0.916] at 233 / 300 / 343 /
+      398 K. Pre-registered outcome: **B1 gain survives the call match**. GMR(C0_call, C0_refit) 0.998-0.999 (the
+      12-parameter PSP103 refit is converged at max_nfev 400). Reverse control, B1 limited to the C0_refit calls:
+      GMR(B1_cap, C0_refit) 0.977 / 0.933 [0.868, 0.991] / 0.944 / 0.960. Per the pre-registered implication, B1
+      (wider PSP103 card set, I5-1 screen) is a candidate IHP arm and a third gate option besides "apply g v2" and
+      C0_refit; **user decision**, not part of the draft method. The B1 screen (173 calls per DUT, run once at 300 K)
+      is outside the call match.
+    - Fixed-lambda g v2 (I23-1 Part B): lambda = 1 V in every outer fold, no nested selection, on all 9 DEV datasets
+      (stored lambda = 1 V rows reused on sky130, IHP 300 K, TU Delft and 17 NIST lvt devices, each with a
+      retrain-and-refit sample reproducing the stored rows with difference 0; new rows elsewhere). GMR(fixed, selected
+      g v2): sky130 0.988 [0.962, 1.014], NIST lvt 1.018 [0.991, 1.044], NIST RT card 1.030 [1.002, 1.058], IHP 233 /
+      300 / 343 / 398 K 1.012 / 0.963 / 1.015 / 1.004, TU Delft 1.070 [1.025, 1.137] / 1.030 [0.980, 1.094].
+      Pre-registered outcome: **fixed lambda 1 V not shown non-inferior** (fails on NIST RT card, where the selection
+      chose 0 V on all 87 devices); the nested selection stays in the draft. Pooled GMR vs C0_refit over 9 datasets:
+      fixed 0.971, selected 0.957.
     - Parameter-extraction stage (I22-1 Part C, sky130 77 K, 18 devices, from the starting cards): at the C0_refit
       NGSpice-call budget B_d (165-403 calls), GMR(method, TRF refit): CMA-ES sigma0 0.1 1.048 [1.000, 1.117] (TRF
       better), sigma0 0.03 1.021 [0.999, 1.055], TuRBO-1 (BoTorch) L_init 0.1 1.002 [0.994, 1.011], L_init 0.03
@@ -418,6 +436,8 @@ card, C0_refit and the correction-arm curves re-simulated in NGSpice; NGSpice ca
       device, selected g v2 arm total vs C0_refit: sky130 28,191 (89x), NIST 6,683 / 6,232 (28x), IHP 14,258-16,379
       (46-53x), TU Delft 7,504 / 8,652 (36-42x); the nested lambda selection is 96-99% of these (estimated from
       inner refit counts except NIST); the S3_D gate uses 0 calls; B2-B4 use 1.0-1.5x. Starting cards: 44,219 calls
-      per device on sky130, 1,053-2,128 on the other datasets.
+      per device on sky130, 1,053-2,128 on the other datasets. The fixed-lambda g v2 arm (I23-1) uses
+      219-330 calls per held-out device (0.98-1.16x C0_refit; no selection calls); its training is 5 members per
+      fold (5,114-258,190 CPU s per dataset).
     - Dependence: 8 TEST splits from 4 device sets; the paper's TEST claims rest on NIST (2 splits, sky130 4 K) for
       the applied correction.

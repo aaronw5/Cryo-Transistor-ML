@@ -2750,3 +2750,43 @@ threads 1 and `torch.set_num_threads(1)` per worker, at most 10 workers). 9 unit
 `tests/test_i23_1_budget.py` (`polish_capped` without a binding limit equals `polish` in card, objective, history
 and n_sim; with a limit the call count stays at or below it). Smoke (`I23_1/smoke`, 2 DUTs / folds, reduced budgets
 and steps) ran every stage on IHP 300 K / 233 K, sky130, TU Delft 4.13 K, NIST lvt and NIST RT card.
+
+## I23-1 outcome (2026-10-27): B1 gain on IHP survives the call match (pre-registered rule); g v2 with lambda fixed at 1 V not shown non-inferior to the selected g v2 (fails on NIST RT card)
+
+Queue (10 workers; BLAS / OpenMP threads 1 and `torch.set_num_threads(1)` per worker; 3 threads per worker process):
+Part A 179-203 s per temperature; VB1 checks 98-394 s; fixed lambda IHP 233 / 343 / 398 K 703 / 757 / 796 s, NIST lvt
+6964 s, NIST RT card 26151 s; decide. The 1-minute load average stayed at 110-140 during the runs; most runnable
+processes counted in it were macOS system daemons at 0% CPU (CPU 84% user with 10 workers at about 72% each); during
+the IHP refit phases the ngspice process churn raised system time to about 40%. Outputs `out/research/explore/I23_1/`.
+Part A (valid at all 4 temperatures: VA1 C0_refit rerun through `polish_capped` = stored rows, difference 0, n_sim
+equal; 0 non-finite rows; calls within limits; DEV only; unit tests pass). Limits: C0_call N_B1 1906-1957 calls per
+DUT (mean); C0_call used 1199-1436 (56-66% of the limit); the limit bound on 0 / 1 / 1 / 1 DUTs; B1_cap used the
+C0_refit count (306-324) and was stopped by the limit on 18 / 18 DUTs. GMR(B1, C0_call) [95% CI]: 233 K 0.796 [0.661,
+0.927], 300 K 0.776 [0.654, 0.905], 343 K 0.696 [0.580, 0.818], 398 K 0.811 [0.706, 0.916]. **Rule outcome: "B1 gain
+survives the call match"** (CI upper < 1 at all 4). GMR(C0_call, C0_refit) 0.998 / 0.998 / 0.999 / 0.998 (the
+12-parameter refit changes by 0.1-0.2% with 6x calls); GMR(B1_cap, C0_refit) 0.977 [0.891, 1.035] / 0.933 [0.868,
+0.991] / 0.944 [0.880, 1.011] / 0.960 [0.899, 1.019]; GMR(B1, B1_cap) 0.736-0.843; GMR(C0_call, selected g v2) 0.921 /
+0.795 / 0.841 / 0.792. All-device RRMS B1 / C0_call / C0_refit: 0.02346 / 0.02730 / 0.02734 (233 K), 0.01602 / 0.01903
+/ 0.01906 (300 K), 0.01531 / 0.01899 / 0.01900 (343 K), 0.01835 / 0.01971 / 0.01973 (398 K). B1 screen calls (stored
+I5-1 screen, 173 per DUT, counted once) are not part of the match. Implication (pre-registered): B1 is entered in the
+method-freeze draft as a candidate IHP arm and gate option; user decision; the frozen method is unchanged.
+Part B (valid on all 9 datasets). Reused stored lambda = 1 V rows: sky130 I15-2 (18), IHP 300 K I17-2 (18), TU Delft
+I18-2 (45 + 45), NIST lvt I20-1 (17); VB1 retrain-and-refit samples reproduce the stored rows with difference 0 on
+every sampled device (sky130 2 folds, IHP 300 K 2, TU Delft 1 group per temperature, NIST lvt 2). New rows: IHP 233 /
+343 / 398 K (18 each; VB2: equal to the stored selected rows on the 4 / 8 / 2 folds with lambda* = 1 V, difference 0),
+NIST lvt 36, NIST RT card 87; 0 failed rows. GMR(fixed lambda 1 V, selected g v2): sky130 0.988 [0.962, 1.014] (NI),
+NIST lvt 1.018 [0.991, 1.044] (NI), **NIST RT card 1.030 [1.002, 1.058] (selected better; not NI)**, IHP 233 K 1.012
+[1.000, 1.027], 300 K 0.963 [0.911, 1.000], 343 K 1.015 [1.004, 1.030], 398 K 1.004 [0.992, 1.015] (NI at all four),
+TU Delft 4.13 K 1.070 [1.025, 1.137] (selected better), 295.0 K 1.030 [0.980, 1.094]. **Rule outcome: "fixed lambda 1 V
+not shown non-inferior"** (failing: NIST RT card, where the nested selection chose lambda 0 V on all 87 devices).
+GMR(fixed, C0_refit): sky130 0.734 [0.649, 0.841], NIST lvt 0.817, NIST RT card 0.835 (gain on all three); IHP 1.097 /
+1.209 / 1.206 / 1.265 (worse at 398 K); TU Delft 0.884 / 0.854 (inconclusive). Pooled exp(mean ln GMR vs C0_refit)
+over 9 datasets: fixed 0.971, selected 0.957 (I22-1: B1 0.913, B2 0.954). NGSpice calls per held-out device, fixed
+lambda arm: 219-330 (0.98-1.16x C0_refit), against 6,232-28,191 (28-89x) for the selected arm; training CPU 5,114 s
+(IHP 300 K) to 258,190 s (NIST RT card, 435 members with the penalty).
+Predictions: P1 yes; P2 4/4; P3 no (B1_cap point estimate below 1 at all 4); P4 no; P5 yes; P6 8/9 (TU Delft 295.0 K
+1.16x).
+Method-freeze draft open item 12 updated (IHP call-matched control, fixed-lambda arm and cost row). Report batch
+`out/research/report/2026-10-27_i23_1/` (`scripts/research/plot_explore_i23_1.py`; 9 tables, forest plots for both
+parts, cost figure, per-device ratios, 10 I-V figures with every re-simulated RRMS checked against the stored rows);
+site claim `i23-1` (verified). Site rebuilt, not published.

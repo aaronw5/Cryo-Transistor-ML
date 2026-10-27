@@ -8866,6 +8866,174 @@
     "commits c877413 (pre-registration), c59ce14 (code)"
    ],
    "updated": "2026-10-20"
+  },
+  {
+   "id": "i23-1",
+   "tab": "explore",
+   "statement": "I23-1: (A) on IHP SG13G2, C0_refit given the NGSpice-call count of B1 (wider card set) per device, and B1 limited to the C0_refit call count; (B) g v2 with lambda fixed at 1 V (no nested lambda selection) on the 9 measured DEV datasets.",
+   "status": "verified",
+   "headline": {
+    "value": "Part A (pre-registered rule): B1 gain survives the call match; GMR(B1, C0_call) 0.796 [0.661, 0.927] / 0.776 [0.654, 0.905] / 0.696 [0.580, 0.818] / 0.811 [0.706, 0.916] (233 / 300 / 343 / 398 K); C0_refit gains 0.998 / 0.998 / 0.999 / 0.998 from the extra calls. Part B (pre-registered rule): fixed lambda 1 V not shown non-inferior; pooled GMR vs C0_refit fixed lambda 0.971, selected 0.957; fixed lambda needs no selection calls.",
+    "convention": "DEV only; GMR = exp(mean ln RRMS ratio), 95% bootstrap CI (10,000, seed 0; device, TU Delft 7-group cluster); strict paper RRMS, frozen inclusion"
+   },
+   "numbers": [
+    {
+     "label": "Part A GMR(B1_cap, C0_refit)",
+     "value": "0.977 [0.891, 1.035] / 0.933 [0.868, 0.991] / 0.944 [0.880, 1.011] / 0.960 [0.899, 1.019]",
+     "convention": "B1 limited to the C0_refit calls of each DUT",
+     "source": "out/research/explore/I23_1/decision.json"
+    },
+    {
+     "label": "Part B GMR(fixed lambda 1 V, selected g v2)",
+     "value": "sky130 77 K 0.988 [0.962, 1.014]; NIST lvt 1.018 [0.991, 1.044]; NIST RT card 1.030 [1.002, 1.058]; IHP 233 K 1.012 [1.000, 1.027]; IHP 300 K 0.963 [0.911, 1.000]; IHP 343 K 1.015 [1.004, 1.030]; IHP 398 K 1.004 [0.992, 1.015]; TU Delft 4.13 K 1.070 [1.025, 1.137]; TU Delft 295.0 K 1.030 [0.980, 1.094]",
+     "convention": "non-inferior iff CI upper < 1.05",
+     "source": "out/research/explore/I23_1/decision.json"
+    },
+    {
+     "label": "Part B GMR(fixed lambda 1 V, C0_refit)",
+     "value": "sky130 77 K 0.734 [0.649, 0.841]; NIST lvt 0.817 [0.782, 0.860]; NIST RT card 0.835 [0.797, 0.883]; IHP 233 K 1.097 [0.905, 1.400]; IHP 300 K 1.209 [0.998, 1.536]; IHP 343 K 1.206 [0.995, 1.541]; IHP 398 K 1.265 [1.026, 1.617]; TU Delft 4.13 K 0.884 [0.726, 1.077]; TU Delft 295.0 K 0.854 [0.561, 1.237]",
+     "convention": "",
+     "source": "out/research/explore/I23_1/decision.json"
+    },
+    {
+     "label": "NGSpice calls per held-out device, fixed lambda 1 V",
+     "value": "sky130 77 K 317 (1.01x C0_refit; selected 28,191); NIST lvt 260 (1.09x C0_refit; selected 6,683); NIST RT card 231 (1.06x C0_refit; selected 6,232); IHP 233 K 316 (1.01x C0_refit; selected 14,258); IHP 300 K 317 (0.98x C0_refit; selected 16,379); IHP 343 K 330 (1.08x C0_refit; selected 16,127); IHP 398 K 328 (1.02x C0_refit; selected 16,375); TU Delft 4.13 K 219 (1.04x C0_refit; selected 7,504); TU Delft 295.0 K 242 (1.16x C0_refit; selected 8,652)",
+     "convention": "held-out refit calls; selected g v2 arm totals from I22-1 (incl. nested selection)",
+     "source": "out/research/explore/I23_1/decision.json, out/research/explore/I22_1/cost.json"
+    }
+   ],
+   "what": [
+    "Question: is the I22-1 IHP gain of B1 explained by its 6x NGSpice-call budget; and does g v2 need the nested lambda selection that costs 96-99% of its calls?",
+    "Pre-registered (a9aa227) with a rule per part and predictions P1-P6."
+   ],
+   "did": [
+    "Code 73ce90e (polish_capped: polish with a hard NGSpice-call limit; 9 unit tests). Part A: 4 IHP temperatures x 18 DUTs, C0_call / B1_cap / C0_refit rerun (VA1 difference 0). Part B: reused stored lambda = 1 V rows (sky130 I15-2, IHP 300 K I17-2, TU Delft I18-2, 17 NIST lvt devices I20-1) with retrain-and-refit samples (difference 0); new runs on IHP 233 / 343 / 398 K, 36 NIST lvt and 87 NIST RT card devices."
+   ],
+   "result": {
+    "text": [
+     "Part A: on IHP SG13G2 the B1 gain over C0_refit remains when C0_refit gets the same NGSpice calls per DUT (GMR(B1, C0_call) 0.696-0.811, CI upper < 1 at all four temperatures); C0_refit with 6x calls changes by 0.1-0.2% (GMR 0.998-0.999), so the 12-parameter PSP103 refit is converged at its original budget.",
+     "Part A reverse control: B1 limited to the C0_refit calls (306-324 calls per DUT on average: at most 3 Jacobian evaluations over 85 parameters) gives GMR(B1_cap, C0_refit) 0.933-0.977 (gain at 300 K only); B1 vs B1_cap 0.736-0.843.",
+     "Part B: g v2 with lambda fixed at 1 V is non-inferior to the selected g v2 on sky130 (0.988 [0.962, 1.014]) and NIST lvt (1.018 [0.991, 1.044]) but not on NIST RT card (1.030 [1.002, 1.058], where the selection chose 0 V on every device); outcome 'not shown non-inferior'. It still gains over C0_refit on all three (0.734, 0.817, 0.835).",
+     "Part B cost: the fixed-lambda arm uses 0.98-1.16x the C0_refit NGSpice calls per held-out device, against 28-89x for the selected g v2 arm; pooled GMR vs C0_refit over 9 datasets 0.971 (fixed) vs 0.957 (selected)."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "01_table_i23_1_setup.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "02_table_i23_1_a_validity.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "03_table_i23_1_a_rrms.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "04_table_i23_1_a_gmr.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "05_table_i23_1_a_calls.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "06_table_i23_1_b_validity.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "07_table_i23_1_b_rrms.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "08_table_i23_1_b_gmr.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "09_table_i23_1_b_cost.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "10_i23_1_forest_a.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "11_i23_1_forest_b.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "12_i23_1_cost_b.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "13_i23_1_per_device_a.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "14_i23_1_per_device_b_sky130.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "15_i23_1_per_device_b_nist4.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "16_i23_1_per_device_b_nistrt.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "17_i23_1_iv_a_ihp233_hv_pmos_W0p6_L0p5.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "18_i23_1_iv_a_ihp233_hv_pmos_W10_L0p35.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "19_i23_1_iv_b_sky130_pmos_L8_W1p6.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "20_i23_1_iv_b_sky130_pmos_L4_W7.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "21_i23_1_iv_b_nist4_pfet_01v8_lvt_W3_L1p5_m29p7.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "22_i23_1_iv_b_nist4_pfet_01v8_lvt_W1_L20_m29p4.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "23_i23_1_iv_b_nistrt_nfet_01v8_W0p65_L4_m4p8.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "24_i23_1_iv_b_nistrt_pfet_01v8_W5_L8_m18p7.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "25_i23_1_iv_b_ihp233_hv_pmos_W0p3_L10.png"
+     },
+     {
+      "batch": "2026-10-27_i23_1",
+      "file": "26_i23_1_iv_b_tud4_t40_nmos_W0p12_L0p04_d158.png"
+     }
+    ]
+   },
+   "caveats": [
+    "C0_call used 56-66% of its call limit on average: the TRF runs ended by their tolerances or iteration budget before the limit on 17-18 of 18 DUTs per temperature; C0_refit with 6x calls changes the error by 0.1-0.2%.",
+    "B1 screen calls (stored I5-1 screen, counted once) are not part of the call match.",
+    "TU Delft uses the 7-group cluster bootstrap."
+   ],
+   "sources": [
+    "out/research/explore/I23_1/prereg.md",
+    "out/research/explore/I23_1/decision.json",
+    "out/research/report/2026-10-27_i23_1/"
+   ],
+   "updated": "2026-10-27"
   }
  ]
 }
