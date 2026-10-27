@@ -1,0 +1,66 @@
+{
+ "spec": "seven_center per-device chain (I25-1 A4)",
+ "devices": {
+  "nmos_L1_W3": {
+   "before_rrms": 0.13438637710372642,
+   "rrms": 0.13342841474420214,
+   "before_objective": 0.13438637710372642,
+   "objective": 0.13342841474420214,
+   "n_included_curves": 10,
+   "before_failed_curves": 0,
+   "failed_curves": 0,
+   "official_dynamic_rrms": 0.13342841474420214,
+   "params": {
+    "vth0": 0.5832278307394361,
+    "u0": 0.16426591282103445,
+    "nfactor": 0.02502857031560148,
+    "vsat": -1691.596743713956,
+    "delta": 0.004488372332146752,
+    "rdsw": 5.256708391427969,
+    "eta0": 0.009324675483245868
+   },
+   "n_sim": 39,
+   "history": [
+    0.13438637710372642,
+    0.1340833469512212,
+    0.13342841474420214
+   ],
+   "runtime_s": 2.3
+  },
+  "pmos_L0p35_W1p6": {
+   "before_rrms": 0.4153954337927887,
+   "rrms": 0.404577269023555,
+   "before_objective": 0.4153954337927887,
+   "objective": 0.404577269023555,
+   "n_included_curves": 10,
+   "before_failed_curves": 0,
+   "failed_curves": 0,
+   "official_dynamic_rrms": 0.404577269023555,
+   "params": {
+    "vth0": -1.363458367063203,
+    "u0": 0.04111991635919668,
+    "nfactor": 33.93825238441491,
+    "vsat": 4478285.168224678,
+    "delta": -0.023725998430524916,
+    "rdsw": 1561.404602610255,
+    "eta0": 0.02994133498630681
+   },
+   "n_sim": 39,
+   "history": [
+    0.4153954337927887,
+    0.4152467765155177,
+    0.404577269023555
+   ],
+   "runtime_s": 1.8
+  }
+ },
+ "all_device_mean_rrms": 0.2690028418838786,
+ "nmos_rrms": 0.13342841474420214,
+ "pmos_rrms": 0.404577269023555,
+ "combined_rrms": 0.2690028418838786,
+ "official_dynamic_all_device_mean": 0.2690028418838786,
+ "n_devices": 2,
+ "mean_ngspice_calls_per_device": 39.0,
+ "wall_s": 207.3,
+ "chain": true
+}

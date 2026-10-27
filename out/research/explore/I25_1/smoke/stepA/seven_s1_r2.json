@@ -1,18 +1,5 @@
 {
- "spec": "out/research/explore/I25_1/smoke/specs/seven_s1_r2.json",
- "options": {
-  "bank": null,
-  "bank_starts": 4,
-  "cmaes_evals": 20,
-  "sigma0": 0.3,
-  "popsize": 0,
-  "polish_nfev": 10,
-  "irls": 2,
-  "seed": 20261015,
-  "init": null,
-  "random_start": null,
-  "random_base_seed": 20261027
- },
+ "spec": "seven_s1 per-device chain (I25-1 A4)",
  "devices": {
   "nmos_L1_W3": {
    "start_scores": [
@@ -70,73 +57,74 @@
     2.220446049250313e-16
    ],
    "n_sim": 59,
-   "runtime_s": 5.0
+   "runtime_s": 3.8
   },
   "pmos_L0p35_W1p6": {
    "start_scores": [
-    10.0
+    0.9881673791279049
    ],
    "start_locals": [
     [
      2.220446049250313e-16,
+     0.0,
      2.220446049250313e-16,
-     0.0,
-     0.0,
+     4.440892098500626e-16,
      0.0,
      0.0,
      0.0
     ]
    ],
    "best_bank_rrms": null,
-   "cmaes_best": 10.0,
-   "cmaes_evals": 9,
+   "cmaes_best": 0.553071887930414,
+   "cmaes_evals": 27,
    "polish_history": [
-    10.0,
-    10.0,
-    10.0
+    0.553071887930414,
+    0.5433223257946492,
+    0.4959256336820889
    ],
-   "rrms": Infinity,
-   "official_dynamic_rrms": NaN,
+   "rrms": 0.49592563368208903,
+   "official_dynamic_rrms": 0.4252595553221425,
    "per_curve": {
-    "idvd@0.74": NaN,
-    "idvd@1.11": NaN,
-    "idvd@1.48": NaN,
-    "idvd@1.85": NaN,
-    "idvg@0.01": NaN,
-    "idvg@0.37": NaN,
-    "idvg@0.74": NaN,
-    "idvg@1.11": NaN,
-    "idvg@1.48": NaN,
-    "idvg@1.85": NaN
+    "idvd@0.74": 1.1319203389216075,
+    "idvd@1.11": 0.07828195959408038,
+    "idvd@1.48": 0.19821996447859386,
+    "idvd@1.85": 0.33128770873311747,
+    "idvg@0.01": 1.289261944765065,
+    "idvg@0.37": 0.37168188407479924,
+    "idvg@0.74": 0.43296964118108766,
+    "idvg@1.11": 0.4221100302658951,
+    "idvg@1.48": 0.37254687032056033,
+    "idvg@1.85": 0.3309759944860831
    },
    "params": {
-    "vth0": -0.3100049154700237,
-    "u0": 6.674367710989953e-05,
-    "nfactor": 2.572814357812719,
-    "vsat": 92806.06024807712,
-    "delta": -0.12365917361327959,
-    "rdsw": 134.4300306110139,
-    "eta0": 8.488793653049264
+    "vth0": -1.2993214062451657,
+    "u0": 0.01897577872741801,
+    "nfactor": 5.66027051811242,
+    "vsat": 3146810.6245091455,
+    "delta": -0.0013872833370974747,
+    "rdsw": 1237.0114822791454,
+    "eta0": 0.02014165714524157
    },
    "local": [
-    2.220446049250313e-16,
-    2.220446049250313e-16,
-    0.0,
-    0.0,
-    0.0,
-    0.0,
-    0.0
+    -0.14121975742587042,
+    -0.03957016996985149,
+    0.006534169932649339,
+    0.7284252977439849,
+    0.527468518861952,
+    0.5307918201222783,
+    0.019530939022248364
    ],
-   "n_sim": 31,
-   "runtime_s": 80.5
+   "n_sim": 67,
+   "runtime_s": 4.7
   }
  },
- "all_device_mean_rrms": Infinity,
+ "all_device_mean_rrms": 0.31417831116529427,
  "nmos_rrms": 0.13243098864849948,
- "pmos_rrms": NaN,
- "combined_rrms": NaN,
- "official_dynamic_all_device_mean": NaN,
+ "pmos_rrms": 0.49592563368208903,
+ "combined_rrms": 0.31417831116529427,
+ "official_dynamic_all_device_mean": 0.278845271985321,
  "n_devices": 2,
- "mean_ngspice_calls_per_device": 45.0,
- "wall_s": 82.8
+ "mean_ngspice_calls_per_device": 63.0,
+ "wall_s": 207.3,
+ "chain": true
 }

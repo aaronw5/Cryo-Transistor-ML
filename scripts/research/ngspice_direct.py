@@ -99,7 +99,10 @@ def fit_device(job) -> tuple[str, dict]:
     problem = DeviceProblem(tag, box_for(spec, tag))
     active = np.flatnonzero(problem.box.active)
     starts = [problem.box.local_published]
-    if args.get("random_start") is not None:
+    if args.get("start_local") is not None:
+        # I25-1 A4: the start chosen by the caller (redraw rule R1)
+        starts = [np.asarray(args["start_local"], dtype=np.float64)]
+    elif args.get("random_start") is not None:
         # I25-1 A3: one random start, uniform in local coordinates on every
         # active coordinate (log-uniform in a log box); no center, no bank.
         index = [device_tag(d.dev_type, d.L_um, d.W_um) for d in PAPER_DEVICES].index(tag)

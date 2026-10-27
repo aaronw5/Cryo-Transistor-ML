@@ -1,85 +1,66 @@
 {
- "cards": "out/research/explore/I25_1/smoke/stepA/seven_s2_r3.json",
- "method": null,
- "spec": "out/research/explore/I25_1/smoke/specs/seven_s2_r3.json",
- "target_override": false,
- "options": {
-  "max_nfev": 10,
-  "diff_step": 0.01,
-  "irls": 2
- },
+ "spec": "seven_s2 per-device chain (I25-1 A4)",
  "devices": {
-  "pmos_L0p35_W1p6": {
-   "before_rrms": 0.7017312376729794,
-   "rrms": 0.7004150219806826,
-   "before_objective": 0.7017312376729794,
-   "objective": 0.7004150219806825,
-   "n_included_curves": 10,
-   "before_failed_curves": 0,
-   "failed_curves": 0,
-   "official_dynamic_rrms": 0.7004150219806826,
-   "params": {
-    "vth0": -1.0395410308048016,
-    "u0": 0.0046294623630920495,
-    "nfactor": 6.738132939479215,
-    "vsat": 44428.2288452416,
-    "delta": -0.06300412512673954,
-    "rdsw": 72.98123073695977,
-    "eta0": 1.0453321278624543
-   },
-   "n_sim": 23,
-   "history": [
-    0.7017312376729794,
-    0.7010717325791885,
-    0.7004150219806825
-   ],
-   "runtime_s": 1.4
-  },
   "nmos_L1_W3": {
-   "before_rrms": 0.11002313998613103,
-   "rrms": 0.10959606986419446,
-   "before_objective": 0.11002313998613103,
-   "objective": 0.10959606986419446,
+   "before_rrms": 0.1060595621309417,
+   "rrms": 0.10130497577467934,
+   "before_objective": 0.1060595621309417,
+   "objective": 0.10130497577467934,
    "n_included_curves": 10,
    "before_failed_curves": 0,
    "failed_curves": 0,
-   "official_dynamic_rrms": 0.10959606986419446,
+   "official_dynamic_rrms": 0.10130497577467934,
    "params": {
-    "vth0": 0.6012429284604603,
-    "u0": 0.25249064246665087,
-    "nfactor": 0.07397190433409752,
-    "vsat": -204.35197338849366,
-    "delta": 0.06850372803862546,
-    "rdsw": 1.3078058599222921,
-    "eta0": 0.024096244447196324
+    "vth0": 0.5260374229581284,
+    "u0": 0.14900058730340912,
+    "nfactor": 33.889397168595686,
+    "vsat": -114.83221387546335,
+    "delta": 0.005586492657304023,
+    "rdsw": 50.01105933883382,
+    "eta0": 0.0636012724481412
    },
    "n_sim": 39,
    "history": [
-    0.11002313998613103,
-    0.10991075508225415,
-    0.10959606986419446
+    0.1060595621309417,
+    0.10466832533377299,
+    0.10130497577467934
    ],
-   "runtime_s": 2.3
+   "runtime_s": 2.2
+  },
+  "pmos_L0p35_W1p6": {
+   "before_rrms": 0.5545403043653542,
+   "rrms": 0.45840154921425863,
+   "before_objective": 0.5545403043653542,
+   "objective": 0.45840154921425863,
+   "n_included_curves": 10,
+   "before_failed_curves": 0,
+   "failed_curves": 0,
+   "official_dynamic_rrms": 0.45840154921425863,
+   "params": {
+    "vth0": -0.9724773640283872,
+    "u0": 0.006070658682678492,
+    "nfactor": 75.59101374995336,
+    "vsat": 1159669.9558040507,
+    "delta": -0.007745812765808168,
+    "rdsw": 230.03879470180738,
+    "eta0": 0.31055183571834233
+   },
+   "n_sim": 39,
+   "history": [
+    0.5545403043653542,
+    0.4960360973662274,
+    0.45840154921425863
+   ],
+   "runtime_s": 1.8
   }
  },
- "devices_with_failed_curves": {
-  "before": [],
-  "after": []
- },
- "before": {
-  "all_device_mean_rrms": 0.4058771888295552,
-  "nmos_rrms": 0.11002313998613103,
-  "pmos_rrms": 0.7017312376729794,
-  "combined_rrms": 0.4058771888295552,
-  "official_dynamic_all_device_mean": NaN,
-  "n_devices": 2
- },
- "all_device_mean_rrms": 0.40500554592243854,
- "nmos_rrms": 0.10959606986419446,
- "pmos_rrms": 0.7004150219806826,
- "combined_rrms": 0.40500554592243854,
- "official_dynamic_all_device_mean": 0.40500554592243854,
+ "all_device_mean_rrms": 0.27985326249446896,
+ "nmos_rrms": 0.10130497577467934,
+ "pmos_rrms": 0.45840154921425863,
+ "combined_rrms": 0.27985326249446896,
+ "official_dynamic_all_device_mean": 0.27985326249446896,
  "n_devices": 2,
- "mean_ngspice_calls_per_device": 31.0,
- "wall_s": 2.8
+ "mean_ngspice_calls_per_device": 39.0,
+ "wall_s": 207.3,
+ "chain": true
 }

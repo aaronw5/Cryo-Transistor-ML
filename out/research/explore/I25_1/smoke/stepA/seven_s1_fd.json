@@ -1,13 +1,5 @@
 {
- "cards": "out/research/explore/I25_1/smoke/stepA/seven_s1_r3.json",
- "method": null,
- "spec": "out/research/explore/I25_1/smoke/specs/seven_s1_r3.json",
- "target_override": false,
- "options": {
-  "max_nfev": 10,
-  "diff_step": 0.01,
-  "irls": 2
- },
+ "spec": "seven_s1 per-device chain (I25-1 A4)",
  "devices": {
   "nmos_L1_W3": {
    "before_rrms": 0.13236055298418514,
@@ -33,57 +25,42 @@
     0.13233178325058517,
     0.13222859115468524
    ],
-   "runtime_s": 3.0
+   "runtime_s": 2.5
   },
   "pmos_L0p35_W1p6": {
-   "before_rrms": Infinity,
-   "rrms": Infinity,
-   "before_objective": 10.0,
-   "objective": 10.0,
+   "before_rrms": 0.4148806908150987,
+   "rrms": 0.40386883385951117,
+   "before_objective": 0.4148806908150987,
+   "objective": 0.4038688338595112,
    "n_included_curves": 10,
-   "before_failed_curves": 10,
-   "failed_curves": 10,
-   "official_dynamic_rrms": NaN,
+   "before_failed_curves": 0,
+   "failed_curves": 0,
+   "official_dynamic_rrms": 0.40386883385951117,
    "params": {
-    "vth0": -0.3100049154700237,
-    "u0": 6.674367710989953e-05,
-    "nfactor": 2.572814357812719,
-    "vsat": 92806.06024807712,
-    "delta": -0.12365917361327959,
-    "rdsw": 134.4300306110139,
-    "eta0": 8.488793653049264
+    "vth0": -1.3480190184755672,
+    "u0": 0.035604822311545235,
+    "nfactor": 17.174532736295916,
+    "vsat": 8371628.670239453,
+    "delta": -0.0007884807733968268,
+    "rdsw": 1498.1928661741306,
+    "eta0": 0.025093656615990625
    },
-   "n_sim": 21,
+   "n_sim": 39,
    "history": [
-    10.0,
-    10.0,
-    10.0
+    0.4148806908150987,
+    0.41299814370707405,
+    0.4038688338595112
    ],
-   "runtime_s": 52.9
+   "runtime_s": 2.1
   }
  },
- "devices_with_failed_curves": {
-  "before": [
-   "pmos_L0p35_W1p6"
-  ],
-  "after": [
-   "pmos_L0p35_W1p6"
-  ]
- },
- "before": {
-  "all_device_mean_rrms": Infinity,
-  "nmos_rrms": 0.13236055298418514,
-  "pmos_rrms": NaN,
-  "combined_rrms": NaN,
-  "official_dynamic_all_device_mean": NaN,
-  "n_devices": 2
- },
- "all_device_mean_rrms": Infinity,
+ "all_device_mean_rrms": 0.2680487125070982,
  "nmos_rrms": 0.13222859115468527,
- "pmos_rrms": NaN,
- "combined_rrms": NaN,
- "official_dynamic_all_device_mean": NaN,
+ "pmos_rrms": 0.40386883385951117,
+ "combined_rrms": 0.2680487125070982,
+ "official_dynamic_all_device_mean": 0.2680487125070982,
  "n_devices": 2,
- "mean_ngspice_calls_per_device": 30.0,
- "wall_s": 58.8
+ "mean_ngspice_calls_per_device": 39.0,
+ "wall_s": 207.3,
+ "chain": true
 }

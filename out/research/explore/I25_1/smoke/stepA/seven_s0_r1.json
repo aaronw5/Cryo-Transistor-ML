@@ -1,18 +1,5 @@
 {
- "spec": "out/research/explore/I25_1/smoke/specs/seven_r1.json",
- "options": {
-  "bank": null,
-  "bank_starts": 4,
-  "cmaes_evals": 20,
-  "sigma0": 0.3,
-  "popsize": 0,
-  "polish_nfev": 10,
-  "irls": 2,
-  "seed": 20261015,
-  "init": null,
-  "random_start": 0,
-  "random_base_seed": 20261027
- },
+ "spec": "seven_s0 per-device chain (I25-1 A4)",
  "devices": {
   "nmos_L1_W3": {
    "start_scores": [
@@ -70,7 +57,9 @@
     -0.20416460741992573
    ],
    "n_sim": 59,
-   "runtime_s": 4.6
+   "runtime_s": 3.9,
+   "n_sim_start_draws": 1,
+   "start_draws": 0
   },
   "pmos_L0p35_W1p6": {
    "start_scores": [
@@ -128,7 +117,9 @@
     0.23151892683035746
    ],
    "n_sim": 67,
-   "runtime_s": 14.1
+   "runtime_s": 9.7,
+   "n_sim_start_draws": 1,
+   "start_draws": 0
   }
  },
  "all_device_mean_rrms": 0.4914747064077572,
@@ -138,5 +129,6 @@
  "official_dynamic_all_device_mean": 0.4914747064077572,
  "n_devices": 2,
  "mean_ngspice_calls_per_device": 63.0,
- "wall_s": 16.1
+ "wall_s": 207.3,
+ "chain": true
 }

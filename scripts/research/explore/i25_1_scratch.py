@@ -42,7 +42,7 @@ from pathlib import Path
 
 _ap = argparse.ArgumentParser()
 _ap.add_argument("--stage", required=True,
-                 choices=("specs", "select", "records", "grids", "c0", "inner", "lodo", "full", "final", "old",
+                 choices=("specs", "chain", "select", "records", "grids", "c0", "inner", "lodo", "full", "final", "old",
                           "decide"))
 _ap.add_argument("--arm", choices=("A", "B"), default="B")
 _ap.add_argument("--workers", type=int, default=10)
@@ -229,34 +229,213 @@ def stage_specs() -> dict:
     return out
 
 
+# ---------------------------------------------------------------------------
+# A4 chains: each (device, start) runs rounds 1-3 + FD as one pool task
+# ---------------------------------------------------------------------------
+PRE = {"A": "seven", "B": "full"}
+BUDGET = {"A": (3000, 400), "B": (8000, 600)}
+FD_NFEV = 400
+if SMOKE:
+    BUDGET, FD_NFEV = {"A": (20, 10), "B": (20, 10)}, 10
+RANDOM_BASE = 20261027
+MAX_DRAWS = 200
+MAX_K = 9
+STAGES = ("r1", "r2", "r3", "fd")
+
+
+def device_index(tag: str) -> int:
+    from cryoml.devices import PAPER_DEVICES
+    from cryoml.utils import device_tag
+    return [device_tag(d.dev_type, d.L_um, d.W_um) for d in PAPER_DEVICES].index(tag)
+
+
+def included_finite(problem, sims) -> bool:
+    return all(np.all(np.isfinite(np.asarray(sims[row["index"]], dtype=np.float64)[row["start"]:]))
+               for row in problem.layout)
+
+
+def draw_start(tag: str, spec: dict, k: int):
+    """A4 R1: first draw of the start stream whose card has every included
+    curve finite.  Returns (local, draws used, NGSpice calls)."""
+    from cold_loop import box_for
+    from cryoml.ngspice_fit import DeviceProblem
+    problem = DeviceProblem(tag, box_for(spec, tag))
+    active = np.flatnonzero(problem.box.active)
+    if k < 0:                                   # reference: box center (A3), no redraw
+        return np.asarray(problem.box.local_published, dtype=np.float64).copy(), 0, 0
+    rng = np.random.default_rng(RANDOM_BASE + 1000 * k + device_index(tag))
+    for j in range(MAX_DRAWS):
+        local = np.asarray(problem.box.local_published, dtype=np.float64).copy()
+        local[active] = rng.uniform(-1.0, 1.0, size=len(active))
+        if included_finite(problem, problem.simulate(local)):
+            return local, j, problem.n_sim
+    raise RuntimeError(f"{tag} start {k}: no finite start in {MAX_DRAWS} draws")
+
+
+def one_device_spec(spec: dict, tag: str) -> dict:
+    out = {k: v for k, v in spec.items() if not k.endswith("_by_device")}
+    for key, val in spec.items():
+        if key.endswith("_by_device") and isinstance(val, dict) and tag in val:
+            out[key] = {tag: val[tag]}
+    return out
+
+
+def chain_task(task):
+    """(arm, k, tag, reuse) -> per-stage records and per-device round-2/3 boxes.
+    ``reuse``: stored A3 records {stage: record} of this (k, tag), used when
+    the R1 start equals the stored start (deterministic stages)."""
+    arm, k, tag, reuse = task
+    import ngspice_direct as nd
+    from polish_cards import polish_job
+    from cryoml.cold_start import next_round_spec
+    t0 = time.time()
+    spec1 = one_device_spec(jload(SPECS / f"{PRE[arm]}_r1.json"), tag)
+    local0, draws, check_calls = draw_start(tag, spec1, k)
+    cma, pol = BUDGET[arm]
+    base_opts = {"bank": None, "bank_starts": 4, "cmaes_evals": cma, "sigma0": 0.3, "popsize": 0,
+                 "polish_nfev": pol, "irls": 2, "seed": 20261015, "init": None, "init_cards": None,
+                 "random_start": None, "random_base_seed": RANDOM_BASE}
+    usable = bool(reuse) and "r1" in reuse and np.array_equal(
+        np.asarray(reuse["r1"]["start_locals"][0], dtype=np.float64), local0)
+    recs, specs, reused = {}, {"r1": spec1}, []
+    spec = spec1
+    for r in (1, 2, 3):
+        st = f"r{r}"
+        if r > 1:
+            prev = recs[f"r{r - 1}"]
+            names = spec["selected_parameters"]
+            spec = one_device_spec(next_round_spec(spec, {tag: prev["params"]},
+                                                   {tag: dict(zip(names, prev["local"]))}, round_index=r), tag)
+            specs[st] = spec
+        if usable and st in reuse:
+            recs[st] = reuse[st]
+            reused.append(st)
+            continue
+        usable = False
+        opts = dict(base_opts, start_local=local0.tolist() if r == 1 else None)
+        _, recs[st] = nd.fit_device((tag, spec, opts))
+    if usable and "fd" in reuse:
+        recs["fd"] = reuse["fd"]
+        reused.append("fd")
+    else:
+        _, recs["fd"] = polish_job((tag, spec, recs["r3"]["params"],
+                                    {"max_nfev": FD_NFEV, "diff_step": 0.01, "irls": 2}))
+    recs["r1"] = dict(recs["r1"], n_sim_start_draws=check_calls, start_draws=draws)
+    return {"arm": arm, "k": k, "tag": tag, "records": recs, "specs": specs, "draws": draws,
+            "check_calls": check_calls, "reused": reused, "runtime_s": round(time.time() - t0, 1)}
+
+
+def _kname(k: int) -> str:
+    return "center" if k < 0 else f"s{k}"
+
+
+def stage_chain(arm: str, workers: int) -> dict:
+    from cryoml.card_eval import aggregate as cagg
+    pre = PRE[arm]
+    tags = sorted(jload(SPECS / f"{pre}_r1.json")["published_by_device"])
+    spec1 = jload(SPECS / f"{pre}_r1.json")
+
+    def stored(k):
+        out = {}
+        for st in STAGES:
+            p = STEPA / f"{pre}_s{k}_{st}.json"
+            if p.exists():
+                out[st] = jload(p)["devices"]
+        return out
+    old = {k: stored(k) for k in range(3)}
+    noreuse = os.environ.get("CRYOML_I25_NOREUSE") == "1"
+    tasks = [(arm, k, t, None if noreuse else {st: old[k][st][t] for st in old[k] if t in old[k][st]})
+             for k in range(3) for t in tags]
+    if arm == "A":
+        tasks += [(arm, -1, t, None) for t in tags]
+    tasks.sort(key=lambda x: (not x[2].startswith("pmos"), x[1]))
+    t0 = time.time()
+    results = []
+    with get_context("spawn").Pool(min(workers, len(tasks))) as pool:
+        for res in pool.imap_unordered(chain_task, tasks):
+            results.append(res)
+            print(f"{res['tag']} {_kname(res['k'])} draws {res['draws']} reused {res['reused']} "
+                  f"fd {res['records']['fd']['rrms']:.4g} {res['runtime_s']} s", flush=True)
+        # R2: extra starts for devices with no eligible start among 0-2
+        def eligible(t):
+            return [r for r in results if r["tag"] == t and r["k"] >= 0
+                    and np.isfinite(r["records"]["fd"]["rrms"])]
+        extra = {}
+        for k in range(3, MAX_K + 1):
+            need = [t for t in tags if not eligible(t)]
+            if not need:
+                break
+            extra[k] = need
+            for res in pool.imap_unordered(chain_task, [(arm, k, t, None) for t in need]):
+                results.append(res)
+                print(f"extra {res['tag']} s{k} fd {res['records']['fd']['rrms']:.4g}", flush=True)
+    wall = round(time.time() - t0, 1)
+    ks = sorted({r["k"] for r in results})
+    log = {"arm": arm, "wall_s": wall, "extra_starts": extra, "pairs": {}}
+    for k in ks:
+        rs = {r["tag"]: r for r in results if r["k"] == k}
+        for st in STAGES:
+            devs = {t: r["records"][st] for t, r in rs.items()}
+            out = {"spec": f"{pre}_{_kname(k)} per-device chain (I25-1 A4)", "devices": devs, **cagg(devs),
+                   "mean_ngspice_calls_per_device": float(np.mean([d["n_sim"] for d in devs.values()])),
+                   "wall_s": wall, "chain": True}
+            jdump(out, STEPA / f"{pre}_{_kname(k)}_{st}.json")
+        for st in ("r2", "r3"):
+            sp_ = {kk: v for kk, v in spec1.items() if not kk.endswith("_by_device")}
+            for key in ("published_by_device", "bounds_by_device", "log_scale_by_device", "half_width_by_device"):
+                sp_[key] = {t: rs[t]["specs"][st][key][t] for t in rs}
+            sp_["round"] = int(st[1])
+            jdump(sp_, SPECS / f"{pre}_{_kname(k)}_{st}.json")
+        for t, r in rs.items():
+            log["pairs"][f"{_kname(k)}|{t}"] = {"draws": r["draws"], "reused": r["reused"],
+                                                 "fd_rrms": r["records"]["fd"]["rrms"],
+                                                 "finite_by_stage": {st: bool(np.isfinite(r["records"][st]["rrms"]))
+                                                                     for st in STAGES},
+                                                 "runtime_s": r["runtime_s"]}
+    log["finite_counts"] = {f"{_kname(k)}|{st}": int(sum(np.isfinite(r["records"][st]["rrms"])
+                                                         for r in results if r["k"] == k))
+                            for k in ks for st in STAGES}
+    jdump(log, STEPA / f"{pre}_chain_log.json")
+    print(json.dumps({"finite_counts": log["finite_counts"], "extra": extra, "wall_s": wall}, indent=1), flush=True)
+    return log
+
+
 def stage_select(arm: str) -> dict:
     """Best of the N_STARTS random starts per device by the training RRMS
     (primary metric on the device's own data after the last stage)."""
     from cryoml.card_eval import aggregate as cagg
     pre = "seven" if arm == "A" else "full"
-    chains = [[jload(STEPA / f"{pre}_s{k}_{st}.json") for st in ("r1", "r2", "r3", "fd")]
-              for k in range(N_STARTS)]
-    runs = [c[-1] for c in chains]
-    specs = [jload(SPECS / f"{pre}_s{k}_r3.json") for k in range(N_STARTS)]
+    ks = [k for k in range(MAX_K + 1) if (STEPA / f"{pre}_s{k}_fd.json").exists()]
+    chains = {k: [jload(STEPA / f"{pre}_s{k}_{st}.json") for st in ("r1", "r2", "r3", "fd")] for k in ks}
+    runs = {k: c[-1] for k, c in chains.items()}
+    specs = {k: jload(SPECS / f"{pre}_s{k}_r3.json") for k in ks}
     stage_names = ["round 1", "round 2", "round 3", "round 3 + FD"]
     tags = sorted(runs[0]["devices"])
     out, spread, mixed = {}, {}, None
     for t in tags:
-        vals = [float(r["devices"][t]["rrms"]) for r in runs]
-        k = int(np.argmin(np.where(np.isfinite(vals), vals, np.inf)))
-        calls = sum(float(st["devices"][t]["n_sim"]) for c in chains for st in c)
+        have = [k for k in ks if t in runs[k]["devices"]]
+        vals = {k: float(runs[k]["devices"][t]["rrms"]) for k in have}
+        elig = [k for k in have if np.isfinite(vals[k])]          # A4 R2
+        first3 = [k for k in elig if k < N_STARTS]
+        k = min(first3, key=lambda kk: vals[kk]) if first3 else (min(elig) if elig else 0)
+        calls = sum(float(st["devices"][t]["n_sim"]) + float(st["devices"][t].get("n_sim_start_draws", 0))
+                    for kk in have for st in chains[kk])
+        vals = [vals[kk] for kk in range(N_STARTS)] + [vals[kk] for kk in have if kk >= N_STARTS]
         row = dict(runs[k]["devices"][t])
-        row.update({"start": k, "start_rrms": vals, "n_sim_selected_chain":
+        row.update({"start": k, "start_rrms": vals, "eligible_starts": elig, "n_sim_selected_chain":
                     sum(float(st["devices"][t]["n_sim"]) for st in chains[k]),
                     "n_sim": calls,
                     "stage_rrms_selected": {n: float(st["devices"][t]["rrms"]) for n, st in
                                             zip(stage_names, chains[k])}})
         out[t] = row
-        spread[t] = {"min": float(np.min(vals)), "median": float(np.median(vals)), "max": float(np.max(vals)),
-                     "start": k}
+        v3 = vals[:N_STARTS]
+        spread[t] = {"min": float(np.min(v3)), "median": float(np.median(v3)), "max": float(np.max(v3)),
+                     "start": k, "n_eligible_first3": len(first3), "extra_starts": [kk for kk in have if kk >= N_STARTS]}
     res = {"arm": arm, "rule": "per device the start with the lowest training RRMS (I25-1 A3)",
            "devices": out, "spread": spread, **cagg(out),
-           "per_start": [cagg(r["devices"]) for r in runs],
+           "per_start": [cagg(runs[k]["devices"]) for k in range(N_STARTS)],
+           "per_start_finite": [int(sum(np.isfinite(r["rrms"]) for r in runs[k]["devices"].values()))
+                                for k in range(N_STARTS)],
            "stage_aggregates_selected": {n: m.aggregate({t: out[t]["stage_rrms_selected"][n] for t in tags})
                                          for n in stage_names},
            "mean_ngspice_calls_per_device": float(np.mean([out[t]["n_sim"] for t in tags]))}
@@ -763,6 +942,8 @@ def main() -> int:
         stage_specs()
     elif a.stage == "select":
         stage_select(a.arm)
+    elif a.stage == "chain":
+        stage_chain(a.arm, a.workers)
     elif a.stage == "records":
         stage_records(a.arm, a.workers, a.smoke)
     elif a.stage == "grids":
