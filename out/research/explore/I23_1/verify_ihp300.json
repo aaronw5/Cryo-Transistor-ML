@@ -1,0 +1,57 @@
+{
+ "ds": "ihp300",
+ "smoke": false,
+ "source": "I17_2/lodo_sym_e1_l1",
+ "sample_folds": [
+  "lv_nmos_W0p15_L0p18",
+  "hv_pmos_W0p6_L0p5"
+ ],
+ "rerun": {
+  "hv_pmos_W0p6_L0p5": 0.014397712727168024,
+  "lv_nmos_W0p15_L0p18": 0.03189698232572179
+ },
+ "stored": {
+  "hv_pmos_W0p6_L0p5": 0.014397712727168024,
+  "lv_nmos_W0p15_L0p18": 0.03189698232572179
+ },
+ "abs_diff": {
+  "hv_pmos_W0p6_L0p5": 0.0,
+  "lv_nmos_W0p15_L0p18": 0.0
+ },
+ "max_abs_diff": 0.0,
+ "VB1": true,
+ "n_sim": {
+  "hv_pmos_W0p6_L0p5": 331,
+  "lv_nmos_W0p15_L0p18": 396
+ },
+ "unit_tests_passed": true,
+ "dev_check": {
+  "n": 2,
+  "n_in_TEST": 0,
+  "n_not_in_DEV": 0,
+  "ok": true
+ },
+ "timing": {
+  "train_s": 81.0,
+  "refit_s": 12.4,
+  "n_member_tasks": 10,
+  "train_seconds_per_member": {
+   "hv_pmos_W0p6_L0p5": [
+    67.4,
+    67.6,
+    67.4,
+    67.6,
+    67.2
+   ],
+   "lv_nmos_W0p15_L0p18": [
+    78.7,
+    78.3,
+    78.6,
+    78.7,
+    79.0
+   ]
+  },
+  "workers": 10
+ },
+ "runtime_s": 98.0
+}
