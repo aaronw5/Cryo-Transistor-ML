@@ -24,6 +24,7 @@ from pathlib import Path
 from .config import OUT_DIR
 from .devices import PAPER_DEVICES
 from .parameter_sets import PARAMS7
+from . import spice_pdk as _sp
 from .spice_pdk import PDK77K_DIR, _CORNER_BASENAME, _bin_spans, ensure_pdk77k
 from .utils import device_tag
 
@@ -32,6 +33,13 @@ BASELINE_JSON = OUT_DIR / "pdk_baseline" / "pdk_baseline.json"
 
 _MULTIPLIER_RE = re.compile(
     r"^\+\s*(\w+)\s*=\s*\{(.*)\*\s*([0-9.eE+\-]+)\s*\}\s*$", re.MULTILINE)
+# Named multipliers (I25-1 fix): some released bins write ``{expr*vth0_nom}``
+# with a file-level ``.param vth0_nom = 2.08113`` (pmos_L0p35_W1p6, bin 0).
+# Both brace and single-quote expression forms occur (``+ub='...*ub_nom'``).
+_NAMED_MULTIPLIER_RE = re.compile(
+    r"^\+\s*(\w+)\s*=\s*[{'](.*)\*\s*([A-Za-z_]\w*)\s*[}']\s*$", re.MULTILINE)
+_PARAM_RE = re.compile(r"^\.param\s+(\w+)\s*=\s*([0-9.eE+\-]+)\s*$",
+                       re.MULTILINE | re.IGNORECASE)
 
 # Round-one half-widths in natural-log multiplier units.  Threshold voltage
 # is searched within a factor of three; the other paper parameters within a
@@ -48,16 +56,53 @@ def bin_multipliers(dev_type: str, bin_index: int) -> dict[str, float]:
     if err:
         raise RuntimeError(err)
     text = (PDK77K_DIR / _CORNER_BASENAME[dev_type]).read_text(errors="replace")
+    return multipliers_from_text(text, dev_type, bin_index)
+
+
+def multipliers_from_text(text: str, dev_type: str, bin_index: int) -> dict[str, float]:
+    """Multiplier of every ``{base * multiplier}`` line of one bin; the
+    multiplier is a number or a name defined by a file-level ``.param``."""
+    named = {k.lower(): float(v) for k, v in _PARAM_RE.findall(text)}
     for index, start, stop in _bin_spans(text, dev_type):
         if index == bin_index:
-            return {name.lower(): float(value) for name, _expr, value
-                    in _MULTIPLIER_RE.findall(text[start:stop])}
+            span = text[start:stop]
+            out = {name.lower(): float(value) for name, _expr, value
+                   in _MULTIPLIER_RE.findall(span)}
+            for name, _expr, ref in _NAMED_MULTIPLIER_RE.findall(span):
+                if ref.lower() not in named:
+                    raise ValueError(f"{name}: multiplier {ref} has no .param value")
+                out[name.lower()] = named[ref.lower()]
+            return out
     raise ValueError(f"bin {bin_index} not found for {dev_type}")
 
 
+STOCK_BINS_JSON = _sp.STOCK_DIR / "device_bins.json"
+
+
 def device_bins() -> dict[str, int]:
+    """Bin of every paper device.  Paper template: the released card's bin
+    (pdk_baseline.json).  Stock template: the bin NGSpice selects for the
+    native L/W (``spice_pdk.find_bin_index``), cached in
+    ``data/processed/pdk_stock/device_bins.json``."""
+    if _sp.PDK_TEMPLATE == "stock":
+        return stock_device_bins()
     baseline = json.loads(BASELINE_JSON.read_text())
     return {row["device"]: int(row["bin_index"]) for row in baseline["devices"]}
+
+
+def stock_device_bins() -> dict[str, int]:
+    if STOCK_BINS_JSON.exists():
+        return {k: int(v) for k, v in json.loads(STOCK_BINS_JSON.read_text()).items()}
+    bins = {}
+    for device in PAPER_DEVICES:
+        tag = device_tag(device.dev_type, device.L_um, device.W_um)
+        b = _sp.find_bin_index(device.dev_type, device.L_um, device.W_um)
+        if b is None:
+            raise RuntimeError(f"no stock bin for {tag}")
+        bins[tag] = int(b)
+    STOCK_BINS_JSON.parent.mkdir(parents=True, exist_ok=True)
+    STOCK_BINS_JSON.write_text(json.dumps(bins, indent=1) + "\n")
+    return bins
 
 
 def cold_centers(names: tuple[str, ...]) -> dict[str, dict]:

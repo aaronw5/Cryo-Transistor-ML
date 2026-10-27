@@ -360,10 +360,10 @@ def main() -> int:
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     devices = parse_device_list(args.devices)
-    baseline = json.loads(
-        (OUT_DIR / "pdk_baseline" / "pdk_baseline.json").read_text())
-    bins = {row["device"]: int(row["bin_index"])
-            for row in baseline["devices"]}
+    # Released-card bins from pdk_baseline.json, or with
+    # CRYOML_PDK_TEMPLATE=stock the NGSpice-selected stock bins (I25-1).
+    from cryoml.cold_start import device_bins
+    bins = device_bins()
 
     readbacks = {}
     for device in devices:

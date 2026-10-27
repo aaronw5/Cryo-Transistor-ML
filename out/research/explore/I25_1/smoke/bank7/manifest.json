@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "parameter_names": [
+    "vth0",
+    "u0",
+    "nfactor",
+    "vsat",
+    "delta",
+    "rdsw",
+    "eta0"
+  ],
+  "parameter_signature": "7a1556e0fd38211d",
+  "sensitivity_summary": "out/research/explore/I25_1/smoke/specs/seven_r1.json",
+  "sampling": "global_lhc",
+  "sampling_definition": "global Latin hypercube",
+  "current_dtype": "float32",
+  "num_samples_requested": 20,
+  "seed": 20260818,
+  "devices": [
+    {
+      "device": "nmos_L1_W3",
+      "path": "out/research/explore/I25_1/smoke/bank7/nmos_L1_W3.npz",
+      "n_samples": 20,
+      "n_valid": 14,
+      "n_parameters": 7,
+      "n_active": 7,
+      "runtime_s": 6.6,
+      "seed": 20260818
+    },
+    {
+      "device": "pmos_L2_W5",
+      "path": "out/research/explore/I25_1/smoke/bank7/pmos_L2_W5.npz",
+      "n_samples": 20,
+      "n_valid": 15,
+      "n_parameters": 7,
+      "n_active": 7,
+      "runtime_s": 63.7,
+      "seed": 20261818
+    }
+  ],
+  "all_valid": false,
+  "wall_runtime_summed": 70.3
+}

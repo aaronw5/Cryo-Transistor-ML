@@ -169,6 +169,8 @@ def main() -> int:
     parser.add_argument("--devices", default=None)
     parser.add_argument("--workers", type=int, default=10)
     parser.add_argument("--seed", type=int, default=20261015)
+    parser.add_argument("--out", default=None,
+                        help="summary.json path (default runs/<run>/summary.json)")
     args = parser.parse_args()
     spec = json.loads(Path(args.spec).read_text())
     tags = [device_tag(d.dev_type, d.L_um, d.W_um) for d in PAPER_DEVICES]
@@ -190,7 +192,7 @@ def main() -> int:
            "mean_ngspice_calls_per_device": float(np.mean(
                [r["n_sim"] for r in results.values()])),
            "wall_s": round(time.time() - t0, 1)}
-    path = RUNS / args.run / "summary.json"
+    path = Path(args.out) if args.out else RUNS / args.run / "summary.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, indent=1) + "\n")
     print(json.dumps({k: out[k] for k in (

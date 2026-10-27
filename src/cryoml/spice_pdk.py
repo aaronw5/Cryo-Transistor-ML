@@ -48,6 +48,40 @@ _CORNER_BASENAME = {
     "pmos": "sky130_fd_pr__pfet_01v8_lvt__tt_77k.corner.spice",
 }
 
+# ---------------------------------------------------------------------------
+# Card template (I25-1).  ``CRYOML_PDK_TEMPLATE`` is read once at import:
+#   "paper77k" (default) the released 77 K corner cards (tnom -196.15 C,
+#              temperature coefficients 0, one custom bin per device);
+#   "stock"    the stock SkyWater sky130A tt models of the two lvt devices
+#              (``libs.ref/.../*_01v8_lvt__tt.pm3.spice`` copied verbatim:
+#              tnom 30 C, the stock temperature coefficients and the stock
+#              L/W bins), the stock tt-corner junction multipliers, the stock
+#              lod parameters and mismatch corners.  The deck is unchanged
+#              (``.options temp=-196.15``), so NGSpice applies the BSIM4
+#              temperature equations from tnom to 77 K and selects the bin.
+# Every module that imports PDK77K_DIR / LIB_FILE / _CORNER_BASENAME after
+# this module is loaded uses the selected template.
+# ---------------------------------------------------------------------------
+PDK_TEMPLATES = ("paper77k", "stock")
+PDK_TEMPLATE = os.environ.get("CRYOML_PDK_TEMPLATE", "paper77k")
+if PDK_TEMPLATE not in PDK_TEMPLATES:
+    raise ValueError(f"CRYOML_PDK_TEMPLATE {PDK_TEMPLATE!r} not in {PDK_TEMPLATES}")
+STOCK_DIR = PROCESSED_DIR / "pdk_stock"
+STOCK_LIB_FILE = STOCK_DIR / "sky130_stock_tt.lib.spice"
+_STOCK_BASENAME = {
+    "nmos": "sky130_fd_pr__nfet_01v8_lvt__tt.pm3.spice",
+    "pmos": "sky130_fd_pr__pfet_01v8_lvt__tt.pm3.spice",
+}
+_STOCK_CORNER_WRAPPER = {
+    "nmos": "sky130_fd_pr__nfet_01v8_lvt__tt.corner.spice",
+    "pmos": "sky130_fd_pr__pfet_01v8_lvt__tt.corner.spice",
+}
+PAPER77K_DIR, PAPER_LIB_FILE = PDK77K_DIR, LIB_FILE
+PAPER_CORNER_BASENAME = dict(_CORNER_BASENAME)
+if PDK_TEMPLATE == "stock":
+    PDK77K_DIR, LIB_FILE = STOCK_DIR, STOCK_LIB_FILE
+    _CORNER_BASENAME = dict(_STOCK_BASENAME)
+
 # Corner card sources for the confirmed setup: the nFET card is the original
 # published one (unchanged in the new repo); the pFET card is the new repo's
 # updated ("update_...") re-fit.
@@ -75,8 +109,55 @@ def device_mult(dev_type: str, L_um: float, W_um: float) -> int:
     return 1
 
 
+def ensure_stock() -> str | None:
+    """Create the stock-template copies + lib wrapper. Returns error or None.
+
+    The two pm3 model files are copied byte for byte; the wrapper holds the
+    ``.param`` block of each stock ``__tt.corner.spice`` wrapper (junction
+    multipliers) and includes the stock lod parameters and mismatch corners,
+    i.e. the part of ``sky130.lib.spice`` section ``tt`` that the two lvt
+    devices use."""
+    if not LOD_FILE.exists():
+        return f"missing {LOD_FILE}"
+    if not PDK_SPICE_DIR.exists():
+        return f"missing Volare PDK at {PDK_SPICE_DIR}"
+    STOCK_DIR.mkdir(parents=True, exist_ok=True)
+    params = []
+    for dev in ("nmos", "pmos"):
+        src = PDK_SPICE_DIR / _STOCK_BASENAME[dev]
+        dst = STOCK_DIR / _STOCK_BASENAME[dev]
+        text = src.read_text(errors="replace")
+        if not dst.exists() or dst.read_text(errors="replace") != text:
+            dst.write_text(text)
+        wrapper = (PDK_SPICE_DIR / _STOCK_CORNER_WRAPPER[dev]).read_text(errors="replace")
+        block = re.search(r"^\.param\s*\n((?:\+[^\n]*\n)+)", wrapper, re.MULTILINE)
+        if not block:
+            return f"no .param block in {_STOCK_CORNER_WRAPPER[dev]}"
+        params.append(".param\n" + block.group(1))
+    lib_text = (
+        "* Stock SkyWater sky130A tt models of nfet_01v8_lvt / pfet_01v8_lvt (I25-1 template).\n"
+        "* The section name tt_77k is the name the decks ask for; tnom, temperature\n"
+        "* coefficients and bins are the stock ones.\n"
+        ".lib tt_77k\n"
+        ".param mc_mm_switch=0\n"
+        ".param mc_pr_switch=0\n"
+        f'.include "{LOD_FILE.as_posix()}"\n'
+        + "".join(params) +
+        f'.include "{(STOCK_DIR / _STOCK_BASENAME["nmos"]).as_posix()}"\n'
+        f'.include "{(PDK_SPICE_DIR / "sky130_fd_pr__nfet_01v8_lvt__mismatch.corner.spice").as_posix()}"\n'
+        f'.include "{(STOCK_DIR / _STOCK_BASENAME["pmos"]).as_posix()}"\n'
+        f'.include "{(PDK_SPICE_DIR / "sky130_fd_pr__pfet_01v8_lvt__mismatch.corner.spice").as_posix()}"\n'
+        ".endl\n")
+    if not STOCK_LIB_FILE.exists() or STOCK_LIB_FILE.read_text() != lib_text:
+        STOCK_LIB_FILE.write_text(lib_text)
+    return None
+
+
 def ensure_pdk77k() -> str | None:
-    """Create the patched corner copies + lib wrapper. Returns error or None."""
+    """Create the patched corner copies + lib wrapper. Returns error or None.
+    With ``CRYOML_PDK_TEMPLATE=stock`` the stock template (``ensure_stock``)."""
+    if PDK_TEMPLATE == "stock":
+        return ensure_stock()
     if not LOD_FILE.exists():
         return f"missing {LOD_FILE}"
     if not PDK_SPICE_DIR.exists():
@@ -134,12 +215,38 @@ def _bin_spans(text: str, dev_type: str) -> list[tuple[int, int, int]]:
     return spans
 
 
+# Stock pm3 bins write several ``key = value`` tokens per ``+`` line; a value
+# is a number or one brace expression without spaces.
+_TOKEN_VALUE = r"(\{[^}\s]*\}|[^\s{}]+)"
+
+
+def _token_re(key: str) -> re.Pattern:
+    return re.compile(rf"(?<![\w.]){re.escape(key)}(\s*=\s*){_TOKEN_VALUE}", re.IGNORECASE)
+
+
 def _bin_geometry(span_text: str) -> dict[str, float]:
+    if PDK_TEMPLATE == "stock":
+        return _bin_geometry_tokens(span_text)
     out = {}
     for key in ("lmin", "lmax", "wmin", "wmax"):
         m = re.search(rf"\+\s*{key}\s*=\s*([0-9.eE+\-]+)", span_text)
         if m:
             out[key] = float(m.group(1))
+    return out
+
+
+def _plus_lines(span_text: str) -> list[str]:
+    return [ln for ln in span_text.splitlines() if ln.lstrip().startswith("+")]
+
+
+def _bin_geometry_tokens(span_text: str) -> dict[str, float]:
+    out = {}
+    for key in ("lmin", "lmax", "wmin", "wmax"):
+        for line in _plus_lines(span_text):
+            m = _token_re(key).search(line)
+            if m:
+                out[key] = float(m.group(2))
+                break
     return out
 
 
@@ -223,6 +330,8 @@ def _force_bin(text: str, dev_type: str, bin_index: int) -> str:
 
 def _patch_params_in_bin(text: str, dev_type: str, bin_index: int,
                          params: dict[str, float]) -> str:
+    if PDK_TEMPLATE == "stock":
+        return _patch_params_in_bin_tokens(text, dev_type, bin_index, params)
     for idx, s, e in _bin_spans(text, dev_type):
         if idx != bin_index:
             continue
@@ -236,6 +345,35 @@ def _patch_params_in_bin(text: str, dev_type: str, bin_index: int,
                 hdr_end = span.find("\n")
                 span = span[:hdr_end + 1] + f"+ {k} = {text_v}\n" + span[hdr_end + 1:]
         return text[:s] + span + text[e:]
+    raise ValueError(f"bin {bin_index} not found for {dev_type}")
+
+
+def _patch_params_in_bin_tokens(text: str, dev_type: str, bin_index: int,
+                                params: dict[str, float]) -> str:
+    """Stock-template patcher: replace the ``key = value`` token of each
+    parameter on the bin's ``+`` lines (other tokens on the line, e.g. the
+    ``lvth0`` / ``wvth0`` / ``pvth0`` size terms, are kept); a parameter the
+    bin does not set is added as ``+ key = value`` after the header line."""
+    for idx, s, e in _bin_spans(text, dev_type):
+        if idx != bin_index:
+            continue
+        lines = text[s:e].split("\n")
+        for k, v in params.items():
+            text_v = v if isinstance(v, str) else f"{v:.10g}"
+            pat = _token_re(k)
+            hits = 0
+            for i, line in enumerate(lines):
+                if not line.lstrip().startswith("+"):
+                    continue
+                new, n = pat.subn(lambda m: k + m.group(1) + text_v, line)
+                if n:
+                    hits += n
+                    lines[i] = new
+            if hits > 1:
+                raise ValueError(f"{k} set {hits} times in {dev_type} bin {bin_index}")
+            if hits == 0:
+                lines.insert(1, f"+ {k} = {text_v}")
+        return text[:s] + "\n".join(lines) + text[e:]
     raise ValueError(f"bin {bin_index} not found for {dev_type}")
 
 
@@ -307,6 +445,12 @@ def _bin_text(dev_type: str, bin_index: int) -> str:
 
 
 def _bin_value(span: str, key: str) -> str | None:
+    if PDK_TEMPLATE == "stock":
+        for line in _plus_lines(span):
+            m = _token_re(key).search(line)
+            if m:
+                return m.group(2)
+        return None
     m = re.search(rf"^\+\s*{re.escape(key)}\s*=\s*([^\s]+)", span,
                   re.IGNORECASE | re.MULTILINE)
     return m.group(1) if m else None

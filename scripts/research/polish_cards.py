@@ -88,6 +88,8 @@ def main() -> int:
     parser.add_argument("--diff-step", type=float, default=0.01)
     parser.add_argument("--irls", type=int, default=2)
     parser.add_argument("--workers", type=int, default=10)
+    parser.add_argument("--out", default=None,
+                        help="summary.json path (default polished/<run>/summary.json)")
     args = parser.parse_args()
     spec = json.loads(Path(args.spec).read_text())
     cards = load_cards(Path(args.cards), args.method)
@@ -113,7 +115,7 @@ def main() -> int:
            "mean_ngspice_calls_per_device": float(np.mean(
                [r["n_sim"] for r in results.values()])),
            "wall_s": round(time.time() - t0, 1)}
-    path = RUNS / args.run / "summary.json"
+    path = Path(args.out) if args.out else RUNS / args.run / "summary.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(out, indent=1) + "\n")
     print(json.dumps({"before": out["before"]["all_device_mean_rrms"],

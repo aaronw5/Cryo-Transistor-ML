@@ -21,18 +21,20 @@ from cryoml.config import OUT_DIR  # noqa: E402
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run", required=True)
+    parser.add_argument("--run", default=None)
+    parser.add_argument("--summary", default=None, help="ngspice_direct summary.json (instead of --run)")
     parser.add_argument("--round", type=int, required=True)
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
-    summary = json.loads((OUT_DIR / "research" / "ngspice_direct" / args.run
-                          / "summary.json").read_text())
+    path = (Path(args.summary) if args.summary else
+            OUT_DIR / "research" / "ngspice_direct" / args.run / "summary.json")
+    summary = json.loads(path.read_text())
     previous = json.loads(Path(summary["spec"]).read_text())
     names = previous["selected_parameters"]
     cards = {t: r["params"] for t, r in summary["devices"].items()}
     local = {t: dict(zip(names, r["local"])) for t, r in summary["devices"].items()}
     spec = next_round_spec(previous, cards, local, round_index=args.round)
-    spec["source_run"] = args.run
+    spec["source_run"] = args.run or str(path)
     write_spec(spec, Path(args.out))
     print(args.out)
     return 0
