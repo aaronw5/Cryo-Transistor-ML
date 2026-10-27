@@ -1,0 +1,703 @@
+{
+ "ds": "ihp343",
+ "smoke": false,
+ "lambda": 1.0,
+ "seeds": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {},
+ "folds": {
+  "hv_nmos_W0p3_L0p5": {
+   "held": [
+    "hv_nmos_W0p3_L0p5"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_nmos_W0p3_L10": {
+   "held": [
+    "hv_nmos_W0p3_L10"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_nmos_W0p6_L1p2": {
+   "held": [
+    "hv_nmos_W0p6_L1p2"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_nmos_W10_L0p5": {
+   "held": [
+    "hv_nmos_W10_L0p5"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_pmos_W0p3_L10": {
+   "held": [
+    "hv_pmos_W0p3_L10"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_pmos_W0p6_L0p5": {
+   "held": [
+    "hv_pmos_W0p6_L0p5"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_pmos_W10_L0p35": {
+   "held": [
+    "hv_pmos_W10_L0p35"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_pmos_W2_L1p2": {
+   "held": [
+    "hv_pmos_W2_L1p2"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35"
+   ]
+  },
+  "lv_nmos_W0p15_L0p18": {
+   "held": [
+    "lv_nmos_W0p15_L0p18"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_nmos_W0p15_L10": {
+   "held": [
+    "lv_nmos_W0p15_L10"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_nmos_W0p3_L0p13": {
+   "held": [
+    "lv_nmos_W0p3_L0p13"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_nmos_W0p3_L10": {
+   "held": [
+    "lv_nmos_W0p3_L10"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_nmos_W10_L10": {
+   "held": [
+    "lv_nmos_W10_L10"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_pmos_W0p15_L0p18": {
+   "held": [
+    "lv_pmos_W0p15_L0p18"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_pmos_W0p15_L10": {
+   "held": [
+    "lv_pmos_W0p15_L10"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_pmos_W0p3_L0p13": {
+   "held": [
+    "lv_pmos_W0p3_L0p13"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L10",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_pmos_W0p3_L10": {
+   "held": [
+    "lv_pmos_W0p3_L10"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W10_L10"
+   ]
+  },
+  "lv_pmos_W10_L10": {
+   "held": [
+    "lv_pmos_W10_L10"
+   ],
+   "train": [
+    "lv_nmos_W0p15_L0p18",
+    "lv_nmos_W0p15_L10",
+    "lv_nmos_W0p3_L0p13",
+    "lv_nmos_W0p3_L10",
+    "lv_nmos_W10_L10",
+    "lv_pmos_W0p15_L0p18",
+    "lv_pmos_W0p15_L10",
+    "lv_pmos_W0p3_L0p13",
+    "lv_pmos_W0p3_L10"
+   ]
+  }
+ },
+ "per_device": {
+  "hv_nmos_W0p3_L0p5": 0.01724651120227731,
+  "hv_nmos_W0p3_L10": 0.00729818299906562,
+  "hv_nmos_W0p6_L1p2": 0.005771687673674898,
+  "hv_nmos_W10_L0p5": 0.02960657682208113,
+  "hv_pmos_W0p3_L10": 0.006572561258295721,
+  "hv_pmos_W0p6_L0p5": 0.011517378295582085,
+  "hv_pmos_W10_L0p35": 0.021686420771172346,
+  "hv_pmos_W2_L1p2": 0.009110628916379232,
+  "lv_nmos_W0p15_L0p18": 0.03198729035119183,
+  "lv_nmos_W0p15_L10": 0.005129187802189346,
+  "lv_nmos_W0p3_L0p13": 0.021598525946894258,
+  "lv_nmos_W0p3_L10": 0.01205181091645173,
+  "lv_nmos_W10_L10": 0.012714350608776601,
+  "lv_pmos_W0p15_L0p18": 0.04865162336868348,
+  "lv_pmos_W0p15_L10": 0.00289438337893962,
+  "lv_pmos_W0p3_L0p13": 0.08639293634900944,
+  "lv_pmos_W0p3_L10": 0.0032258199540226217,
+  "lv_pmos_W10_L10": 0.01730172197530684
+ },
+ "overlap_abs_diff": {
+  "hv_nmos_W0p3_L0p5": 0.0,
+  "hv_nmos_W0p6_L1p2": 0.0,
+  "hv_nmos_W10_L0p5": 0.0,
+  "hv_pmos_W0p3_L10": 0.0,
+  "hv_pmos_W0p6_L0p5": 0.0,
+  "hv_pmos_W10_L0p35": 0.0,
+  "lv_nmos_W0p3_L10": 0.0,
+  "lv_pmos_W0p15_L10": 0.0
+ },
+ "validity": {
+  "VB2_overlap_n": 8,
+  "VB2_max_abs_diff": 0.0,
+  "VB2": true,
+  "VB3_complete": true,
+  "VB3_n_failed": 0,
+  "VB3": true,
+  "VB4_dev_check": {
+   "n": 18,
+   "n_in_TEST": 0,
+   "n_not_in_DEV": 0,
+   "ok": true
+  },
+  "VB4": true,
+  "VB5_unit_tests": true,
+  "valid": true
+ },
+ "heldout_rows": {
+  "hv_nmos_W0p3_L0p5": {
+   "label": "fixed_l1",
+   "tag": "hv_nmos_W0p3_L0p5",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.018039716535514012,
+   "rrms": 0.01724651120227731,
+   "failed": [],
+   "n_sim": 292,
+   "runtime_s": 16.91
+  },
+  "hv_nmos_W0p3_L10": {
+   "label": "fixed_l1",
+   "tag": "hv_nmos_W0p3_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.011113966409276418,
+   "rrms": 0.00729818299906562,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 22.86
+  },
+  "hv_nmos_W0p6_L1p2": {
+   "label": "fixed_l1",
+   "tag": "hv_nmos_W0p6_L1p2",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.00873511362270872,
+   "rrms": 0.005771687673674898,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 22.74
+  },
+  "hv_nmos_W10_L0p5": {
+   "label": "fixed_l1",
+   "tag": "hv_nmos_W10_L0p5",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.04181654983802146,
+   "rrms": 0.02960657682208113,
+   "failed": [],
+   "n_sim": 305,
+   "runtime_s": 17.69
+  },
+  "hv_pmos_W0p3_L10": {
+   "label": "fixed_l1",
+   "tag": "hv_pmos_W0p3_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.007045156156624014,
+   "rrms": 0.006572561258295721,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 22.46
+  },
+  "hv_pmos_W0p6_L0p5": {
+   "label": "fixed_l1",
+   "tag": "hv_pmos_W0p6_L0p5",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.011559092301937395,
+   "rrms": 0.011517378295582085,
+   "failed": [],
+   "n_sim": 318,
+   "runtime_s": 18.54
+  },
+  "hv_pmos_W10_L0p35": {
+   "label": "fixed_l1",
+   "tag": "hv_pmos_W10_L0p35",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.029835655438955284,
+   "rrms": 0.021686420771172346,
+   "failed": [],
+   "n_sim": 214,
+   "runtime_s": 12.71
+  },
+  "hv_pmos_W2_L1p2": {
+   "label": "fixed_l1",
+   "tag": "hv_pmos_W2_L1p2",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.009702640407872101,
+   "rrms": 0.009110628916379232,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 22.76
+  },
+  "lv_nmos_W0p15_L0p18": {
+   "label": "fixed_l1",
+   "tag": "lv_nmos_W0p15_L0p18",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.03212483361376446,
+   "rrms": 0.03198729035119183,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 21.92
+  },
+  "lv_nmos_W0p15_L10": {
+   "label": "fixed_l1",
+   "tag": "lv_nmos_W0p15_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.009789523099312459,
+   "rrms": 0.005129187802189346,
+   "failed": [],
+   "n_sim": 383,
+   "runtime_s": 20.8
+  },
+  "lv_nmos_W0p3_L0p13": {
+   "label": "fixed_l1",
+   "tag": "lv_nmos_W0p3_L0p13",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.021942453227130357,
+   "rrms": 0.021598525946894258,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 18.7
+  },
+  "lv_nmos_W0p3_L10": {
+   "label": "fixed_l1",
+   "tag": "lv_nmos_W0p3_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.01260667835324381,
+   "rrms": 0.01205181091645173,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 17.31
+  },
+  "lv_nmos_W10_L10": {
+   "label": "fixed_l1",
+   "tag": "lv_nmos_W10_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.013092446361204447,
+   "rrms": 0.012714350608776601,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 17.1
+  },
+  "lv_pmos_W0p15_L0p18": {
+   "label": "fixed_l1",
+   "tag": "lv_pmos_W0p15_L0p18",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.04947061812304146,
+   "rrms": 0.04865162336868348,
+   "failed": [],
+   "n_sim": 84,
+   "runtime_s": 4.67
+  },
+  "lv_pmos_W0p15_L10": {
+   "label": "fixed_l1",
+   "tag": "lv_pmos_W0p15_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.00450412162627881,
+   "rrms": 0.00289438337893962,
+   "failed": [],
+   "n_sim": 383,
+   "runtime_s": 15.42
+  },
+  "lv_pmos_W0p3_L0p13": {
+   "label": "fixed_l1",
+   "tag": "lv_pmos_W0p3_L0p13",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.1078536904120268,
+   "rrms": 0.08639293634900944,
+   "failed": [],
+   "n_sim": 110,
+   "runtime_s": 4.92
+  },
+  "lv_pmos_W0p3_L10": {
+   "label": "fixed_l1",
+   "tag": "lv_pmos_W0p3_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.005350727957919342,
+   "rrms": 0.0032258199540226217,
+   "failed": [],
+   "n_sim": 279,
+   "runtime_s": 11.3
+  },
+  "lv_pmos_W10_L10": {
+   "label": "fixed_l1",
+   "tag": "lv_pmos_W10_L10",
+   "T_K": 343,
+   "n_active": 12,
+   "rrms_start": 0.02377113755830089,
+   "rrms": 0.01730172197530684,
+   "failed": [],
+   "n_sim": 396,
+   "runtime_s": 15.03
+  }
+ },
+ "n_sim": {
+  "hv_nmos_W0p3_L0p5": 292,
+  "hv_nmos_W0p3_L10": 396,
+  "hv_nmos_W0p6_L1p2": 396,
+  "hv_nmos_W10_L0p5": 305,
+  "hv_pmos_W0p3_L10": 396,
+  "hv_pmos_W0p6_L0p5": 318,
+  "hv_pmos_W10_L0p35": 214,
+  "hv_pmos_W2_L1p2": 396,
+  "lv_nmos_W0p15_L0p18": 396,
+  "lv_nmos_W0p15_L10": 383,
+  "lv_nmos_W0p3_L0p13": 396,
+  "lv_nmos_W0p3_L10": 396,
+  "lv_nmos_W10_L10": 396,
+  "lv_pmos_W0p15_L0p18": 84,
+  "lv_pmos_W0p15_L10": 383,
+  "lv_pmos_W0p3_L0p13": 110,
+  "lv_pmos_W0p3_L10": 279,
+  "lv_pmos_W10_L10": 396
+ },
+ "timing": {
+  "train_s": 714.6,
+  "refit_s": 37.8,
+  "n_member_tasks": 90,
+  "train_seconds_per_member": {
+   "hv_nmos_W0p3_L0p5": [
+    69.3,
+    69.0,
+    69.0,
+    68.7,
+    69.0
+   ],
+   "hv_nmos_W0p3_L10": [
+    68.9,
+    69.4,
+    70.1,
+    69.6,
+    69.8
+   ],
+   "hv_nmos_W0p6_L1p2": [
+    68.7,
+    68.7,
+    69.0,
+    68.9,
+    68.7
+   ],
+   "hv_nmos_W10_L0p5": [
+    68.7,
+    68.6,
+    69.0,
+    69.1,
+    68.3
+   ],
+   "hv_pmos_W0p3_L10": [
+    69.1,
+    69.6,
+    69.4,
+    69.7,
+    69.2
+   ],
+   "hv_pmos_W0p6_L0p5": [
+    68.7,
+    68.4,
+    68.4,
+    68.7,
+    68.7
+   ],
+   "hv_pmos_W10_L0p35": [
+    68.1,
+    68.2,
+    67.7,
+    68.2,
+    68.3
+   ],
+   "hv_pmos_W2_L1p2": [
+    68.8,
+    68.7,
+    68.7,
+    68.5,
+    69.2
+   ],
+   "lv_nmos_W0p15_L0p18": [
+    87.4,
+    88.1,
+    86.9,
+    87.4,
+    88.0
+   ],
+   "lv_nmos_W0p15_L10": [
+    86.8,
+    87.4,
+    87.4,
+    87.6,
+    87.6
+   ],
+   "lv_nmos_W0p3_L0p13": [
+    87.6,
+    87.5,
+    88.1,
+    87.6,
+    87.2
+   ],
+   "lv_nmos_W0p3_L10": [
+    87.3,
+    87.2,
+    87.9,
+    87.2,
+    87.1
+   ],
+   "lv_nmos_W10_L10": [
+    86.2,
+    85.3,
+    85.9,
+    85.8,
+    86.1
+   ],
+   "lv_pmos_W0p15_L0p18": [
+    87.2,
+    86.2,
+    86.9,
+    86.2,
+    86.9
+   ],
+   "lv_pmos_W0p15_L10": [
+    87.7,
+    88.0,
+    88.7,
+    88.7,
+    88.5
+   ],
+   "lv_pmos_W0p3_L0p13": [
+    86.8,
+    86.5,
+    86.8,
+    87.6,
+    86.6
+   ],
+   "lv_pmos_W0p3_L10": [
+    88.2,
+    87.8,
+    88.1,
+    88.0,
+    87.6
+   ],
+   "lv_pmos_W10_L10": [
+    87.1,
+    87.0,
+    86.8,
+    87.3,
+    86.4
+   ]
+  },
+  "workers": 10
+ },
+ "runtime_s": 757.1
+}
