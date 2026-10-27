@@ -19,9 +19,11 @@
   "k3",
   "dvt0",
   "dvt1",
+  "dvt0w",
   "dvt1w",
   "w0",
   "k3b",
+  "vfb",
   "lpe0",
   "lpeb",
   "vsat",
@@ -38,24 +40,22 @@
   "b1",
   "voff",
   "nfactor",
+  "cit",
+  "cdsc",
   "eta0",
   "dsub",
   "pclm",
   "pdiblc1",
   "pdiblc2",
+  "drout",
   "delta",
   "alpha0",
-  "beta0",
-  "kt1",
-  "at",
-  "ute",
-  "ua1",
-  "ub1"
+  "beta0"
  ],
  "overlap_with_old43": {
   "n_old": 43,
   "n_new": 45,
-  "n_both": 39,
+  "n_both": 42,
   "both": [
    "a0",
    "a2",
@@ -64,7 +64,9 @@
    "b0",
    "b1",
    "beta0",
+   "cit",
    "delta",
+   "drout",
    "dsub",
    "dvt0",
    "dvt1",
@@ -90,6 +92,7 @@
    "u0",
    "ua",
    "ub",
+   "vfb",
    "voff",
    "vsat",
    "vth0",
@@ -98,62 +101,72 @@
    "xj"
   ],
   "only_old": [
-   "cdscd",
-   "cit",
-   "drout",
-   "vfb"
+   "cdscd"
   ],
   "only_new": [
-   "at",
-   "kt1",
-   "pdiblc1",
-   "ua1",
-   "ub1",
-   "ute"
+   "cdsc",
+   "dvt0w",
+   "pdiblc1"
   ],
-  "jaccard": 0.7959183673469388
+  "jaccard": 0.9130434782608695
  },
  "fixed_zero_center_by_device": {
   "nmos_L0p15_W1p6": [
    "a0",
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "nmos_L0p19_W7": [
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "nmos_L0p25_W1p6": [
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "nmos_L1_W1p6": [
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "nmos_L1_W3": [
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "nmos_L8_W1p6": [
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "nmos_L20_W0p64": [
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "nmos_L100_W100": [
    "b0",
    "b1",
-   "prwg"
+   "dvt0w",
+   "prwg",
+   "vfb"
   ],
   "pmos_L0p35_W0p55": [
    "lpe0",
