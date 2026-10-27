@@ -2723,3 +2723,19 @@ Method-freeze draft open item 12 rewritten with these numbers. Report batch `out
 (`scripts/research/plot_explore_i22_1.py`; 9 tables, forest plots vs g v2 and vs C0_refit, cost figure, Part C
 best-so-far curves, per-device ratios, 10 Part A and 1 Part C I-V figures with every re-simulated RRMS checked);
 site claim `i22-1` (verified). Site rebuilt, not published.
+
+## I23-1 pre-registration in force (2026-10-26): call-matched IHP control for B1; g v2 with lambda fixed at 1 V
+
+Iteration 23, the two pushed default options of the I22-1 decision (no user reply). Pre-registration
+`out/research/explore/I23_1/prereg.md` / `prereg.json`, committed alone before any I23-1 code or run; DEV only; no
+amendment of a755e18. Part A (IHP SG13G2 233 / 300 / 343 / 398 K, 18 DUTs each, I22-1 protocol, state C, frozen
+inclusion): C0_refit with max_nfev and a hard NGSpice-call limit equal to the I22-1 B1 refit calls of each DUT
+(C0_call, `polish_capped`); reverse control B1 limited to the C0_refit calls (B1_cap). Rule: "B1 gain survives the
+call match" iff CI upper of GMR(B1, C0_call) < 1 at all 4 temperatures; "not shown" iff >= 1 at all 4; else
+"partial"; implications (B1 as candidate IHP arm / gate option, user decision; or not proposed) fixed in the
+pre-registration. Part B: g v2 arm with lambda = 1 V in every outer fold (no nested selection) on the 9 DEV datasets;
+reused stored lambda = 1 V rows for sky130 (I15-2), IHP 300 K (I17-2), TU Delft (I18-2) and 17 NIST lvt devices
+(I20-1), each with a retrain-and-refit reproduction sample (<= 1e-9); new runs for IHP 233 / 343 / 398 K, 36 NIST lvt
+and 87 NIST RT card devices. Rule over G = {sky130, NIST lvt, NIST RT card}: "fixed lambda 1 V non-inferior to the
+selected g v2" iff CI upper of GMR(fixed, selected) < 1.05 on all 3. NGSpice calls per held-out device reported next
+to the I22-1 cost table. Predictions P1-P6 in the pre-registration.

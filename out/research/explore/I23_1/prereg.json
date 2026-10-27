@@ -1,0 +1,151 @@
+{
+ "id": "I23-1",
+ "status": "in force",
+ "date": "2026-10-26",
+ "base_commit": "95e1502",
+ "title": "(A) call-matched IHP control for B1 (C0_refit at the B1 NGSpice-call count; reverse: B1 at the C0_refit count); (B) g v2 with lambda fixed at 1 V (no nested selection) on the 9 measured DEV datasets",
+ "test_locked": true,
+ "no_amendment": "no amendment of the I19-1 TEST gate decisions (a755e18)",
+ "known_before": "I22-1 IHP GMR(B1, C0_refit) 0.794/0.775/0.695/0.809 and call counts; stored lambda=1 V arms sky130 I15_2/lodo_sym_e1_l1, IHP 300 K I17_2/lodo_sym_e1_l1, TU Delft I18_2/lodo_*_sym_e1_l1 with their all-device means; selected rows = lambda=1 rows on lambda*=1 folds (difference 0); no paired GMR(fixed, selected) computed",
+ "part_A": {
+  "datasets": [
+   "ihp233",
+   "ihp300",
+   "ihp343",
+   "ihp398"
+  ],
+  "records": "I5_1/start/records_<T>K (state C, PSP103 no clamp)",
+  "simulator": "ngspice-46 + psp103.osdi (I5-1 MeasProblem)",
+  "call_unit": "MeasProblem.n_sim of the held-out refit (incl. start, Jacobian columns, IRLS re-simulations, final re-simulation)",
+  "N_B1": "I22_1/partA_ihp<T>/results.json n_sim.B1 per DUT (screen calls excluded, reported)",
+  "N_C0": "I22_1/partA_ihp<T>/results.json n_sim.C0_refit per DUT",
+  "capped_refit": "polish_capped: polish with at most N-1 calls inside polish; at the limit the running TRF round stops, remaining IRLS rounds skipped, best card kept",
+  "arms": {
+   "C0_refit_rerun": "max_nfev 400, no binding limit (VA1)",
+   "C0_call": "base box (12 active), max_nfev N_B1(d), call limit N_B1(d)",
+   "B1": "stored I22-1 rows",
+   "B1_cap": "I22-1 B1 (matched_nfev from 400), call limit N_C0(d) (secondary)"
+  },
+  "statistic": "GMR(B1, C0_call), 18 DUTs, bootstrap 10000 seed 0, unit DUT",
+  "rule": {
+   "survives": "CI upper of GMR(B1, C0_call) < 1 at all 4 temperatures",
+   "not_shown": "CI upper >= 1 at all 4 temperatures",
+   "partial": "otherwise",
+   "invalid_temperature": "rule not evaluated"
+  },
+  "implication": {
+   "survives": "B1 entered in the freeze draft as candidate IHP arm / gate option (user decision); frozen method unchanged",
+   "not_shown": "IHP B1 gain recorded as not separable from its 6x call budget; B1 not proposed; C0_call recorded as IHP call-matched control",
+   "partial": "reported per temperature; B1 open item, not proposed"
+  },
+  "reported": [
+   "GMR(C0_call, C0_refit)",
+   "GMR(C0_call, selected g v2)",
+   "GMR(B1_cap, C0_refit)",
+   "GMR(B1, B1_cap)",
+   "calls used, fraction of limit, binding count",
+   "pooled over 4 temperatures"
+  ],
+  "validity": {
+   "VA1": "C0_refit rerun = stored rows (<=1e-12) and n_sim equal",
+   "VA2": "18 rows per arm, non-finite <= 10%",
+   "VA3": "n_sim(C0_call) <= N_B1, n_sim(B1_cap) <= N_C0 per DUT",
+   "VA4": "DEV tags only",
+   "VA5": "unit tests pass"
+  }
+ },
+ "part_B": {
+  "arm": "fixed_l1: 5-member g v2 ensemble per outer fold, lambda = 1 V, selected recipe otherwise unchanged, same folds / training order / state as the selected arm; held-out refit max_nfev 400 irls 2 diff_step 0.01",
+  "datasets": [
+   "sky130",
+   "nist4",
+   "nistrt",
+   "ihp233",
+   "ihp300",
+   "ihp343",
+   "ihp398",
+   "tud4",
+   "tud295"
+  ],
+  "reused": {
+   "sky130": "I15_2/lodo_sym_e1_l1",
+   "ihp300": "I17_2/lodo_sym_e1_l1",
+   "tud4": "I18_2/lodo_4K_sym_e1_l1",
+   "tud295": "I18_2/lodo_295K_sym_e1_l1",
+   "nist4": "I20_1/lodo_nist4, the 17 devices with lambda* = 1 V"
+  },
+  "new": {
+   "ihp233": "18 folds",
+   "ihp343": "18 folds",
+   "ihp398": "18 folds",
+   "nist4": "36 devices with lambda* = 0 V",
+   "nistrt": "87 devices"
+  },
+  "VB1_samples": {
+   "sky130": [
+    "nmos_L1_W1p6",
+    "pmos_L2_W5"
+   ],
+   "ihp300": [
+    "lv_nmos_W0p15_L0p18",
+    "hv_pmos_W0p6_L0p5"
+   ],
+   "tud4": [
+    "group t40_nmos_W0p36_L0p04"
+   ],
+   "tud295": [
+    "group t40_nmos_W0p36_L0p04"
+   ],
+   "nist4": [
+    "first nMOS and first pMOS (sorted tag) of the 17 reused"
+   ],
+   "tolerance": 1e-09,
+   "on_fail": "full rerun of that dataset's fixed_l1 arm"
+  },
+  "VB2_overlap": "new IHP rows on lambda*=1 folds equal stored selected rows (<= 1e-9)",
+  "comparison_rows": "plot_freeze_draft.datasets() (selected g v2, C0_refit, M_bias v1)",
+  "statistics": "GMR(fixed_l1, selected), GMR(fixed_l1, C0_refit), GMR(fixed_l1, M_bias v1); device bootstrap 10000 seed 0, TU Delft 7-group cluster; pooled exp(mean ln GMR vs C0_refit) over 9",
+  "labels": {
+   "vs_selected": "fixed better (CI upper < 1) / selected better (CI lower > 1) / inconclusive; non-inferior iff CI upper < 1.05",
+   "vs_C0_refit": "gain / worse / inconclusive"
+  },
+  "gain_set": [
+   "sky130",
+   "nist4",
+   "nistrt"
+  ],
+  "rule": {
+   "non_inferior": "fixed_l1 non-inferior to selected on all 3 of G",
+   "not_shown": "otherwise",
+   "invalid_G": "not evaluated"
+  },
+  "implication": {
+   "non_inferior": "freeze draft lists fixed lambda 1 V as proposed replacement of nested selection (user decision)",
+   "not_shown": "nested selection stays; fixed arm reported as cost / accuracy trade-off"
+  },
+  "cost": "held-out refit n_sim + 0 selection calls; ratio to C0_refit next to I22_1/cost.json",
+  "validity": {
+   "VB1": "reuse samples",
+   "VB2": "overlap",
+   "VB3": "complete rows, non-finite <= 10%",
+   "VB4": "DEV only",
+   "VB5": "unit tests"
+  }
+ },
+ "predictions": {
+  "P1": "Part A rule: survives",
+  "P2": "GMR(C0_call, C0_refit) < 1 at all 4 (point)",
+  "P3": "GMR(B1_cap, C0_refit) > 1 at >= 3 temperatures (point)",
+  "P4": "Part B rule: non-inferior",
+  "P5": "fixed_l1 gain vs C0_refit on sky130, NIST lvt, NIST RT; not a gain at any IHP temperature",
+  "P6": "fixed_l1 calls per held-out device within 1.1x of C0_refit on every dataset"
+ },
+ "order": [
+  "prereg commit alone + push",
+  "code, unit tests, smoke; commit",
+  "queue: Part A x4, VB1 checks, IHP fixed_l1 x3, NIST lvt, NIST RT card, decide",
+  "decision, report, site claim, RESEARCH_LOOP outcome, freeze draft, memory; commit, push"
+ ],
+ "compute_estimate": "Part A ~30 min; Part B ~8.5 h (NIST RT card ~6 h) at 10 workers",
+ "resources": "<= 10 workers; OMP/MKL/OPENBLAS/VECLIB threads 1; torch.set_num_threads(1)"
+}
