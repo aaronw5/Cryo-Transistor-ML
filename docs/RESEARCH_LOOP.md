@@ -2844,3 +2844,15 @@ parameters; arm B: the set from the unchanged screen around the mult1 card (afte
 around the mult1 values. Starts: 3 random (log-uniform in the box, seeds 20261027 + 1000 k + i); each start runs the
 registered Step A (no bank, no seeding of B by A); per device the start with the lowest training RRMS; spread
 reported. g v2 unchanged; primary full data, LODO secondary. Estimated 7-8 h.
+
+## I25-1 amendment A4 (2026-10-27): non-finite random starts
+
+`out/research/explore/I25_1/amendment_A4.md`, committed alone before every affected run (coordinating-session request).
+Arm A finite final RRMS: start 0 16/18 at every round (pmos_L8_W0p84, pmos_L0p35_W5 non-finite), start 1 round 1
+15/18, start 2 round 1 13/18. Cause: (1) BSIM4 fatal "u0 at current temperature is not positive" when a low u0 draw
+meets the bins' negative lu0 / wu0 / pu0 terms; every curve NaN, the objective is flat at the penalty and CMA-ES / TRF
+do not move; (2) partial sweep non-convergence accepted by CMA-ES when the remaining curves improve more than the
+penalty. Rules: R1 redraw the random start (same seeded stream, j = 0 = the A3 draw) until every included curve of the
+start card is finite; R2 a start is eligible only if its final card is finite, best eligible of starts 0-2, extra
+starts 3-9 only for devices with none; R3 each (device, start) chain runs as one pool task. Completed pairs with a
+finite j = 0 draw are reused (deterministic); the others rerun.
