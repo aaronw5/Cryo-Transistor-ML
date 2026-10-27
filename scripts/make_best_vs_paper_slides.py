@@ -34,6 +34,7 @@ from their per-device rows; nothing is typed in by hand except labels):
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import sys
 from pathlib import Path
@@ -289,7 +290,7 @@ def fig_paired(N, path):
     a1.set_xticks([0.2, 0.3, 0.5, 0.7, 1, 1.5])
     a1.set_xticklabels(["0.2", "0.3", "0.5", "0.7", "1", "1.5"], fontsize=9)
     a1.set_xlabel("GMR (log scale), 95% CI", fontsize=9.5)
-    a1.set_title("Paired GMR over 18 devices", fontsize=10)
+    a1.set_title(f"Paired GMR over {len(N['rows']['sel'])} devices", fontsize=10)
     R = N["rows"]
     tags = sorted(R["sel"])
     y = np.arange(len(tags))[::-1]
@@ -375,6 +376,9 @@ def build(N) -> None:
     mn = N["mn"]
     cost = N["cost"]["sky130"]
     tags = sorted(R["sel"])
+    nt = [t for t in tags if t.startswith("nmos")]
+    pt = [t for t in tags if t.startswith("pmos")]
+    nd, ntr = len(tags), len(tags) - 1
 
     def f4(x):
         return f"{x:.4f}"
@@ -407,7 +411,7 @@ def build(N) -> None:
         f"Published 77 K card: all-device RRMS {f4(A['published']['all'])}, combined {f4(A['published']['combined'])}",
         f"Method (starting card, held-out refit with g v2, LODO): all-device RRMS {f4(A['sel']['all'])}, "
         f"combined {f4(A['sel']['combined'])}",
-        f"18 measured devices (9 nMOS, 9 pMOS); ngspice-41; BSIM4 state C; all rows DEV, method draft not frozen; "
+        f"{nd} measured devices ({len(nt)} nMOS, {len(pt)} pMOS); ngspice-41; BSIM4 state C; all rows DEV, method draft not frozen; "
         "2026-10-27",
     ], left=0.9, top=3.45, width=11.5, height=1.95, size=19)
     for p_ in b.text_frame.paragraphs:
@@ -423,17 +427,16 @@ def build(N) -> None:
             r_.font.color.rgb = mb.MUTED
 
     # 2 data and metric ---------------------------------------------------------
-    s = new_slide(prs, "Data and metric: 18 devices, 11 curves each, strict paper RRMS", size=24)
+    s = new_slide(prs, f"Data and metric: {nd} devices, 11 curves each, strict paper RRMS", size=24)
     nc = mn["records"]["n_curves"]
 
     def lw(t):
         _, l, w = t.split("_")
         return f"{l[1:].replace('p', '.')} x {w[1:].replace('p', '.')}"
-    nt = [t for t in tags if t.startswith("nmos")]
-    pt = [t for t in tags if t.startswith("pmos")]
     rows = [["nMOS L x W (um)", "scored curves", "pMOS L x W (um)", "scored curves"]]
-    for a_, b_ in zip(nt, pt):
-        rows.append([lw(a_), str(nc[a_]), lw(b_), str(nc[b_])])
+    for a_, b_ in itertools.zip_longest(nt, pt):
+        rows.append([lw(a_) if a_ else "", str(nc[a_]) if a_ else "", lw(b_) if b_ else "", str(nc[b_]) if b_ else ""])
+    assert sum(1 for r_ in rows[1:] for c_ in (r_[0], r_[2]) if c_) == nd
     add_table(s, rows, [1.6, 1.15, 1.6, 1.15], left=0.45, top=1.05, size=12, row_h=0.33, align_right_from=9)
     keys = [c["key"] for c in N["check"]["devices"][tags[0]]["curves"]]
     vds = ", ".join(k.split("@")[1] for k in keys if k.startswith("idvg"))
@@ -444,7 +447,7 @@ def build(N) -> None:
         f"Curves per device: Id-Vg at |Vds| = {vds} V; Id-Vd at |Vgs| = {vgs} V.",
         f"Scored curves: frozen to the published card's inclusion set ({min(nc.values())}-{max(nc.values())} "
         f"per device); {mn['records']['total']:,} scored points in total.",
-        "All-device RRMS: mean over the 18 devices. Combined RRMS: (nMOS mean + pMOS mean) / 2.",
+        f"All-device RRMS: mean over the {nd} devices. Combined RRMS: (nMOS mean + pMOS mean) / 2.",
         f"Published card: all-device {f4(ref['all_device_mean_rrms'])}, combined {f4(ref['combined_rrms'])} "
         f"(nMOS {f4(ref['nmos_rrms'])}, pMOS {f4(ref['pmos_rrms'])}).",
         "Simulator: ngspice-41, arm64 build. State C: a2 > 1 written as a2 = 1, a1 = 0; a2 < 0.01 as 0.01 "
@@ -474,7 +477,7 @@ def build(N) -> None:
     add_box(s, f"Deployed element\ncard + channel replica\n+ OSDI module (Verilog-A)\nelement deck RRMS\n"
                f"{f4(A['sel_native']['all'])} / {f4(A['sel_native']['combined'])}", 10.3, 2.85, 2.75, bh + 0.2,
             size=12, fill=RGBColor(252, 236, 226))
-    add_box(s, "g v2, fold k\ntrained on the starting-card records\nof the 17 other devices;\n"
+    add_box(s, f"g v2, fold k\ntrained on the starting-card records\nof the {ntr} other devices;\n"
                "penalty weight lambda by nested\ninner CV (slide 6)", 3.65, 3.55, bw, bh, size=12, fill=RGBColor(252, 236, 226))
     arrow(s, 3.33, 1.2 + bh / 2, 3.62, 1.2 + bh / 2)
     arrow(s, 6.63, 1.75, 6.97, 1.7)
@@ -482,7 +485,7 @@ def build(N) -> None:
     arrow(s, 6.63, 3.55 + bh / 2, 6.97, 3.75)
     arrow(s, 9.98, 2.85 + (bh + 0.2) / 2, 10.27, 2.85 + (bh + 0.2) / 2)
     add_lines(s, [
-        "RRMS values: all-device / combined, held-out device k, 18 folds. Starting cards were fitted per device "
+        f"RRMS values: all-device / combined, held-out device k, {nd} folds. Starting cards were fitted per device "
         "before the LODO folds (device k's own measured curves).",
         f"Starting-card calls: rounds 1-3 and FD polish ({cost['starting_cards']['per_device_mean']:,.0f}, "
         f"I22-1 cost.json); the 7-parameter stage that initializes round 1 adds {seven:,.0f} calls / device.",
@@ -538,7 +541,7 @@ def build(N) -> None:
             ["h_j network", "3-16-16-1, tanh, last layer zero-initialized"],
             ["ensemble", "5 members, seeds 0-4; g = member mean"],
             ["optimizer", "Adam, lr 3e-3, 2000 full-batch steps"],
-            ["training data", "starting-card records of the 17 training devices (cards fixed)"],
+            ["training data", f"starting-card records of the {ntr} training devices (cards fixed)"],
             ["P grid", "25 mV, 75 x 75, 0-1.85 V, forward quadrant, I_card > 1e-9 A"],
             ["u_g, u_d", "s Vgs, s Vds; gm, gds of the card by central differences"],
             ["lambda", "penalty weight (V); grid {0, 1, 2, 5, 10} V, slide 6"]]
@@ -562,29 +565,29 @@ def build(N) -> None:
                 + [f4(vt[f"sym_e1_l{int(g_)}"]["combined"]) for g_ in grid] + [f4(vt["selected"]["combined"])])
     add_table(s, rows, [4.3, 1.1, 1.1, 1.1, 1.1, 1.1, 1.55], left=0.45, top=1.0, size=12.5, row_h=0.42)
     add_lines(s, [
-        "Per outer fold k: the 17 training devices are sorted (nMOS first, then tag) and split into 3 inner folds "
+        f"Per outer fold k: the {ntr} training devices are sorted (nMOS first, then tag) and split into 3 inner folds "
         "(device i -> inner fold i mod 3).",
         "Per inner fold and lambda: one member (seed 0) trained on the other 2 inner folds; inner held-out devices "
         "refit with g frozen (outer refit settings).",
         "Inner score: mean ln RRMS over the inner held-out devices. lambda* = argmin; ties within 1e-12 go to the "
         "larger lambda. Device k is not used.",
-        f"Full-data lambda* = {lam['full']:g} V: the same selection over all 18 devices; it defines the module of the "
+        f"Full-data lambda* = {lam['full']:g} V: the same selection over all {nd} devices; it defines the module of the "
         "deployment checks (slide 17), not the LODO rows.",
         "Fixed-lambda rows are reported after the fact; they did not enter the selection.",
     ], top=3.35, height=3.9, size=14)
 
     # 7 evaluation protocol -----------------------------------------------------------
-    s = new_slide(prs, "Evaluation protocol: leave-one-device-out (LODO), 18 folds", size=24)
+    s = new_slide(prs, f"Evaluation protocol: leave-one-device-out (LODO), {nd} folds", size=24)
     rows = [["Stage", "Uses data of held-out device k", "Detail"],
             ["Starting card of k", "yes", "direct NGSpice fit to k's measured curves, before the folds"],
-            ["g v2 training (fold k)", "no", "starting-card records of the 17 training devices"],
+            ["g v2 training (fold k)", "no", f"starting-card records of the {ntr} training devices"],
             ["Input standardization, penalty grid", "no", "training devices only"],
-            ["lambda selection (fold k)", "no", "inner CV over the 17 training devices"],
+            ["lambda selection (fold k)", "no", f"inner CV over the {ntr} training devices"],
             ["Held-out refit of k", "yes", "k's measured curves, g frozen; max_nfev 400"],
             ["Score of k", "yes", "fresh NGSpice run of the kept card x exp(g); frozen inclusion set"],
             ["Full-data lambda* and module", "yes", "deployment checks only (slide 17)"],
             ["Dataset gate S3_D (apply g or not)", "yes", "uses all DEV records incl. k (I19-1); sky130: apply"],
-            ["Method design (inputs, EPS, penalty, grid)", "yes", "chosen on these 18 devices since I3-2 (DEV)"]]
+            ["Method design (inputs, EPS, penalty, grid)", "yes", f"chosen on these {nd} devices since I3-2 (DEV)"]]
     add_table(s, rows, [3.7, 2.6, 6.2], left=0.45, top=1.0, size=13, row_h=0.42, align_right_from=9)
     add_lines(s, [
         "Held-out device k contributes: its own starting card, its measured curves to its refit, and its score.",
@@ -594,7 +597,7 @@ def build(N) -> None:
     ], top=5.35, height=1.9, size=14)
 
     # 8 main results ----------------------------------------------------------------------
-    s = new_slide(prs, "Results: all 18 devices, LODO, state C", size=24)
+    s = new_slide(prs, f"Results: all {nd} devices, LODO, state C", size=24)
     a18n = N["n_sim"]
     sel_c = cost["arms"]["selected_g_v2"]
     rl = N["i15_1"]["reference_arm_v1_deploy"]
@@ -632,7 +635,7 @@ def build(N) -> None:
         f"M_bias v1 has a lower RRMS than selected g v2 ({f4(A['M_bias_v1']['all'])} vs {f4(A['sel']['all'])}; "
         f"GMR(g v2, v1) {ci(G['sel_vs_v1'])}), but v1 is not deployable as a circuit element: "
         + "; ".join(rl["core_fail"]) + " (I15-1 core failures).",
-        "GMR(g v2, row): paired geometric-mean ratio of g v2 to the row over the 18 devices (slide 9); 95% percentile "
+        f"GMR(g v2, row): paired geometric-mean ratio of g v2 to the row over the {nd} devices (slide 9); 95% percentile "
         "bootstrap CI, 10,000 resamples, seed 0. Below 1: g v2 has the lower RRMS.",
         "Paper per-device cards: reference_scores.json paper_seven / paper_full43, scored with the same metric.",
     ], top=5.3, height=2.0, size=12.5)
@@ -665,7 +668,7 @@ def build(N) -> None:
     acc = N["acc"]
     for k in range(6):
         grp_t = N["check"]["tags"][3 * k:3 * k + 3]
-        s = new_slide(prs, f"I-V, held-out devices {3 * k + 1}-{3 * k + 3} of 18: "
+        s = new_slide(prs, f"I-V, held-out devices {3 * k + 1}-{3 * k + 3} of {nd}: "
                            f"{', '.join(grp_t)}", size=20)
         add_picture(s, PLOTS / f"iv_page{k + 1}.png", left=0.15, top=0.78, max_w=13.0, max_h=6.05)
         add_lines(s, [
@@ -741,10 +744,10 @@ def build(N) -> None:
     nrt = fb["datasets"]["nistrt"]["comparisons"]["fixed_vs_selected"]
     n4 = fb["datasets"]["nist4"]["comparisons"]["fixed_vs_selected"]
     add_lines(s, [
-        f"Selection calls: {sel_c['selection_refits']:,} inner refits over 18 folds, estimated as inner refits x median "
+        f"Selection calls: {sel_c['selection_refits']:,} inner refits over {nd} folds, estimated as inner refits x median "
         f"held-out calls (cost.json); "
         f"{(sel_c['total_calls_per_device'] - sel_c['refit_calls_mean']) / sel_c['total_calls_per_device']:.1%} of the "
-        "g v2 total. Full-data lambda*: {sel_c['full_data_selection_refits']} "
+        f"g v2 total. Full-data lambda*: {sel_c['full_data_selection_refits']} "
         f"refits, {sel_c['full_data_selection_calls']:,.0f} calls, once.",
         f"Fixed lambda 1 V vs selected g v2: sky130 GMR {ci(cmp_['fixed_vs_selected'])}; NIST lvt {ci(n4)}; "
         f"NIST RT card {ci(nrt)}.",
@@ -832,7 +835,7 @@ def build(N) -> None:
     add_lines(s, ["- " + x for x in [
         "No locked TEST result: every number in this deck is DEV. The method draft is not frozen "
         "(planned about 2026-12-10).",
-        "sky130 77 K: method choices (inputs, EPS, penalty, lambda grid) were made on these 18 devices; the 6 "
+        f"sky130 77 K: method choices (inputs, EPS, penalty, lambda grid) were made on these {nd} devices; the 6 "
         "former TEST devices were opened on 2026-10-21.",
         f"IHP SG13G2: no gain; 300 K GMR {ci(i172['primary_gmr_selected_vs_C0_refit'])}; B1 (wider card set) is "
         "better than g v2 at all 4 temperatures; no PSP103 element.",
