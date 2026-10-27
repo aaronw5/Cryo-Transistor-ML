@@ -161,6 +161,50 @@ def fit_device(job) -> tuple[str, dict]:
     return tag, record
 
 
+def fit_multi(job):
+    k, tag, spec, options = job
+    tag, record = fit_device((tag, spec, options))
+    return k, tag, record
+
+
+def main_multi(args, tags) -> int:
+    """I25-1 A3: several starts k in one pool (fewer idle workers at the
+    end of a run).  ``{k}`` in --spec / --out / --init is replaced by k; with
+    --random-multi each k is also the random start index.  Each k gives the
+    same summary as a separate run."""
+    ks = [int(v) for v in args.multi.split(",")]
+    jobs, specs, opts = [], {}, {}
+    for k in ks:
+        specs[k] = json.loads(Path(args.spec.format(k=k)).read_text())
+        o = {n: getattr(args, n) for n in (
+            "bank", "bank_starts", "cmaes_evals", "sigma0", "popsize",
+            "polish_nfev", "irls", "seed", "random_base_seed")}
+        o["init"] = args.init.format(k=k) if args.init else None
+        o["random_start"] = k if args.random_multi else None
+        o["init_cards"] = load_init_cards(o["init"]) if o["init"] else None
+        opts[k] = o
+        jobs += [(k, t, specs[k], o) for t in tags]
+    t0 = time.time()
+    results = {k: {} for k in ks}
+    with get_context("spawn").Pool(min(args.workers, len(jobs))) as pool:
+        for k, tag, rec in pool.imap_unordered(fit_multi, jobs):
+            results[k][tag] = rec
+    wall = round(time.time() - t0, 1)
+    for k in ks:
+        o = dict(opts[k])
+        o.pop("init_cards")
+        out = {"spec": args.spec.format(k=k), "options": o, "devices": results[k],
+               **aggregate(results[k]),
+               "mean_ngspice_calls_per_device": float(np.mean([r["n_sim"] for r in results[k].values()])),
+               "wall_s": wall, "multi": ks}
+        path = Path(args.out.format(k=k))
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(out, indent=1) + "\n")
+        print(json.dumps({"k": k, **{n: out[n] for n in ("all_device_mean_rrms", "combined_rrms",
+                                                         "mean_ngspice_calls_per_device", "wall_s")}}))
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", required=True)
@@ -183,11 +227,16 @@ def main() -> int:
     parser.add_argument("--random-base-seed", type=int, default=20261027)
     parser.add_argument("--out", default=None,
                         help="summary.json path (default runs/<run>/summary.json)")
+    parser.add_argument("--multi", default=None, help="comma list of start indices k ({k} in paths)")
+    parser.add_argument("--random-multi", action="store_true", help="with --multi: k is the random start")
     args = parser.parse_args()
-    spec = json.loads(Path(args.spec).read_text())
     tags = [device_tag(d.dev_type, d.L_um, d.W_um) for d in PAPER_DEVICES]
     if args.devices:
         tags = [t for t in tags if t in args.devices.split(",")]
+    if args.multi:
+        tags.sort(key=lambda t: not t.startswith("pmos"))
+        return main_multi(args, tags)
+    spec = json.loads(Path(args.spec).read_text())
     options = {k: getattr(args, k) for k in (
         "bank", "bank_starts", "cmaes_evals", "sigma0", "popsize",
         "polish_nfev", "irls", "seed", "init", "random_start", "random_base_seed")}
