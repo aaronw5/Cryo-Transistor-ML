@@ -2831,3 +2831,16 @@ start = 7p card; B: S, start = round 3 + FD): nested lambda selection (I15-2 rul
 lambda*_full with in-sample refits of all 18 (user instruction), control C0_refit; secondary = LODO held-out at
 lambda*_h. Scoring: primary paper RRMS with the released card's frozen curve set; secondary M-rule (pMOS thresholds on
 the measured last trimmed point). GMR device bootstrap with labels lower / higher / inconclusive. Estimated 8-9 h.
+
+## I25-1 amendment A3 (2026-10-27): the paper's task with multipliers set to 1, 3 random starts per device
+
+User instructions: "I think we shoudl use random as starting point….."; "We shoudl aim for that low temp fit…";
+"Basically we want to fit SXACTLY what the paper fit, jsut with our method. That's it"; "No start this now. Both 7 and
+43". `out/research/explore/I25_1/amendment_A3.md`, committed alone before every affected run. Before A3 only the
+template check, the stock-card screen (45 selected; not used) and an incomplete 7p bank (stopped, not used) had run.
+Template: the released 77 K card files with every multiplier set to 1, named `.param *_nom` multipliers included
+(`CRYOML_PDK_TEMPLATE=mult1`); released bins, tnom -196.15 C, temperature coefficients 0. Arm A: the paper's 7
+parameters; arm B: the set from the unchanged screen around the mult1 card (after arm A). Boxes: registered widths
+around the mult1 values. Starts: 3 random (log-uniform in the box, seeds 20261027 + 1000 k + i); each start runs the
+registered Step A (no bank, no seeding of B by A); per device the start with the lowest training RRMS; spread
+reported. g v2 unchanged; primary full data, LODO secondary. Estimated 7-8 h.
