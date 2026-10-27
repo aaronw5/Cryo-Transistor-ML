@@ -139,5 +139,35 @@ class TestI25_2(unittest.TestCase):
         assert r["clamp"] == 0
 
 
+
+class TestMult1(unittest.TestCase):
+    def test_multipliers_to_one_text(self):
+        text = (".param vth0_nom = 2.08113\n.param rdw_nom = 1\n"
+                ".model sky130_fd_pr__pfet_01v8_lvt__model.0 pmos\n"
+                "+vth0={(-5.4e-01+MC_MM_SWITCH*my_gauss*(s/sqrt(l*w*m)))*vth0_nom}\n"
+                "+ub='2.0e-18*ub_nom'\n+u0={3.48e-03*11.8673}\n+k1=0.5\n")
+        with self.assertRaises(ValueError):          # ub_nom has no .param line
+            sp.multipliers_to_one(text)
+        text = text.replace(".param rdw_nom = 1\n", ".param rdw_nom = 1\n.param ub_nom = 3\n")
+        out = sp.multipliers_to_one(text)
+        self.assertIn(".param vth0_nom = 1\n", out)
+        self.assertIn(".param ub_nom = 1\n", out)
+        self.assertIn("+u0={3.48e-03*1}\n", out)
+        self.assertIn("+k1=0.5\n", out)
+        from cryoml.cold_start import multipliers_from_text
+        self.assertEqual(set(multipliers_from_text(out, "pmos", 0).values()), {1.0})
+
+    def test_mult1_template_all_multipliers_one(self):
+        script = ("from cryoml import spice_pdk as sp\nfrom cryoml.cold_start import bin_multipliers, device_bins\n"
+                  "assert sp.PDK_TEMPLATE == 'mult1' and sp.ensure_pdk77k() is None\n"
+                  "v = set()\nfor t, b in device_bins().items():\n    v |= set(bin_multipliers(t[:4], b).values())\n"
+                  "print(sorted(v))\n")
+        env = {**os.environ, "CRYOML_PDK_TEMPLATE": "mult1", "PYTHONPATH": str(ROOT / "src")}
+        proc = subprocess.run([sys.executable, "-c", script], env=env, capture_output=True, text=True,
+                              timeout=60, cwd=str(ROOT))
+        self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+        self.assertEqual(proc.stdout.strip().splitlines()[-1], "[1.0]")
+
+
 if __name__ == "__main__":
     unittest.main()

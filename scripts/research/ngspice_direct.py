@@ -99,6 +99,14 @@ def fit_device(job) -> tuple[str, dict]:
     problem = DeviceProblem(tag, box_for(spec, tag))
     active = np.flatnonzero(problem.box.active)
     starts = [problem.box.local_published]
+    if args.get("random_start") is not None:
+        # I25-1 A3: one random start, uniform in local coordinates on every
+        # active coordinate (log-uniform in a log box); no center, no bank.
+        index = [device_tag(d.dev_type, d.L_um, d.W_um) for d in PAPER_DEVICES].index(tag)
+        rng = np.random.default_rng(args["random_base_seed"] + 1000 * args["random_start"] + index)
+        local = np.asarray(problem.box.local_published, dtype=np.float64).copy()
+        local[active] = rng.uniform(-1.0, 1.0, size=len(active))
+        starts = [local]
     if args["init_cards"] and tag in args["init_cards"]:
         # Seed from an earlier fit (e.g. the seven-parameter result inside a
         # 43-parameter box); parameters it does not set stay at the center.
@@ -114,6 +122,7 @@ def fit_device(job) -> tuple[str, dict]:
     start_scores = [problem.objective(s) for s in starts]
     order = np.argsort(start_scores)
     record = {"start_scores": [float(v) for v in start_scores],
+              "start_locals": [np.asarray(x, dtype=np.float64).tolist() for x in starts],
               "best_bank_rrms": best_bank}
     best_local = np.asarray(starts[order[0]], dtype=np.float64)
     best_value = float(start_scores[order[0]])
@@ -169,6 +178,9 @@ def main() -> int:
     parser.add_argument("--devices", default=None)
     parser.add_argument("--workers", type=int, default=10)
     parser.add_argument("--seed", type=int, default=20261015)
+    parser.add_argument("--random-start", type=int, default=None,
+                        help="I25-1 A3: start k from a random local point (seed base + 1000 k + device index)")
+    parser.add_argument("--random-base-seed", type=int, default=20261027)
     parser.add_argument("--out", default=None,
                         help="summary.json path (default runs/<run>/summary.json)")
     args = parser.parse_args()
@@ -178,7 +190,7 @@ def main() -> int:
         tags = [t for t in tags if t in args.devices.split(",")]
     options = {k: getattr(args, k) for k in (
         "bank", "bank_starts", "cmaes_evals", "sigma0", "popsize",
-        "polish_nfev", "irls", "seed", "init")}
+        "polish_nfev", "irls", "seed", "init", "random_start", "random_base_seed")}
     options["init_cards"] = load_init_cards(args.init) if args.init else None
     t0 = time.time()
     # Longest-running (pMOS) devices first keeps the pool busy.

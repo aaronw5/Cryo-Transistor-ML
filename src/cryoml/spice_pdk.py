@@ -62,7 +62,7 @@ _CORNER_BASENAME = {
 # Every module that imports PDK77K_DIR / LIB_FILE / _CORNER_BASENAME after
 # this module is loaded uses the selected template.
 # ---------------------------------------------------------------------------
-PDK_TEMPLATES = ("paper77k", "stock")
+PDK_TEMPLATES = ("paper77k", "stock", "mult1")
 PDK_TEMPLATE = os.environ.get("CRYOML_PDK_TEMPLATE", "paper77k")
 if PDK_TEMPLATE not in PDK_TEMPLATES:
     raise ValueError(f"CRYOML_PDK_TEMPLATE {PDK_TEMPLATE!r} not in {PDK_TEMPLATES}")
@@ -76,11 +76,38 @@ _STOCK_CORNER_WRAPPER = {
     "nmos": "sky130_fd_pr__nfet_01v8_lvt__tt.corner.spice",
     "pmos": "sky130_fd_pr__pfet_01v8_lvt__tt.corner.spice",
 }
+# "mult1" (I25-1 amendment A3): the released 77 K card files with every
+# released multiplier set to 1 (``{base*number}`` -> ``{base*1}``; every
+# ``.param <name>`` used as a named multiplier -> 1).  Same bins, tnom,
+# temperature coefficients and patcher as "paper77k".
+MULT1_DIR = PROCESSED_DIR / "pdk77k_mult1"
+MULT1_LIB_FILE = MULT1_DIR / "sky130_77k_mult1.lib.spice"
 PAPER77K_DIR, PAPER_LIB_FILE = PDK77K_DIR, LIB_FILE
 PAPER_CORNER_BASENAME = dict(_CORNER_BASENAME)
 if PDK_TEMPLATE == "stock":
     PDK77K_DIR, LIB_FILE = STOCK_DIR, STOCK_LIB_FILE
     _CORNER_BASENAME = dict(_STOCK_BASENAME)
+elif PDK_TEMPLATE == "mult1":
+    PDK77K_DIR, LIB_FILE = MULT1_DIR, MULT1_LIB_FILE
+
+_NUM_MULT_LINE = re.compile(
+    r"^(\+\s*\w+\s*=\s*\{.*\*\s*)([0-9.eE+\-]+)(\s*\}\s*)$", re.MULTILINE)
+_NAMED_MULT_LINE = re.compile(
+    r"^\+\s*\w+\s*=\s*[{'].*\*\s*([A-Za-z_]\w*)\s*[}']\s*$", re.MULTILINE)
+
+
+def multipliers_to_one(text: str) -> str:
+    """Released 77 K card text with every multiplier set to 1: the numeric
+    factor of each ``+key={base*number}`` line, and the ``.param`` value of
+    every name used as ``+key={base*name}`` / ``+key='base*name'``."""
+    text = _NUM_MULT_LINE.sub(lambda m: m.group(1) + "1" + m.group(3), text)
+    for name in sorted(set(_NAMED_MULT_LINE.findall(text))):
+        text, n = re.subn(rf"^(\.param\s+{re.escape(name)}\s*=\s*)[^\s]+(\s*)$",
+                          lambda m: m.group(1) + "1" + m.group(2), text,
+                          flags=re.MULTILINE | re.IGNORECASE)
+        if n != 1:
+            raise ValueError(f"named multiplier {name}: {n} .param lines")
+    return text
 
 # Corner card sources for the confirmed setup: the nFET card is the original
 # published one (unchanged in the new repo); the pFET card is the new repo's
@@ -153,11 +180,49 @@ def ensure_stock() -> str | None:
     return None
 
 
+def ensure_mult1() -> str | None:
+    """Create the multiplier-1 copies of the released 77 K corner cards and
+    their lib wrapper (I25-1 amendment A3)."""
+    if not LOD_FILE.exists():
+        return f"missing {LOD_FILE}"
+    if not PDK_SPICE_DIR.exists():
+        return f"missing Volare PDK at {PDK_SPICE_DIR}"
+    MULT1_DIR.mkdir(parents=True, exist_ok=True)
+    for dev, base in _CORNER_BASENAME.items():
+        src = _CORNER_SOURCE[dev]
+        if not src.exists():
+            return f"missing corner card source {src}"
+        text = src.read_text(errors="replace")
+        text = re.sub(r'^\.include\s+"[^"]*lod\.spice"', f'.include "{LOD_FILE.as_posix()}"',
+                      text, flags=re.MULTILINE)
+        text = multipliers_to_one(text)
+        dst = MULT1_DIR / base
+        if not dst.exists() or dst.read_text() != text:
+            dst.write_text(text)
+    lib_text = (
+        "* Released 77 K corner cards with every multiplier set to 1 (I25-1 A3)\n"
+        ".lib tt_77k\n"
+        ".param mc_mm_switch=0\n"
+        ".param mc_pr_switch=0\n"
+        ".param my_gauss = 0\n"
+        ".param m = 1\n"
+        f'.include "{(MULT1_DIR / _CORNER_BASENAME["nmos"]).as_posix()}"\n'
+        f'.include "{(MULT1_DIR / _CORNER_BASENAME["pmos"]).as_posix()}"\n'
+        f'.include "{(PDK_SPICE_DIR / "sky130_fd_pr__nfet_01v8_lvt__mismatch.corner.spice").as_posix()}"\n'
+        f'.include "{(PDK_SPICE_DIR / "sky130_fd_pr__pfet_01v8_lvt__mismatch.corner.spice").as_posix()}"\n'
+        ".endl\n")
+    if not MULT1_LIB_FILE.exists() or MULT1_LIB_FILE.read_text() != lib_text:
+        MULT1_LIB_FILE.write_text(lib_text)
+    return None
+
+
 def ensure_pdk77k() -> str | None:
     """Create the patched corner copies + lib wrapper. Returns error or None.
     With ``CRYOML_PDK_TEMPLATE=stock`` the stock template (``ensure_stock``)."""
     if PDK_TEMPLATE == "stock":
         return ensure_stock()
+    if PDK_TEMPLATE == "mult1":
+        return ensure_mult1()
     if not LOD_FILE.exists():
         return f"missing {LOD_FILE}"
     if not PDK_SPICE_DIR.exists():

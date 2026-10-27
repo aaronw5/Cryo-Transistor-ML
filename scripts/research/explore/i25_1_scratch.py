@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
-"""I25-1: sky130 77 K pipeline rerun from the stock SkyWater tt card.
+"""I25-1: sky130 77 K pipeline rerun without the released tuned values.
 
-Pre-registration: out/research/explore/I25_1/prereg.md (prereg.json).
+Pre-registration: out/research/explore/I25_1/prereg.md (prereg.json) and
+amendment A3 (amendment_A3.md): the released 77 K card files with every
+multiplier set to 1 (template ``mult1``), 3 random starts per device, best
+of 3 by training RRMS.
 
-Every stage except ``old`` runs with ``CRYOML_PDK_TEMPLATE=stock`` (set here
+Every stage except ``old`` runs with ``CRYOML_PDK_TEMPLATE=mult1`` (set here
 before any cryoml import).  Step A runs through the existing scripts
 (pdk_parameter_sensitivity, pdk_gen_full_data, ngspice_direct,
 next_direct_spec, polish_cards; queue lines in the RESEARCH_LOOP entry).
 
 Stages (``--stage``; ``--arm`` A = 7 parameters, B = screened set):
 
-  specs    round-one boxes (stock bin centers) for the 7-parameter set and the
+  specs    round-one boxes (mult1 card centers) for the 7-parameter set and the
            screened set S; overlap of S with the earlier 43 -> I25_1/specs/
+  select   best of the 3 random starts per device (training RRMS) -> stepA/{seven,full}_best.json
   records  starting-card records of an arm (state C), V5 check -> <arm>/records/
   grids    75 x 75 penalty grids at the starting cards -> <arm>/grids/
   c0       C0_refit: each starting card refit without g -> <arm>/c0/
@@ -38,7 +42,7 @@ from pathlib import Path
 
 _ap = argparse.ArgumentParser()
 _ap.add_argument("--stage", required=True,
-                 choices=("specs", "records", "grids", "c0", "inner", "lodo", "full", "final", "old",
+                 choices=("specs", "select", "records", "grids", "c0", "inner", "lodo", "full", "final", "old",
                           "decide"))
 _ap.add_argument("--arm", choices=("A", "B"), default="B")
 _ap.add_argument("--workers", type=int, default=10)
@@ -46,9 +50,9 @@ _ap.add_argument("--smoke", action="store_true",
                  help="2 devices / folds, 100 steps, refit max_nfev 20 (code check only)")
 ARGS = _ap.parse_args() if __name__ == "__main__" else None
 if ARGS is not None:
-    os.environ["CRYOML_PDK_TEMPLATE"] = "paper77k" if ARGS.stage == "old" else "stock"
+    os.environ["CRYOML_PDK_TEMPLATE"] = "paper77k" if ARGS.stage == "old" else "mult1"
 else:                                   # spawn worker or import: keep the parent's template
-    os.environ.setdefault("CRYOML_PDK_TEMPLATE", "stock")
+    os.environ.setdefault("CRYOML_PDK_TEMPLATE", "mult1")
 if ARGS is not None and ARGS.smoke:
     os.environ["CRYOML_I25_SMOKE"] = "1"
 SMOKE = os.environ.get("CRYOML_I25_SMOKE") == "1"
@@ -70,14 +74,15 @@ EXP = ROOT / "out/research/explore"
 OUT = EXP / "I25_1"
 SPECS = OUT / ("smoke/specs" if SMOKE else "specs")
 STEPA = OUT / ("smoke/stepA" if SMOKE else "stepA")
-SCREEN = OUT / ("smoke/screen" if SMOKE else "screen")
+SCREEN = OUT / ("smoke/screen_mult1" if SMOKE else "screen_mult1")
+N_STARTS = 3
 SPLIT = EXP / "real_split.json"
 OLD43 = ROOT / "out/pdk_parameter_sensitivity/summary.json"
 REFIT_OPTS = {"heldout_nfev": 400, "heldout_irls": 2, "diff_step": 0.01}
 EPS_ON = 0.01
 ARMS = {
-    "A": {"label": "7 parameters", "start": STEPA / "seven_r1.json", "spec": SPECS / "seven_r1.json"},
-    "B": {"label": "screened set", "start": STEPA / "full_r3_fd.json", "spec": SPECS / "full_r3.json"},
+    "A": {"label": "7 parameters", "start": STEPA / "seven_best.json", "spec": SPECS / "seven_r3_best.json"},
+    "B": {"label": "screened set", "start": STEPA / "full_best.json", "spec": SPECS / "full_r3_best.json"},
 }
 SMOKE_TAGS = ["nmos_L1_W3", "pmos_L2_W5"]
 
@@ -202,8 +207,9 @@ def stage_specs() -> dict:
     summ = jload(SCREEN / "summary.json")
     rb = jload(SCREEN / "readbacks.json")["devices"]
     centers = {t: r["published"] for t, r in rb.items()}
-    seven = m.stock_round_one_spec(PARAMS7, centers)
-    full = m.stock_round_one_spec(summ["selected_parameters"], centers)
+    seven = m.stock_round_one_spec(PARAMS7, centers, rule="multiplier-1 card value (showmod), I25-1 A3")
+    full = m.stock_round_one_spec(summ["selected_parameters"], centers,
+                                  rule="multiplier-1 card value (showmod), I25-1 A3")
     SPECS.mkdir(parents=True, exist_ok=True)
     jdump(seven, SPECS / "seven_r1.json")
     jdump(full, SPECS / "full_r1.json")
@@ -221,6 +227,52 @@ def stage_specs() -> dict:
     print(json.dumps({"selected_count": summ["selected_count"], "overlap": {k: ov[k] for k in (
         "n_both", "only_old", "only_new", "jaccard")}}, indent=1), flush=True)
     return out
+
+
+def stage_select(arm: str) -> dict:
+    """Best of the N_STARTS random starts per device by the training RRMS
+    (primary metric on the device's own data after the last stage)."""
+    from cryoml.card_eval import aggregate as cagg
+    pre = "seven" if arm == "A" else "full"
+    chains = [[jload(STEPA / f"{pre}_s{k}_{st}.json") for st in ("r1", "r2", "r3", "fd")]
+              for k in range(N_STARTS)]
+    runs = [c[-1] for c in chains]
+    specs = [jload(SPECS / f"{pre}_s{k}_r3.json") for k in range(N_STARTS)]
+    stage_names = ["round 1", "round 2", "round 3", "round 3 + FD"]
+    tags = sorted(runs[0]["devices"])
+    out, spread, mixed = {}, {}, None
+    for t in tags:
+        vals = [float(r["devices"][t]["rrms"]) for r in runs]
+        k = int(np.argmin(np.where(np.isfinite(vals), vals, np.inf)))
+        calls = sum(float(st["devices"][t]["n_sim"]) for c in chains for st in c)
+        row = dict(runs[k]["devices"][t])
+        row.update({"start": k, "start_rrms": vals, "n_sim_selected_chain":
+                    sum(float(st["devices"][t]["n_sim"]) for st in chains[k]),
+                    "n_sim": calls,
+                    "stage_rrms_selected": {n: float(st["devices"][t]["rrms"]) for n, st in
+                                            zip(stage_names, chains[k])}})
+        out[t] = row
+        spread[t] = {"min": float(np.min(vals)), "median": float(np.median(vals)), "max": float(np.max(vals)),
+                     "start": k}
+    res = {"arm": arm, "rule": "per device the start with the lowest training RRMS (I25-1 A3)",
+           "devices": out, "spread": spread, **cagg(out),
+           "per_start": [cagg(r["devices"]) for r in runs],
+           "stage_aggregates_selected": {n: m.aggregate({t: out[t]["stage_rrms_selected"][n] for t in tags})
+                                         for n in stage_names},
+           "mean_ngspice_calls_per_device": float(np.mean([out[t]["n_sim"] for t in tags]))}
+    jdump(res, ARMS[arm]["start"])
+    if True:
+        mixed = json.loads(json.dumps(specs[0]))
+        for key in ("published_by_device", "bounds_by_device", "log_scale_by_device", "half_width_by_device"):
+            for t in tags:
+                mixed[key][t] = specs[out[t]["start"]][key][t]
+        mixed["center_rule"] = "per device the round-3 box of the selected start (I25-1 A3)"
+        mixed["selected_start_by_device"] = {t: out[t]["start"] for t in tags}
+        jdump(mixed, ARMS[arm]["spec"])
+    print(json.dumps({"all": res["all_device_mean_rrms"], "combined": res["combined_rrms"],
+                      "per_start": [round(r["all_device_mean_rrms"], 5) for r in res["per_start"]],
+                      "starts": [out[t]["start"] for t in tags]}), flush=True)
+    return res
 
 
 def stage_records(arm: str, workers: int, smoke: bool) -> dict:
@@ -409,7 +461,7 @@ def final_task(task):
     from e1_collect_real import collect
     rec = records(arm, smoke)[tag]
     new = collect(tag, params) if params is not None else None
-    if params is None:                      # stock card as released (no parameter changed)
+    if params is None:                      # template card, no parameter changed (mult1 card)
         from cryoml.card_eval import device_by_tag
         from cryoml.data_io import load_device_curves
         from cryoml.spice_pdk import simulate_pdk
@@ -455,7 +507,7 @@ def stage_final(arm: str, workers: int, smoke: bool) -> dict:
                   ("C0_refit", arm, smoke, t, c0["rows"][t]["params"], None),
                   ("full_g", arm, smoke, t, full["rows"][t]["params"], fcorr),
                   ("lodo_g", arm, smoke, t, lodo["rows"][t]["params"], lcorr[f"lodo|{t}"]),
-                  ("stock", arm, smoke, t, None, None)]
+                  ("mult1", arm, smoke, t, None, None)]
     t0 = time.time()
     res = run_pool(final_task, tasks, workers)
     out = {"arms": {}, "V4": {}, "wall_s": None}
@@ -691,6 +743,8 @@ def main() -> int:
     t0 = time.time()
     if a.stage == "specs":
         stage_specs()
+    elif a.stage == "select":
+        stage_select(a.arm)
     elif a.stage == "records":
         stage_records(a.arm, a.workers, a.smoke)
     elif a.stage == "grids":

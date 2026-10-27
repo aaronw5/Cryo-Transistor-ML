@@ -19,15 +19,16 @@ from ..metrics import (_NMOS_100_INCLUDE_VD, _NMOS_100_INCLUDE_VG, _NMOS_INCLUDE
 EDGE = 0.9
 
 
-def stock_round_one_spec(names: Sequence[str], centers: dict[str, dict]) -> dict:
-    """Round-one box per device: center = stock bin value, the unchanged
+def stock_round_one_spec(names: Sequence[str], centers: dict[str, dict],
+                         rule: str = "stock SkyWater tt bin value (showmod readback), I25-1") -> dict:
+    """Round-one box per device: center = the template card's value (stock
+    bin, or the multiplier-1 card under amendment A3), the unchanged
     cold-start half-widths (``cold_start.half_width``)."""
     names = tuple(names)
     rows = {tag: {n: float(vals[n]) for n in names} for tag, vals in centers.items()}
     widths = {tag: {n: half_width(n) for n in names} for tag in rows}
     return spec_from_centers(names, rows, widths, extra={
-        "round": 1, "center_rule": "stock SkyWater tt bin value (showmod readback), I25-1",
-        "template": "stock"})
+        "round": 1, "center_rule": rule})
 
 
 def overlap(old: Sequence[str], new: Sequence[str]) -> dict:
