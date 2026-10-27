@@ -40,3 +40,15 @@ by any A3 stage; the stock-template code stays (default template unchanged) and 
 Estimated time: arm A Step A about 0.3 h (3 x 3,300 calls x 18), arm A g about 1.5 h; arm B screen 0.1 h, Step A
 about 3.5-4 h (3 starts x about 44,000 calls x 18 at 0.04-0.05 s per call, 10 workers), arm B g about 1.5 h; total
 about 7-8 h.
+
+## A3 addendum (user instruction, before any affected run): multi-round direct fit for both arms
+
+User, verbatim: "This is with the new ngspice fit that improves on itself right". Step A for both arms is the
+multi-round direct NGSpice fit of the old chain (full_r1_direct_seeded -> full_r2_direct -> full_r3_direct ->
+direct43_r3_fd): round 1 from the random start point (3 seeds per device), rounds 2 and 3 re-center the box on the
+previous round's card (registered `next_round_spec` rule), each round CMA-ES centered on the previous card then TRF
+polish, FD polish (max_nfev 400) after round 3. No bank in any round (the old 43-parameter chain used none; the
+7-parameter bank only supplied starts). Budgets: arm A uses the registered 7-parameter stage budget in every round
+(CMA-ES 3000, polish 400); arm B the registered 43-parameter budget (CMA-ES 8000, polish 600). The g v2 refit box of
+each arm is the round-3 box of the selected start. RRMS reported after every round for both arms (selected start and
+each start). Estimated time unchanged within about 0.5 h (arm A 3 rounds x 3 starts x about 3,300 calls x 18).
