@@ -1,0 +1,51 @@
+{
+ "ds": "nist4",
+ "smoke": true,
+ "source": "I20_1/lodo_nist4 (lambda* = 1 V devices)",
+ "sample_folds": [
+  "nfet_01v8_lvt_W0p64_L0p18_m21p3",
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2"
+ ],
+ "rerun": {
+  "nfet_01v8_lvt_W0p64_L0p18_m21p3": 0.011557067297508375,
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.13183777636920677
+ },
+ "stored": {
+  "nfet_01v8_lvt_W0p64_L0p18_m21p3": 0.008524320271159796,
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.1139474409089983
+ },
+ "abs_diff": {
+  "nfet_01v8_lvt_W0p64_L0p18_m21p3": 0.0030327470263485784,
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": 0.017890335460208462
+ },
+ "max_abs_diff": 0.017890335460208462,
+ "VB1": false,
+ "n_sim": {
+  "nfet_01v8_lvt_W0p64_L0p18_m21p3": 43,
+  "pfet_01v8_lvt_W0p42_L0p5_m27p2": 46
+ },
+ "unit_tests_passed": true,
+ "dev_check": {
+  "n": 2,
+  "n_in_TEST": 0,
+  "n_not_in_DEV": 0,
+  "ok": true
+ },
+ "timing": {
+  "train_s": 13.7,
+  "refit_s": 2.0,
+  "n_member_tasks": 4,
+  "train_seconds_per_member": {
+   "nfet_01v8_lvt_W0p64_L0p18_m21p3": [
+    12.4,
+    12.5
+   ],
+   "pfet_01v8_lvt_W0p42_L0p5_m27p2": [
+    12.6,
+    12.6
+   ]
+  },
+  "workers": 8
+ },
+ "runtime_s": 19.9
+}

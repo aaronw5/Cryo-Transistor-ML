@@ -2739,3 +2739,14 @@ reused stored lambda = 1 V rows for sky130 (I15-2), IHP 300 K (I17-2), TU Delft 
 and 87 NIST RT card devices. Rule over G = {sky130, NIST lvt, NIST RT card}: "fixed lambda 1 V non-inferior to the
 selected g v2" iff CI upper of GMR(fixed, selected) < 1.05 on all 3. NGSpice calls per held-out device reported next
 to the I22-1 cost table. Predictions P1-P6 in the pre-registration.
+
+## I23-1 code, unit tests, smoke (2026-10-26)
+
+Code: `src/cryoml/explore/i23_1_budget.py` (`polish_capped`: `ngspice_fit.polish` with a hard NGSpice-call limit;
+Part A / Part B rules; call-limit check), driver `scripts/research/explore/i23_1_budget.py` (stages partA, verify,
+fixl1, decide; Part A runs the I22-1 `refit_task` with `polish` replaced by `polish_capped` inside the worker; Part B
+reuses the I15-2, I17-2, I18-2 and I20-1 training and refit tasks; NIST member cache under `I23_1/cache`; BLAS
+threads 1 and `torch.set_num_threads(1)` per worker, at most 10 workers). 9 unit tests in
+`tests/test_i23_1_budget.py` (`polish_capped` without a binding limit equals `polish` in card, objective, history
+and n_sim; with a limit the call count stays at or below it). Smoke (`I23_1/smoke`, 2 DUTs / folds, reduced budgets
+and steps) ran every stage on IHP 300 K / 233 K, sky130, TU Delft 4.13 K, NIST lvt and NIST RT card.

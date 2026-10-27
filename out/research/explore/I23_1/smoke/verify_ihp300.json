@@ -1,0 +1,51 @@
+{
+ "ds": "ihp300",
+ "smoke": true,
+ "source": "I17_2/lodo_sym_e1_l1",
+ "sample_folds": [
+  "lv_nmos_W0p15_L0p18",
+  "hv_pmos_W0p6_L0p5"
+ ],
+ "rerun": {
+  "hv_pmos_W0p6_L0p5": 0.01615045534653798,
+  "lv_nmos_W0p15_L0p18": 0.03224893693923571
+ },
+ "stored": {
+  "hv_pmos_W0p6_L0p5": 0.014397712727168024,
+  "lv_nmos_W0p15_L0p18": 0.03189698232572179
+ },
+ "abs_diff": {
+  "hv_pmos_W0p6_L0p5": 0.0017527426193699562,
+  "lv_nmos_W0p15_L0p18": 0.00035195461351392177
+ },
+ "max_abs_diff": 0.0017527426193699562,
+ "VB1": false,
+ "n_sim": {
+  "hv_pmos_W0p6_L0p5": 31,
+  "lv_nmos_W0p15_L0p18": 31
+ },
+ "unit_tests_passed": true,
+ "dev_check": {
+  "n": 2,
+  "n_in_TEST": 0,
+  "n_not_in_DEV": 0,
+  "ok": true
+ },
+ "timing": {
+  "train_s": 4.4,
+  "refit_s": 1.9,
+  "n_member_tasks": 4,
+  "train_seconds_per_member": {
+   "hv_pmos_W0p6_L0p5": [
+    2.6,
+    2.6
+   ],
+   "lv_nmos_W0p15_L0p18": [
+    3.0,
+    3.0
+   ]
+  },
+  "workers": 8
+ },
+ "runtime_s": 10.9
+}

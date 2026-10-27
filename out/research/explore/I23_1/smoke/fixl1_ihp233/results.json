@@ -1,0 +1,125 @@
+{
+ "ds": "ihp233",
+ "smoke": true,
+ "lambda": 1.0,
+ "seeds": [
+  0,
+  1
+ ],
+ "hyper": {
+  "hidden": 16,
+  "layers": 2,
+  "l2": 0.0001,
+  "lr": 0.003,
+  "steps": 2000,
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ]
+ },
+ "hyper_overrides": {
+  "steps": 100
+ },
+ "folds": {
+  "hv_nmos_W0p3_L0p5": {
+   "held": [
+    "hv_nmos_W0p3_L0p5"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p3_L10",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  },
+  "hv_pmos_W0p3_L10": {
+   "held": [
+    "hv_pmos_W0p3_L10"
+   ],
+   "train": [
+    "hv_nmos_W0p3_L0p5",
+    "hv_nmos_W0p3_L10",
+    "hv_nmos_W0p6_L1p2",
+    "hv_nmos_W10_L0p5",
+    "hv_pmos_W0p6_L0p5",
+    "hv_pmos_W10_L0p35",
+    "hv_pmos_W2_L1p2"
+   ]
+  }
+ },
+ "per_device": {
+  "hv_nmos_W0p3_L0p5": 0.02746481367963268,
+  "hv_pmos_W0p3_L10": 0.007883578214896231
+ },
+ "overlap_abs_diff": {
+  "hv_nmos_W0p3_L0p5": 0.007353053269774222
+ },
+ "validity": {
+  "VB2_overlap_n": 1,
+  "VB2_max_abs_diff": 0.007353053269774222,
+  "VB2": false,
+  "VB3_complete": true,
+  "VB3_n_failed": 0,
+  "VB3": true,
+  "VB4_dev_check": {
+   "n": 2,
+   "n_in_TEST": 0,
+   "n_not_in_DEV": 0,
+   "ok": true
+  },
+  "VB4": true,
+  "VB5_unit_tests": true,
+  "valid": false
+ },
+ "heldout_rows": {
+  "hv_nmos_W0p3_L0p5": {
+   "label": "fixed_l1",
+   "tag": "hv_nmos_W0p3_L0p5",
+   "T_K": 233,
+   "n_active": 12,
+   "rrms_start": 0.030357952254950676,
+   "rrms": 0.02746481367963268,
+   "failed": [],
+   "n_sim": 31,
+   "runtime_s": 1.0
+  },
+  "hv_pmos_W0p3_L10": {
+   "label": "fixed_l1",
+   "tag": "hv_pmos_W0p3_L10",
+   "T_K": 233,
+   "n_active": 12,
+   "rrms_start": 0.008589435605063738,
+   "rrms": 0.007883578214896231,
+   "failed": [],
+   "n_sim": 31,
+   "runtime_s": 1.0
+  }
+ },
+ "n_sim": {
+  "hv_nmos_W0p3_L0p5": 31,
+  "hv_pmos_W0p3_L10": 31
+ },
+ "timing": {
+  "train_s": 3.8,
+  "refit_s": 1.9,
+  "n_member_tasks": 4,
+  "train_seconds_per_member": {
+   "hv_nmos_W0p3_L0p5": [
+    2.5,
+    2.5
+   ],
+   "hv_pmos_W0p3_L10": [
+    2.4,
+    2.5
+   ]
+  },
+  "workers": 8
+ },
+ "runtime_s": 10.5
+}

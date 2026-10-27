@@ -1,0 +1,51 @@
+{
+ "ds": "sky130",
+ "smoke": true,
+ "source": "I15_2/lodo_sym_e1_l1",
+ "sample_folds": [
+  "nmos_L1_W1p6",
+  "pmos_L2_W5"
+ ],
+ "rerun": {
+  "nmos_L1_W1p6": 0.037862688072823183,
+  "pmos_L2_W5": 0.0741450824454531
+ },
+ "stored": {
+  "nmos_L1_W1p6": 0.025594738925488154,
+  "pmos_L2_W5": 0.058004622903282885
+ },
+ "abs_diff": {
+  "nmos_L1_W1p6": 0.01226794914733503,
+  "pmos_L2_W5": 0.01614045954217022
+ },
+ "max_abs_diff": 0.01614045954217022,
+ "VB1": false,
+ "n_sim": {
+  "nmos_L1_W1p6": 82,
+  "pmos_L2_W5": 82
+ },
+ "unit_tests_passed": true,
+ "dev_check": {
+  "n": 2,
+  "n_in_TEST": 0,
+  "n_not_in_DEV": 0,
+  "ok": true
+ },
+ "timing": {
+  "train_s": 6.5,
+  "refit_s": 4.0,
+  "n_member_tasks": 4,
+  "train_seconds_per_member": {
+   "nmos_L1_W1p6": [
+    5.4,
+    5.5
+   ],
+   "pmos_L2_W5": [
+    5.5,
+    5.5
+   ]
+  },
+  "workers": 8
+ },
+ "runtime_s": 14.6
+}

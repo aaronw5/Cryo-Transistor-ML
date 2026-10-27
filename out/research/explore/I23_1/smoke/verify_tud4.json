@@ -1,0 +1,46 @@
+{
+ "ds": "tud4",
+ "smoke": true,
+ "source": "I18_2/lodo_4K_sym_e1_l1",
+ "sample_folds": [
+  "t40_nmos_W0p36_L0p04"
+ ],
+ "rerun": {
+  "t40_nmos_W0p36_L0p04_d190": 0.04647807981816499,
+  "t40_nmos_W0p36_L0p04_d191": 0.09732907444408435
+ },
+ "stored": {
+  "t40_nmos_W0p36_L0p04_d190": 0.03776675818381179,
+  "t40_nmos_W0p36_L0p04_d191": 0.03787424135467888
+ },
+ "abs_diff": {
+  "t40_nmos_W0p36_L0p04_d190": 0.008711321634353203,
+  "t40_nmos_W0p36_L0p04_d191": 0.059454833089405475
+ },
+ "max_abs_diff": 0.059454833089405475,
+ "VB1": false,
+ "n_sim": {
+  "t40_nmos_W0p36_L0p04_d190": 79,
+  "t40_nmos_W0p36_L0p04_d191": 79
+ },
+ "unit_tests_passed": true,
+ "dev_check": {
+  "n": 2,
+  "n_in_TEST": 0,
+  "n_not_in_DEV": 0,
+  "ok": true
+ },
+ "timing": {
+  "train_s": 8.8,
+  "refit_s": 3.8,
+  "n_member_tasks": 2,
+  "train_seconds_per_member": {
+   "t40_nmos_W0p36_L0p04": [
+    7.5,
+    7.6
+   ]
+  },
+  "workers": 8
+ },
+ "runtime_s": 17.0
+}
