@@ -1,0 +1,85 @@
+{
+ "id": "I24-1",
+ "status": "in force",
+ "date": "2026-10-27",
+ "base_commit": "1b89401",
+ "title": "(A) three-way dataset-level gate {C0_refit, selected g v2, B1} on the 9 measured DEV datasets (retrospective); (C) TEST prediction, proposed amendment only; (B) selected g v2 on top of B1 on IHP SG13G2 233 / 300 / 343 / 398 K",
+ "test_locked": true,
+ "no_amendment": "no amended TEST decision file is written or committed; a changed TEST prediction is a proposed amendment in the RESEARCH_LOOP entry (user decision)",
+ "known_before": {
+  "gmr_vs_C0_refit_B1": {"sky130": 1.020, "nist4": 1.032, "nistrt": 1.021, "ihp233": 0.794, "ihp300": 0.775, "ihp343": 0.695, "ihp398": 0.809, "tud4": 1.064, "tud295": 1.110},
+  "gmr_vs_C0_refit_selected_g_v2": {"sky130": 0.743, "nist4": 0.803, "nistrt": 0.811, "ihp233": 1.084, "ihp300": 1.255, "ihp343": 1.188, "ihp398": 1.260, "tud4": 0.826, "tud295": 0.829},
+  "pooled": {"B1": 0.913, "selected_g_v2": 0.957, "two_way_frozen_gate": 0.923},
+  "S_g_frozen": {"sky130": -0.1777, "nist4": -0.1172, "nistrt": -0.0730, "ihp233": 0.1866, "ihp300": 0.3114, "ihp343": 0.3669, "ihp398": 0.3667, "tud4": 0.0055, "tud295": 0.2537},
+  "ols_I19_1_part_C": {"a": -0.021454, "b": 1.217286},
+  "not_computed": "no LOGO screen selection, no S_B1 value, no I24-1 refit"
+ },
+ "part_A": {
+  "datasets": ["sky130", "nist4", "nistrt", "ihp233", "ihp300", "ihp343", "ihp398", "tud4", "tud295"],
+  "arms": {"C0_refit": "stored rows (freeze-draft loader)", "g": "selected g v2 stored rows", "B1": "I22-1 Part A B1 rows"},
+  "S_g": "frozen-rule S3_D (v1 recipe, state C), stored files, not recomputed",
+  "S_B1": "mean over DEV records r of ln(RRMS(B1_{-k(r)}(r)) / RRMS(C0_refit(r))); B1_{-k} = I22-1 b1 refit with extras = screen_select(threshold 1e-4) over the stored per-device screen entries of the inner-training devices of group k; groups: device (sky130, NIST, IHP same-class training), geometry group (TU Delft); equal selection -> I22-1 row reused; empty selection -> log ratio 0; non-finite excluded, > 10% non-finite -> invalid",
+  "rule": "g candidate iff S_g < 0; B1 candidate iff S_B1 < 0; none -> C0_refit; one -> it; both -> yhat_g = -0.021454 + 1.217286 S_g vs S_B1, lower wins, equal -> B1; B1 not buildable -> two-way frozen rule",
+  "sensitivity": {"S1": "raw argmin of {0, S_g, S_B1}, ties to C0_refit then B1", "S2": "S_B1 from I22-1 B1 rows (full screen)", "S3": "leave-group-out per-device gate: statistics without the records of d's group"},
+  "realised": "chosen arm rows per dataset (B1 = I22-1 rows; secondary LOGO rows); paired_ratio vs C0_refit, 10000 resamples seed 0, device / TU Delft 7-group cluster; pooled = exp(mean ln GMR) over 9; pooled CI by stratified bootstrap (same indices for all arms, decisions fixed)",
+  "outcome_rule": {
+   "R1": "GMR(three-way, C0_refit) <= 1 (point) on all 9",
+   "R2": "pooled ratio three-way / two-way frozen gate CI upper < 1",
+   "R3": "pooled three-way <= pooled B1 always and <= pooled g always (point)",
+   "labels": {"supported (retrospective)": "R1 and R2 and R3", "partially supported (retrospective)": "R2 and not (R1 and R3)", "not supported (retrospective)": "not R2"}
+  },
+  "limitation": "S_B1 and the realised B1 rows share the held-out refits; R1 on B1-chosen datasets holds nearly by construction; S3 is the less circular check; TEST is the test",
+  "validity": {
+   "VA1": "S_g values equal the freeze-draft values (|d| < 5e-5)",
+   "VA2": "screen_select over all DEV devices reproduces the I22-1 / I5-1 selections exactly",
+   "VA3": "on datasets with new LOGO refits, 2 reruns of the I22-1 B1 refit reproduce the I22-1 rows (|d| <= 1e-12)",
+   "VA4": "S_B1 finite with <= 10% non-finite records on every dataset; every device has a row in every arm",
+   "VA5": "DEV only",
+   "VA6": "unit tests pass"
+  }
+ },
+ "part_C": {
+  "splits": ["NIST lvt 38", "NIST RT card 58", "IHP 233 K 10", "IHP 300 K 10", "IHP 343 K 10", "IHP 398 K 10", "TU Delft 4.13 K 24", "TU Delft 295.0 K 24"],
+  "decision": "primary-rule decision of the DEV dataset (all DEV records); IHP TEST B1 arm uses the stored I5-1 300 K per-class DEV screen",
+  "compare": ["a755e18 committed decisions", "two-way frozen-rule decisions"],
+  "amendment": "proposed in the RESEARCH_LOOP outcome entry only; no TEST decision file written or committed"
+ },
+ "part_B": {
+  "temperatures_K": [233, 300, 343, 398],
+  "records": "I22-1 B1 held-out cards (heldout_cards.json B1|tag) simulated on the measured bias set with the B1 box, to_record",
+  "pens": "B1 card on the I17-2 75 x 75 forward-quadrant grid",
+  "recipe": "I17-2 / I21-1 selected g v2 unchanged (sym_v2, EPS, HYPER_V2, 5 seeds, GRID_LAMBDA, nested inner selection, LODO within class)",
+  "refit": "start = B1 card, B1 box, max_nfev = matched_nfev(12, n_active, 400, 2), IRLS 2, diff_step 0.01, g in the loop, strict paper RRMS with frozen inclusion",
+  "arms": ["B1 (I22-1)", "B1_cont (g = 0, same refit and budget)", "B1+g v2 (selected lambda*)", "C0_refit (stored)", "selected g v2 (stored)"],
+  "primary": "GMR(B1+g v2, B1) per temperature, device bootstrap; gain CI upper < 1, worse CI lower > 1, else inconclusive",
+  "rule": {"g v2 adds to B1 on IHP": "CI upper < 1 at all 4", "g v2 worse than B1 on IHP": "CI lower > 1 at all 4", "g v2 gain over B1 not shown": "otherwise"},
+  "secondary": ["GMR(B1+g v2, C0_refit)", "GMR(B1+g v2, B1_cont)", "GMR(B1_cont, B1)", "GMR(B1+g v2, selected g v2)", "lambda* counts", "RRMS all-device / combined", "NGSpice calls per held-out DUT"],
+  "validity": {
+   "VB1": "B1 records score = I22-1 B1 rows (|d| <= 1e-12), 18/18",
+   "VB2": "penalty grids finite 75 x 75, forward corner > 0, 18/18",
+   "VB3": "inner selection complete",
+   "VB4": "<= 10% non-finite rows per new arm",
+   "VB5": "unit tests pass",
+   "VB6": "DEV only",
+   "VB7": "B1-box refit path with g = 0 from the starting record reproduces the I22-1 B1 row on 2 DUTs at 300 K (|d| <= 1e-9); checked before the main runs; failure -> amendment first"
+  },
+  "not_included": "sky130 77 K: ~1,530 inner refits at ~1.7x calls plus a new record / grid path, ~4-5 h; B1 does not gain over C0_refit there (1.020); user option"
+ },
+ "predictions": {
+  "P1": "three-way: B1 on IHP x4; g on sky130, NIST lvt, NIST RT card; C0_refit on TU Delft x2",
+  "P2": "LOGO selection = I22-1 selection on >= 75% of records of every dataset except TU Delft",
+  "P3": "Part A outcome: supported (retrospective)",
+  "P4": "pooled GMR(three-way, C0_refit) < 0.85",
+  "P5": "Part C: differs from a755e18 on the 4 IHP splits only (B1 instead of C0_refit)",
+  "P6": "Part B outcome: g v2 gain over B1 not shown; GMR(B1+g v2, B1) > 1 (point) at >= 3 temperatures",
+  "P7": "GMR(B1_cont, B1) in [0.99, 1.01] at all 4"
+ },
+ "order": [
+  "prereg commit alone + push",
+  "code, unit tests, smoke, VB7; commit",
+  "queue: Part A LOGO refits (9 datasets), Part B x4 temperatures (records, pens, base, inner, sel, decide), decide",
+  "decision, report, site claim, RESEARCH_LOOP outcome, freeze draft, memory; commit, push"
+ ],
+ "compute_estimate": "Part A <= 1.5 h; Part B ~3 h per temperature, ~12 h total, at 10 workers",
+ "resources": "<= 10 workers; OMP/MKL/OPENBLAS/VECLIB threads 1; torch.set_num_threads(1); one heavy job at a time through out/research/queue.txt"
+}

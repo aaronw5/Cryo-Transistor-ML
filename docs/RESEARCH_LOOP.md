@@ -2790,3 +2790,22 @@ Method-freeze draft open item 12 updated (IHP call-matched control, fixed-lambda
 `out/research/report/2026-10-27_i23_1/` (`scripts/research/plot_explore_i23_1.py`; 9 tables, forest plots for both
 parts, cost figure, per-device ratios, 10 I-V figures with every re-simulated RRMS checked against the stored rows);
 site claim `i23-1` (verified). Site rebuilt, not published.
+
+## I24-1 pre-registration in force (2026-10-27): three-way dataset-level gate {C0_refit, selected g v2, B1}; selected g v2 on top of B1 on IHP
+
+Iteration 24, the pushed default of the I23-1 decision (no user reply). Pre-registration
+`out/research/explore/I24_1/prereg.md` / `prereg.json`, committed alone before any I24-1 code, run or gate-statistic
+value; DEV only; no amended TEST decision file is written or committed. Part A (retrospective, 9 measured DEV
+datasets): S_g = the frozen-rule S3_D (v1 recipe, state C; stored); S_B1 = mean over DEV records of ln(RRMS(B1_{-k(r)})
+/ RRMS(C0_refit)), where B1_{-k} is the I22-1 B1 held-out refit with the edge-screen selection recomputed on the
+inner-training devices of the record's group (S3_D groups: device, IHP same class, TU Delft geometry group; equal
+selection reuses the I22-1 row). Rule: g candidate iff S_g < 0, B1 candidate iff S_B1 < 0; none -> C0_refit; both ->
+compare yhat_g = -0.021454 + 1.217286 S_g (I19-1 Part C OLS) with S_B1, lower wins, ties to B1. Outcome R1 (GMR vs
+C0_refit <= 1 on all 9), R2 (pooled three-way / two-way frozen gate CI upper < 1, stratified bootstrap), R3 (pooled
+three-way <= pooled B1 always and g always); sensitivity rules S1 raw minimum, S2 full-screen S_B1, S3 leave-group-out
+per-device gate. Stated limitation: S_B1 and the realised B1 rows share the held-out refits. Part C: three-way TEST
+decisions for the 8 locked splits compared with a755e18; a difference is a proposed amendment in the outcome entry
+only. Part B (IHP 233 / 300 / 343 / 398 K): starting records = I22-1 B1 cards, I17-2 / I21-1 selected g v2 recipe
+(nested lambda selection) with B1-box refits from the B1 card; arms B1, B1_cont (g = 0, same budget), B1+g v2;
+primary GMR(B1+g v2, B1), rule "adds" iff CI upper < 1 at all 4, "worse" iff CI lower > 1 at all 4, else "not
+shown". sky130 not included (estimated 4-5 h; B1 not a gain there). Predictions P1-P7 in the pre-registration.
