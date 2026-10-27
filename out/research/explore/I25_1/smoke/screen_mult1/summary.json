@@ -1,0 +1,1831 @@
+{
+  "schema_version": 1,
+  "selection_rule": "retain every candidate whose normalized response exceeds the effective threshold on any full-grid or |fixed bias|>=1.48 V curve for any device; PARAMS7 are mandatory; no top-k cap",
+  "requested_threshold": 0.0001,
+  "repeatability_floor": 0.0,
+  "effective_threshold": 0.0001,
+  "perturbation_fraction": 0.1,
+  "candidate_count": 115,
+  "selected_count": 37,
+  "selected_parameters": [
+    "toxe",
+    "toxm",
+    "xj",
+    "ndep",
+    "nsd",
+    "dwg",
+    "vth0",
+    "k1",
+    "k2",
+    "k3",
+    "dvt0",
+    "dvt1",
+    "w0",
+    "k3b",
+    "vfb",
+    "lpe0",
+    "lpeb",
+    "vsat",
+    "ua",
+    "ub",
+    "rdsw",
+    "prwg",
+    "wr",
+    "u0",
+    "a0",
+    "a2",
+    "ags",
+    "b0",
+    "b1",
+    "nfactor",
+    "eta0",
+    "dsub",
+    "pclm",
+    "pdiblc1",
+    "pdiblc2",
+    "delta",
+    "beta0"
+  ],
+  "original_parameters": [
+    "vth0",
+    "u0",
+    "nfactor",
+    "vsat",
+    "delta",
+    "rdsw",
+    "eta0"
+  ],
+  "upstream_expanded18": [
+    "vth0",
+    "dvt0",
+    "dvt1",
+    "vsat",
+    "ua",
+    "ub",
+    "uc",
+    "rdsw",
+    "prwg",
+    "u0",
+    "rdw",
+    "rsw",
+    "nfactor",
+    "eta0",
+    "dsub",
+    "pclm",
+    "pvag",
+    "delta"
+  ],
+  "pre_screen_exclusions": {
+    "level": "integer model selector",
+    "version": "model-version selector",
+    "mobmod": "integer mobility-model selector",
+    "binunit": "integer binning selector",
+    "igcmod": "integer gate-current selector",
+    "igbmod": "integer gate-current selector",
+    "rgatemod": "integer gate-resistance selector",
+    "rbodymod": "integer body-resistance selector",
+    "trnqsmod": "integer NQS selector",
+    "acnqsmod": "integer AC NQS selector",
+    "fnoimod": "integer noise-model selector",
+    "tnoimod": "integer noise-model selector",
+    "permod": "integer perimeter selector",
+    "geomod": "integer geometry selector",
+    "rdsmod": "integer source/drain-resistance selector",
+    "tempmod": "integer temperature-model selector",
+    "diomod": "integer diode-model selector",
+    "capmod": "integer capacitance-model selector",
+    "lmin": "geometry-bin bound",
+    "lmax": "geometry-bin bound",
+    "wmin": "geometry-bin bound",
+    "wmax": "geometry-bin bound",
+    "cgdo": "capacitance-only parameter",
+    "cgso": "capacitance-only parameter",
+    "cgbo": "capacitance-only parameter",
+    "noia": "noise-only parameter",
+    "noib": "noise-only parameter",
+    "noic": "noise-only parameter",
+    "kf": "noise-only parameter",
+    "af": "noise-only parameter",
+    "ef": "noise-only parameter"
+  },
+  "parameters": {
+    "toxe": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 978.4788520224545,
+      "max_high_voltage_response": 0.2635649549119934,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "toxm": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 827.6824993152628,
+      "max_high_voltage_response": 0.14034848678704145,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "xj": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.964068516615875,
+      "max_high_voltage_response": 0.0037544679787176595,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "ndep": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 118.09178420044773,
+      "max_high_voltage_response": 0.01669745775914249,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "nsd": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 6.079641335626468,
+      "max_high_voltage_response": 0.0008235431681666026,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "dwg": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.12291667749085575,
+      "max_high_voltage_response": 0.0017348747944344138,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "dwb": {
+      "group": "process_and_effective_geometry",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 9.959945635735149e-09,
+      "max_high_voltage_response": 9.959945635735149e-09,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rsh": {
+      "group": "process_and_effective_geometry",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 6.463351327964562e-06,
+      "max_high_voltage_response": 4.6455254861689705e-06,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "vth0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 752.9788651149104,
+      "max_high_voltage_response": 0.09538364772781072,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "k1": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 19.997685257526566,
+      "max_high_voltage_response": 0.017542119912885807,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "k2": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 6.234716588553251,
+      "max_high_voltage_response": 0.005374166369547815,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "k3": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 11.044875792314667,
+      "max_high_voltage_response": 0.0014931927057825975,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "dvt0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 176.70544446399015,
+      "max_high_voltage_response": 0.023493866047368462,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "dvt1": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 528.886756158552,
+      "max_high_voltage_response": 0.06739846347864574,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "dvt2": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 9.798408779811625e-10,
+      "max_high_voltage_response": 9.5773803878949e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "dvt0w": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.6333367004442584e-74,
+      "max_high_voltage_response": 4.144773683677764e-79,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "dvt1w": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 8.894903052314282e-18,
+      "max_high_voltage_response": 1.6667019890894967e-79,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "dvt2w": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "w0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.06813950565411887,
+      "max_high_voltage_response": 1.2061234593038321e-05,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "k3b": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.1694270845678114,
+      "max_high_voltage_response": 0.0001462813361031972,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "vfb": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 15.743116831260688,
+      "max_high_voltage_response": 0.010260411091035699,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "phin": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "lpe0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 295.07177742606405,
+      "max_high_voltage_response": 0.03854958529316528,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "lpeb": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.585346510831504,
+      "max_high_voltage_response": 0.0013682488135521823,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "vbm": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "dvtp0": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "dvtp1": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "vsat": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.8837321227852266,
+      "max_high_voltage_response": 0.021930148806564704,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "ua": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 66.49757801013595,
+      "max_high_voltage_response": 0.43190135330885543,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "ub": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 8.23433484053789,
+      "max_high_voltage_response": 0.1427486994245011,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "uc": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 1.647300320440715e-07,
+      "max_high_voltage_response": 1.504324552528891e-07,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rdsw": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.29064688277513967,
+      "max_high_voltage_response": 0.009092117286248006,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "prwb": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.3264341851261956e-09,
+      "max_high_voltage_response": 2.1089097304841117e-09,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "prwg": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.003256780412611632,
+      "max_high_voltage_response": 0.0006090489973146167,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "wr": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.1397812569260808,
+      "max_high_voltage_response": 0.0043278293581717996,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "u0": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 131.37088031192673,
+      "max_high_voltage_response": 0.1319110117936785,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "a0": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 32.607549931397166,
+      "max_high_voltage_response": 0.0281483271419777,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "keta": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 7.831729999953775e-07,
+      "max_high_voltage_response": 7.831729999953775e-07,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "a1": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "a2": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.17896501204335902,
+      "max_high_voltage_response": 0.023617032260483183,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "ags": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.2736854149100453,
+      "max_high_voltage_response": 0.03136700218649314,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "b0": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 91.11561667995899,
+      "max_high_voltage_response": 0.08897169444475717,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "b1": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.036511375253265754,
+      "max_high_voltage_response": 3.6261221710903154e-05,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "eu": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "up": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "lp": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "ud": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rdswmin": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rdw": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rdwmin": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rsw": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rswmin": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "voff": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 8.737603128054797e-05,
+      "max_high_voltage_response": 2.4656050290627998e-08,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "nfactor": {
+      "group": "subthreshold_and_dibl",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.4332438800279344,
+      "max_high_voltage_response": 3.3746807333260694e-05,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "tvfbsdoff": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "tvoff": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "cit": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.3679111039431526e-07,
+      "max_high_voltage_response": 9.608345331500009e-09,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "cdsc": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 5.87797993904798e-06,
+      "max_high_voltage_response": 4.5841168197722637e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "cdscb": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.256531140354371e-32,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "cdscd": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.7883837382384854e-07,
+      "max_high_voltage_response": 4.213386848973689e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "eta0": {
+      "group": "subthreshold_and_dibl",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.0095353445347876,
+      "max_high_voltage_response": 1.806770217704529e-06,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "etab": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "dsub": {
+      "group": "subthreshold_and_dibl",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.17627035728572718,
+      "max_high_voltage_response": 3.3395275874374304e-05,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "voffl": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "minv": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "pclm": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 1.423828224941802,
+      "max_high_voltage_response": 0.004470122703390286,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "pdiblc1": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.24177283106071,
+      "max_high_voltage_response": 0.0008278865460975553,
+      "active_devices": [
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "pdiblc2": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 74.65422676044139,
+      "max_high_voltage_response": 0.019065256781686118,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "pdiblcb": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.6594003580101941e-09,
+      "max_high_voltage_response": 1.6594003580101941e-09,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "drout": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "pscbe1": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 8.471083707061764e-07,
+      "max_high_voltage_response": 1.5115034110177782e-08,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "pscbe2": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.6290678816231335e-09,
+      "max_high_voltage_response": 1.0051649592770872e-09,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "pvag": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 5.905729091276204e-75,
+      "max_high_voltage_response": 9.724832225929564e-81,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "delta": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.644687145107929,
+      "max_high_voltage_response": 0.0009851333353181155,
+      "active_devices": [
+        "nmos_L1_W3",
+        "pmos_L0p35_W1p6"
+      ],
+      "n_devices_probed": 2
+    },
+    "alpha0": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.167222192284482e-06,
+      "max_high_voltage_response": 5.765489467802046e-07,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "alpha1": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.473408752193744e-74,
+      "max_high_voltage_response": 2.5758473326585694e-79,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "beta0": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.00011179962380958257,
+      "max_high_voltage_response": 2.715760858677856e-05,
+      "active_devices": [
+        "nmos_L1_W3"
+      ],
+      "n_devices_probed": 2
+    },
+    "fprout": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "pdits": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "pditsl": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "pditsd": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "agidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "bgidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "cgidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "egidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "vfbsdoff": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "kt1": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "kt2": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "at": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "ute": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "ua1": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "ub1": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "uc1": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "kt1l": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "prt": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rbpb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.7883837382384854e-07,
+      "max_high_voltage_response": 1.0780267290131108e-09,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rbpd": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.7883837382384854e-07,
+      "max_high_voltage_response": 7.096507681775389e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rbps": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 7.635048105244431e-10,
+      "max_high_voltage_response": 7.096507681775389e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rbdb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.7883837382384854e-07,
+      "max_high_voltage_response": 7.096507681775389e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "rbsb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 7.635048105244431e-10,
+      "max_high_voltage_response": 7.096507681775389e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "gbmin": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.0283381105557876e-74,
+      "max_high_voltage_response": 2.2108283416615975e-79,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "njs": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.1878902362651665e-10,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "jss": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.084072022569872e-09,
+      "max_high_voltage_response": 2.467116067658846e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "jsws": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.967525142167724e-09,
+      "max_high_voltage_response": 2.46710955906121e-10,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "xtis": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "bvs": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "xjbvs": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "ijthsrev": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "ijthsfwd": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "tpb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "tpbsw": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "tpbswg": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "tcj": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "tcjsw": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    },
+    "tcjswg": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 2
+    }
+  },
+  "bounds_by_device": {
+    "nmos_L1_W3": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "vth0": [
+        0.39842999999999995,
+        0.48697
+      ],
+      "k1": [
+        0.4012641,
+        0.4904339
+      ],
+      "k2": [
+        -0.02322353,
+        -0.019001070000000002
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "vfb": [
+        -0.1,
+        0.1
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        -21234.620000000003,
+        -17373.78
+      ],
+      "ua": [
+        -2.554475e-09,
+        -2.0900249999999997e-09
+      ],
+      "ub": [
+        3.3051869999999997e-18,
+        4.0396729999999995e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.02327886,
+        0.028451940000000002
+      ],
+      "a0": [
+        0.48924540000000005,
+        0.5979666
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        3.092688,
+        3.7799519999999998
+      ],
+      "b0": [
+        -5.42344e-07,
+        5.42344e-07
+      ],
+      "b1": [
+        -5.12746e-09,
+        5.12746e-09
+      ],
+      "nfactor": [
+        0.796959,
+        0.9740610000000001
+      ],
+      "eta0": [
+        0.0036151559999999996,
+        0.004418524
+      ],
+      "dsub": [
+        0.9647370000000001,
+        1.1791230000000001
+      ],
+      "pclm": [
+        -0.3863871,
+        -0.3161349
+      ],
+      "pdiblc1": [
+        0.351,
+        0.42900000000000005
+      ],
+      "pdiblc2": [
+        0.007218846000000001,
+        0.008823034
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "beta0": [
+        16.84665,
+        20.590349999999997
+      ]
+    },
+    "pmos_L0p35_W1p6": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "vth0": [
+        -0.6004174,
+        -0.49125060000000004
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.10216899,
+        -0.08359281
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "vfb": [
+        -1.1,
+        -0.9
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        92475.9,
+        113026.1
+      ],
+      "ua": [
+        -2.553298e-09,
+        -2.089062e-09
+      ],
+      "ub": [
+        1.815156e-18,
+        2.218524e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.003139056,
+        0.003836624
+      ],
+      "a0": [
+        1.8338670000000001,
+        2.241393
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.29700360000000003,
+        0.3630044
+      ],
+      "b0": [
+        -5.965784e-06,
+        -4.881096e-06
+      ],
+      "b1": [
+        4.614714e-08,
+        5.640206e-08
+      ],
+      "nfactor": [
+        4.200687,
+        5.1341730000000005
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        -0.10633194,
+        -0.08699886
+      ],
+      "delta": [
+        -0.01688643,
+        -0.01381617
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ]
+    }
+  },
+  "published_by_device": {
+    "nmos_L1_W3": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "vth0": 0.4427,
+      "k1": 0.445849,
+      "k2": -0.0211123,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "vfb": 0.0,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": -19304.2,
+      "ua": -2.32225e-09,
+      "ub": 3.67243e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0258654,
+      "a0": 0.543606,
+      "a2": 0.38689,
+      "ags": 3.43632,
+      "b0": 0.0,
+      "b1": 0.0,
+      "nfactor": 0.88551,
+      "eta0": 0.00401684,
+      "dsub": 1.07193,
+      "pclm": -0.351261,
+      "pdiblc1": 0.39,
+      "pdiblc2": 0.00802094,
+      "delta": 0.01,
+      "beta0": 18.7185
+    },
+    "pmos_L0p35_W1p6": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "vth0": -0.545834,
+      "k1": 0.64774,
+      "k2": -0.0928809,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "vfb": -1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 102751.0,
+      "ua": -2.32118e-09,
+      "ub": 2.01684e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00348784,
+      "a0": 2.03763,
+      "a2": 0.467037,
+      "ags": 0.330004,
+      "b0": -5.42344e-06,
+      "b1": 5.12746e-08,
+      "nfactor": 4.66743,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": -0.0966654,
+      "delta": -0.0153513,
+      "beta0": 6.20165
+    }
+  },
+  "active_masks_by_device": {
+    "nmos_L1_W3": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "w0": true,
+      "k3b": true,
+      "vfb": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "beta0": true
+    },
+    "pmos_L0p35_W1p6": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "w0": true,
+      "k3b": true,
+      "vfb": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "beta0": true
+    }
+  },
+  "devices": [
+    "nmos_L1_W3",
+    "pmos_L0p35_W1p6"
+  ],
+  "runtime_s": 15.5
+}

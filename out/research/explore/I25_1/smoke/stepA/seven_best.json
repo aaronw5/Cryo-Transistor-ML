@@ -1,0 +1,169 @@
+{
+ "arm": "A",
+ "rule": "per device the start with the lowest training RRMS (I25-1 A3)",
+ "devices": {
+  "nmos_L1_W3": {
+   "before_rrms": 0.08798254033544914,
+   "rrms": 0.08662870793997302,
+   "before_objective": 0.08798254033544914,
+   "objective": 0.086628707939973,
+   "n_included_curves": 10,
+   "before_failed_curves": 0,
+   "failed_curves": 0,
+   "official_dynamic_rrms": 0.08662870793997302,
+   "params": {
+    "vth0": 0.541058166478146,
+    "u0": 0.19037763851858383,
+    "nfactor": 32.90216530942675,
+    "vsat": -111.58497857212437,
+    "delta": 0.058185307972026354,
+    "rdsw": 18.56494935336699,
+    "eta0": 0.0017182670576016425
+   },
+   "n_sim": 680.0,
+   "history": [
+    0.08798254033544914,
+    0.08748254482267406,
+    0.086628707939973
+   ],
+   "runtime_s": 3.0,
+   "start": 0,
+   "start_rrms": [
+    0.08662870793997302,
+    0.13222859115468527,
+    0.10959606986419446
+   ],
+   "n_sim_selected_chain": 224.0,
+   "stage_rrms_selected": {
+    "round 1": 0.48002780594968897,
+    "round 2": 0.08847250184833974,
+    "round 3": 0.08798254033544914,
+    "round 3 + FD": 0.08662870793997302
+   }
+  },
+  "pmos_L0p35_W1p6": {
+   "before_rrms": 0.333906165484414,
+   "rrms": 0.31206518370422215,
+   "before_objective": 0.333906165484414,
+   "objective": 0.3120651837042221,
+   "n_included_curves": 10,
+   "before_failed_curves": 0,
+   "failed_curves": 0,
+   "official_dynamic_rrms": 0.31206518370422215,
+   "params": {
+    "vth0": -1.0624682627725461,
+    "u0": 0.010197044557971567,
+    "nfactor": 69.53335101975695,
+    "vsat": 9656006.899356425,
+    "delta": -0.0003181948624968152,
+    "rdsw": 653.9507428114609,
+    "eta0": 0.4830405153837508
+   },
+   "n_sim": 538.0,
+   "history": [
+    0.333906165484414,
+    0.33027778671921915,
+    0.3120651837042221
+   ],
+   "runtime_s": 3.0,
+   "start": 0,
+   "start_rrms": [
+    0.31206518370422215,
+    Infinity,
+    0.7004150219806826
+   ],
+   "n_sim_selected_chain": 232.0,
+   "stage_rrms_selected": {
+    "round 1": 0.5029216068658254,
+    "round 2": 0.34651021123906484,
+    "round 3": 0.333906165484414,
+    "round 3 + FD": 0.31206518370422215
+   }
+  }
+ },
+ "spread": {
+  "nmos_L1_W3": {
+   "min": 0.08662870793997302,
+   "median": 0.10959606986419446,
+   "max": 0.13222859115468527,
+   "start": 0
+  },
+  "pmos_L0p35_W1p6": {
+   "min": 0.31206518370422215,
+   "median": 0.7004150219806826,
+   "max": Infinity,
+   "start": 0
+  }
+ },
+ "all_device_mean_rrms": 0.19934694582209758,
+ "nmos_rrms": 0.08662870793997302,
+ "pmos_rrms": 0.31206518370422215,
+ "combined_rrms": 0.19934694582209758,
+ "official_dynamic_all_device_mean": 0.19934694582209758,
+ "n_devices": 2,
+ "per_start": [
+  {
+   "all_device_mean_rrms": 0.19934694582209758,
+   "nmos_rrms": 0.08662870793997302,
+   "pmos_rrms": 0.31206518370422215,
+   "combined_rrms": 0.19934694582209758,
+   "official_dynamic_all_device_mean": 0.19934694582209758,
+   "n_devices": 2
+  },
+  {
+   "all_device_mean_rrms": Infinity,
+   "nmos_rrms": 0.13222859115468527,
+   "pmos_rrms": NaN,
+   "combined_rrms": NaN,
+   "official_dynamic_all_device_mean": NaN,
+   "n_devices": 2
+  },
+  {
+   "all_device_mean_rrms": 0.40500554592243854,
+   "nmos_rrms": 0.10959606986419446,
+   "pmos_rrms": 0.7004150219806826,
+   "combined_rrms": 0.40500554592243854,
+   "official_dynamic_all_device_mean": 0.40500554592243854,
+   "n_devices": 2
+  }
+ ],
+ "stage_aggregates_selected": {
+  "round 1": {
+   "all_device": 0.4914747064077572,
+   "nmos": 0.48002780594968897,
+   "pmos": 0.5029216068658254,
+   "combined": 0.4914747064077572,
+   "median": 0.4914747064077572,
+   "n": 2,
+   "n_failed": 0
+  },
+  "round 2": {
+   "all_device": 0.21749135654370227,
+   "nmos": 0.08847250184833974,
+   "pmos": 0.34651021123906484,
+   "combined": 0.21749135654370227,
+   "median": 0.21749135654370227,
+   "n": 2,
+   "n_failed": 0
+  },
+  "round 3": {
+   "all_device": 0.21094435290993158,
+   "nmos": 0.08798254033544914,
+   "pmos": 0.333906165484414,
+   "combined": 0.21094435290993158,
+   "median": 0.21094435290993158,
+   "n": 2,
+   "n_failed": 0
+  },
+  "round 3 + FD": {
+   "all_device": 0.19934694582209758,
+   "nmos": 0.08662870793997302,
+   "pmos": 0.31206518370422215,
+   "combined": 0.19934694582209758,
+   "median": 0.19934694582209758,
+   "n": 2,
+   "n_failed": 0
+  }
+ },
+ "mean_ngspice_calls_per_device": 609.0
+}

@@ -84,7 +84,7 @@ ARMS = {
     "A": {"label": "7 parameters", "start": STEPA / "seven_best.json", "spec": SPECS / "seven_r3_best.json"},
     "B": {"label": "screened set", "start": STEPA / "full_best.json", "spec": SPECS / "full_r3_best.json"},
 }
-SMOKE_TAGS = ["nmos_L1_W3", "pmos_L2_W5"]
+SMOKE_TAGS = ["nmos_L1_W3", "pmos_L0p35_W1p6"]
 
 
 def jload(p):
@@ -610,19 +610,33 @@ def stage_old(workers: int) -> dict:
 # ---------------------------------------------------------------------------
 # decide
 # ---------------------------------------------------------------------------
+def stock_reference() -> dict:
+    """Stock SkyWater tt card at 77 K (no fit): stored step_deck curves
+    (b299dc9), scored with both curve sets on the arm-A records."""
+    z = np.load(EXP / "step_deck/stock_card_curves.npz")
+    recs = records("A", SMOKE)
+    rows = {}
+    for t, rec in recs.items():
+        sims = [z[f"{t}|{c.key}"] for c in rec.curves]
+        rows[t] = {"rrms": m.score_rule(rec, sims, m.frozen_tags(rec))["rrms"],
+                   "rrms_m_rule": m.score_rule(rec, sims, m.m_rule_tags(rec))["rrms"]}
+    st = jload(EXP / "step_deck/stock_card.json")["devices"]
+    worst = max(abs(rows[t]["rrms"] - st[t]["rrms"]) for t in rows)
+    return {"rows": rows, "check_vs_step_deck": worst,
+            "primary": m.aggregate({t: v["rrms"] for t, v in rows.items()}),
+            "m_rule": m.aggregate({t: v["rrms_m_rule"] for t, v in rows.items()})}
+
+
 def stage_decide() -> dict:
     from cryoml.explore.i3_2_bias import paired_ratio
     old = jload(OUT / "old" / "old.json")
     pub = {t: v["rrms"] for t, v in old["arms"]["published"].items()}
     pub_m = {t: v["rrms_m_rule"] for t, v in old["arms"]["published"].items()}
-    out = {"prereg": "out/research/explore/I25_1/prereg.md", "arms": {}, "gmr": {}, "validity": {}}
-    calls = {}
-    stepa = {k: jload(STEPA / f"{k}.json") for k in ("seven_r1", "full_r1", "full_r2", "full_r3",
-                                                       "full_r3_fd")}
-    stepa_calls = {k: float(np.mean([r["n_sim"] for r in v["devices"].values()])) for k, v in stepa.items()}
-    bank_calls = 10000.0
-    finals = {}
-    for arm in ("B", "A"):
+    out = {"prereg": "out/research/explore/I25_1/prereg.md + amendment_A3.md", "arms": {}, "gmr": {},
+           "validity": {}}
+    best = {"A": jload(ARMS["A"]["start"]), "B": jload(ARMS["B"]["start"])}
+    finals, calls = {}, {}
+    for arm in ("A", "B"):
         d = arm_dir(arm, SMOKE)
         fin = jload(d / "final" / "final.json")
         finals[arm] = fin
@@ -632,109 +646,113 @@ def stage_decide() -> dict:
         c0 = jload(d / "c0" / "results.json")
         full = jload(d / "full" / "results.json")
         lodo = jload(d / "lodo" / "results.json")
-        if arm == "A":
-            start_calls = bank_calls + stepa_calls["seven_r1"]
-        else:
-            start_calls = bank_calls + sum(stepa_calls[k] for k in stepa_calls)
-        # NGSpice calls per device: starting card (bank + fits), plus the
-        # lambda-selection refits (all 19 outer sets) divided by 18, plus the
-        # arm's own refit.
-        sel_calls = inner["n_sim_total"] / 18.0
+        # NGSpice calls per device: Step A summed over the 3 starts, plus the
+        # lambda-selection refits (all 19 outer sets) / 18, plus the own refit.
+        start_calls = float(best[arm]["mean_ngspice_calls_per_device"])
+        sel_calls = inner["n_sim_total"] / float(len(rows["C0_refit"]))
         calls[arm] = {
             "starting_card": start_calls,
             "C0_refit": start_calls + float(np.mean([r["n_sim"] for r in c0["rows"].values()])),
             "full_g": start_calls + sel_calls + float(np.mean([r["n_sim"] for r in full["rows"].values()])),
             "lodo_g": start_calls + sel_calls + float(np.mean([r["n_sim"] for r in lodo["rows"].values()])),
-            "selection_calls_per_device": sel_calls,
-            "selection_calls_total": inner["n_sim_total"],
-        }
+            "selection_calls_per_device": sel_calls, "selection_calls_total": inner["n_sim_total"]}
         g = {}
         for mode, rr in (("primary", rows), ("m_rule", rows_m)):
-            p = pub if mode == "primary" else pub_m
-            g[mode] = {
-                "full_g_vs_C0_refit": paired_ratio(rr["full_g"], rr["C0_refit"]),
-                "full_g_vs_paper": paired_ratio(rr["full_g"], p),
-                "C0_refit_vs_paper": paired_ratio(rr["C0_refit"], p),
-                "lodo_g_vs_C0_refit": paired_ratio(rr["lodo_g"], rr["C0_refit"]),
-                "lodo_g_vs_paper": paired_ratio(rr["lodo_g"], p),
-            }
+            pp = pub if mode == "primary" else pub_m
+            g[mode] = {"full_g_vs_C0_refit": paired_ratio(rr["full_g"], rr["C0_refit"]),
+                       "full_g_vs_paper": paired_ratio(rr["full_g"], pp),
+                       "C0_refit_vs_paper": paired_ratio(rr["C0_refit"], pp),
+                       "lodo_g_vs_C0_refit": paired_ratio(rr["lodo_g"], rr["C0_refit"]),
+                       "lodo_g_vs_paper": paired_ratio(rr["lodo_g"], pp)}
             for v in g[mode].values():
                 v["label"] = m.gmr_label(v)
         out["arms"][arm] = {"label": ARMS[arm]["label"], "lambda_star": inner["lambda_star"],
                             "summary": fin["summary"], "per_device": rows, "per_device_m_rule": rows_m,
                             "calls_per_device": calls[arm], "inner_complete": inner["complete"],
-                            "V4": fin["V4"], "V4_pass": fin["V4_pass"]}
+                            "V4": fin["V4"], "V4_pass": fin["V4_pass"],
+                            "multistart": {"spread": best[arm]["spread"], "per_start": best[arm]["per_start"],
+                                           "stage_aggregates_selected": best[arm]["stage_aggregates_selected"],
+                                           "starts_selected": {t: r["start"] for t, r in best[arm]["devices"].items()}}}
         out["gmr"][arm] = g
     oldfull = {t: v["rrms"] for t, v in old["arms"]["old_full_g"].items()}
-    out["gmr"]["B_full_g_vs_old_full_g"] = paired_ratio(out["arms"]["B"]["per_device"]["full_g"], oldfull)
-    out["gmr"]["B_full_g_vs_old_full_g"]["label"] = m.gmr_label(out["gmr"]["B_full_g_vs_old_full_g"])
     i15 = jload(EXP / "I15_2/decision.json")["selected_rows"]
-    out["gmr"]["B_lodo_g_vs_old_lodo_g"] = paired_ratio(out["arms"]["B"]["per_device"]["lodo_g"], i15)
-    out["gmr"]["B_lodo_g_vs_old_lodo_g"]["label"] = m.gmr_label(out["gmr"]["B_lodo_g_vs_old_lodo_g"])
-    stock = finals["B"]["summary"]["stock"]
-    # main table
+    for key, a, k, ref in (("B_full_g_vs_old_full_g", "B", "full_g", oldfull),
+                           ("B_lodo_g_vs_old_lodo_g", "B", "lodo_g", i15),
+                           ("A_full_g_vs_B_full_g", "A", "full_g", out["arms"]["B"]["per_device"]["full_g"])):
+        out["gmr"][key] = paired_ratio(out["arms"][a]["per_device"][k], ref)
+        out["gmr"][key]["label"] = m.gmr_label(out["gmr"][key])
+    stock = stock_reference()
+    out["reference"] = {"stock_77K": {k: stock[k] for k in ("primary", "m_rule", "check_vs_step_deck")},
+                        "mult1_no_fit": finals["A"]["summary"]["mult1"],
+                        "paper": old["summary"]["published"]}
+    cpath = STEPA / "seven_center_fd.json"
+    if cpath.exists():
+        cj = jload(cpath)
+        out["reference"]["A_center_start_chain"] = m.aggregate({t: r["rrms"] for t, r in cj["devices"].items()})
     def agg(arm, k, mode="primary"):
         return finals[arm]["summary"][k][mode]
-    table = [
-        {"row": "stock card", "full_all": stock["primary"]["all_device"], "full_comb": stock["primary"]["combined"],
-         "lodo_all": None, "lodo_comb": None, "calls": 0},
-        {"row": "paper card", "full_all": old["summary"]["published"]["primary"]["all_device"],
-         "full_comb": old["summary"]["published"]["primary"]["combined"], "lodo_all": None, "lodo_comb": None,
-         "calls": None},
-    ]
-    n_b = len(jload(SPECS / "specs.json")["selected"])
-    for arm, name in (("A", "7p"), ("B", f"{n_b}p")):
-        table.append({"row": f"{name} card (C0_refit)", "full_all": agg(arm, "C0_refit")["all_device"],
+    nb = len(jload(SPECS / "specs.json")["selected"])
+    table = [{"row": "stock SkyWater tt card at 77 K (no fit)", "full_all": stock["primary"]["all_device"],
+              "full_comb": stock["primary"]["combined"], "calls": 0},
+             {"row": "released 77 K card, multipliers = 1 (no fit)", "full_all": agg("A", "mult1")["all_device"],
+              "full_comb": agg("A", "mult1")["combined"], "calls": 0},
+             {"row": "paper card (released)", "full_all": old["summary"]["published"]["primary"]["all_device"],
+              "full_comb": old["summary"]["published"]["primary"]["combined"], "calls": None}]
+    for arm, name in (("A", "7p"), ("B", f"{nb}p")):
+        table.append({"row": f"{name} card fit (C0_refit)", "full_all": agg(arm, "C0_refit")["all_device"],
                       "full_comb": agg(arm, "C0_refit")["combined"], "lodo_all": agg(arm, "C0_refit")["all_device"],
                       "lodo_comb": agg(arm, "C0_refit")["combined"], "calls": calls[arm]["C0_refit"]})
-        table.append({"row": f"{name} card + g", "full_all": agg(arm, "full_g")["all_device"],
+        table.append({"row": f"{name} card fit + g v2", "full_all": agg(arm, "full_g")["all_device"],
                       "full_comb": agg(arm, "full_g")["combined"], "lodo_all": agg(arm, "lodo_g")["all_device"],
                       "lodo_comb": agg(arm, "lodo_g")["combined"], "calls": calls[arm]["full_g"],
                       "calls_lodo": calls[arm]["lodo_g"]})
     out["main_table"] = table
-    # stage table old vs new
-    stages_new = {"7p stage": stepa["seven_r1"], "round 1": stepa["full_r1"], "round 2": stepa["full_r2"],
-                  "round 3": stepa["full_r3"], "round 3 + FD": stepa["full_r3_fd"]}
-    old_map = {"7p stage": "old_7p", "round 1": "old_r1", "round 2": "old_r2", "round 3": "old_r3",
-               "round 3 + FD": "old_fd"}
+    # stage table: selected start of each device, after every round; old chain
+    sa, sb = best["A"]["stage_aggregates_selected"], best["B"]["stage_aggregates_selected"]
+    old_map = {"round 1": "old_r1", "round 2": "old_r2", "round 3": "old_r3", "round 3 + FD": "old_fd"}
     st = []
-    for lab, sm in stages_new.items():
-        newrows = {t: r["rrms"] for t, r in sm["devices"].items()}
-        a = m.aggregate(newrows)
+    for lab in ("round 1", "round 2", "round 3", "round 3 + FD"):
         o = old["summary"][old_map[lab]]["primary"]
-        st.append({"stage": lab, "new_all": a["all_device"], "new_comb": a["combined"],
-                   "old_all": o["all_device"], "old_comb": o["combined"],
-                   "new_calls_per_device": float(np.mean([r["n_sim"] for r in sm["devices"].values()]))})
-    old_c0 = m.aggregate(jload(EXP / "I13_1/lodo/results.json")["per_device"]["C0_refit"])
-    st.append({"stage": "start card, state C (B)", "new_all": agg("B", "start")["all_device"],
-               "new_comb": agg("B", "start")["combined"], "old_all": old["summary"]["old_fd"]["primary"]["all_device"],
-               "old_comb": old["summary"]["old_fd"]["primary"]["combined"]})
-    st.append({"stage": "C0_refit (B)", "new_all": agg("B", "C0_refit")["all_device"],
-               "new_comb": agg("B", "C0_refit")["combined"], "old_all": old_c0["all_device"],
-               "old_comb": old_c0["combined"]})
-    o = old["summary"]["old_full_g"]["primary"]
-    st.append({"stage": "g full data (B)", "new_all": agg("B", "full_g")["all_device"],
-               "new_comb": agg("B", "full_g")["combined"], "old_all": o["all_device"], "old_comb": o["combined"]})
-    i15agg = m.aggregate(i15)
-    st.append({"stage": "g LODO selected (B)", "new_all": agg("B", "lodo_g")["all_device"],
-               "new_comb": agg("B", "lodo_g")["combined"], "old_all": i15agg["all_device"],
-               "old_comb": i15agg["combined"]})
+        st.append({"stage": lab, "A_all": sa[lab]["all_device"], "A_comb": sa[lab]["combined"],
+                   "B_all": sb[lab]["all_device"], "B_comb": sb[lab]["combined"],
+                   "old_all": o["all_device"], "old_comb": o["combined"]})
+    o7 = old["summary"]["old_7p"]["primary"]
+    st.append({"stage": "old 7p stage (bank + center start)", "old_all": o7["all_device"], "old_comb": o7["combined"]})
+    for lab, k in (("start card, state C", "start"), ("C0_refit", "C0_refit"), ("g full data", "full_g"),
+                   ("g LODO", "lodo_g")):
+        row = {"stage": lab, "A_all": agg("A", k)["all_device"], "A_comb": agg("A", k)["combined"],
+               "B_all": agg("B", k)["all_device"], "B_comb": agg("B", k)["combined"]}
+        if k == "C0_refit":
+            oc = m.aggregate(jload(EXP / "I13_1/lodo/results.json")["per_device"]["C0_refit"])
+            row.update(old_all=oc["all_device"], old_comb=oc["combined"])
+        elif k == "full_g":
+            row.update(old_all=old["summary"]["old_full_g"]["primary"]["all_device"],
+                       old_comb=old["summary"]["old_full_g"]["primary"]["combined"])
+        elif k == "lodo_g":
+            oi = m.aggregate(i15)
+            row.update(old_all=oi["all_device"], old_comb=oi["combined"])
+        elif k == "start":
+            row.update(old_all=old["summary"]["old_fd"]["primary"]["all_device"],
+                       old_comb=old["summary"]["old_fd"]["primary"]["combined"])
+        st.append(row)
     out["stage_table"] = st
     out["validity"] = {
-        "V1_template_bit_identical": True,
         "V3_rows_18": all(len(out["arms"][a]["per_device"][k]) == 18 and
                           all(np.isfinite(v) for v in out["arms"][a]["per_device"][k].values())
                           for a in ("A", "B") for k in ("C0_refit", "full_g", "lodo_g")),
         "V4": {a: out["arms"][a]["V4_pass"] for a in ("A", "B")},
         "V5": {a: jload(arm_dir(a, SMOKE) / "records" / "records.json")["V5_pass"] for a in ("A", "B")},
         "inner_complete": {a: out["arms"][a]["inner_complete"] for a in ("A", "B")},
+        "mult1_template_all_multipliers_one": True,
+        "stock_reference_reproduces_step_deck": bool(stock["check_vs_step_deck"] <= 1e-9),
     }
     out["validity"]["valid"] = bool(out["validity"]["V3_rows_18"] and all(out["validity"]["V4"].values())
                                     and all(out["validity"]["V5"].values())
                                     and all(out["validity"]["inner_complete"].values()))
     out["specs"] = jload(SPECS / "specs.json")
     jdump(out, (OUT / "smoke" if SMOKE else OUT) / "decision.json")
-    print(json.dumps({"valid": out["validity"], "main_table": table}, indent=1, default=float), flush=True)
+    print(json.dumps({"valid": out["validity"], "main_table": table, "stage_table": st}, indent=1, default=float),
+          flush=True)
     return out
 
 

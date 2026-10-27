@@ -10,15 +10,17 @@
   "toxm",
   "xj",
   "ndep",
+  "nsd",
   "dwg",
-  "rsh",
   "vth0",
   "k1",
   "k2",
   "k3",
   "dvt0",
   "dvt1",
+  "w0",
   "k3b",
+  "vfb",
   "lpe0",
   "lpeb",
   "vsat",
@@ -31,30 +33,30 @@
   "a0",
   "a2",
   "ags",
+  "b0",
+  "b1",
   "nfactor",
   "eta0",
+  "dsub",
   "pclm",
+  "pdiblc1",
   "pdiblc2",
   "delta",
-  "alpha0",
-  "beta0",
-  "kt1",
-  "at",
-  "ute",
-  "ua1",
-  "ub1"
+  "beta0"
  ],
  "overlap_with_old43": {
   "n_old": 43,
   "n_new": 37,
-  "n_both": 32,
+  "n_both": 36,
   "both": [
    "a0",
    "a2",
    "ags",
-   "alpha0",
+   "b0",
+   "b1",
    "beta0",
    "delta",
+   "dsub",
    "dvt0",
    "dvt1",
    "dwg",
@@ -67,54 +69,52 @@
    "lpeb",
    "ndep",
    "nfactor",
+   "nsd",
    "pclm",
    "pdiblc2",
    "prwg",
    "rdsw",
-   "rsh",
    "toxe",
    "toxm",
    "u0",
    "ua",
    "ub",
+   "vfb",
    "vsat",
    "vth0",
+   "w0",
    "wr",
    "xj"
   ],
   "only_old": [
-   "b0",
-   "b1",
+   "alpha0",
    "cdscd",
    "cit",
    "drout",
-   "dsub",
    "dvt1w",
-   "nsd",
-   "vfb",
-   "voff",
-   "w0"
+   "rsh",
+   "voff"
   ],
   "only_new": [
-   "at",
-   "kt1",
-   "ua1",
-   "ub1",
-   "ute"
+   "pdiblc1"
   ],
-  "jaccard": 0.6666666666666666
+  "jaccard": 0.8181818181818182
  },
  "fixed_zero_center_by_device": {
   "nmos_L1_W3": [
-   "prwg"
+   "b0",
+   "b1",
+   "prwg",
+   "vfb"
   ],
-  "pmos_L2_W5": [
+  "pmos_L0p35_W1p6": [
    "lpe0",
-   "lpeb"
+   "lpeb",
+   "pdiblc1"
   ]
  },
  "seven_fixed_by_device": {
   "nmos_L1_W3": [],
-  "pmos_L2_W5": []
+  "pmos_L0p35_W1p6": []
  }
 }

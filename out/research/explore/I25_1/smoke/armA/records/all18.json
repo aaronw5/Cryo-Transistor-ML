@@ -10,13 +10,13 @@
    "dev_type": "nmos",
    "card": "out/research/polished/direct43_r3_fd/real/summary.json",
    "params": {
-    "vth0": 0.380147255910522,
-    "u0": 0.023478684988528266,
-    "nfactor": 2.1065746072214293,
-    "vsat": -1849.276266892108,
-    "delta": 0.03771923887059255,
-    "rdsw": 87.74571951313874,
-    "eta0": 0.0003490270350079794
+    "vth0": 0.541058166478146,
+    "u0": 0.19037763851858383,
+    "nfactor": 32.90216530942675,
+    "vsat": -111.58497857212437,
+    "delta": 0.058185307972026354,
+    "rdsw": 18.56494935336699,
+    "eta0": 0.0017182670576016425
    }
   },
   "curves": [
@@ -100,23 +100,23 @@
   ]
  },
  {
-  "tag": "pmos_L2_W5",
+  "tag": "pmos_L0p35_W1p6",
   "family": "pmos",
-  "L_um": 2.0,
-  "W_um": 5.0,
+  "L_um": 0.35,
+  "W_um": 1.6,
   "vdd": 1.85,
   "source": "sky130",
   "meta": {
    "dev_type": "pmos",
    "card": "out/research/polished/direct43_r3_fd/real/summary.json",
    "params": {
-    "vth0": -0.7254139772837896,
-    "u0": 0.006961046851061523,
-    "nfactor": 12.561215918606399,
-    "vsat": 9573.404234787775,
-    "delta": 0.14544787807845755,
-    "rdsw": 2263.740456037005,
-    "eta0": 0.28427805094874287
+    "vth0": -1.0624682627725461,
+    "u0": 0.010197044557971567,
+    "nfactor": 69.53335101975695,
+    "vsat": 9656006.899356425,
+    "delta": -0.0003181948624968152,
+    "rdsw": 653.9507428114609,
+    "eta0": 0.4830405153837508
    }
   },
   "curves": [
@@ -130,71 +130,71 @@
    {
     "key": "idvd@0.74",
     "kind": "idvd",
-    "start": 0,
-    "den": 0.0,
-    "included": false
+    "start": 8,
+    "den": 3.3640449438202246e-07,
+    "included": true
    },
    {
     "key": "idvd@1.11",
     "kind": "idvd",
     "start": 0,
-    "den": 7.211827956989246e-07,
+    "den": 1.7909086021505376e-05,
     "included": true
    },
    {
     "key": "idvd@1.48",
     "kind": "idvd",
     "start": 0,
-    "den": 5.075161290322581e-05,
+    "den": 0.00016041172043010753,
     "included": true
    },
    {
     "key": "idvd@1.85",
     "kind": "idvd",
     "start": 0,
-    "den": 0.0001603462365591398,
+    "den": 0.00035137408602150535,
     "included": true
    },
    {
     "key": "idvg@0.01",
     "kind": "idvg",
-    "start": 80,
-    "den": 9.324952830188679e-07,
+    "start": 22,
+    "den": 9.348451219512194e-07,
     "included": true
    },
    {
     "key": "idvg@0.37",
     "kind": "idvg",
-    "start": 93,
-    "den": 4.291956989247312e-05,
+    "start": 70,
+    "den": 7.780112068965517e-05,
     "included": true
    },
    {
     "key": "idvg@0.74",
     "kind": "idvg",
-    "start": 95,
-    "den": 5.571263736263735e-05,
+    "start": 66,
+    "den": 0.00011258425000000001,
     "included": true
    },
    {
     "key": "idvg@1.11",
     "kind": "idvg",
-    "start": 94,
-    "den": 5.7619130434782616e-05,
+    "start": 58,
+    "den": 0.00012026398437500001,
     "included": true
    },
    {
     "key": "idvg@1.48",
     "kind": "idvg",
-    "start": 95,
-    "den": 5.9172307692307684e-05,
+    "start": 61,
+    "den": 0.00013240296,
     "included": true
    },
    {
     "key": "idvg@1.85",
     "kind": "idvg",
-    "start": 86,
-    "den": 5.4382099999999996e-05,
+    "start": 57,
+    "den": 0.0001354457364341085,
     "included": true
    }
   ]
