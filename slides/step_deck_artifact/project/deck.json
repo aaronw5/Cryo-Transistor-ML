@@ -11,25 +11,28 @@
   "title",
   "b1-transistor",
   "b2-model",
-  "s01-measured",
   "s02-stock",
+  "s01-measured",
   "s03-paper",
   "b3-fit",
   "s04-stepA",
   "s05-stepB",
+  "s05b-cardonly",
   "s06-stepC",
   "s07-stepD",
-  "s08-stepE",
   "s09-results",
   "s10-perdevice",
+  "s11-iv7-1",
+  "s11-iv7-2",
+  "s11-iv7-3",
   "s11-iv1",
   "s12-iv2",
   "s13-iv3",
   "s14-element",
+  "s14b-checks",
   "s15-cost",
   "s16-sources",
-  "s17-limits",
-  "s19-glossary"
+  "s17-limits"
  ],
  "sections": {
   "s1": {
@@ -37,23 +40,23 @@
    "start": "title"
   },
   "s2": {
-   "description": "Background: transistor, compact model, card, NGSpice",
+   "description": "Background: I-V curves, card, NGSpice, RRMS",
    "start": "b1-transistor"
   },
   "s3": {
-   "description": "Data, stock card, RRMS, paper card",
-   "start": "s01-measured"
+   "description": "Stock card error at 77 K, measured data, paper card",
+   "start": "s02-stock"
   },
   "s4": {
-   "description": "NGSpice fit; Steps A-E",
+   "description": "Card fit in NGSpice, remaining error, correction g, penalty",
    "start": "b3-fit"
   },
   "s5": {
-   "description": "Results, per-device RRMS, I-V curves",
+   "description": "Results on 18 devices, per-device RRMS, I-V curves for 7 and 43 parameters",
    "start": "s09-results"
   },
   "s6": {
-   "description": "Element, cost, paper inputs, limits, glossary",
+   "description": "Element deck, cost, paper inputs, limits",
    "start": "s14-element"
   }
  },
