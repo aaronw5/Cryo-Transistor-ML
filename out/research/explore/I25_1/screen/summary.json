@@ -1,0 +1,6950 @@
+{
+  "schema_version": 1,
+  "selection_rule": "retain every candidate whose normalized response exceeds the effective threshold on any full-grid or |fixed bias|>=1.48 V curve for any device; PARAMS7 are mandatory; no top-k cap",
+  "requested_threshold": 0.0001,
+  "repeatability_floor": 0.0,
+  "effective_threshold": 0.0001,
+  "perturbation_fraction": 0.1,
+  "candidate_count": 115,
+  "selected_count": 45,
+  "selected_parameters": [
+    "toxe",
+    "toxm",
+    "xj",
+    "ndep",
+    "nsd",
+    "dwg",
+    "rsh",
+    "vth0",
+    "k1",
+    "k2",
+    "k3",
+    "dvt0",
+    "dvt1",
+    "dvt1w",
+    "w0",
+    "k3b",
+    "lpe0",
+    "lpeb",
+    "vsat",
+    "ua",
+    "ub",
+    "rdsw",
+    "prwg",
+    "wr",
+    "u0",
+    "a0",
+    "a2",
+    "ags",
+    "b0",
+    "b1",
+    "voff",
+    "nfactor",
+    "eta0",
+    "dsub",
+    "pclm",
+    "pdiblc1",
+    "pdiblc2",
+    "delta",
+    "alpha0",
+    "beta0",
+    "kt1",
+    "at",
+    "ute",
+    "ua1",
+    "ub1"
+  ],
+  "original_parameters": [
+    "vth0",
+    "u0",
+    "nfactor",
+    "vsat",
+    "delta",
+    "rdsw",
+    "eta0"
+  ],
+  "upstream_expanded18": [
+    "vth0",
+    "dvt0",
+    "dvt1",
+    "vsat",
+    "ua",
+    "ub",
+    "uc",
+    "rdsw",
+    "prwg",
+    "u0",
+    "rdw",
+    "rsw",
+    "nfactor",
+    "eta0",
+    "dsub",
+    "pclm",
+    "pvag",
+    "delta"
+  ],
+  "pre_screen_exclusions": {
+    "level": "integer model selector",
+    "version": "model-version selector",
+    "mobmod": "integer mobility-model selector",
+    "binunit": "integer binning selector",
+    "igcmod": "integer gate-current selector",
+    "igbmod": "integer gate-current selector",
+    "rgatemod": "integer gate-resistance selector",
+    "rbodymod": "integer body-resistance selector",
+    "trnqsmod": "integer NQS selector",
+    "acnqsmod": "integer AC NQS selector",
+    "fnoimod": "integer noise-model selector",
+    "tnoimod": "integer noise-model selector",
+    "permod": "integer perimeter selector",
+    "geomod": "integer geometry selector",
+    "rdsmod": "integer source/drain-resistance selector",
+    "tempmod": "integer temperature-model selector",
+    "diomod": "integer diode-model selector",
+    "capmod": "integer capacitance-model selector",
+    "lmin": "geometry-bin bound",
+    "lmax": "geometry-bin bound",
+    "wmin": "geometry-bin bound",
+    "wmax": "geometry-bin bound",
+    "cgdo": "capacitance-only parameter",
+    "cgso": "capacitance-only parameter",
+    "cgbo": "capacitance-only parameter",
+    "noia": "noise-only parameter",
+    "noib": "noise-only parameter",
+    "noic": "noise-only parameter",
+    "kf": "noise-only parameter",
+    "af": "noise-only parameter",
+    "ef": "noise-only parameter"
+  },
+  "parameters": {
+    "toxe": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 160.0847489366276,
+      "max_high_voltage_response": 2.270199834782581,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "toxm": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 192.3682947264022,
+      "max_high_voltage_response": 1.561384297444389,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "xj": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.1142274614354878,
+      "max_high_voltage_response": 0.01874983102165836,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "ndep": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 6.835484894721806,
+      "max_high_voltage_response": 0.14575249159863132,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "nsd": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.453610309143922,
+      "max_high_voltage_response": 0.03222324535285305,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64"
+      ],
+      "n_devices_probed": 18
+    },
+    "dwg": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0503676062102519,
+      "max_high_voltage_response": 0.012091837282388706,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "dwb": {
+      "group": "process_and_effective_geometry",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.93062265479835e-07,
+      "max_high_voltage_response": 4.93062265479835e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "rsh": {
+      "group": "process_and_effective_geometry",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0006642678335324934,
+      "max_high_voltage_response": 9.195200959128467e-05,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p64"
+      ],
+      "n_devices_probed": 18
+    },
+    "vth0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 216.00270240343147,
+      "max_high_voltage_response": 1.078534245861323,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "k1": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.4269481337845047,
+      "max_high_voltage_response": 0.2387893367025343,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "k2": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.25810649286626436,
+      "max_high_voltage_response": 0.03487023223522228,
+      "active_devices": [
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "k3": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.7461545939877412,
+      "max_high_voltage_response": 0.031028237401020495,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "dvt0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 13.660917856482023,
+      "max_high_voltage_response": 0.21737808973774173,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "dvt1": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 72.48982946707072,
+      "max_high_voltage_response": 0.6394932294218785,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "dvt2": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.6409235819784354e-06,
+      "max_high_voltage_response": 6.757828920684516e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "dvt0w": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 9.631026286409058e-05,
+      "max_high_voltage_response": 1.1509612554993325e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "dvt1w": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.001996805862637893,
+      "max_high_voltage_response": 2.3844028794258777e-05,
+      "active_devices": [
+        "pmos_L0p35_W0p55"
+      ],
+      "n_devices_probed": 18
+    },
+    "dvt2w": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.730060133117497e-10,
+      "max_high_voltage_response": 4.730060133117497e-10,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "w0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.03075614670215265,
+      "max_high_voltage_response": 0.000427513098174027,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "k3b": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.02093780636661947,
+      "max_high_voltage_response": 0.00274213317972541,
+      "active_devices": [
+        "nmos_L1_W1p6",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "vfb": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "phin": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "lpe0": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 31.455162188309096,
+      "max_high_voltage_response": 0.3924441576587241,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "lpeb": {
+      "group": "threshold_and_short_channel",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.037118661508430593,
+      "max_high_voltage_response": 0.006589341522998276,
+      "active_devices": [
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "vbm": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "dvtp0": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "dvtp1": {
+      "group": "threshold_and_short_channel",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "vsat": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 1.8905775856629932,
+      "max_high_voltage_response": 0.8141653975515865,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "ua": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 17.484116466454882,
+      "max_high_voltage_response": 3.9991754960884416,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "ub": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 9.644274959989337,
+      "max_high_voltage_response": 2.855105597538988,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "uc": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 8.226432471967694e-06,
+      "max_high_voltage_response": 8.226432471967694e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "rdsw": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.588615607849672,
+      "max_high_voltage_response": 0.11221165981452226,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "prwb": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.634133269378199e-07,
+      "max_high_voltage_response": 3.634133269378199e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "prwg": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.02435527832262197,
+      "max_high_voltage_response": 0.004808688457886166,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "wr": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.9669276275109675,
+      "max_high_voltage_response": 0.1887007319792171,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "u0": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 6.213747175221316,
+      "max_high_voltage_response": 0.9054323624006305,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "a0": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 1.915854662394613,
+      "max_high_voltage_response": 0.33623181097420984,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "keta": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.327376622192085e-06,
+      "max_high_voltage_response": 4.327376622192085e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "a1": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "a2": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.5075033075871465,
+      "max_high_voltage_response": 0.26494249209293863,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "ags": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.14302632004160032,
+      "max_high_voltage_response": 0.089074698174647,
+      "active_devices": [
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "b0": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.7191779425930133,
+      "max_high_voltage_response": 0.1284717926661166,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "b1": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.12953630850165918,
+      "max_high_voltage_response": 0.03201908439893351,
+      "active_devices": [
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L8_W0p84"
+      ],
+      "n_devices_probed": 18
+    },
+    "eu": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "up": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "lp": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "ud": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rdswmin": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rdw": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rdwmin": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rsw": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rswmin": {
+      "group": "mobility_velocity_and_resistance",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "voff": {
+      "group": "subthreshold_and_dibl",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.05166255778080062,
+      "max_high_voltage_response": 0.0005822959771422458,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L4_W7"
+      ],
+      "n_devices_probed": 18
+    },
+    "nfactor": {
+      "group": "subthreshold_and_dibl",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 2.0018224032449905,
+      "max_high_voltage_response": 0.0008168111575807382,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "tvfbsdoff": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "tvoff": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "cit": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.711324441051481e-05,
+      "max_high_voltage_response": 6.965760586492475e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "cdsc": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.145241342313838e-05,
+      "max_high_voltage_response": 4.7379740268124125e-08,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "cdscb": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.6497438069838826e-08,
+      "max_high_voltage_response": 1.3700436502366763e-10,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "cdscd": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 9.084925746362226e-05,
+      "max_high_voltage_response": 1.4953733340139061e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "eta0": {
+      "group": "subthreshold_and_dibl",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.2601297324361095,
+      "max_high_voltage_response": 0.052601740052523695,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "etab": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 8.475678338565e-06,
+      "max_high_voltage_response": 8.475678338565e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "dsub": {
+      "group": "subthreshold_and_dibl",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 3.6014125472057406,
+      "max_high_voltage_response": 0.27066044506938125,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "voffl": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "minv": {
+      "group": "subthreshold_and_dibl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "pclm": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.18588732239120404,
+      "max_high_voltage_response": 0.18551704912492306,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "pdiblc1": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.05797392948951111,
+      "max_high_voltage_response": 0.008035217936619597,
+      "active_devices": [
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64"
+      ],
+      "n_devices_probed": 18
+    },
+    "pdiblc2": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.6172548122453168,
+      "max_high_voltage_response": 0.36275417907298046,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "pdiblcb": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 5.299133139835525e-07,
+      "max_high_voltage_response": 2.658753138663511e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "drout": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.83986342240737e-05,
+      "max_high_voltage_response": 1.123238297388677e-05,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "pscbe1": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 6.31404682305337e-06,
+      "max_high_voltage_response": 6.31404682305337e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "pscbe2": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.085154941102262e-07,
+      "max_high_voltage_response": 3.085154941102262e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "pvag": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "delta": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": true,
+      "in_upstream_expanded18": true,
+      "max_full_grid_response": 0.9131348440339603,
+      "max_high_voltage_response": 0.04947905093009517,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "alpha0": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0006134208615728422,
+      "max_high_voltage_response": 0.0006134208615728422,
+      "active_devices": [
+        "nmos_L0p19_W7",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3"
+      ],
+      "n_devices_probed": 18
+    },
+    "alpha1": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "beta0": {
+      "group": "output_conductance_and_high_field",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0059058852943655645,
+      "max_high_voltage_response": 0.0059058852943655645,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L8_W1p6"
+      ],
+      "n_devices_probed": 18
+    },
+    "fprout": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "pdits": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "pditsl": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "pditsd": {
+      "group": "output_conductance_and_high_field",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "agidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "bgidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "cgidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "egidl": {
+      "group": "gidl",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "vfbsdoff": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "kt1": {
+      "group": "temperature",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 130.77495658237922,
+      "max_high_voltage_response": 1.0109138362333985,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "kt2": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 9.185571728097371e-06,
+      "max_high_voltage_response": 4.640931943813969e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "at": {
+      "group": "temperature",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.6507402912953123,
+      "max_high_voltage_response": 0.28896290090988114,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "ute": {
+      "group": "temperature",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.3407796571928783,
+      "max_high_voltage_response": 0.3878718294162219,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "ua1": {
+      "group": "temperature",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.56361668116444,
+      "max_high_voltage_response": 0.7701038013236849,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "ub1": {
+      "group": "temperature",
+      "selected": true,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.7056335879464455,
+      "max_high_voltage_response": 0.6248943509452282,
+      "active_devices": [
+        "nmos_L0p15_W1p6",
+        "nmos_L0p19_W7",
+        "nmos_L0p25_W1p6",
+        "nmos_L100_W100",
+        "nmos_L1_W1p6",
+        "nmos_L1_W3",
+        "nmos_L20_W0p64",
+        "nmos_L8_W1p6",
+        "pmos_L0p35_W0p55",
+        "pmos_L0p35_W1p6",
+        "pmos_L0p35_W5",
+        "pmos_L0p5_W0p42",
+        "pmos_L0p5_W0p64",
+        "pmos_L2_W5",
+        "pmos_L4_W7",
+        "pmos_L8_W0p84",
+        "pmos_L8_W1p6",
+        "pmos_L8_W5"
+      ],
+      "n_devices_probed": 18
+    },
+    "uc1": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.0424473642595826e-06,
+      "max_high_voltage_response": 2.0424473642595826e-06,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "kt1l": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "prt": {
+      "group": "temperature",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "rbpb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 8.412419417700592e-07,
+      "max_high_voltage_response": 8.412419417700592e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "rbpd": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.0772347365385566e-07,
+      "max_high_voltage_response": 2.0772347365385566e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "rbps": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.0772347365385566e-07,
+      "max_high_voltage_response": 2.0772347365385566e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "rbdb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.0772347365385566e-07,
+      "max_high_voltage_response": 2.0772347365385566e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "rbsb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 2.0772347365385566e-07,
+      "max_high_voltage_response": 2.0772347365385566e-07,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "gbmin": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 3.9277963287384585e-29,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "njs": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 4.76349919917273e-08,
+      "max_high_voltage_response": 3.1322692209478206e-45,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "jss": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "jsws": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "xtis": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "bvs": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "xjbvs": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "ijthsrev": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "ijthsfwd": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "tpb": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "tpbsw": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "tpbswg": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 0
+    },
+    "tcj": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "tcjsw": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    },
+    "tcjswg": {
+      "group": "body_network_and_junction_dc",
+      "selected": false,
+      "mandatory_seven_parameter": false,
+      "in_upstream_expanded18": false,
+      "max_full_grid_response": 0.0,
+      "max_high_voltage_response": 0.0,
+      "active_devices": [],
+      "n_devices_probed": 18
+    }
+  },
+  "bounds_by_device": {
+    "nmos_L0p15_W1p6": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.2879487,
+        0.35193729999999995
+      ],
+      "k1": [
+        1.04661,
+        1.27919
+      ],
+      "k2": [
+        -0.2942555,
+        -0.24075449999999998
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        70581.78,
+        86266.62
+      ],
+      "ua": [
+        -1.0513371000000001e-10,
+        -8.601849e-11
+      ],
+      "ub": [
+        1.210446e-18,
+        1.479434e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.03877236,
+        0.04738844
+      ],
+      "a0": [
+        -0.19598400000000002,
+        0.19598400000000002
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        0.39850019999999997,
+        0.48705580000000004
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.328548,
+        -0.268812
+      ],
+      "nfactor": [
+        0.31621319999999997,
+        0.3864828
+      ],
+      "eta0": [
+        -0.14984860000000003,
+        -0.12260340000000002
+      ],
+      "dsub": [
+        0.603135,
+        0.7371650000000001
+      ],
+      "pclm": [
+        1.398924,
+        1.7097959999999999
+      ],
+      "pdiblc1": [
+        0.6243525000000001,
+        0.7630975
+      ],
+      "pdiblc2": [
+        0.05473773,
+        0.06690167
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        0.00012700800000000001,
+        0.000155232
+      ],
+      "beta0": [
+        21.004649999999998,
+        25.67235
+      ],
+      "kt1": [
+        0.2664945,
+        0.3257155
+      ],
+      "at": [
+        -68392.94,
+        -55957.86
+      ],
+      "ute": [
+        -2.317964,
+        -1.896516
+      ],
+      "ua1": [
+        -3.848559e-09,
+        -3.1488209999999998e-09
+      ],
+      "ub1": [
+        4.876407e-18,
+        5.960053e-18
+      ]
+    },
+    "nmos_L0p19_W7": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.5477382,
+        0.6694578
+      ],
+      "k1": [
+        0.2840688,
+        0.34719520000000004
+      ],
+      "k2": [
+        -0.004746907,
+        -0.0038838329999999997
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        136911.6,
+        167336.4
+      ],
+      "ua": [
+        -1.0275463e-09,
+        -8.407197000000001e-10
+      ],
+      "ub": [
+        2.343573e-18,
+        2.8643670000000003e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.03541698,
+        0.04328741999999999
+      ],
+      "a0": [
+        4.686462000000001,
+        5.727898
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        -2.950079,
+        -2.413701
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.1803362,
+        -0.1475478
+      ],
+      "nfactor": [
+        1.126386,
+        1.376694
+      ],
+      "eta0": [
+        -0.16929,
+        -0.13851000000000002
+      ],
+      "dsub": [
+        0.1393857,
+        0.17036030000000002
+      ],
+      "pclm": [
+        0.806922,
+        0.9862380000000001
+      ],
+      "pdiblc1": [
+        -1.0658923,
+        -0.8720937
+      ],
+      "pdiblc2": [
+        0.013014089999999999,
+        0.01590611
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        0.007026704999999999,
+        0.008588195
+      ],
+      "beta0": [
+        32.691779999999994,
+        39.95662
+      ],
+      "kt1": [
+        -0.2003936,
+        -0.1639584
+      ],
+      "at": [
+        123.01919999999998,
+        150.3568
+      ],
+      "ute": [
+        -1.2534939999999999,
+        -1.025586
+      ],
+      "ua1": [
+        1.387539e-09,
+        1.695881e-09
+      ],
+      "ub1": [
+        -2.19549e-18,
+        -1.79631e-18
+      ]
+    },
+    "nmos_L0p25_W1p6": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.4460364,
+        0.5451556
+      ],
+      "k1": [
+        0.32179230000000003,
+        0.3933017
+      ],
+      "k2": [
+        -0.01298473,
+        -0.01062387
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        172803.6,
+        211204.4
+      ],
+      "ua": [
+        -1.694011e-09,
+        -1.386009e-09
+      ],
+      "ub": [
+        2.358189e-18,
+        2.882231e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.02411694,
+        0.02947626
+      ],
+      "a0": [
+        0.4438431,
+        0.5424749
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        0.3880728,
+        0.47431120000000004
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.14625049999999998,
+        -0.11965949999999999
+      ],
+      "nfactor": [
+        1.879245,
+        2.296855
+      ],
+      "eta0": [
+        0.00230994,
+        0.00282326
+      ],
+      "dsub": [
+        1.4292449999999999,
+        1.746855
+      ],
+      "pclm": [
+        0.1020816,
+        0.1247664
+      ],
+      "pdiblc1": [
+        0.351,
+        0.42900000000000005
+      ],
+      "pdiblc2": [
+        0.002568834,
+        0.003139686
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        -0.001112485,
+        -0.000910215
+      ],
+      "beta0": [
+        17.26218,
+        21.098219999999998
+      ],
+      "kt1": [
+        -0.2972013,
+        -0.2431647
+      ],
+      "at": [
+        96240.6,
+        117627.4
+      ],
+      "ute": [
+        -1.35058,
+        -1.1050200000000001
+      ],
+      "ua1": [
+        1.577304e-09,
+        1.927816e-09
+      ],
+      "ub1": [
+        -1.851762e-18,
+        -1.515078e-18
+      ]
+    },
+    "nmos_L100_W100": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.3761172,
+        0.4596988
+      ],
+      "k1": [
+        0.424917,
+        0.519343
+      ],
+      "k2": [
+        -0.036610199999999996,
+        -0.0299538
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        145026.0,
+        177254.0
+      ],
+      "ua": [
+        -1.431716e-09,
+        -1.171404e-09
+      ],
+      "ub": [
+        2.4079589999999998e-18,
+        2.943061e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.02878956,
+        0.03518724
+      ],
+      "a0": [
+        1.763856,
+        2.155824
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        0.4786137,
+        0.5849723
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.1271589,
+        -0.1040391
+      ],
+      "nfactor": [
+        0.9917189999999999,
+        1.2121009999999999
+      ],
+      "eta0": [
+        0.07200000000000001,
+        0.088
+      ],
+      "dsub": [
+        0.504,
+        0.6160000000000001
+      ],
+      "pclm": [
+        0.18,
+        0.22000000000000003
+      ],
+      "pdiblc1": [
+        0.351,
+        0.42900000000000005
+      ],
+      "pdiblc2": [
+        0.00431793,
+        0.00527747
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        7.591113000000001e-05,
+        9.278027e-05
+      ],
+      "beta0": [
+        16.0407,
+        19.6053
+      ],
+      "kt1": [
+        -0.279004,
+        -0.22827599999999998
+      ],
+      "at": [
+        299772.0,
+        366388.0
+      ],
+      "ute": [
+        -1.18547,
+        -0.9699300000000001
+      ],
+      "ua1": [
+        2.41407e-09,
+        2.95053e-09
+      ],
+      "ub1": [
+        -2.68763e-18,
+        -2.19897e-18
+      ]
+    },
+    "nmos_L1_W1p6": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.38643659999999996,
+        0.4723114
+      ],
+      "k1": [
+        0.4125321,
+        0.5042059
+      ],
+      "k2": [
+        -0.02556136,
+        -0.02091384
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        2066.058,
+        2525.182
+      ],
+      "ua": [
+        -7.897802e-10,
+        -6.461837999999999e-10
+      ],
+      "ub": [
+        2.118546e-18,
+        2.589334e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.032535270000000005,
+        0.03976533
+      ],
+      "a0": [
+        1.994076,
+        2.437204
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        1.0738079999999999,
+        1.312432
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.1307724,
+        -0.1069956
+      ],
+      "nfactor": [
+        0.6602616,
+        0.8069864000000001
+      ],
+      "eta0": [
+        0.000508428,
+        0.000621412
+      ],
+      "dsub": [
+        0.2122695,
+        0.2594405
+      ],
+      "pclm": [
+        0.2309364,
+        0.2822556
+      ],
+      "pdiblc1": [
+        0.351,
+        0.42900000000000005
+      ],
+      "pdiblc2": [
+        0.007986446999999999,
+        0.009761213
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        0.000179955,
+        0.000219945
+      ],
+      "beta0": [
+        19.43955,
+        23.759449999999998
+      ],
+      "kt1": [
+        -0.2942874,
+        -0.24078059999999998
+      ],
+      "at": [
+        18447.84,
+        22547.359999999997
+      ],
+      "ute": [
+        -1.2604460000000002,
+        -1.031274
+      ],
+      "ua1": [
+        1.886202e-09,
+        2.3053579999999998e-09
+      ],
+      "ub1": [
+        -2.264834e-18,
+        -1.853046e-18
+      ]
+    },
+    "nmos_L1_W3": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.3902976,
+        0.47703039999999997
+      ],
+      "k1": [
+        0.40241340000000003,
+        0.4918386
+      ],
+      "k2": [
+        -0.01861431,
+        -0.01522989
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        -1054.0002,
+        -862.3638
+      ],
+      "ua": [
+        -1.0873918e-09,
+        -8.896842e-10
+      ],
+      "ub": [
+        2.30976e-18,
+        2.82304e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.032393519999999995,
+        0.03959208
+      ],
+      "a0": [
+        1.9143089999999998,
+        2.339711
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        1.338426,
+        1.635854
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.1316282,
+        -0.10769580000000001
+      ],
+      "nfactor": [
+        0.7094925000000001,
+        0.8671575
+      ],
+      "eta0": [
+        0.00048003119999999997,
+        0.0005867048
+      ],
+      "dsub": [
+        -0.0948233,
+        -0.0775827
+      ],
+      "pclm": [
+        0.24770340000000002,
+        0.30274860000000003
+      ],
+      "pdiblc1": [
+        0.351,
+        0.42900000000000005
+      ],
+      "pdiblc2": [
+        0.002577906,
+        0.003150774
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        0.00021102840000000001,
+        0.0002579236
+      ],
+      "beta0": [
+        19.899449999999998,
+        24.32155
+      ],
+      "kt1": [
+        -0.2662132,
+        -0.2178108
+      ],
+      "at": [
+        8233.614,
+        10063.305999999999
+      ],
+      "ute": [
+        -1.4429800000000002,
+        -1.18062
+      ],
+      "ua1": [
+        1.592037e-09,
+        1.945823e-09
+      ],
+      "ub1": [
+        -2.148487e-18,
+        -1.7578530000000003e-18
+      ]
+    },
+    "nmos_L20_W0p64": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.3806577,
+        0.46524830000000006
+      ],
+      "k1": [
+        0.47993399999999997,
+        0.5865859999999999
+      ],
+      "k2": [
+        -0.06315166,
+        -0.05166954
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        180495.0,
+        220605.0
+      ],
+      "ua": [
+        -1.0772014e-09,
+        -8.813465999999999e-10
+      ],
+      "ub": [
+        2.073681e-18,
+        2.5344989999999996e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.028085759999999998,
+        0.034327039999999996
+      ],
+      "a0": [
+        1.7287379999999999,
+        2.112902
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        0.48345839999999995,
+        0.5908936
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.1212574,
+        -0.0992106
+      ],
+      "nfactor": [
+        1.5203790000000001,
+        1.858241
+      ],
+      "eta0": [
+        0.07200000000000001,
+        0.088
+      ],
+      "dsub": [
+        0.504,
+        0.6160000000000001
+      ],
+      "pclm": [
+        0.18,
+        0.22000000000000003
+      ],
+      "pdiblc1": [
+        0.351,
+        0.42900000000000005
+      ],
+      "pdiblc2": [
+        0.006812189999999999,
+        0.00832601
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        3.7561409999999997e-05,
+        4.590839e-05
+      ],
+      "beta0": [
+        16.014059999999997,
+        19.57274
+      ],
+      "kt1": [
+        -0.283393,
+        -0.23186700000000002
+      ],
+      "at": [
+        52407.0,
+        64053.0
+      ],
+      "ute": [
+        -1.29888,
+        -1.06272
+      ],
+      "ua1": [
+        1.7672400000000002e-09,
+        2.15996e-09
+      ],
+      "ub1": [
+        -1.6126e-18,
+        -1.3193999999999999e-18
+      ]
+    },
+    "nmos_L8_W1p6": {
+      "toxe": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "toxm": [
+        3.7332e-09,
+        4.5628e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -1.463e-08,
+        -1.197e-08
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        0.3806577,
+        0.46524830000000006
+      ],
+      "k1": [
+        0.47993399999999997,
+        0.5865859999999999
+      ],
+      "k2": [
+        -0.06315166,
+        -0.05166954
+      ],
+      "k3": [
+        1.4849999999999999,
+        1.815
+      ],
+      "dvt0": [
+        0.06898499999999999,
+        0.084315
+      ],
+      "dvt1": [
+        0.11268,
+        0.13772
+      ],
+      "dvt1w": [
+        4770000.0,
+        5830000.0
+      ],
+      "w0": [
+        9e-08,
+        1.0999999999999999e-07
+      ],
+      "k3b": [
+        1.44,
+        1.7600000000000002
+      ],
+      "lpe0": [
+        2.1421800000000002e-07,
+        2.61822e-07
+      ],
+      "lpeb": [
+        -5.40672e-08,
+        -4.4236800000000003e-08
+      ],
+      "vsat": [
+        180495.0,
+        220605.0
+      ],
+      "ua": [
+        -1.0772014e-09,
+        -8.813465999999999e-10
+      ],
+      "ub": [
+        2.073681e-18,
+        2.5344989999999996e-18
+      ],
+      "rdsw": [
+        93.285,
+        114.01500000000001
+      ],
+      "prwg": [
+        -0.0052,
+        0.0052
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.028085759999999998,
+        0.034327039999999996
+      ],
+      "a0": [
+        1.7287379999999999,
+        2.112902
+      ],
+      "a2": [
+        0.348201,
+        0.42557900000000004
+      ],
+      "ags": [
+        0.48345839999999995,
+        0.5908936
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        -2.56373e-09,
+        2.56373e-09
+      ],
+      "voff": [
+        -0.1212574,
+        -0.0992106
+      ],
+      "nfactor": [
+        1.5203790000000001,
+        1.858241
+      ],
+      "eta0": [
+        0.07200000000000001,
+        0.088
+      ],
+      "dsub": [
+        0.504,
+        0.6160000000000001
+      ],
+      "pclm": [
+        0.18,
+        0.22000000000000003
+      ],
+      "pdiblc1": [
+        0.351,
+        0.42900000000000005
+      ],
+      "pdiblc2": [
+        0.006812189999999999,
+        0.00832601
+      ],
+      "delta": [
+        0.009000000000000001,
+        0.011
+      ],
+      "alpha0": [
+        3.7561409999999997e-05,
+        4.590839e-05
+      ],
+      "beta0": [
+        16.014059999999997,
+        19.57274
+      ],
+      "kt1": [
+        -0.283393,
+        -0.23186700000000002
+      ],
+      "at": [
+        52407.0,
+        64053.0
+      ],
+      "ute": [
+        -1.29888,
+        -1.06272
+      ],
+      "ua1": [
+        1.7672400000000002e-09,
+        2.15996e-09
+      ],
+      "ub1": [
+        -1.6126e-18,
+        -1.3193999999999999e-18
+      ]
+    },
+    "pmos_L0p35_W0p55": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.1960519,
+        -0.1604061
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.051650720000000004,
+        -0.04225968
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        155627.1,
+        190210.9
+      ],
+      "ua": [
+        -3.384348e-09,
+        -2.7690120000000004e-09
+      ],
+      "ub": [
+        2.351691e-18,
+        2.874289e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.0008401779,
+        0.0010268841
+      ],
+      "a0": [
+        1.04643,
+        1.2789700000000002
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        -0.8190688,
+        -0.6701472
+      ],
+      "b0": [
+        7.105211999999999e-07,
+        8.684148e-07
+      ],
+      "b1": [
+        -2.02587e-06,
+        -1.65753e-06
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        -0.0029741579999999997,
+        -0.002433402
+      ],
+      "delta": [
+        0.13589189999999998,
+        0.1660901
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.8716807,
+        -0.7131932999999999
+      ],
+      "at": [
+        -48773.45,
+        -39905.55
+      ],
+      "ute": [
+        -0.8940151000000001,
+        -0.7314669
+      ],
+      "ua1": [
+        1.7753849999999999e-09,
+        2.169915e-09
+      ],
+      "ub1": [
+        -3.251303e-18,
+        -2.660157e-18
+      ]
+    },
+    "pmos_L0p35_W1p6": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.6004174,
+        -0.49125060000000004
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.10216899,
+        -0.08359281
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        92475.9,
+        113026.1
+      ],
+      "ua": [
+        -2.553298e-09,
+        -2.089062e-09
+      ],
+      "ub": [
+        1.815156e-18,
+        2.218524e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.003139056,
+        0.003836624
+      ],
+      "a0": [
+        1.8338670000000001,
+        2.241393
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.29700360000000003,
+        0.3630044
+      ],
+      "b0": [
+        -5.965784e-06,
+        -4.881096e-06
+      ],
+      "b1": [
+        4.614714e-08,
+        5.640206e-08
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        4.200687,
+        5.1341730000000005
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        -0.10633194,
+        -0.08699886
+      ],
+      "delta": [
+        -0.01688643,
+        -0.01381617
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.7454326,
+        -0.6098994
+      ],
+      "at": [
+        135980.1,
+        166197.9
+      ],
+      "ute": [
+        -0.6935929,
+        -0.5674851
+      ],
+      "ua1": [
+        6.304608e-10,
+        7.705632000000001e-10
+      ],
+      "ub1": [
+        -3.3327470000000003e-19,
+        -2.726793e-19
+      ]
+    },
+    "pmos_L0p35_W5": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.6213878,
+        -0.5084082
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.0660418,
+        -0.054034200000000004
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        -287411.3,
+        -235154.7
+      ],
+      "ua": [
+        -4.54905e-09,
+        -3.72195e-09
+      ],
+      "ub": [
+        4.134186e-18,
+        5.052894e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.001213623,
+        0.001483317
+      ],
+      "a0": [
+        -4.456056,
+        -3.645864
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.984123,
+        1.202817
+      ],
+      "b0": [
+        1.519074e-06,
+        1.856646e-06
+      ],
+      "b1": [
+        1.89657e-24,
+        2.31803e-24
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        -0.17338420000000002,
+        -0.1418598
+      ],
+      "delta": [
+        0.0012849930000000001,
+        0.001570547
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.6632988999999999,
+        -0.5426991
+      ],
+      "at": [
+        123910.2,
+        151445.8
+      ],
+      "ute": [
+        -0.438328,
+        -0.358632
+      ],
+      "ua1": [
+        8.06715e-10,
+        9.85985e-10
+      ],
+      "ub1": [
+        -6.59142e-19,
+        -5.39298e-19
+      ]
+    },
+    "pmos_L0p5_W0p42": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.1792725,
+        -0.14667750000000002
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        0.01637622,
+        0.020015380000000003
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        121852.8,
+        148931.2
+      ],
+      "ua": [
+        -3.035615e-09,
+        -2.483685e-09
+      ],
+      "ub": [
+        1.9116719999999998e-18,
+        2.336488e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.0004904919,
+        0.0005994901
+      ],
+      "a0": [
+        2.9530260000000004,
+        3.609254
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        1.203669,
+        1.4711509999999999
+      ],
+      "b0": [
+        9.967679999999999e-07,
+        1.218272e-06
+      ],
+      "b1": [
+        -1.0357446e-06,
+        -8.474274e-07
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        -0.869988,
+        -0.7457039999999999
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        -0.13779039999999998,
+        -0.1127376
+      ],
+      "delta": [
+        0.08481717,
+        0.10366543
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.5057503,
+        -0.4137957
+      ],
+      "at": [
+        -331323.3,
+        -271082.7
+      ],
+      "ute": [
+        0.1219239,
+        0.14901810000000001
+      ],
+      "ua1": [
+        8.126208e-10,
+        9.932032e-10
+      ],
+      "ub1": [
+        8.014977e-19,
+        9.796083e-19
+      ]
+    },
+    "pmos_L0p5_W0p64": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.44211090000000003,
+        -0.3617271
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.03212627,
+        -0.02628513
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        167675.4,
+        204936.6
+      ],
+      "ua": [
+        -3.412101e-09,
+        -2.791719e-09
+      ],
+      "ub": [
+        2.998557e-18,
+        3.6649030000000005e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.002217564,
+        0.0027103559999999997
+      ],
+      "a0": [
+        1.5898409999999998,
+        1.943139
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.7192961999999999,
+        0.8791398
+      ],
+      "b0": [
+        7.877610000000001e-08,
+        9.62819e-08
+      ],
+      "b1": [
+        -6.271441e-07,
+        -5.131178999999999e-07
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        0.01170333,
+        0.01430407
+      ],
+      "delta": [
+        0.03248802,
+        0.03970758
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.7240563,
+        -0.5924096999999999
+      ],
+      "at": [
+        396541.8,
+        484662.2
+      ],
+      "ute": [
+        -0.0714923,
+        -0.058493699999999996
+      ],
+      "ua1": [
+        -8.184396e-12,
+        -6.696324e-12
+      ],
+      "ub1": [
+        1.099233e-18,
+        1.3435069999999999e-18
+      ]
+    },
+    "pmos_L2_W5": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.4367836,
+        -0.3573684
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.0273812,
+        -0.0224028
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        214858.8,
+        262605.2
+      ],
+      "ua": [
+        -4.00972e-09,
+        -3.2806800000000003e-09
+      ],
+      "ub": [
+        3.595293e-18,
+        4.3942469999999995e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.001647207,
+        0.002013253
+      ],
+      "a0": [
+        3.162555,
+        3.865345
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.6224616000000001,
+        0.7607864
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        1.89657e-24,
+        2.31803e-24
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        0.002137689,
+        0.002612731
+      ],
+      "delta": [
+        0.030118680000000002,
+        0.03681172
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.6504850000000001,
+        -0.532215
+      ],
+      "at": [
+        523304.1,
+        639593.9
+      ],
+      "ute": [
+        -0.146278,
+        -0.11968199999999998
+      ],
+      "ua1": [
+        6.26481e-10,
+        7.65699e-10
+      ],
+      "ub1": [
+        -2.694758e-19,
+        -2.204802e-19
+      ]
+    },
+    "pmos_L4_W7": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.5081296,
+        -0.4157424
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.05383532,
+        -0.044047079999999995
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        111384.0,
+        136136.0
+      ],
+      "ua": [
+        -3.370642e-09,
+        -2.757798e-09
+      ],
+      "ub": [
+        2.8178819999999998e-18,
+        3.444078e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.00220563,
+        0.00269577
+      ],
+      "a0": [
+        1.657278,
+        2.025562
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.3316869,
+        0.4053951
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        1.89657e-24,
+        2.31803e-24
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        6.739551000000001e-05,
+        8.237229e-05
+      ],
+      "delta": [
+        0.005273901,
+        0.006445879000000001
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.6724696,
+        -0.5502024
+      ],
+      "at": [
+        269253.9,
+        329088.1
+      ],
+      "ute": [
+        -0.3435454,
+        -0.28108259999999996
+      ],
+      "ua1": [
+        6.014421e-10,
+        7.350959e-10
+      ],
+      "ub1": [
+        -1.928993e-19,
+        -1.5782670000000001e-19
+      ]
+    },
+    "pmos_L8_W0p84": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.4782591,
+        -0.39130289999999995
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.055998580000000006,
+        -0.04581702
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        111384.0,
+        136136.0
+      ],
+      "ua": [
+        -2.9862030000000004e-09,
+        -2.443257e-09
+      ],
+      "ub": [
+        2.499399e-18,
+        3.0548210000000003e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.002605113,
+        0.003184027
+      ],
+      "a0": [
+        1.060065,
+        1.295635
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.2590713,
+        0.31664269999999994
+      ],
+      "b0": [
+        8.97768e-08,
+        1.0972720000000001e-07
+      ],
+      "b1": [
+        -2.670459e-07,
+        -2.1849210000000001e-07
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        0.002279502,
+        0.002786058
+      ],
+      "delta": [
+        0.01090251,
+        0.01332529
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.6139045,
+        -0.5022855
+      ],
+      "at": [
+        238326.3,
+        291287.7
+      ],
+      "ute": [
+        -0.3285502,
+        -0.2688138
+      ],
+      "ua1": [
+        6.139530000000001e-10,
+        7.50387e-10
+      ],
+      "ub1": [
+        -1.65143e-19,
+        -1.35117e-19
+      ]
+    },
+    "pmos_L8_W1p6": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.4949252,
+        -0.4049388
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.05603917,
+        -0.045850230000000006
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        111384.0,
+        136136.0
+      ],
+      "ua": [
+        -3.1296209999999997e-09,
+        -2.560599e-09
+      ],
+      "ub": [
+        2.5863569999999998e-18,
+        3.161103e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.002549655,
+        0.0031162449999999997
+      ],
+      "a0": [
+        1.6914690000000001,
+        2.067351
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.3587013,
+        0.4384127
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        1.89657e-24,
+        2.31803e-24
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        0.002402019,
+        0.002935801
+      ],
+      "delta": [
+        0.0220401,
+        0.0269379
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.6506500000000001,
+        -0.53235
+      ],
+      "at": [
+        258225.3,
+        315608.7
+      ],
+      "ute": [
+        -0.320925,
+        -0.262575
+      ],
+      "ua1": [
+        6.139530000000001e-10,
+        7.50387e-10
+      ],
+      "ub1": [
+        -1.65143e-19,
+        -1.35117e-19
+      ]
+    },
+    "pmos_L8_W5": {
+      "toxe": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "toxm": [
+        3.807e-09,
+        4.6529999999999995e-09
+      ],
+      "xj": [
+        1.35e-07,
+        1.6499999999999998e-07
+      ],
+      "ndep": [
+        1.53e+17,
+        1.87e+17
+      ],
+      "nsd": [
+        9e+19,
+        1.1e+20
+      ],
+      "dwg": [
+        -8.707599999999999e-09,
+        -7.1244e-09
+      ],
+      "rsh": [
+        0.9,
+        1.1
+      ],
+      "vth0": [
+        -0.5351819,
+        -0.4378761
+      ],
+      "k1": [
+        0.582966,
+        0.712514
+      ],
+      "k2": [
+        -0.0580899,
+        -0.047528100000000004
+      ],
+      "k3": [
+        3.051,
+        3.729
+      ],
+      "dvt0": [
+        2.1979800000000003,
+        2.68642
+      ],
+      "dvt1": [
+        0.145224,
+        0.17749600000000001
+      ],
+      "dvt1w": [
+        1735290.0,
+        2120910.0
+      ],
+      "w0": [
+        9e-09,
+        1.1000000000000001e-08
+      ],
+      "k3b": [
+        0.9,
+        1.1
+      ],
+      "lpe0": [
+        -2.3802000000000004e-08,
+        2.3802000000000004e-08
+      ],
+      "lpeb": [
+        -4.9152000000000006e-09,
+        4.9152000000000006e-09
+      ],
+      "vsat": [
+        111384.0,
+        136136.0
+      ],
+      "ua": [
+        -3.43398e-09,
+        -2.80962e-09
+      ],
+      "ub": [
+        2.908872e-18,
+        3.555288e-18
+      ],
+      "rdsw": [
+        436.23,
+        533.17
+      ],
+      "prwg": [
+        0.046799999999999994,
+        0.0572
+      ],
+      "wr": [
+        0.9,
+        1.1
+      ],
+      "u0": [
+        0.002342511,
+        0.0028630689999999998
+      ],
+      "a0": [
+        1.5719940000000001,
+        1.921326
+      ],
+      "a2": [
+        0.42033329999999997,
+        0.5137406999999999
+      ],
+      "ags": [
+        0.39332069999999997,
+        0.4807253
+      ],
+      "b0": [
+        -9.48494e-08,
+        9.48494e-08
+      ],
+      "b1": [
+        1.89657e-24,
+        2.31803e-24
+      ],
+      "voff": [
+        -0.20009000000000002,
+        -0.16371
+      ],
+      "nfactor": [
+        2.28357,
+        2.79103
+      ],
+      "eta0": [
+        0.18,
+        0.22000000000000003
+      ],
+      "dsub": [
+        0.9,
+        1.1
+      ],
+      "pclm": [
+        0.027087299999999998,
+        0.033106699999999996
+      ],
+      "pdiblc1": [
+        -0.03900000000000001,
+        0.03900000000000001
+      ],
+      "pdiblc2": [
+        0.002115756,
+        0.002585924
+      ],
+      "delta": [
+        0.0031368869999999997,
+        0.003833973
+      ],
+      "alpha0": [
+        4.5404549999999995e-13,
+        5.549444999999999e-13
+      ],
+      "beta0": [
+        5.581485,
+        6.821815
+      ],
+      "kt1": [
+        -0.6614850000000001,
+        -0.541215
+      ],
+      "at": [
+        257040.0,
+        314160.0
+      ],
+      "ute": [
+        -0.244981,
+        -0.20043899999999998
+      ],
+      "ua1": [
+        6.139530000000001e-10,
+        7.50387e-10
+      ],
+      "ub1": [
+        -1.6350399999999998e-19,
+        -1.33776e-19
+      ]
+    }
+  },
+  "published_by_device": {
+    "nmos_L0p15_W1p6": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.319943,
+      "k1": 1.1629,
+      "k2": -0.267505,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": 78424.2,
+      "ua": -9.55761e-11,
+      "ub": 1.34494e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0430804,
+      "a0": 0.0,
+      "a2": 0.38689,
+      "ags": 0.442778,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.29868,
+      "nfactor": 0.351348,
+      "eta0": -0.136226,
+      "dsub": 0.67015,
+      "pclm": 1.55436,
+      "pdiblc1": 0.693725,
+      "pdiblc2": 0.0608197,
+      "delta": 0.01,
+      "alpha0": 0.00014112,
+      "beta0": 23.3385,
+      "kt1": 0.296105,
+      "at": -62175.4,
+      "ute": -2.10724,
+      "ua1": -3.49869e-09,
+      "ub1": 5.41823e-18
+    },
+    "nmos_L0p19_W7": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.608598,
+      "k1": 0.315632,
+      "k2": -0.00431537,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": 152124.0,
+      "ua": -9.34133e-10,
+      "ub": 2.60397e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0393522,
+      "a0": 5.20718,
+      "a2": 0.38689,
+      "ags": -2.68189,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.163942,
+      "nfactor": 1.25154,
+      "eta0": -0.1539,
+      "dsub": 0.154873,
+      "pclm": 0.89658,
+      "pdiblc1": -0.968993,
+      "pdiblc2": 0.0144601,
+      "delta": 0.01,
+      "alpha0": 0.00780745,
+      "beta0": 36.3242,
+      "kt1": -0.182176,
+      "at": 136.688,
+      "ute": -1.13954,
+      "ua1": 1.54171e-09,
+      "ub1": -1.9959e-18
+    },
+    "nmos_L0p25_W1p6": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.495596,
+      "k1": 0.357547,
+      "k2": -0.0118043,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": 192004.0,
+      "ua": -1.54001e-09,
+      "ub": 2.62021e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0267966,
+      "a0": 0.493159,
+      "a2": 0.38689,
+      "ags": 0.431192,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.132955,
+      "nfactor": 2.08805,
+      "eta0": 0.0025666,
+      "dsub": 1.58805,
+      "pclm": 0.113424,
+      "pdiblc1": 0.39,
+      "pdiblc2": 0.00285426,
+      "delta": 0.01,
+      "alpha0": -0.00101135,
+      "beta0": 19.1802,
+      "kt1": -0.270183,
+      "at": 106934.0,
+      "ute": -1.2278,
+      "ua1": 1.75256e-09,
+      "ub1": -1.68342e-18
+    },
+    "nmos_L100_W100": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.417908,
+      "k1": 0.47213,
+      "k2": -0.033282,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": 161140.0,
+      "ua": -1.30156e-09,
+      "ub": 2.67551e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0319884,
+      "a0": 1.95984,
+      "a2": 0.38689,
+      "ags": 0.531793,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.115599,
+      "nfactor": 1.10191,
+      "eta0": 0.08,
+      "dsub": 0.56,
+      "pclm": 0.2,
+      "pdiblc1": 0.39,
+      "pdiblc2": 0.0047977,
+      "delta": 0.01,
+      "alpha0": 8.43457e-05,
+      "beta0": 17.823,
+      "kt1": -0.25364,
+      "at": 333080.0,
+      "ute": -1.0777,
+      "ua1": 2.6823e-09,
+      "ub1": -2.4433e-18
+    },
+    "nmos_L1_W1p6": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.429374,
+      "k1": 0.458369,
+      "k2": -0.0232376,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": 2295.62,
+      "ua": -7.17982e-10,
+      "ub": 2.35394e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0361503,
+      "a0": 2.21564,
+      "a2": 0.38689,
+      "ags": 1.19312,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.118884,
+      "nfactor": 0.733624,
+      "eta0": 0.00056492,
+      "dsub": 0.235855,
+      "pclm": 0.256596,
+      "pdiblc1": 0.39,
+      "pdiblc2": 0.00887383,
+      "delta": 0.01,
+      "alpha0": 0.00019995,
+      "beta0": 21.5995,
+      "kt1": -0.267534,
+      "at": 20497.6,
+      "ute": -1.14586,
+      "ua1": 2.09578e-09,
+      "ub1": -2.05894e-18
+    },
+    "nmos_L1_W3": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.433664,
+      "k1": 0.447126,
+      "k2": -0.0169221,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": -958.182,
+      "ua": -9.88538e-10,
+      "ub": 2.5664e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0359928,
+      "a0": 2.12701,
+      "a2": 0.38689,
+      "ags": 1.48714,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.119662,
+      "nfactor": 0.788325,
+      "eta0": 0.000533368,
+      "dsub": -0.086203,
+      "pclm": 0.275226,
+      "pdiblc1": 0.39,
+      "pdiblc2": 0.00286434,
+      "delta": 0.01,
+      "alpha0": 0.000234476,
+      "beta0": 22.1105,
+      "kt1": -0.242012,
+      "at": 9148.46,
+      "ute": -1.3118,
+      "ua1": 1.76893e-09,
+      "ub1": -1.95317e-18
+    },
+    "nmos_L20_W0p64": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.422953,
+      "k1": 0.53326,
+      "k2": -0.0574106,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": 200550.0,
+      "ua": -9.79274e-10,
+      "ub": 2.30409e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0312064,
+      "a0": 1.92082,
+      "a2": 0.38689,
+      "ags": 0.537176,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.110234,
+      "nfactor": 1.68931,
+      "eta0": 0.08,
+      "dsub": 0.56,
+      "pclm": 0.2,
+      "pdiblc1": 0.39,
+      "pdiblc2": 0.0075691,
+      "delta": 0.01,
+      "alpha0": 4.17349e-05,
+      "beta0": 17.7934,
+      "kt1": -0.25763,
+      "at": 58230.0,
+      "ute": -1.1808,
+      "ua1": 1.9636e-09,
+      "ub1": -1.466e-18
+    },
+    "nmos_L8_W1p6": {
+      "toxe": 4.148e-09,
+      "toxm": 4.148e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -1.33e-08,
+      "rsh": 1.0,
+      "vth0": 0.422953,
+      "k1": 0.53326,
+      "k2": -0.0574106,
+      "k3": 1.65,
+      "dvt0": 0.07665,
+      "dvt1": 0.1252,
+      "dvt1w": 5300000.0,
+      "w0": 1e-07,
+      "k3b": 1.6,
+      "lpe0": 2.3802e-07,
+      "lpeb": -4.9152e-08,
+      "vsat": 200550.0,
+      "ua": -9.79274e-10,
+      "ub": 2.30409e-18,
+      "rdsw": 103.65,
+      "prwg": 0.0,
+      "wr": 1.0,
+      "u0": 0.0312064,
+      "a0": 1.92082,
+      "a2": 0.38689,
+      "ags": 0.537176,
+      "b0": 0.0,
+      "b1": 0.0,
+      "voff": -0.110234,
+      "nfactor": 1.68931,
+      "eta0": 0.08,
+      "dsub": 0.56,
+      "pclm": 0.2,
+      "pdiblc1": 0.39,
+      "pdiblc2": 0.0075691,
+      "delta": 0.01,
+      "alpha0": 4.17349e-05,
+      "beta0": 17.7934,
+      "kt1": -0.25763,
+      "at": 58230.0,
+      "ute": -1.1808,
+      "ua1": 1.9636e-09,
+      "ub1": -1.466e-18
+    },
+    "pmos_L0p35_W0p55": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.178229,
+      "k1": 0.64774,
+      "k2": -0.0469552,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 172919.0,
+      "ua": -3.07668e-09,
+      "ub": 2.61299e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.000933531,
+      "a0": 1.1627,
+      "a2": 0.467037,
+      "ags": -0.744608,
+      "b0": 7.89468e-07,
+      "b1": -1.8417e-06,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": -0.00270378,
+      "delta": 0.150991,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.792437,
+      "at": -44339.5,
+      "ute": -0.812741,
+      "ua1": 1.97265e-09,
+      "ub1": -2.95573e-18
+    },
+    "pmos_L0p35_W1p6": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.545834,
+      "k1": 0.64774,
+      "k2": -0.0928809,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 102751.0,
+      "ua": -2.32118e-09,
+      "ub": 2.01684e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00348784,
+      "a0": 2.03763,
+      "a2": 0.467037,
+      "ags": 0.330004,
+      "b0": -5.42344e-06,
+      "b1": 5.12746e-08,
+      "voff": -0.1819,
+      "nfactor": 4.66743,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": -0.0966654,
+      "delta": -0.0153513,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.677666,
+      "at": 151089.0,
+      "ute": -0.630539,
+      "ua1": 7.00512e-10,
+      "ub1": -3.02977e-19
+    },
+    "pmos_L0p35_W5": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.564898,
+      "k1": 0.64774,
+      "k2": -0.060038,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": -261283.0,
+      "ua": -4.1355e-09,
+      "ub": 4.59354e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00134847,
+      "a0": -4.05096,
+      "a2": 0.467037,
+      "ags": 1.09347,
+      "b0": 1.68786e-06,
+      "b1": 2.1073e-24,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": -0.157622,
+      "delta": 0.00142777,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.602999,
+      "at": 137678.0,
+      "ute": -0.39848,
+      "ua1": 8.9635e-10,
+      "ub1": -5.9922e-19
+    },
+    "pmos_L0p5_W0p42": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.162975,
+      "k1": 0.64774,
+      "k2": 0.0181958,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 135392.0,
+      "ua": -2.75965e-09,
+      "ub": 2.12408e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.000544991,
+      "a0": 3.28114,
+      "a2": 0.467037,
+      "ags": 1.33741,
+      "b0": 1.10752e-06,
+      "b1": -9.41586e-07,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": -0.82856,
+      "pdiblc1": 0.0,
+      "pdiblc2": -0.125264,
+      "delta": 0.0942413,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.459773,
+      "at": -301203.0,
+      "ute": 0.135471,
+      "ua1": 9.02912e-10,
+      "ub1": 8.90553e-19
+    },
+    "pmos_L0p5_W0p64": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.401919,
+      "k1": 0.64774,
+      "k2": -0.0292057,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 186306.0,
+      "ua": -3.10191e-09,
+      "ub": 3.33173e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00246396,
+      "a0": 1.76649,
+      "a2": 0.467037,
+      "ags": 0.799218,
+      "b0": 8.7529e-08,
+      "b1": -5.70131e-07,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": 0.0130037,
+      "delta": 0.0360978,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.658233,
+      "at": 440602.0,
+      "ute": -0.064993,
+      "ua1": -7.44036e-12,
+      "ub1": 1.22137e-18
+    },
+    "pmos_L2_W5": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.397076,
+      "k1": 0.64774,
+      "k2": -0.024892,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 238732.0,
+      "ua": -3.6452e-09,
+      "ub": 3.99477e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00183023,
+      "a0": 3.51395,
+      "a2": 0.467037,
+      "ags": 0.691624,
+      "b0": 0.0,
+      "b1": 2.1073e-24,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": 0.00237521,
+      "delta": 0.0334652,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.59135,
+      "at": 581449.0,
+      "ute": -0.13298,
+      "ua1": 6.9609e-10,
+      "ub1": -2.44978e-19
+    },
+    "pmos_L4_W7": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.461936,
+      "k1": 0.64774,
+      "k2": -0.0489412,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 123760.0,
+      "ua": -3.06422e-09,
+      "ub": 3.13098e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.0024507,
+      "a0": 1.84142,
+      "a2": 0.467037,
+      "ags": 0.368541,
+      "b0": 0.0,
+      "b1": 2.1073e-24,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": 7.48839e-05,
+      "delta": 0.00585989,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.611336,
+      "at": 299171.0,
+      "ute": -0.312314,
+      "ua1": 6.68269e-10,
+      "ub1": -1.75363e-19
+    },
+    "pmos_L8_W0p84": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.434781,
+      "k1": 0.64774,
+      "k2": -0.0509078,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 123760.0,
+      "ua": -2.71473e-09,
+      "ub": 2.77711e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00289457,
+      "a0": 1.17785,
+      "a2": 0.467037,
+      "ags": 0.287857,
+      "b0": 9.9752e-08,
+      "b1": -2.42769e-07,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": 0.00253278,
+      "delta": 0.0121139,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.558095,
+      "at": 264807.0,
+      "ute": -0.298682,
+      "ua1": 6.8217e-10,
+      "ub1": -1.5013e-19
+    },
+    "pmos_L8_W1p6": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.449932,
+      "k1": 0.64774,
+      "k2": -0.0509447,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 123760.0,
+      "ua": -2.84511e-09,
+      "ub": 2.87373e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00283295,
+      "a0": 1.87941,
+      "a2": 0.467037,
+      "ags": 0.398557,
+      "b0": 0.0,
+      "b1": 2.1073e-24,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": 0.00266891,
+      "delta": 0.024489,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.5915,
+      "at": 286917.0,
+      "ute": -0.29175,
+      "ua1": 6.8217e-10,
+      "ub1": -1.5013e-19
+    },
+    "pmos_L8_W5": {
+      "toxe": 4.23e-09,
+      "toxm": 4.23e-09,
+      "xj": 1.5e-07,
+      "ndep": 1.7e+17,
+      "nsd": 1e+20,
+      "dwg": -7.916e-09,
+      "rsh": 1.0,
+      "vth0": -0.486529,
+      "k1": 0.64774,
+      "k2": -0.052809,
+      "k3": 3.39,
+      "dvt0": 2.4422,
+      "dvt1": 0.16136,
+      "dvt1w": 1928100.0,
+      "w0": 1e-08,
+      "k3b": 1.0,
+      "lpe0": 0.0,
+      "lpeb": 0.0,
+      "vsat": 123760.0,
+      "ua": -3.1218e-09,
+      "ub": 3.23208e-18,
+      "rdsw": 484.7,
+      "prwg": 0.052,
+      "wr": 1.0,
+      "u0": 0.00260279,
+      "a0": 1.74666,
+      "a2": 0.467037,
+      "ags": 0.437023,
+      "b0": 0.0,
+      "b1": 2.1073e-24,
+      "voff": -0.1819,
+      "nfactor": 2.5373,
+      "eta0": 0.2,
+      "dsub": 1.0,
+      "pclm": 0.030097,
+      "pdiblc1": 0.0,
+      "pdiblc2": 0.00235084,
+      "delta": 0.00348543,
+      "alpha0": 5.04495e-13,
+      "beta0": 6.20165,
+      "kt1": -0.60135,
+      "at": 285600.0,
+      "ute": -0.22271,
+      "ua1": 6.8217e-10,
+      "ub1": -1.4864e-19
+    }
+  },
+  "active_masks_by_device": {
+    "nmos_L0p15_W1p6": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "nmos_L0p19_W7": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "nmos_L0p25_W1p6": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "nmos_L100_W100": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "nmos_L1_W1p6": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "nmos_L1_W3": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "nmos_L20_W0p64": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "nmos_L8_W1p6": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L0p35_W0p55": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L0p35_W1p6": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L0p35_W5": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L0p5_W0p42": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L0p5_W0p64": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L2_W5": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L4_W7": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L8_W0p84": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L8_W1p6": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    },
+    "pmos_L8_W5": {
+      "toxe": true,
+      "toxm": true,
+      "xj": true,
+      "ndep": true,
+      "nsd": true,
+      "dwg": true,
+      "rsh": true,
+      "vth0": true,
+      "k1": true,
+      "k2": true,
+      "k3": true,
+      "dvt0": true,
+      "dvt1": true,
+      "dvt1w": true,
+      "w0": true,
+      "k3b": true,
+      "lpe0": true,
+      "lpeb": true,
+      "vsat": true,
+      "ua": true,
+      "ub": true,
+      "rdsw": true,
+      "prwg": true,
+      "wr": true,
+      "u0": true,
+      "a0": true,
+      "a2": true,
+      "ags": true,
+      "b0": true,
+      "b1": true,
+      "voff": true,
+      "nfactor": true,
+      "eta0": true,
+      "dsub": true,
+      "pclm": true,
+      "pdiblc1": true,
+      "pdiblc2": true,
+      "delta": true,
+      "alpha0": true,
+      "beta0": true,
+      "kt1": true,
+      "at": true,
+      "ute": true,
+      "ua1": true,
+      "ub1": true
+    }
+  },
+  "devices": [
+    "nmos_L0p15_W1p6",
+    "nmos_L0p19_W7",
+    "nmos_L0p25_W1p6",
+    "nmos_L100_W100",
+    "nmos_L1_W1p6",
+    "nmos_L1_W3",
+    "nmos_L20_W0p64",
+    "nmos_L8_W1p6",
+    "pmos_L0p35_W0p55",
+    "pmos_L0p35_W1p6",
+    "pmos_L0p35_W5",
+    "pmos_L0p5_W0p42",
+    "pmos_L0p5_W0p64",
+    "pmos_L2_W5",
+    "pmos_L4_W7",
+    "pmos_L8_W0p84",
+    "pmos_L8_W1p6",
+    "pmos_L8_W5"
+  ],
+  "runtime_s": 382.5
+}

@@ -571,7 +571,7 @@ def stage_decide() -> dict:
     bank_calls = 10000.0
     finals = {}
     for arm in ("B", "A"):
-        d = arm_dir(arm)
+        d = arm_dir(arm, SMOKE)
         fin = jload(d / "final" / "final.json")
         finals[arm] = fin
         rows = {k: {t: v["rrms"] for t, v in r.items()} for k, r in fin["arms"].items()}
@@ -674,14 +674,14 @@ def stage_decide() -> dict:
                           all(np.isfinite(v) for v in out["arms"][a]["per_device"][k].values())
                           for a in ("A", "B") for k in ("C0_refit", "full_g", "lodo_g")),
         "V4": {a: out["arms"][a]["V4_pass"] for a in ("A", "B")},
-        "V5": {a: jload(arm_dir(a) / "records" / "records.json")["V5_pass"] for a in ("A", "B")},
+        "V5": {a: jload(arm_dir(a, SMOKE) / "records" / "records.json")["V5_pass"] for a in ("A", "B")},
         "inner_complete": {a: out["arms"][a]["inner_complete"] for a in ("A", "B")},
     }
     out["validity"]["valid"] = bool(out["validity"]["V3_rows_18"] and all(out["validity"]["V4"].values())
                                     and all(out["validity"]["V5"].values())
                                     and all(out["validity"]["inner_complete"].values()))
     out["specs"] = jload(SPECS / "specs.json")
-    jdump(out, OUT / "decision.json")
+    jdump(out, (OUT / "smoke" if SMOKE else OUT) / "decision.json")
     print(json.dumps({"valid": out["validity"], "main_table": table}, indent=1, default=float), flush=True)
     return out
 
