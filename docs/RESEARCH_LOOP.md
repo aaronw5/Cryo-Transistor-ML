@@ -2809,3 +2809,25 @@ only. Part B (IHP 233 / 300 / 343 / 398 K): starting records = I22-1 B1 cards, I
 (nested lambda selection) with B1-box refits from the B1 card; arms B1, B1_cont (g = 0, same budget), B1+g v2;
 primary GMR(B1+g v2, B1), rule "adds" iff CI upper < 1 at all 4, "worse" iff CI lower > 1 at all 4, else "not
 shown". sky130 not included (estimated 4-5 h; B1 not a gain there). Predictions P1-P7 in the pre-registration.
+
+## I25-1 pre-registration in force (2026-10-27): sky130 77 K pipeline rerun from the stock SkyWater card, 7-parameter and screened-set arms, with and without g v2
+
+User instructions: "don't start from paper cards, start from scratch", "Do it"; "there's no held out set here cause
+the goal is to be able to fit real data"; "Also do the same stuff with 7 parameters ... and put in slides as well";
+"include the iv curve and stuff for ALL devices for both parameter counts". All received before registration and part
+of it. Pre-registration `out/research/explore/I25_1/prereg.md` / `prereg.json`, committed alone before any I25-1 fit,
+screen, bank, training or refit. Motivation (provenance audit b299dc9): every earlier simulation used the released
+77 K card file as template (tnom -196.15 C, temperature coefficients 0, one custom bin per device); pmos_L0p35_W1p6
+kept the released tuned values through named multipliers that `cold_start._MULTIPLIER_RE` does not match; the
+43-parameter screen ran around the released card; box widths were set with the released multiplier range known.
+Template: stock sky130A tt pm3 models of the two lvt devices copied verbatim (tnom 30 C, stock temperature
+coefficients, stock bins, NGSpice native bin selection), `.options temp=-196.15`, state C; `CRYOML_PDK_TEMPLATE=stock`
+in `spice_pdk` (default unchanged). Template check before registration: bit-identical to the full `sky130.lib.spice`
+section `tt` on 18 devices. Screen: the unchanged 115-candidate rule around the stock card; screened set S (size as
+selected), overlap with the old 43 reported. Boxes: existing cold-start widths kept as a fixed prior choice (VTH0
+x/÷3, other PARAMS7 x/÷100, others x/÷3), centers = stock bin values. Step A with the old budgets and seeds (7p bank
+10,000 + CMA-ES 3000 + polish 400; S rounds 1-3 CMA-ES 8000 + polish 600; FD 400). g v2 per arm (A: 7 parameters,
+start = 7p card; B: S, start = round 3 + FD): nested lambda selection (I15-2 rule); primary = full-data g at
+lambda*_full with in-sample refits of all 18 (user instruction), control C0_refit; secondary = LODO held-out at
+lambda*_h. Scoring: primary paper RRMS with the released card's frozen curve set; secondary M-rule (pMOS thresholds on
+the measured last trimmed point). GMR device bootstrap with labels lower / higher / inconclusive. Estimated 8-9 h.

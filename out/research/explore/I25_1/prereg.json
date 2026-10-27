@@ -1,0 +1,195 @@
+{
+ "id": "I25-1",
+ "status": "in force",
+ "date": "2026-10-27",
+ "base_commit": "b299dc9",
+ "title": "sky130 77 K pipeline rerun from the stock SkyWater tt card (no released 77 K card values or structure); arm A 7 parameters, arm B screened set; with and without g v2",
+ "user_instructions": [
+  "don't start from paper cards, start from scratch",
+  "Do it",
+  "And there's no held out set here cause the goal is to be able to fit real data",
+  "Also do the same stuff with 7 parameters and get those things and put in slides as well",
+  "Make sure to include the iv curve and stuff for ALL devices for both parameter counts for all devices"
+ ],
+ "known_before": {
+  "stock_card_77K": {
+   "all_device": 3.4176,
+   "combined": 3.1077
+  },
+  "paper_card": {
+   "all_device": 0.2751,
+   "combined": 0.2595
+  },
+  "template_check": "stock template vs full sky130.lib.spice section tt: max relative curve difference 0 on 18 devices"
+ },
+ "template": {
+  "env": "CRYOML_PDK_TEMPLATE=stock",
+  "files": "libs.ref/sky130_fd_pr/spice/sky130_fd_pr__{n,p}fet_01v8_lvt__tt.pm3.spice (verbatim) + tt.corner .param blocks + parameters/lod.spice + mismatch corners",
+  "temperature": ".options temp=-196.15 (deck convention of all earlier runs and of upstream sweeps.spice)",
+  "tnom": "30 C (stock)",
+  "bins": "NGSpice native L/W selection",
+  "bins_by_device": {
+   "nmos_L0p15_W1p6": 55,
+   "nmos_L0p19_W7": 6,
+   "nmos_L0p25_W1p6": 53,
+   "nmos_L1_W1p6": 51,
+   "nmos_L1_W3": 35,
+   "nmos_L8_W1p6": 48,
+   "nmos_L20_W0p64": 64,
+   "nmos_L100_W100": 0,
+   "pmos_L0p35_W0p55": 39,
+   "pmos_L0p35_W1p6": 31,
+   "pmos_L0p35_W5": 15,
+   "pmos_L0p5_W0p42": 46,
+   "pmos_L0p5_W0p64": 38,
+   "pmos_L2_W5": 11,
+   "pmos_L4_W7": 2,
+   "pmos_L8_W0p84": 33,
+   "pmos_L8_W1p6": 25,
+   "pmos_L8_W5": 9
+  },
+  "bsim4_state": "clamped (C)"
+ },
+ "named_multiplier_fix": {
+  "test": "pmos_L0p35_W1p6 bin 0: vth0 2.08113, u0 3.41512, nfactor 13.5087, vsat 9999.92, rdsw 1.11407e-05"
+ },
+ "screen": {
+  "script": "scripts/pdk_parameter_sensitivity.py",
+  "candidates": 115,
+  "fraction": 0.1,
+  "threshold": 0.0001,
+  "retry_scales": [
+   1,
+   0.5,
+   0.25,
+   0.1
+  ],
+  "center": "stock bin value (showmod)",
+  "mandatory": "PARAMS7",
+  "set_size": "as selected (N)",
+  "report": "overlap with the earlier 43"
+ },
+ "boxes": {
+  "rule": "cold_start.half_width unchanged: vth0 ln 3, other PARAMS7 ln 100, others ln 3; rounds 2-3 next_round_spec shrink 0.5, edge 0.9, min ln 1.05",
+  "center": "stock bin value; zero fixed",
+  "why": "fixed prior choice applied unchanged to every device; not tuned on the stock-card result (limitation: set in October with the released multiplier range known)"
+ },
+ "step_A": {
+  "seven": {
+   "bank": {
+    "n": 10000,
+    "seed": 20260818,
+    "sampling": "global_lhc"
+   },
+   "bank_starts": 4,
+   "cmaes_evals": 3000,
+   "sigma0": 0.3,
+   "seed": 20261015,
+   "polish_nfev": 400,
+   "irls": 2
+  },
+  "screened_r1": {
+   "init": "seven card",
+   "cmaes_evals": 8000,
+   "polish_nfev": 600,
+   "irls": 2,
+   "seed": 20261015,
+   "bank": null
+  },
+  "screened_r2_r3": {
+   "spec": "next_direct_spec",
+   "cmaes_evals": 8000,
+   "polish_nfev": 600
+  },
+  "fd": {
+   "max_nfev": 400,
+   "diff_step": 0.01,
+   "irls": 2
+  },
+  "starting_cards": {
+   "A": "seven card",
+   "B": "round 3 + FD card"
+  }
+ },
+ "g_v2": {
+  "inputs": "sym_v2",
+  "eps": 0.01,
+  "net": "3-16-16-1 tanh",
+  "seeds": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "lr": 0.003,
+  "steps": 2000,
+  "l2": 0.0001,
+  "lambda_grid": [
+   0,
+   1,
+   2,
+   5,
+   10
+  ],
+  "inner": "I15-2: 3 inner folds, seed 0, argmin mean ln RRMS, ties to larger lambda",
+  "refit": {
+   "max_nfev": 400,
+   "irls": 2,
+   "diff_step": 0.01,
+   "box": {
+    "A": "seven box",
+    "B": "round-3 box"
+   }
+  },
+  "primary": "full data: g on all 18 at lambda*_full, in-sample refit of all 18; control C0_refit",
+  "secondary": "LODO: fold g at lambda*_h, held-out refit",
+  "order": "arm B then arm A"
+ },
+ "scoring": {
+  "primary": "paper RRMS, frozen released-card curve set",
+  "secondary": "M-rule (nMOS upstream measured rule; pMOS upstream thresholds on measured last trimmed point)",
+  "m_rule_differs": {
+   "pmos_L0p5_W0p42": [
+    "+idvd@0.37",
+    "+idvd@0.74"
+   ],
+   "pmos_L8_W0p84": [
+    "+idvd@0.74"
+   ],
+   "pmos_L8_W5": [
+    "+idvd@0.74"
+   ]
+  },
+  "aggregates": [
+   "all_device",
+   "combined"
+  ]
+ },
+ "comparisons": {
+  "gmr": "paired_ratio, device bootstrap 10000",
+  "pairs": [
+   "A+g vs A C0_refit",
+   "A+g vs paper",
+   "A C0_refit vs paper",
+   "B+g vs B C0_refit",
+   "B+g vs paper",
+   "B C0_refit vs paper",
+   "B+g vs old 43p+g"
+  ],
+  "label": {
+   "lower": "CI upper < 1",
+   "higher": "CI lower > 1",
+   "else": "inconclusive"
+  }
+ },
+ "validity": [
+  "V1 template bit-identical (done)",
+  "V2 unit tests",
+  "V3 18 finite rows per arm",
+  "V4 re-simulation reproduces stored RRMS within 1e-9",
+  "V5 record card-only score = score_card"
+ ],
+ "optional": "Verilog-A element checks of the arm-B full-data g (I17-1 rules) if time allows",
+ "estimate": "about 8-9 h"
+}
