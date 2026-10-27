@@ -1,0 +1,209 @@
+{
+ "T_K": 300,
+ "validity": {
+  "VB1": true,
+  "VB1_max": 0.0,
+  "VB2": true,
+  "VB3": false,
+  "VB4": true,
+  "VB5": true,
+  "VB6": true,
+  "n_failed": {
+   "B1": 0,
+   "B1_cont": 0,
+   "B1+g v2": 0,
+   "C0_refit": 0,
+   "selected g v2": 0
+  },
+  "valid": false
+ },
+ "rows": {
+  "B1": {
+   "hv_nmos_W0p3_L0p5": 0.014128205474931174,
+   "lv_nmos_W0p15_L0p18": 0.0292548283186816
+  },
+  "B1_cont": {
+   "hv_nmos_W0p3_L0p5": 0.013762136191212058,
+   "lv_nmos_W0p15_L0p18": 0.029054835317302803
+  },
+  "B1+g v2": {
+   "hv_nmos_W0p3_L0p5": 0.012814135663283923,
+   "lv_nmos_W0p15_L0p18": 0.028977540242863198
+  },
+  "C0_refit": {
+   "hv_nmos_W0p3_L0p5": 0.01455451234547613,
+   "lv_nmos_W0p15_L0p18": 0.031698832847109545
+  },
+  "selected g v2": {
+   "hv_nmos_W0p3_L0p5": 0.01856245207370554,
+   "lv_nmos_W0p15_L0p18": 0.03190331704157775
+  }
+ },
+ "comparisons": {
+  "B1+g v2 vs B1": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 0.9478358684497512,
+   "resample_unit": "device",
+   "ci_low": 0.9069896163402414,
+   "ci_high": 0.9905216303853224,
+   "n_boot": 10000
+  },
+  "B1+g v2 vs C0_refit": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 0.8971291170972963,
+   "resample_unit": "device",
+   "ci_low": 0.8804235661847403,
+   "ci_high": 0.9141516466119828,
+   "n_boot": 10000
+  },
+  "B1+g v2 vs B1_cont": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 0.9636587803536422,
+   "resample_unit": "device",
+   "ci_low": 0.9311153069002842,
+   "ci_high": 0.9973396829272829,
+   "n_boot": 10000
+  },
+  "B1_cont vs B1": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 0.9835803790444535,
+   "resample_unit": "device",
+   "ci_low": 0.9740894705722773,
+   "ci_high": 0.9931637608944338,
+   "n_boot": 10000
+  },
+  "B1+g v2 vs selected g v2": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 0.7918443550620058,
+   "resample_unit": "device",
+   "ci_low": 0.6903255891195357,
+   "ci_high": 0.9082923949600114,
+   "n_boot": 10000
+  },
+  "B1 vs C0_refit": {
+   "n": 2,
+   "n_used": 2,
+   "n_method_failed": 0,
+   "n_control_failed": 0,
+   "wins": 2,
+   "ties": 0,
+   "ratio": 0.9465026034144612,
+   "resample_unit": "device",
+   "ci_low": 0.9228992265987862,
+   "ci_high": 0.9707096424513693,
+   "n_boot": 10000
+  }
+ },
+ "labels": {
+  "B1+g v2 vs B1": "gain",
+  "B1+g v2 vs C0_refit": "gain",
+  "B1+g v2 vs B1_cont": "gain",
+  "B1_cont vs B1": "gain",
+  "B1+g v2 vs selected g v2": "gain",
+  "B1 vs C0_refit": "gain"
+ },
+ "aggregates": {
+  "B1": {
+   "all_device_mean": 0.021691516896806387,
+   "combined": 0.021691516896806387,
+   "n": 2,
+   "n_failed": 0
+  },
+  "B1_cont": {
+   "all_device_mean": 0.021408485754257432,
+   "combined": 0.021408485754257432,
+   "n": 2,
+   "n_failed": 0
+  },
+  "B1+g v2": {
+   "all_device_mean": 0.02089583795307356,
+   "combined": 0.02089583795307356,
+   "n": 2,
+   "n_failed": 0
+  },
+  "C0_refit": {
+   "all_device_mean": 0.02312667259629284,
+   "combined": 0.02312667259629284,
+   "n": 2,
+   "n_failed": 0
+  },
+  "selected g v2": {
+   "all_device_mean": 0.025232884557641645,
+   "combined": 0.025232884557641645,
+   "n": 2,
+   "n_failed": 0
+  }
+ },
+ "lambda_star": {
+  "lv_nmos_W0p15_L0p18": 5.0,
+  "hv_nmos_W0p3_L0p5": 2.0
+ },
+ "lambda_star_counts": {
+  "2": 1,
+  "5": 1
+ },
+ "calls_per_device": {
+  "hv_nmos_W0p3_L0p5": {
+   "B1_refit": 1666,
+   "selection": 4677,
+   "heldout": 177,
+   "total": 6520,
+   "C0_refit": 305
+  },
+  "lv_nmos_W0p15_L0p18": {
+   "B1_refit": 2356,
+   "selection": 6945,
+   "heldout": 171,
+   "total": 9472,
+   "C0_refit": 396
+  }
+ },
+ "calls_mean": {
+  "B1_refit": 2011.0,
+  "selection": 5811.0,
+  "heldout": 174.0,
+  "total": 7996.0,
+  "C0_refit": 350.5
+ },
+ "timing": {
+  "inner": {
+   "train_s": 15.0,
+   "refit_s": 78.4,
+   "n_train": 30,
+   "n_refit": 80
+  },
+  "sel": {
+   "train_s": 6.2,
+   "refit_s": 6.7,
+   "n_seed_tasks": 2
+  },
+  "base": {
+   "refit_s": 6.8
+  }
+ }
+}
