@@ -1,7 +1,7 @@
 <section id="w13-results" style="background:#f6f5f1;color:#1f252b;font-family:'IBM Plex Sans', Arial, sans-serif;padding:64px 96px 56px;display:flex;flex-direction:column;gap:30px">
 <h2 style="font-size:44px;font-weight:600;line-height:1.1;color:#1f252b">RRMS of the Beall et al. card and the two fitted cards</h2>
 <table style="width:1728px;font-size:32px;color:#1f252b;background:#ffffff;border:1px solid #c9ced3"><tr style="background:#e4e7ea"><th style="width:40%">Card simulated in NGSpice</th><th style="width:20%">All-device RRMS</th><th style="width:20%">Combined RRMS</th><th style="width:20%">NGSpice runs per device</th></tr><tr><td>Beall et al. card</td><td>0.2751</td><td>0.2595</td><td>-</td></tr><tr style="background:#fbe8de"><td>Fitted card, 7 parameters</td><td>0.1546</td><td>0.1458</td><td>28,953</td></tr><tr style="background:#fbe8de"><td>Fitted card, 45 parameters</td><td>0.1094</td><td>0.1026</td><td>77,696</td></tr></table>
-<ul style="font-size:30px;line-height:1.35;color:#1f252b"><li>Fitted / Beall et al. RRMS per device: 0.54 (7 p.), 0.36 (45 p.).</li><li>Lower than the Beall et al. card on 18 of 18 devices, both runs.</li><li>Combined RRMS = mean of nMOS mean and pMOS mean.</li></ul>
-<p style="font-size:24px;line-height:1.3;color:#5a6168">0.54, 0.36: geometric mean over 18 devices. Runs include all 3 starts.</p>
+<ul style="font-size:30px;line-height:1.35;color:#1f252b"><li>The fitted-card RRMS divided by the Beall et al. RRMS of the same device is 0.54 (7 parameters) and 0.36 (45 parameters).</li><li>Both fitted cards are lower than the Beall et al. card on 18 of 18 devices.</li><li>The combined RRMS is the mean of the nMOS mean and the pMOS mean.</li></ul>
+<p style="font-size:24px;line-height:1.3;color:#5a6168">The ratios are geometric means over the 18 devices. The run counts include all 3 starts.</p>
 <aside>All three cards are BSIM4 in NGSpice with different parameter values.</aside>
 </section>

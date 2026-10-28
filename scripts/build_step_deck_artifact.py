@@ -292,9 +292,9 @@ def build() -> dict:
         f'<div style="display:flex;flex-direction:row;gap:40px;align-items:center">'
         f'<div style="background:{CARD};border:1px solid {LINE};padding:12px"><img src="/_blob/{BLOB["eq_rrms"][0]}" '
         f'alt="RRMS of a curve and of a device" style="width:720px;height:156px;object-fit:contain"></div>'
-        + ul(["Curve RRMS = RMS current error / mean |I_meas|.",
-              "Device RRMS = mean of its curve RRMS values.",
-              "All-device RRMS = mean over the 18 devices."], 28, extra=";width:960px") + "</div>"],
+        + ul(["The curve RRMS is the RMS current error divided by the mean measured current of the curve.",
+              "The device RRMS is the mean of its curve RRMS values.",
+              "The all-device RRMS is the mean over the 18 devices."], 28, extra=";width:960px") + "</div>"],
         "Definition and scored curves are the same as used for the Beall et al. card.", gap=36)
 
     seven = [("VTH0", "threshold voltage"), ("U0", "low-field mobility"), ("NFACTOR", "subthreshold slope factor"),
@@ -307,7 +307,8 @@ def build() -> dict:
         + img("paper_ex", "pMOS L 0.35 um x W 5 um: measured points and the Beall et al. card simulated in NGSpice",
               1060, 410) + "</div>",
         ul(["One fitted multiplier per parameter and device; other values unchanged.",
-            f"Device RRMS, example pMOS: {ex['paper_rrms']:.3f}. All-device RRMS: {f4(pap['all_device'])}.",
+            f"The device RRMS of the example pMOS is {ex['paper_rrms']:.3f}; the all-device RRMS is "
+            f"{f4(pap['all_device'])}.",
             "Run 1 fits the same 7 parameters."], 28)],
         "The figure shows the Beall et al. card on the example pMOS, simulated in NGSpice.", gap=30)
 
@@ -330,7 +331,7 @@ def build() -> dict:
         H2.format("What one NGSpice run computes"),
         ev,
         ul(["One run simulates all 11 curves of one device for one card.",
-            "CMA-ES uses one number per run: the device RRMS.",
+            "CMA-ES uses one number per run, the device RRMS.",
             "TRF uses one residual per measured point."], 30)],
         "Point residual = (I_sim - I_meas) / mean |I_meas| of its curve, divided by the square root of (points in "
         "the curve x curves of the device). The sum of squared residuals then equals the mean squared curve RRMS. "
@@ -348,10 +349,10 @@ def build() -> dict:
             ["Starts from", "random card or previous card", "CMA-ES result"]], 23),
         img("optimizers", "pMOS L 0.35 um x W 5 um, 45 parameters: lowest device RRMS against NGSpice runs for "
                           "CMA-ES and FD least squares from the same 3 random start cards", 1080, 428),
-        ul(["FD least squares = TRF with FD Jacobian, 2 passes.",
+        ul(["FD least squares is TRF with the finite-difference Jacobian, run in 2 passes.",
             "Pass 2 weights each curve by 1/√(curve RRMS).",
-            f"From the random starts: TRF {op['0']['ls_end']:.2f}, {op['1']['ls_end']:.2f}, "
-            f"{op['2']['ls_end']:.2f}; CMA-ES {op['0']['cma_end']:.3f}, {op['1']['cma_end']:.3f}, "
+            f"From the random start cards, TRF ends at {op['0']['ls_end']:.2f}, {op['1']['ls_end']:.2f} and "
+            f"{op['2']['ls_end']:.2f}, and CMA-ES ends at {op['0']['cma_end']:.3f}, {op['1']['cma_end']:.3f} and "
             f"{op['2']['cma_end']:.3f}."], 24)],
         "CMA-ES is the covariance matrix adaptation evolution strategy. TRF is the trust-region reflective "
         "least-squares method; FD shifts each parameter by 0.01 in scaled units, 1/200 of its log range. The figure "
@@ -386,7 +387,7 @@ def build() -> dict:
         H2.format("Fitting procedure for one device"),
         nest,
         ul(["Mean NGSpice runs per call, 7 / 45 parameters.",
-            f"Total per device, 3 starts: {kint(cA['C0_refit'])} / {kint(cB['C0_refit'])}."], 28)],
+            f"The total per device for all 3 starts is {kint(cA['C0_refit'])} / {kint(cB['C0_refit'])} runs."], 28)],
         "Run 1 fits the 7 Beall et al. parameters; run 2 fits 45. FD least squares runs inside each round, as the "
         "FD polish after round 3, and as the final FD refit.", gap=22)
 
@@ -413,8 +414,8 @@ def build() -> dict:
     S["w05b-pseudo"] = sec("w05b-pseudo", [
         H2.format("Fitting procedure as pseudocode"),
         code,
-        ul(["Run counts: mean NGSpice runs per call, 7 / 45 parameters.",
-            "range: allowed interval per parameter, log scale."], 26)],
+        ul(["The run counts are mean NGSpice runs per call, 7 / 45 parameters.",
+            "The range is the allowed interval of each parameter on a log scale."], 26)],
         "fd: Jacobian by finite differences in NGSpice. trf: SciPy least_squares, method trf, 2 passes.", gap=24)
 
     # ---------------------------------------------------------------- steps
@@ -441,12 +442,12 @@ def build() -> dict:
 
     S["w06-step1"] = sec("w06-step1", [
         H2.format("Step 1: start card with all multipliers set to 1"), strip(1),
-        io("Beall et al. card file", "start card: same file, all multipliers = 1"),
+        io("Beall et al. card file", "start card (the same file with all multipliers = 1)"),
         img("start", "pMOS L 0.35 um x W 5 um: measured points and the start card simulated in NGSpice", 1400, 560),
         ul(["The Beall et al. card file stores each fitted value as base value x multiplier.",
             "All multipliers are set to 1; the 77 K settings of the file stay.",
             "The start-card values are the centres of the round-1 ranges in step 2.",
-            f"All-device RRMS of the start card: {m1['all_device']:.1f}."], 25)],
+            f"The all-device RRMS of the start card is {m1['all_device']:.1f}."], 25)],
         "The figure shows the start card and the measurement for the example pMOS.", style=STEP)
 
     S["w07-step2"] = sec("w07-step2", [
@@ -458,8 +459,8 @@ def build() -> dict:
         ul(["Each free parameter gets a random value between its limits, uniform on a log scale.",
             "NGSpice simulates the card; if a scored curve fails, a new card is drawn (mean 1.6 / 2.2 runs per "
             "start).",
-            f"Example: starts 1 and 2 give currents below 1e-11 A (device RRMS {sr[0]:.2f}); start 3 has device RRMS "
-            f"{sr[2]:.1f}."], 25)],
+            f"For the example pMOS, starts 1 and 2 give currents below 1e-11 A (device RRMS {sr[0]:.2f}) and start 3 "
+            f"has device RRMS {sr[2]:.1f}."], 25)],
         "Starts 1 and 2 give currents below 1e-11 A on both curves shown.", style=STEP)
 
     S["w08-step3"] = sec("w08-step3", [
@@ -468,10 +469,13 @@ def build() -> dict:
         img("cma", "Round 1 CMA-ES on pMOS L 0.35 um x W 5 um: device RRMS of every candidate against NGSpice runs, "
                    "lowest so far per start; sampled VTH0 and U0 by generation", 1400, 540),
         ul(["CMA-ES keeps a normal distribution (mean, covariance) over the scaled parameters.",
-            f"One generation: sample {ex['popsize']} cards, run NGSpice for each, compute each device RRMS.",
-            "New mean: weighted mean of the lowest-RRMS cards; covariance and step size updated (next slide).",
-            f"Example, round 1, {ex['cmaes_evals'][0]:,} runs per start: device RRMS {sr[0]:.2f}, {sr[1]:.2f}, "
-            f"{sr[2]:.1f} to {ex['cmaes_best'][0]:.3f}, {ex['cmaes_best'][1]:.3f}, {ex['cmaes_best'][2]:.3f}."],
+            f"In one generation, CMA-ES samples {ex['popsize']} cards, runs NGSpice for each, and computes each "
+            "device RRMS.",
+            "The new mean is the weighted mean of the lowest-RRMS cards; covariance and step size are updated "
+            "(next slide).",
+            f"In round 1 ({ex['cmaes_evals'][0]:,} runs per start), the device RRMS of the example pMOS goes from "
+            f"{sr[0]:.2f}, {sr[1]:.2f} and {sr[2]:.1f} to {ex['cmaes_best'][0]:.3f}, {ex['cmaes_best'][1]:.3f} and "
+            f"{ex['cmaes_best'][2]:.3f}."],
            24)],
         "The left plot shows the device RRMS of every sampled card and the lowest value so far. The right plot shows "
         "the sampled VTH0 and U0 of start 2, coloured by generation.", style=STEP)
@@ -493,9 +497,9 @@ def build() -> dict:
         img("cma2", "2-parameter illustration, other parameters fixed: device RRMS grid over VTH0 and U0 for pMOS L "
                     "0.35 um x W 5 um; CMA-ES generations 1, 3, 8 and 101 with samples, mean step and 1-sigma "
                     "ellipse; lowest device RRMS and sigma per generation", 1720, 494),
-        ul([f"Figure: VTH0 and U0 free, other parameters at the round-1 card of start 2; λ = {c2['popsize']}, "
-            f"μ = {c2['mu']}; lowest device RRMS {c2['best_shown'][0]:.3f} in generation 1, {c2['fbest']:.3f} after "
-            f"{c2['generations']} generations ({c2['evaluations']} runs)."], 23)],
+        ul([f"In the figure, VTH0 and U0 are free and the other parameters stay at the round-1 card of start 2; "
+            f"λ = {c2['popsize']} and μ = {c2['mu']}. The lowest device RRMS is {c2['best_shown'][0]:.3f} in generation "
+            f"1 and {c2['fbest']:.3f} after {c2['generations']} generations ({c2['evaluations']} runs)."], 23)],
         "The figure is a separate run with only VTH0 and U0 free; the other parameters are fixed at the round-1 card "
         "of start 2, and the grey level is the device RRMS on a 30 x 30 grid of NGSpice runs. The 40-parameter run "
         "of the example device applies the same update to 40 coordinates with λ = 15 and μ = 7.", style=STEP)
@@ -515,12 +519,14 @@ def build() -> dict:
         jac,
         img("ls", "Round 1 FD least squares on pMOS L 0.35 um x W 5 um: device RRMS per iteration for 3 starts; "
                   "RRMS of each curve of start 2 before and after", 1180, 390),
-        ul(["Residual of a point: (simulated - measured current) / mean measured current of its curve.",
-            f"Loss: sum of squared residuals. Jacobian: NGSpice reruns with each of the {n_} parameters shifted by "
-            "1/200 of its log range.",
+        ul(["The residual of a point is (simulated - measured current) divided by the mean measured current of its "
+            "curve.",
+            f"The loss is the sum of squared residuals. NGSpice reruns the card with each of the {n_} parameters "
+            "shifted by 1/200 of its log range to give the Jacobian.",
             "TRF solves the linearized problem inside a trust region and tries the step; kept if the loss drops.",
-            "Two passes; pass 2 weights each curve by 1/√(curve RRMS). Example, start 2, round 1: "
-            f"{ex['cmaes_best'][1]:.3f} to {ex['round1_rrms'][1]:.3f} in {ex['ls_runs'][1]} runs."], 24)],
+            "TRF runs in two passes; pass 2 weights each curve by 1/√(curve RRMS). For start 2 in round 1 the "
+            f"device RRMS goes from {ex['cmaes_best'][1]:.3f} to {ex['round1_rrms'][1]:.3f} in {ex['ls_runs'][1]} "
+            "runs."], 24)],
         f"One iteration costs {n_} + 2 NGSpice runs: 1 at x, {n_} shifted, 1 trial step. The right plot shows each "
         "curve RRMS of start 2 after CMA-ES and after FD least squares.", style=STEP)
 
@@ -532,8 +538,8 @@ def build() -> dict:
         ul(["Rounds 2 and 3 start CMA-ES from the card of the previous round.",
             "Each range is re-centred on the previous card and halved in width on a log scale.",
             "A parameter in the outer 5 % of its range keeps its width; its new range extends past the old limit.",
-            f"Example, start 2: device RRMS {rr['rrms']['1'][0]:.3f}, {rr['rrms']['1'][1]:.3f}, "
-            f"{rr['rrms']['1'][2]:.3f} after rounds 1, 2, 3."], 24)],
+            f"For start 2 the device RRMS is {rr['rrms']['1'][0]:.3f}, {rr['rrms']['1'][1]:.3f} and "
+            f"{rr['rrms']['1'][2]:.3f} after rounds 1, 2 and 3."], 24)],
         "Each round repeats steps 3 and 4 in the new range. The left plot shows the range and the value found for "
         "VTH0, U0 and RDSW of start 2.", style=STEP)
 
@@ -563,7 +569,8 @@ def build() -> dict:
              f"{cA_['all_device']:.6f}"]], 28, hl=(1,)),
         ul(["The start with the lowest device RRMS after the FD polish is kept.",
             f"The kept card gets one more FD least-squares call (up to 400 runs, mean {runs['ref']}).",
-            f"Example: start 2 kept ({fd['1']:.4f}); final card {rr['final']:.4f}."], 26)],
+            f"For the example pMOS, start 2 is kept ({fd['1']:.4f}) and the final card has device RRMS "
+            f"{rr['final']:.4f}."], 26)],
         "The final FD refit is the same TRF routine, run once on the kept card in its round-3 range.", style=STEP)
 
     sc = wf["screen"]
@@ -589,10 +596,11 @@ def build() -> dict:
             ["Fitted card, 7 parameters", f4(cA_["all_device"]), f4(cA_["combined"]), kint(cA["C0_refit"])],
             ["Fitted card, 45 parameters", f4(cB_["all_device"]), f4(cB_["combined"]), kint(cB["C0_refit"])]],
               32, hl=(1, 2)),
-        ul([f"Fitted / Beall et al. RRMS per device: {rA['ratio']:.2f} (7 p.), {rB['ratio']:.2f} (45 p.).",
-            f"Lower than the Beall et al. card on {rA['wins']} of 18 devices, both runs.",
-            "Combined RRMS = mean of nMOS mean and pMOS mean."]),
-        small("0.54, 0.36: geometric mean over 18 devices. Runs include all 3 starts.")],
+        ul([f"The fitted-card RRMS divided by the Beall et al. RRMS of the same device is {rA['ratio']:.2f} "
+            f"(7 parameters) and {rB['ratio']:.2f} (45 parameters).",
+            f"Both fitted cards are lower than the Beall et al. card on {rA['wins']} of 18 devices.",
+            "The combined RRMS is the mean of the nMOS mean and the pMOS mean."]),
+        small("The ratios are geometric means over the 18 devices. The run counts include all 3 starts.")],
         "All three cards are BSIM4 in NGSpice with different parameter values.", gap=30)
 
     big = "pmos_L0p35_W0p55"
@@ -602,7 +610,7 @@ def build() -> dict:
         + img("perdev", "Per-device RRMS, log scale: Beall et al. card, fitted 7-parameter card, fitted 45-parameter "
                         "card", 1290, 800)
         + ul(["Both fitted cards below the Beall et al. card on 18 of 18.",
-              "Largest RRMS: pMOS L 0.35 um x W 0.55 um."], 30, extra=";width:390px") + "</div>"],
+              "The largest RRMS is on the pMOS L 0.35 um x W 0.55 um."], 30, extra=";width:390px") + "</div>"],
         "Bars are device RRMS on a log scale, three cards per device.", gap=24)
 
     grp = ["nMOS L 0.15-8 um", "nMOS L 20, 100 um; pMOS L 0.35, 0.5 um", "pMOS L 0.5-8 um"]
