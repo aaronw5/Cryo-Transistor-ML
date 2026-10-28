@@ -369,9 +369,34 @@ def stage_report(rd: Path) -> dict:
 
 def stage_restrict(rd: Path) -> dict:
     q12 = jload(rd / "q12.json")["devices"]
+    corr = corr_full(ARM)
+    complete, incomplete = {}, {}
+    for t, r in q12.items():
+        z = np.load(rd / "arrays" / f"q12_{t}.npz")
+        bad = [k for k in z.files if k.startswith("dense_card_")
+               and z[k].shape != z[k.replace("dense_card_", "dense_elem_")].shape]
+        if bad:
+            incomplete[t] = {"curves_with_unequal_dense_sweeps": sorted(bad),
+                             "n_gds_introduced": int(sum(r["q2_gds_curves_introduced"])),
+                             "n_gm_introduced": int(sum(r["q2_gm_curves_introduced"])),
+                             "note": "dense card / element sweeps of unequal length (failed points); the q12 rule "
+                                     "counts such a curve as introduced; no point counts"}
+        else:
+            complete[t] = r
+    items = drv16.sign_items(rd, corr, complete, f"I25-1 arm {ARM} full-data g")
+    tot = items["totals"]
+    for t, v in incomplete.items():
+        tot["n_gds_curves_introduced"] += v["n_gds_introduced"]
+        tot["n_gm_curves_introduced"] += v["n_gm_introduced"]
+        if v["n_gds_introduced"]:
+            tot["devices_with_gds_introduced"] = sorted(tot["devices_with_gds_introduced"] + [t])
+        if v["n_gm_introduced"]:
+            tot["devices_with_gm_introduced"] = sorted(tot["devices_with_gm_introduced"] + [t])
+    tot["devices_incomplete_dense"] = sorted(incomplete)
+    items["incomplete"] = incomplete
     out = {"q1_max_rel_1nA": {t: {tol: r[f"q1_{tol}_max_rel_1nA"] for tol, _ in TOLS}
                               for t, r in sorted(q12.items())},
-           "arm": drv16.sign_items(rd, corr_full(ARM), q12, f"I25-1 arm {ARM} full-data g")}
+           "arm": items}
     jdump(out, rd / "restrictions.json")
     print(json.dumps({"q1_default_max": max(v["default"] for v in out["q1_max_rel_1nA"].values()),
                       "totals": out["arm"]["totals"]}, indent=1), flush=True)

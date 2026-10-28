@@ -2890,3 +2890,44 @@ Element checks (prereg section 10, optional): not run. Report batch `out/researc
 forest, per-device tables for both arms, parameter set, 36 I-V figures in `iv/` for all 18 devices x 2 arms with
 measured points, paper card NGSpice, our card NGSpice and our card + g); deck `slides/i25_1_from_scratch.pptx` (not
 in git); site claim `i25-1`.
+
+## I25-1 element checks outcome (2026-10-28): 7p and 45p card + g both not deployable under the I17-1 rule
+
+Prereg section 10 run on both arms (user instruction). Pre-registration `out/research/explore/I25_1/element/prereg.md`,
+commit d1785b8 (alone); code 13807e9 (`scripts/research/explore/i25_1_element.py`: the I14-1 / I15-1 / I16-1 / I17-1
+Part B stages with the I25-1 inputs rebound: `CRYOML_PDK_TEMPLATE=mult1`, full-data g at lambda*_full 5 V, M2 cards
+= the I25-1 full-data in-sample refits, LODO pairs for accuracy, Q3 'published' arm = multiplier-1 card); fix 257d1a5
+(NaN-safe V(d,s) = 0 evaluation, the I21-1 3900f47 rule; arm B report stage had stopped on an all-NaN tight column;
+q12 arrays kept). Smoke (arm B, 2 devices) ran every stage. Runs (6 workers, deploy 4): unit 6 s; arm A pairs 9 s,
+deploy 43 s (q12 22 s); arm B pairs 9 s, deploy about 330 s (q12 318 s, one exchanged card + replica tight run of
+nmos_L20_W0p64 hit the 300 s timeout). Outputs `out/research/explore/I25_1/element/arm{A,B}/`.
+Validity (both arms valid): V1 card-only OSDI-build library deck x exp(g) vs the stored I25-1 rows, 36 rows per arm
+(18 full, 18 LODO), max |diff| 0.0; V2 unit tests pass (I17-1 list + test_i25_1_scratch); V3 18 / 18 finite element
+rows, 18 M2 cards, 0 failed; V4 sym_v2 / EPS 0.01 V / lambda*_full 5 V. 19 OSDI modules per arm compiled; sense
+branch `V(sense) <+ RS * I(sense)`, RS = 0.
+**Arm A (7p card + g): not deployable.** Core: Q1 tight equivalence 43 points (fail; all on nmos_L100_W100, 26
+forward / 17 exchanged, |dI| <= 1.68e-13 A against the limit 1e-6 |I| + 1e-13 A, ratio <= 1.57, |I| 1.8e-12 to
+5.0e-8 A, |V(g,s)| <= 0.425 V, |V(d,s)| 1.525-1.85 V); Q1 runs 0; V(d,s) = 0 tight 4.68e-17 A; g text 3.3e-16,
+exchanged 4.4e-16; exchange asymmetry 3.1e-5; Q2 3.2e-5; capacitances 1.1e-14; gm 0 of 54; Q3 0. Restrictions:
+default tolerance 1.98e-3, gds 6 of 90 (pmos_L4_W7, pmos_L8_W0p84, pmos_L8_W5; the card alone has 0 negative gds
+points, I_card exp(g) the same 3291 as the element), runtime DC grid 1.75-2.24, circuits up to 4.49 (ro5_A).
+**Arm B (45p card + g): not deployable.** Core: Q1 tight equivalence 22,649 points (nmos_L100_W100 299, |dI| <=
+5.7e-13 A, ratio <= 4.78, |I| <= 2.7e-7 A, |V(g,s)| <= 0.425 V; nmos_L20_W0p64 22,350 non-finite); Q1 runs 22,889
+(nmos_L20_W0p64: tight element grids 167 / 271 convergence lines, all tight element points non-finite); V(d,s) = 0
+tight non-finite on nmos_L20_W0p64 (fail; finite devices <= 9.5e-13 A at default tolerance); gm 2 of 54
+(nmos_L100_W100 |V(d,s)| 0.05 V, 51 negative strong-inversion points in the element and in I_card exp(g), 0 in the
+card; nmos_L20_W0p64 |V(d,s)| 1.85 V incomplete dense element sweep, counted by the rule); g text 3.1e-16; asymmetry
+8.5e-5; Q2 9.7e-5; capacitances 3.3e-14; Q3 0. Restrictions: default tolerance 1.59e-3, gds 10 of 90, runtime up to
+4.30. Diagnostic (no rule): card-only tight forward grid of nmos_L20_W0p64 (no replica, no element) gives 4
+convergence lines for the arm B M2 card and for the arm B C0_refit card (no g), 0 for the multiplier-1 card; 0 at
+default tolerance for all three.
+Label under the I16-1 V(d,s) = 0 rule (reported): not deployable in both arms. Old 43p + g (I17-1, lambda 1 V):
+deployable with restrictions; nmos_L100_W100 0 points there (ratio <= 0.11). Q3 ro5_B fails with the multiplier-1
+card in both arms (card level).
+Element-deck RRMS (reported), all-device / combined: arm A full data 0.07829 / 0.07568 (stored Python 0.07829 /
+0.07567), LODO 0.08229 / 0.07946; arm B full data 0.06666 / 0.06349 (stored 0.06665 / 0.06349), LODO 0.06927 /
+0.06608; max per-device |element - stored| 3.4e-5 (A), 5.5e-5 (B); 0 convergence messages in the measured-curve decks.
+Report batch `out/research/report/2026-10-28_i25_1_element/` (`scripts/research/plot_explore_i25_1_element.py`, 9 PNG
+tables: checks vs thresholds with the I17-1 column, validity, element-deck accuracy, per-device checks per arm,
+V(d,s) = 0 per tolerance, Q3, restrictions, core failures by device). Step deck slides 27-28 and the limits slide
+updated (Slides artifact VXzexFpptoGiwaSzpVF57r, version 22).

@@ -2,6 +2,15 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-28 · i25_1_element
+
+Folder: [2026-10-28_i25_1_element/](2026-10-28_i25_1_element/) · [tables.md](2026-10-28_i25_1_element/tables.md) · [README.md](2026-10-28_i25_1_element/README.md)
+
+- arm A (7p card + g): not deployable; core failures Q1 equivalence |dI| <= 1e-6 |I| + 1e-13 A (tight); restrictions default tolerance above 1e-3; gds sign changes introduced; runtime overhead > 2x (default tolerance 1.98e-03, gds 6 of 90, runtime 4.49); element-deck RRMS full data 0.0783 / 0.0757 (stored 0.0783 / 0.0757), LODO 0.0823 / 0.0795.
+- arm B (45p card + g): not deployable; core failures Q1 equivalence |dI| <= 1e-6 |I| + 1e-13 A (tight), Q1 convergence / non-finite, Q1 I_D at Vds = 0, Q2 gm sign change in strong inversion; restrictions default tolerance above 1e-3; gds sign changes introduced; runtime overhead > 2x (default tolerance 1.59e-03, gds 10 of 90, runtime 4.30); element-deck RRMS full data 0.0667 / 0.0635 (stored 0.0667 / 0.0635), LODO 0.0693 / 0.0661.
+
+Figures and tables: [01_table_element_checks.png](2026-10-28_i25_1_element/01_table_element_checks.png) · [02_table_element_validity.png](2026-10-28_i25_1_element/02_table_element_validity.png) · [03_table_element_accuracy.png](2026-10-28_i25_1_element/03_table_element_accuracy.png) · [04_table_element_devices_armA.png](2026-10-28_i25_1_element/04_table_element_devices_armA.png) · [05_table_element_devices_armB.png](2026-10-28_i25_1_element/05_table_element_devices_armB.png) · [06_table_element_vds0.png](2026-10-28_i25_1_element/06_table_element_vds0.png) · [07_table_element_q3.png](2026-10-28_i25_1_element/07_table_element_q3.png) · [08_table_element_restrictions.png](2026-10-28_i25_1_element/08_table_element_restrictions.png) · [09_table_element_core_failures.png](2026-10-28_i25_1_element/09_table_element_core_failures.png)
+
 ## 2026-10-28 · i25_1
 
 Folder: [2026-10-28_i25_1/](2026-10-28_i25_1/) · [tables.md](2026-10-28_i25_1/tables.md) · [README.md](2026-10-28_i25_1/README.md)

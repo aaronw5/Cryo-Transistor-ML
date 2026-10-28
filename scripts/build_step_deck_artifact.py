@@ -490,39 +490,69 @@ def build() -> dict:
                 style=f"background:#f6f5f1;color:#1f252b;{F};padding:40px 64px 36px;display:flex;"
                       "flex-direction:column;gap:14px")
 
+    el = {a: json.loads((I25 / f"element/arm{a}/decision.json").read_text()) for a in "AB"}
+    assert all(el[a]["validity"]["valid"] for a in "AB"), "element decision not valid"
+    eacc = {a: el[a]["element_deck_accuracy"]["full"] for a in "AB"}
     S["s14-element"] = sec("s14-element", [
         H2.format("Verilog-A element"),
         img("eq_elem", "I(d,s) = I_card + (e^g - 1) I_ch", 1000, 106, pad=32),
         ul(["I_card = card transistor current; I_ch = channel current of a card-transistor copy",
-            "Verilog-A = language for analog device models; compiled with OpenVAF, loaded through OSDI (NGSpice 41 "
-            "compiled-model interface)",
-            "Checks (next slide): run I17-1 on the earlier 43p card + g (lambda 1 V); element RRMS = Python RRMS within 1.8e-4 per device",
-            "Not rerun on the I25-1 cards and g"], 28, 1.45)],
+            "Verilog-A = language for analog device models; compiled with OpenVAF 23.5, loaded through OSDI "
+            "(NGSpice 41 compiled-model interface)",
+            "Checks (next slide): I17-1 rules on the 7p and 45p card + g of this deck (g: lambda 5 V)",
+            "RRMS with the element in NGSpice, all-device / combined: 7p + g "
+            f"{f4(eacc['A']['summary_native']['all_device'])} / {f4(eacc['A']['summary_native']['combined'])}, "
+            f"45p + g {f4(eacc['B']['summary_native']['all_device'])} / {f4(eacc['B']['summary_native']['combined'])}; "
+            f"max per-device difference to card x exp(g): {max(eacc[a]['max_abs_native_minus_stored'] for a in 'AB'):.1e}"],
+           28, 1.45)],
         "To use g in circuit simulation, it is written as a Verilog-A element that adds (exp(g) - 1) times the "
         "channel current to the card transistor. The element is compiled with OpenVAF and loaded into NGSpice 41. "
-        "The checks on the next slide were run on the earlier 43-parameter card with g; the same element code takes "
-        "the new cards and g, but the checks have not been repeated for them.", gap=36)
+        "With the element in the NGSpice deck, the RRMS of the 7-parameter and 45-parameter cards with g equals "
+        "the RRMS of the card current times exp(g) to within the stated per-device difference. The next slide "
+        "lists the element checks on these cards.", gap=36)
 
+    def cell(a, key, fmt, ok):
+        v = el[a]["values"][key]
+        res = "pass" if ok(v) else ("FAIL" if key not in ("q1_default_max", "q2_gds_sign", "runtime_ratio_max")
+                                    else "restriction")
+        return f"{fmt(v)} {res}"
+
+    sci = lambda v: "non-finite" if v == float("inf") else f"{v:.1e}"   # noqa: E731
+    integer = lambda v: f"{int(v):,}"                              # noqa: E731
+    chk = [("Element vs card x exp(g), tight tolerance: points off", "q1_tight_viol", "0", integer, lambda v: v == 0),
+           ("Convergence messages, non-finite, failed runs", "q1_bad", "0", integer, lambda v: v == 0),
+           ("|I| at Vds = 0, tight tolerance (A)", "q1_vds0_max", "1e-12", sci, lambda v: v <= 1e-12),
+           ("Verilog-A g - Python g", "g_text_max", "1e-9", sci, lambda v: v <= 1e-9),
+           ("Drain-source exchange, |d ln I|", "swap_asym_max", "1e-3", sci, lambda v: v <= 1e-3),
+           ("AC gm, gds vs element equation (relative)", "q2_ac_max", "1e-3", sci, lambda v: v <= 1e-3),
+           ("Capacitances vs card (relative)", "cap_max", "1e-3", sci, lambda v: v <= 1e-3),
+           ("gm sign changes from g, strong inversion (curves of 54)", "q2_gm_sign", "0", integer, lambda v: v == 0),
+           ("Inverters, ring oscillators, mirrors failing only with element", "q3_fail", "0", integer,
+            lambda v: v == 0),
+           ("Default-tolerance difference, |I| &gt; 1 nA (relative)", "q1_default_max", "1e-3", sci,
+            lambda v: v <= 1e-3),
+           ("gds sign changes from g (curves of 90)", "q2_gds_sign", "0", integer, lambda v: v == 0),
+           ("Run time, element / card (max)", "runtime_ratio_max", "2", lambda v: f"{v:.2f}", lambda v: v <= 2)]
+    rows = [[lab, lim, cell("A", key, fm, ok), cell("B", key, fm, ok)] for lab, key, lim, fm, ok in chk]
+    hl = tuple(i for i, (_, key, _, fm, ok) in enumerate(chk) if not (ok(el["A"]["values"][key])
+                                                                      and ok(el["B"]["values"][key])))
     S["s14b-checks"] = sec("s14b-checks", [
-        H2.format("Element checks (I17-1, earlier 43p card + g)"),
-        table(["Check (I17-1)", "Value", "Limit", "Result"], [58, 14, 12, 16], [
-            ["Element vs card x exp(g), tight tolerance: points off", "0", "0", "pass"],
-            ["Convergence messages, non-finite, failed runs", "0", "0", "pass"],
-            ["|I| at Vds = 0 (A)", "4.9e-17", "1e-12", "pass"],
-            ["Verilog-A g - Python g", "2.8e-16", "1e-9", "pass"],
-            ["Drain-source exchange, |d ln I|", "2.2e-5", "1e-3", "pass"],
-            ["AC gm, gds vs element equation (relative)", "1.1e-5", "1e-3", "pass"],
-            ["Capacitances vs card (relative)", "3.3e-14", "1e-3", "pass"],
-            ["Inverters, 5-stage ring oscillators, mirrors failing", "0", "0", "pass"],
-            ["Default-tolerance difference, |I| &gt; 1 nA (relative)", "1.8e-3", "1e-3", "restriction"],
-            ["gds sign changes from g (curves)", "6 of 90", "0", "restriction"],
-            ["Run time, element / card (max)", "4.60", "2", "restriction"]], 28, hl=(8, 9, 10)),
-        ul(["gds sign changes: pMOS 2 x 5, 8 x 0.84, 8 x 1.6, 8 x 5 um; also in Python card x exp(g)",
-            "Label (I17-1): deployable with restrictions"], 26)],
-        "The element passed the eight core checks on the earlier cards: agreement with the Python model, zero "
-        "current at Vds = 0, drain-source symmetry, AC small-signal values, capacitances and small circuits. Three "
-        "items exceeded their limits and are reported as restrictions: a 1.8e-3 difference at default simulator "
-        "tolerance, gds sign changes on 6 of 90 curves, and up to 4.6 times the card's run time.", gap=20)
+        H2.format("Element checks (I17-1 rules), 7p and 45p card + g"),
+        table(["Check", "Limit", "7p card + g", "45p card + g"], [52, 10, 19, 19], rows, 24, hl=hl),
+        ul([f"Label (I17-1 rule): 7p {el['A']['outcome']}; 45p {el['B']['outcome']}",
+            "Points off, nMOS 100 x 100 um: 43 (7p), 299 (45p); |I| &lt;= 3e-7 A, |Vgs| &lt;= 0.425 V, "
+            "|dI| &lt;= 1.7e-13 A (7p), 5.7e-13 A (45p); limit 1e-6 |I| + 1e-13 A",
+            "45p, nMOS 20 x 0.64 um: tight-tolerance runs do not converge, 22,350 non-finite points; card alone "
+            "(no replica, no g): 4 convergence messages",
+            "45p, nMOS 100 x 100 um: gm &lt; 0 at |Vds| 0.05 V from g (51 points, also in card x exp(g))"], 24)],
+        "These are the I17-1 element checks run on the 7-parameter and 45-parameter cards with g. Under the I17-1 "
+        "rule both are labeled not deployable. In the 7-parameter case the only core failure is 43 grid points "
+        "on the nMOS 100 by 100 micrometer device where the element differs from the card times exp(g) by up to "
+        "1.7e-13 A, above the 1e-13 A floor of the limit. The 45-parameter case has the same kind of points "
+        "(299, up to 5.7e-13 A), a tight-tolerance convergence failure on the nMOS 20 by 0.64 micrometer card that "
+        "also occurs for the card without g, and a negative gm region introduced by g on the 100 by 100 device. "
+        "Restrictions: default-tolerance difference, gds sign changes and run time up to 4.5 times the card.",
+        gap=18)
 
     S["s15-cost"] = sec("s15-cost", [
         H2.format("Cost in NGSpice calls"),
@@ -574,7 +604,8 @@ def build() -> dict:
             ["Box widths", "set with the paper's multiplier range known"],
             ["Random starts", f"redrawn on {rnd['A']['redraw_pairs']} / {rnd['B']['redraw_pairs']} of 54 device-start "
                               "pairs (7p / 45p); 7p starts 0 and 2: 1 device without finite RRMS each"],
-            ["Element checks", "run on the earlier 43p card + g; not rerun on these cards"],
+            ["Element checks (I17-1 rules)", f"7p + g: {el['A']['outcome']}; 45p + g: {el['B']['outcome']}; core failures "
+                                             "on nMOS 100 x 100 um (both) and nMOS 20 x 0.64 um (45p)"],
             ["Largest remaining error", f"pMOS 0.35 x 0.55 um: {f4(pd['A']['full_g']['pmos_L0p35_W0p55'])} (7p + g), "
                                         f"{f4(pd['B']['full_g']['pmos_L0p35_W0p55'])} (45p + g)"],
             ["Step A at matched call budget", "not compared with other fitting methods"],
@@ -582,8 +613,8 @@ def build() -> dict:
         "All RRMS values in this deck measure how well the cards and g fit the 18 measured devices; there is no "
         "separate test set, because the goal is to fit measured data. The design of g was chosen on these same "
         "devices in earlier runs, and the box widths were set with the paper's multiplier range known. Some random "
-        "starts had to be redrawn because NGSpice could not run them. The Verilog-A element checks were not "
-        "repeated for the new cards. Step A has not been compared with other fitting methods at the same budget.",
+        "starts had to be redrawn because NGSpice could not run them. The Verilog-A element checks label both "
+        "cards with g not deployable under the I17-1 rule (two devices). Step A has not been compared with other fitting methods at the same budget.",
         gap=24)
 
     return S

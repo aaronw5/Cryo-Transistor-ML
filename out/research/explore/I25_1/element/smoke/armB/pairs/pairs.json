@@ -1,0 +1,174 @@
+{
+ "arm": "B",
+ "compile": [
+  {
+   "kind": "full",
+   "tag": "full",
+   "sha256": "9f7de4034f72d6bbf455e03e0632487e30388f26c079d6ebe4df3a375aba3d2f",
+   "compiled": true,
+   "sense_branch_rs0": true
+  },
+  {
+   "kind": "lodo",
+   "tag": "nmos_L1_W1p6",
+   "sha256": "80c1e0517a6b0cd346ee02bf7040d99be5d495978b444ab75941483db7b8d16a",
+   "compiled": true,
+   "sense_branch_rs0": true
+  },
+  {
+   "kind": "lodo",
+   "tag": "pmos_L2_W5",
+   "sha256": "8b4f1cd2536e854675adbcf8e9b190345cc583a02c9aa9300a67f7f62e5f916f",
+   "compiled": true,
+   "sense_branch_rs0": true
+  }
+ ],
+ "compile_s": 1.5,
+ "rows": {
+  "full|nmos_L1_W1p6": {
+   "kind": "full",
+   "tag": "nmos_L1_W1p6",
+   "rrms_v1_card_only_x_exp_g": 0.031061898151831874,
+   "rrms_native": 0.031067027693990057,
+   "rrms_python": 0.031061898151831874,
+   "rrms_python_channel": 0.031061898145795918,
+   "rrms_card_only": 0.04002287798736091,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.9115131482834417,
+   "msgs": [],
+   "stored": 0.031061898151831874,
+   "v1_abs_diff": 0.0,
+   "native_minus_stored": 5.129542158182482e-06
+  },
+  "full|pmos_L2_W5": {
+   "kind": "full",
+   "tag": "pmos_L2_W5",
+   "rrms_v1_card_only_x_exp_g": 0.03954820304179642,
+   "rrms_native": 0.039532750796369365,
+   "rrms_python": 0.03954820304179642,
+   "rrms_python_channel": 0.03954820129907102,
+   "rrms_card_only": 0.10056604510166971,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.9334873242220219,
+   "msgs": [],
+   "stored": 0.03954820304179642,
+   "v1_abs_diff": 0.0,
+   "native_minus_stored": -1.5452245427052813e-05
+  },
+  "lodo|nmos_L1_W1p6": {
+   "kind": "lodo",
+   "tag": "nmos_L1_W1p6",
+   "rrms_v1_card_only_x_exp_g": 0.033882172914967625,
+   "rrms_native": 0.03388493106642258,
+   "rrms_python": 0.033882172914967625,
+   "rrms_python_channel": 0.033882172877838186,
+   "rrms_card_only": 0.04025438686242641,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.8783976940712207,
+   "msgs": [],
+   "stored": 0.033882172914967625,
+   "v1_abs_diff": 0.0,
+   "native_minus_stored": 2.7581514549582242e-06
+  },
+  "lodo|pmos_L2_W5": {
+   "kind": "lodo",
+   "tag": "pmos_L2_W5",
+   "rrms_v1_card_only_x_exp_g": 0.04408736445488173,
+   "rrms_native": 0.04407346440343252,
+   "rrms_python": 0.04408736445488173,
+   "rrms_python_channel": 0.044087363191582414,
+   "rrms_card_only": 0.10156899138529046,
+   "native_vs_channel_max_ratio_1e-3_1e-12": 0.968396593267663,
+   "msgs": [],
+   "stored": 0.04408736445488173,
+   "v1_abs_diff": 0.0,
+   "native_minus_stored": -1.3900051449210193e-05
+  }
+ },
+ "per_kind": {
+  "full": {
+   "native": {
+    "nmos_L1_W1p6": 0.031067027693990057,
+    "pmos_L2_W5": 0.039532750796369365
+   },
+   "python": {
+    "nmos_L1_W1p6": 0.031061898151831874,
+    "pmos_L2_W5": 0.03954820304179642
+   },
+   "v1_max_abs_diff": 0.0,
+   "max_abs_native_minus_stored": 1.5452245427052813e-05,
+   "max_native_vs_channel_ratio": 0.9334873242220219,
+   "n_msgs": 0,
+   "n_finite_native": 2,
+   "summary_native": {
+    "all_device": 0.03529988924517971,
+    "nmos": 0.031067027693990057,
+    "pmos": 0.039532750796369365,
+    "combined": 0.03529988924517971,
+    "median": 0.03529988924517971,
+    "n": 2,
+    "n_failed": 0
+   },
+   "summary_stored": {
+    "all_device": 0.035305050596814144,
+    "nmos": 0.031061898151831874,
+    "pmos": 0.03954820304179642,
+    "combined": 0.035305050596814144,
+    "median": 0.035305050596814144,
+    "n": 2,
+    "n_failed": 0
+   },
+   "summary_python_channel": {
+    "all_device": 0.03530504972243347,
+    "nmos": 0.031061898145795918,
+    "pmos": 0.03954820129907102,
+    "combined": 0.03530504972243347,
+    "median": 0.03530504972243347,
+    "n": 2,
+    "n_failed": 0
+   }
+  },
+  "lodo": {
+   "native": {
+    "nmos_L1_W1p6": 0.03388493106642258,
+    "pmos_L2_W5": 0.04407346440343252
+   },
+   "python": {
+    "nmos_L1_W1p6": 0.033882172914967625,
+    "pmos_L2_W5": 0.04408736445488173
+   },
+   "v1_max_abs_diff": 0.0,
+   "max_abs_native_minus_stored": 1.3900051449210193e-05,
+   "max_native_vs_channel_ratio": 0.968396593267663,
+   "n_msgs": 0,
+   "n_finite_native": 2,
+   "summary_native": {
+    "all_device": 0.038979197734927556,
+    "nmos": 0.03388493106642258,
+    "pmos": 0.04407346440343252,
+    "combined": 0.038979197734927556,
+    "median": 0.038979197734927556,
+    "n": 2,
+    "n_failed": 0
+   },
+   "summary_stored": {
+    "all_device": 0.038984768684924676,
+    "nmos": 0.033882172914967625,
+    "pmos": 0.04408736445488173,
+    "combined": 0.038984768684924676,
+    "median": 0.038984768684924676,
+    "n": 2,
+    "n_failed": 0
+   },
+   "summary_python_channel": {
+    "all_device": 0.0389847680347103,
+    "nmos": 0.033882172877838186,
+    "pmos": 0.044087363191582414,
+    "combined": 0.0389847680347103,
+    "median": 0.0389847680347103,
+    "n": 2,
+    "n_failed": 0
+   }
+  }
+ },
+ "v1_max_rrms_diff": 0.0,
+ "v1_n_rows": 4,
+ "wall_s": 2.2
+}

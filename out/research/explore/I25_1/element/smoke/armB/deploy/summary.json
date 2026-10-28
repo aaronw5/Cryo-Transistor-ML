@@ -1,0 +1,168 @@
+{
+ "arm": "B",
+ "label": "I25-1 element checks, arm B (45 parameters): full-data g (lambda*_full 5 V) with the I25-1 full-data cards; I17-1 rules",
+ "values": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 7.615542868575469e-13,
+  "g_text_max": 3.0531133177191805e-16,
+  "g_sym_text_max": 2.220446049250313e-16,
+  "swap_asym_max": 2.782410073782933e-06,
+  "q2_ac_max": 1.077414602175677e-06,
+  "cap_max": 2.079955585822802e-15,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.001537387835855276,
+  "q2_gds_sign": 0,
+  "runtime_ratio_max": 4.304985690225698
+ },
+ "runtime_grid": {
+  "nmos_L1_W1p6": 1.9490119006242699,
+  "pmos_L2_W5": 2.0139265232520063
+ },
+ "runtime_circuits": {
+  "inv_A_vtc": 1.7087879257037997,
+  "inv_B_vtc": 1.725143254653011,
+  "ro5_A": 4.304985690225698,
+  "ro5_B": 4.1085010632059324,
+  "mirror_n": 1.2427427666948856,
+  "mirror_p": 1.2006885150845827
+ },
+ "runtime_circuits_excluded": [],
+ "n_devices": 2,
+ "q3_not_ok": [
+  "ro5_B|published"
+ ],
+ "q2_err_i12_formula_max": 0.00014972569119269858,
+ "nonchannel_share_fwd_max": 0.001517009264595038,
+ "card_rep_vs_card_default_max_abs": 1.6236305638156479e-07,
+ "decision": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "runtime overhead > 2x"
+  ]
+ },
+ "refit_in_sample": {
+  "mean_rrms_M2_python": 0.035305050596814144,
+  "mean_rrms_M2_python_channel": 0.03530504972243347,
+  "mean_rrms_M2_native": 0.03529988924517971,
+  "mean_rrms_M2_card_only": 0.07029446154451531,
+  "n_failed": 0
+ },
+ "decision_I16_1_rule": {
+  "deploy": "deployable with restrictions",
+  "core_fail": [],
+  "restrictions": [
+   "default tolerance above 1e-3",
+   "runtime overhead > 2x"
+  ]
+ },
+ "values_I17_1_rule": {
+  "q1_tight_viol": 0,
+  "q1_bad": 0,
+  "q1_vds0_max": 4.765832844001109e-18,
+  "g_text_max": 3.0531133177191805e-16,
+  "g_sym_text_max": 2.220446049250313e-16,
+  "swap_asym_max": 2.782410073782933e-06,
+  "q2_ac_max": 1.077414602175677e-06,
+  "cap_max": 2.079955585822802e-15,
+  "q2_gm_sign": 0,
+  "q3_fail": 0,
+  "q1_default_max": 0.001537387835855276,
+  "q2_gds_sign": 0,
+  "runtime_ratio_max": 4.304985690225698
+ },
+ "vds0": {
+  "per_device": {
+   "nmos_L1_W1p6": {
+    "default": {
+     "elem_max": 6.111481422729291e-13,
+     "vgs_abs_at_max": 0.35,
+     "card_rep_max": 1.597922646382722e-15,
+     "n_above": 0,
+     "n_points": 75,
+     "n_nonfinite": 0
+    },
+    "r4": {
+     "elem_max": 6.111481422729291e-13,
+     "vgs_abs_at_max": 0.35,
+     "card_rep_max": 1.597922646382722e-15,
+     "n_above": 0,
+     "n_points": 75,
+     "n_nonfinite": 0
+    },
+    "tight": {
+     "elem_max": 4.765832844001109e-18,
+     "vgs_abs_at_max": 1.8,
+     "card_rep_max": 4.720976381436842e-18,
+     "n_above": 0,
+     "n_points": 75,
+     "n_nonfinite": 0
+    }
+   },
+   "pmos_L2_W5": {
+    "default": {
+     "elem_max": 7.615542868575469e-13,
+     "vgs_abs_at_max": 0.7,
+     "card_rep_max": 7.837265946082481e-19,
+     "n_above": 0,
+     "n_points": 75,
+     "n_nonfinite": 0
+    },
+    "r4": {
+     "elem_max": 7.615542868575469e-13,
+     "vgs_abs_at_max": 0.7,
+     "card_rep_max": 7.837265946082481e-19,
+     "n_above": 0,
+     "n_points": 75,
+     "n_nonfinite": 0
+    },
+    "tight": {
+     "elem_max": 5.227416713027345e-19,
+     "vgs_abs_at_max": 1.825,
+     "card_rep_max": 7.837265946082481e-19,
+     "n_above": 0,
+     "n_points": 75,
+     "n_nonfinite": 0
+    }
+   }
+  },
+  "summary": {
+   "default": {
+    "elem_max": 7.615542868575469e-13,
+    "at": [
+     "pmos_L2_W5",
+     0.7
+    ],
+    "card_rep_max": 1.597922646382722e-15,
+    "n_above": 0,
+    "n_points": 150,
+    "n_nonfinite": 0
+   },
+   "r4": {
+    "elem_max": 7.615542868575469e-13,
+    "at": [
+     "pmos_L2_W5",
+     0.7
+    ],
+    "card_rep_max": 1.597922646382722e-15,
+    "n_above": 0,
+    "n_points": 150,
+    "n_nonfinite": 0
+   },
+   "tight": {
+    "elem_max": 4.765832844001109e-18,
+    "at": [
+     "nmos_L1_W1p6",
+     1.8
+    ],
+    "card_rep_max": 4.720976381436842e-18,
+    "n_above": 0,
+    "n_points": 150,
+    "n_nonfinite": 0
+   }
+  }
+ }
+}
