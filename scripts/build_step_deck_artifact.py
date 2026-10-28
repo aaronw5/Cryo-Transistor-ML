@@ -31,25 +31,25 @@ RENDER = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--render=")
 
 FIG = ROOT / "figs/step_deck"
 BLOB = {  # asset ids in the artifact; LOCAL = the uploaded file
-    "goal": ("0118aec709e8834e49204c883c014ab5", FIG / "i25_goal_stock.png"),
-    "measured": ("1844405a05e791cedc2e08e8e320a132", FIG / "s01_measured.png"),
+    "goal": ("289aae5553ff7f5279297d21200765e0", FIG / "i25_goal_stock.png"),
+    "measured": ("07609a60ea894a330618a74ac9f9e0cb", FIG / "i25_ex_measured.png"),
     "eq_rrms": ("42728e3500a3277bc0e28dbb5d75edc7", FIG / "eq_rrms.png"),
-    "start": ("94d8dcf27e1e1ecb3c06b51b8b0d461f", FIG / "i25_start_card.png"),
-    "paper_ex": ("2ced443a287cf34fd2e0ab9b6d66295f", FIG / "i25_ex_paper.png"),
-    "starts": ("48e34cebc391f0d4cd32a444ed3d7a23", FIG / "i25_ex_starts.png"),
-    "cma": ("90ef5423cc737d41a66b67e21865d9ae", FIG / "i25_ex_cma.png"),
-    "ls": ("6e6e5eb5d482d2834fa36b6fdeb92486", FIG / "i25_ex_ls.png"),
-    "rounds_ex": ("5f34ff7d93a4e4ad83061b9f566625bc", FIG / "i25_ex_rounds.png"),
-    "cma2": ("958cd7933c911f3117e88ad9f38c9a78", FIG / "i25_ex_cma_2param.png"),
-    "optimizers": ("7fdaa39dfd82d86b26154e1544d829c7", FIG / "i25_ex_optimizers.png"),
-    "screen": ("0b3894a877f07e1a4d766d99e3553279", FIG / "i25_screen.png"),
-    "perdev": ("d31f1cdb1f5cfd9b708df2e510854fd5", FIG / "i25_per_device_card.png"),
-    "iv_7p_1": ("0b524c16213b5bebea45f8b9cae84b4e", FIG / "i25_iv_card_7p_1.png"),
-    "iv_7p_2": ("2c223869301929f15353e49de144870f", FIG / "i25_iv_card_7p_2.png"),
-    "iv_7p_3": ("b8b8fd124e13e49b24162295158acac9", FIG / "i25_iv_card_7p_3.png"),
-    "iv_45p_1": ("3bef28518e314338e7efd15169f2f06d", FIG / "i25_iv_card_45p_1.png"),
-    "iv_45p_2": ("080f622d1773c1cd5d130c9f273b7037", FIG / "i25_iv_card_45p_2.png"),
-    "iv_45p_3": ("7097cb56c4cb709b0a57a9f4c3f01202", FIG / "i25_iv_card_45p_3.png"),
+    "start": ("9585bd72b7b4e798faaa1eb4412bcc21", FIG / "i25_start_card.png"),
+    "paper_ex": ("717d7189ac94143dfc03d04795d6f211", FIG / "i25_ex_paper.png"),
+    "starts": ("7ad2c5932cd72c1e4ccca5792229e4e2", FIG / "i25_ex_starts.png"),
+    "cma": ("092ccce5ace0d4f51e13c72516b80d66", FIG / "i25_ex_cma.png"),
+    "ls": ("a910c50ea20c2a35816a3927e2323c75", FIG / "i25_ex_ls.png"),
+    "rounds_ex": ("b1a490bdde7d6aabb917faa63a2f33f9", FIG / "i25_ex_rounds.png"),
+    "cma2": ("921d720119aca1ae268d22b12d6d62d9", FIG / "i25_ex_cma_2param.png"),
+    "optimizers": ("653f9b481b23cb07286a38864e4a0959", FIG / "i25_ex_optimizers.png"),
+    "screen": ("bb6295b8f2c4ee76c4b0cdceeab6b787", FIG / "i25_screen.png"),
+    "perdev": ("18d098aa9faf41e409a08d5a39e69e0e", FIG / "i25_per_device_card.png"),
+    "iv_7p_1": ("3ed131ef30d317b5177937cdafbb9eb6", FIG / "i25_iv_card_7p_1.png"),
+    "iv_7p_2": ("27010a14bfd159ee073136a2b5fd20aa", FIG / "i25_iv_card_7p_2.png"),
+    "iv_7p_3": ("df4eab44607fd2efb8fb5eeb4d5706aa", FIG / "i25_iv_card_7p_3.png"),
+    "iv_45p_1": ("63687da38a63691cce5d98bbe3869617", FIG / "i25_iv_card_45p_1.png"),
+    "iv_45p_2": ("48e9e9b3431439f4561e9fe7c45f1957", FIG / "i25_iv_card_45p_2.png"),
+    "iv_45p_3": ("b2b13aa2a37cedce3182193424ece491", FIG / "i25_iv_card_45p_3.png"),
 }
 ORDER = ["title", "w01-goal", "w02-data", "w03-model", "w04-paper", "w05c-eval", "w05d-optimizers", "w05-workflow",
          "w05b-pseudo", "w06-step1", "w07-step2", "w08-step3", "w08b-cma-gen", "w09-step4", "w10-step5", "w11-step6", "w11b-step7",
@@ -60,9 +60,9 @@ OLD = ["w11-params45", "w12-results", "w13-perdevice", "b1-transistor", "b2-mode
        "s10b-nmos", "s10c-pmos", "s13-remaining", "s13b-lowvds", "s15-cost", "s16-sources", "s17-limits"]
 SECTIONS = {
     "s1": {"description": "Title", "start": "title"},
-    "s2": {"description": "Stock card, measured data, card and RRMS, Beall et al. card", "start": "w01-goal"},
-    "s3": {"description": "NGSpice run, optimizers CMA-ES and TRF, fitting procedure, steps 1-7", "start": "w05c-eval"},
-    "s4": {"description": "Run 2 screen, results, per-device RRMS, I-V curves", "start": "w12-params45"},
+    "s2": {"description": "Measured data, simulation in NGSpice, the RRMS error and the Beall et al. card", "start": "w01-goal"},
+    "s3": {"description": "The two optimizers and the seven steps of the fitting procedure", "start": "w05c-eval"},
+    "s4": {"description": "The 45-parameter run and the results for the 18 devices", "start": "w12-params45"},
 }
 
 INK, MUTED, PAPER, CARD, LINE = "#1f252b", "#5a6168", "#f6f5f1", "#ffffff", "#c9ced3"
@@ -70,7 +70,7 @@ BLUE, GREEN, ORANGE = "#2a6fdb", "#2e9e6a", "#d9822b"
 F = "font-family:'IBM Plex Sans', Arial, sans-serif"
 SEC = (f"background:{PAPER};color:{INK};{F};padding:64px 96px 56px;display:flex;flex-direction:column;"
        "gap:{g}px")
-H2 = f'<h2 style="font-size:52px;font-weight:600;line-height:1.1;color:{INK}">{{}}</h2>'
+H2 = f'<h2 style="font-size:44px;font-weight:600;line-height:1.1;color:{INK}">{{}}</h2>'
 
 
 def ul(items, size=30, lh=1.35, extra=""):
@@ -246,8 +246,8 @@ def build() -> dict:
 
     # ---------------------------------------------------------------- title, background
     S["title"] = sec("title", [
-        '<h1 style="font-size:80px;font-weight:600;line-height:1.12;color:#f1f0eb">BSIM4 parameter fit, SKY130, '
-        '77 K</h1>',
+        '<h1 style="font-size:80px;font-weight:600;line-height:1.12;color:#f1f0eb">Fitting BSIM4 parameters to SKY130 '
+        'transistors measured at 77 K</h1>',
         '<div style="display:flex;flex-direction:column;gap:16px">' + "".join(
             f'<p style="font-size:34px;line-height:1.3">{t}</p>' for t in [
                 "18 measured transistors (8 nMOS, 10 pMOS), simulated in NGSpice",
@@ -259,7 +259,7 @@ def build() -> dict:
               "justify-content:center;gap:56px")
 
     S["w01-goal"] = sec("w01-goal", [
-        H2.format("Stock card at 77 K"),
+        H2.format("Stock SkyWater card simulated at 77 K and the measured curves"),
         img("goal", "pMOS L 0.35 um x W 5 um at 77 K: measured points and the stock SkyWater card simulated in "
                     "NGSpice", 1640, 636),
         ul(["A card holds the BSIM4 parameter values of one transistor size.",
@@ -269,7 +269,7 @@ def build() -> dict:
         "in NGSpice at 77 K.", gap=24)
 
     S["w02-data"] = sec("w02-data", [
-        H2.format("Measured data, 18 transistors"),
+        H2.format("Measured I-V curves of the 18 transistors"),
         img("measured", "Measured Id-Vd and Id-Vg of pMOS L 0.35 um x W 5 um at 77 K", 1640, 560),
         ul(["8 nMOS, 10 pMOS; L 0.15-100 um, W 0.42-100 um.",
             "Each device has 5 Id-Vd and 6 Id-Vg curves.",
@@ -287,7 +287,7 @@ def build() -> dict:
         [(330, 85, 426, 85), (760, 85, 856, 85), (1220, 85, 1326, 150), (1220, 255, 1326, 195)],
         1728, 320, "Card to NGSpice to simulated curves; simulated and measured curves give the RRMS")
     S["w03-model"] = sec("w03-model", [
-        H2.format("Card, NGSpice, RRMS"),
+        H2.format("Simulating a card in NGSpice and scoring it with RRMS"),
         model_svg,
         f'<div style="display:flex;flex-direction:row;gap:40px;align-items:center">'
         f'<div style="background:{CARD};border:1px solid {LINE};padding:12px"><img src="/_blob/{BLOB["eq_rrms"][0]}" '
@@ -301,7 +301,7 @@ def build() -> dict:
              ("VSAT", "saturation velocity"), ("DELTA", "linear-saturation smoothing"),
              ("RDSW", "source/drain resistance"), ("ETA0", "threshold shift with Vds")]
     S["w04-paper"] = sec("w04-paper", [
-        H2.format("Beall et al. card: 7 multipliers"),
+        H2.format("Beall et al. 77 K card and its 7 fitted multipliers"),
         '<div style="display:flex;flex-direction:row;gap:32px;align-items:center">'
         + table(["Parameter", "Meaning"], [36, 64], [[f"<b>{p}</b>", m] for p, m in seven], 24, width=600)
         + img("paper_ex", "pMOS L 0.35 um x W 5 um: measured points and the Beall et al. card simulated in NGSpice",
@@ -327,7 +327,7 @@ def build() -> dict:
         B(1460, 20, 268, 110, [("Error", 28, True)], "#c8384e", "#fbe8de"),
     ])
     S["w05c-eval"] = sec("w05c-eval", [
-        H2.format("One NGSpice run"),
+        H2.format("What one NGSpice run computes"),
         ev,
         ul(["One run simulates all 11 curves of one device for one card.",
             "CMA-ES uses one number per run: the device RRMS.",
@@ -337,14 +337,14 @@ def build() -> dict:
         "A curve NGSpice cannot simulate counts as RRMS 10.", gap=36)
 
     S["w05d-optimizers"] = sec("w05d-optimizers", [
-        H2.format("Two optimizers: CMA-ES and TRF"),
+        H2.format("The two optimizers used in the fit: CMA-ES and TRF"),
         table(["", "CMA-ES (Python cma)", "TRF (SciPy least_squares)"], [22, 37, 41], [
             ["Loss", "device RRMS", "sum of squared point residuals"],
             ["Derivatives", "none", "finite differences (FD): 1 run per parameter"],
             ["Iteration", "sample 9 (7 p.) or 14-15 (45 p.) cards, simulate, update mean and covariance from "
                           "the lowest-loss cards",
              "FD Jacobian, step inside a trust region, keep if loss drops"],
-            ["Runs per call, 7 / 45 p.", runs["cma"], runs["ls"]],
+            ["NGSpice runs per call (7 / 45 parameters)", runs["cma"], runs["ls"]],
             ["Starts from", "random card or previous card", "CMA-ES result"]], 23),
         img("optimizers", "pMOS L 0.35 um x W 5 um, 45 parameters: lowest device RRMS against NGSpice runs for "
                           "CMA-ES and FD least squares from the same 3 random start cards", 1080, 428),
@@ -371,7 +371,7 @@ def build() -> dict:
         A_(588, 255, 620, 255),
         B(624, 170, 230, 170, [("FD least", 26, True), ("squares", 26, True), (runs["ls"], 24, False)]),
         A_(854, 255, 886, 255),
-        B(890, 170, 216, 170, [("Range:", 26, True), ("centred on", 24, False), ("result, half", 24, False),
+        B(890, 170, 216, 170, [("New range", 26, True), ("centred on", 24, False), ("result, half", 24, False),
                                ("width", 24, False)]),
         A_(730, 366, 730, 402),
         B(560, 406, 340, 120, [("FD polish", 26, True), (runs["fd"], 24, False)]),
@@ -383,7 +383,7 @@ def build() -> dict:
         B(1190, 420, 516, 100, [("Final card", 28, True)], "#c8384e", "#fbe8de"),
     ])
     S["w05-workflow"] = sec("w05-workflow", [
-        H2.format("Fitting procedure, one device"),
+        H2.format("Fitting procedure for one device"),
         nest,
         ul(["Mean NGSpice runs per call, 7 / 45 parameters.",
             f"Total per device, 3 starts: {kint(cA['C0_refit'])} / {kint(cB['C0_refit'])}."], 28)],
@@ -411,15 +411,15 @@ def build() -> dict:
                 f'width:1080px">{a}</p><p style="font-size:24px;line-height:1.3;color:{MUTED}">'
                 f'{"# " + b if b else ""}</p></div>' for a, b in pc) + "</div>")
     S["w05b-pseudo"] = sec("w05b-pseudo", [
-        H2.format("Procedure as pseudocode"),
+        H2.format("Fitting procedure as pseudocode"),
         code,
         ul(["Run counts: mean NGSpice runs per call, 7 / 45 parameters.",
             "range: allowed interval per parameter, log scale."], 26)],
         "fd: Jacobian by finite differences in NGSpice. trf: SciPy least_squares, method trf, 2 passes.", gap=24)
 
     # ---------------------------------------------------------------- steps
-    steps = ["1 Start card", "2 Random starts", "3 CMA-ES", "4 FD least sq.", "5 Rounds 2, 3", "6 FD polish",
-             "7 Keep, refit"]
+    steps = ["1 Start card", "2 Random starts", "3 CMA-ES search", "4 TRF fit", "5 Rounds 2 and 3", "6 FD polish",
+             "7 Best start refit"]
 
     def strip(cur):
         parts, x, w = [], 0, 222
@@ -440,7 +440,7 @@ def build() -> dict:
     STEP = SEC.format(g=14).replace("padding:64px 96px 56px", "padding:48px 96px 40px")
 
     S["w06-step1"] = sec("w06-step1", [
-        H2.format("Step 1: start card"), strip(1),
+        H2.format("Step 1: start card with all multipliers set to 1"), strip(1),
         io("Beall et al. card file", "start card: same file, all multipliers = 1"),
         img("start", "pMOS L 0.35 um x W 5 um: measured points and the start card simulated in NGSpice", 1400, 560),
         ul(["The Beall et al. card file stores each fitted value as base value x multiplier.",
@@ -450,7 +450,7 @@ def build() -> dict:
         "The figure shows the start card and the measurement for the example pMOS.", style=STEP)
 
     S["w07-step2"] = sec("w07-step2", [
-        H2.format("Step 2: random start cards"), strip(2),
+        H2.format("Step 2: three random start cards"), strip(2),
         io("start card; range VTH0 and 38 added parameters 1/3-3x, other 6 of 7 1/100-100x",
            "3 random start cards per device"),
         img("starts", "pMOS L 0.35 um x W 5 um: measured Id-Vd and Id-Vg at 1.85 V and the 3 random start cards "
@@ -463,7 +463,7 @@ def build() -> dict:
         "Starts 1 and 2 give currents below 1e-11 A on both curves shown.", style=STEP)
 
     S["w08-step3"] = sec("w08-step3", [
-        H2.format("Step 3: CMA-ES, loss device RRMS"), strip(3),
+        H2.format("Step 3: global search with CMA-ES"), strip(3),
         io("start card or previous card; range", "card with the lowest device RRMS"),
         img("cma", "Round 1 CMA-ES on pMOS L 0.35 um x W 5 um: device RRMS of every candidate against NGSpice runs, "
                    "lowest so far per start; sampled VTH0 and U0 by generation", 1400, 540),
@@ -478,7 +478,7 @@ def build() -> dict:
 
     c2 = wf["cma_2param"]
     S["w08b-cma-gen"] = sec("w08b-cma-gen", [
-        H2.format("CMA-ES: one generation"), strip(3),
+        H2.format("One generation of CMA-ES"), strip(3),
         ul(["CMA-ES keeps a mean m, a step size σ and a covariance C of the scaled parameters (-1 to 1).",
             "1. Sample λ = 4 + ⌊3 ln n⌋ cards x = m + σ·N(0, C); cma's BoundTransform maps each into [-1, 1].",
             "2. Run NGSpice for each card and compute its device RRMS; a curve NGSpice cannot simulate counts as 10.",
@@ -510,7 +510,7 @@ def build() -> dict:
         B(1320, 8, 408, 80, [("Trial step, 1 run", 26, True), ("kept if the loss drops", 22, False)]),
     ])
     S["w09-step4"] = sec("w09-step4", [
-        H2.format("Step 4: FD least squares (TRF)"), strip(4),
+        H2.format("Step 4: least-squares fit with TRF and finite-difference slopes"), strip(4),
         io("card after CMA-ES; range", "card with the lowest device RRMS seen"),
         jac,
         img("ls", "Round 1 FD least squares on pMOS L 0.35 um x W 5 um: device RRMS per iteration for 3 starts; "
@@ -525,7 +525,7 @@ def build() -> dict:
         "curve RRMS of start 2 after CMA-ES and after FD least squares.", style=STEP)
 
     S["w10-step5"] = sec("w10-step5", [
-        H2.format("Step 5: rounds 2 and 3"), strip(5),
+        H2.format("Step 5: repeating steps 3 and 4 in narrower ranges"), strip(5),
         io("card after the previous round", "card after round 3"),
         img("rounds_ex", "pMOS L 0.35 um x W 5 um: allowed range and value found for VTH0, U0, RDSW in rounds 1-3; "
                          "device RRMS after each round for the 3 starts", 1400, 556),
@@ -538,10 +538,11 @@ def build() -> dict:
         "VTH0, U0 and RDSW of start 2.", style=STEP)
 
     S["w11-step6"] = sec("w11-step6", [
-        H2.format("Step 6: FD polish"), strip(6),
+        H2.format("Step 6: one more TRF fit after round 3 (FD polish)"), strip(6),
         io("card after round 3, each start", "polished card, each start"),
-        table(["Device RRMS", "Example start 1", "start 2", "start 3", "All devices, 45 p.", "All devices, 7 p."],
-              [24, 16, 12, 12, 18, 18], [
+        table(["Device RRMS", "Example device, start 1", "start 2", "start 3", "All devices, 45 parameters",
+               "All devices, 7 parameters"],
+              [20, 18, 11, 11, 20, 20], [
             ["After round 3", f"{rr['rrms']['0'][2]:.4f}", f"{rr['rrms']['1'][2]:.4f}", f"{rr['rrms']['2'][2]:.4f}",
              f4(st["round 3"]["B_all"]), f"{st['round 3']['A_all']:.6f}"],
             ["After FD polish", f"{fd['0']:.4f}", f"{fd['1']:.4f}", f"{fd['2']:.4f}",
@@ -551,10 +552,11 @@ def build() -> dict:
         "The FD polish is the same TRF routine as step 4, run once on the card from round 3.", style=STEP)
 
     S["w11b-step7"] = sec("w11b-step7", [
-        H2.format("Step 7: best start, final FD refit"), strip(7),
+        H2.format("Step 7: keeping the best start and refitting it"), strip(7),
         io("3 polished cards", "final card"),
-        table(["Device RRMS", "Example start 1", "start 2", "start 3", "All devices, 45 p.", "All devices, 7 p."],
-              [24, 16, 12, 12, 18, 18], [
+        table(["Device RRMS", "Example device, start 1", "start 2", "start 3", "All devices, 45 parameters",
+               "All devices, 7 parameters"],
+              [20, 18, 11, 11, 20, 20], [
             ["After FD polish", f"{fd['0']:.4f}", f"{fd['1']:.4f}", f"{fd['2']:.4f}",
              f4(st["round 3 + FD"]["B_all"]), f"{st['round 3 + FD']['A_all']:.6f}"],
             ["Final FD refit", "-", f"{rr['final']:.4f} (kept)", "-", f4(cB_["all_device"]),
@@ -568,7 +570,7 @@ def build() -> dict:
     act = [v["n"] for v in wf["active_45p"].values()]
     assert (min(act), max(act)) == (37, 41)
     S["w12-params45"] = sec("w12-params45", [
-        H2.format("Run 2: 45 screened parameters"),
+        H2.format("Second run with 45 parameters selected by a sensitivity screen"),
         img("screen", "Screen of 115 BSIM4 parameters: current change for a 10 % parameter change, threshold, kept "
                       "parameters, the 7 Beall et al. parameters", 1660, 640),
         ul(["Each of 115 parameters changed by ±10 %, one at a time.",
@@ -580,8 +582,8 @@ def build() -> dict:
 
     # ---------------------------------------------------------------- results
     S["w13-results"] = sec("w13-results", [
-        H2.format("Results, 18 devices"),
-        table(["Card (NGSpice)", "All-device RRMS", "Combined RRMS", "NGSpice runs per device"],
+        H2.format("RRMS of the Beall et al. card and the two fitted cards"),
+        table(["Card simulated in NGSpice", "All-device RRMS", "Combined RRMS", "NGSpice runs per device"],
               [40, 20, 20, 20], [
             ["Beall et al. card", f4(pap["all_device"]), f4(pap["combined"]), "-"],
             ["Fitted card, 7 parameters", f4(cA_["all_device"]), f4(cA_["combined"]), kint(cA["C0_refit"])],
@@ -595,7 +597,7 @@ def build() -> dict:
 
     big = "pmos_L0p35_W0p55"
     S["w14-perdevice"] = sec("w14-perdevice", [
-        H2.format("Device RRMS, three cards"),
+        H2.format("RRMS of each device for the three cards"),
         '<div style="display:flex;flex-direction:row;gap:36px;align-items:center">'
         + img("perdev", "Per-device RRMS, log scale: Beall et al. card, fitted 7-parameter card, fitted 45-parameter "
                         "card", 1290, 800)
@@ -609,8 +611,8 @@ def build() -> dict:
         for k in range(3):
             sid = f"{pre}-{k + 1}"
             S[sid] = sec(sid, [
-                f'<h2 style="font-size:48px;font-weight:600;line-height:1.1;color:{INK}">I-V, {n} parameters, '
-                f'devices {6 * k + 1}-{6 * k + 6}</h2>',
+                f'<h2 style="font-size:44px;font-weight:600;line-height:1.1;color:{INK}">Measured and simulated I-V '
+                f'curves, {n}-parameter fit, devices {6 * k + 1}-{6 * k + 6}</h2>',
                 img(f"iv_{short}_{k + 1}", f"Id-Vd and Id-Vg, {grp[k]}: measured, Beall et al. card (NGSpice), fitted "
                                            f"{n}-parameter card (NGSpice)", 1760, 836),
                 f'<p style="font-size:26px;line-height:1.3">{grp[k]}. Each pair: Id-Vd left, Id-Vg right (log). '
@@ -647,7 +649,7 @@ def main() -> int:
         if p.exists():
             p.unlink()
     deck = json.loads((REPO_PROJECT / "deck.json").read_text())
-    deck["title"] = "BSIM4 parameter fit, SKY130, 77 K"
+    deck["title"] = "Fitting BSIM4 parameters to SKY130 transistors measured at 77 K"
     deck["order"] = ORDER
     deck["sections"] = SECTIONS
     deck["cover"] = "title"
