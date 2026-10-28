@@ -405,8 +405,8 @@ def fig_one_card(d, path, key, color, label, size=(15.5, 6.0), dpi=150):
     series = [(key, color, "-", 2.0, label)]
     fig, (a1, a2) = plt.subplots(1, 2, figsize=size, dpi=dpi)
     sp.iv_axes(a1, a2, cs, series)
-    a1.set_title("Id-Vd curves at five gate voltages (linear scale)")
-    a2.set_title("Id-Vg curves at six drain voltages (log scale)")
+    a1.set_title("Id-Vd")
+    a2.set_title("Id-Vg (log scale)")
     fig.legend(handles=sp.legend_handles(series, "measured at 77 K"), loc="upper center", ncol=2, frameon=False,
                bbox_to_anchor=(0.5, 1.0), fontsize=13)
     fig.tight_layout(rect=(0, 0, 1, 0.91))
@@ -565,10 +565,9 @@ def fig_measured_example(d, path):
         ax.grid(alpha=0.25, lw=0.5)
         ax.legend(fontsize=11, frameon=False, markerscale=2.5)
     a2.set_yscale("log")
-    a1.set_title("Id-Vd curves at five gate voltages (linear scale)")
-    a2.set_title("Id-Vg curves at six drain voltages (log scale)")
-    fig.suptitle("Measured curves of the pMOS L 0.35 um x W 5 um at 77 K (faded points are below the current floor)",
-                 fontsize=14)
+    a1.set_title("Id-Vd")
+    a2.set_title("Id-Vg (log scale)")
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 77 K (faded: below current floor)", fontsize=14)
     fig.tight_layout()
     fig.savefig(path, facecolor="white")
     plt.close(fig)
@@ -576,7 +575,7 @@ def fig_measured_example(d, path):
 
 def fig_paper_example(d, path):
     rr = d["old"]["arms"]["published"][EXAMPLE]["rrms"]
-    fig_one_card(d, path, "paper", "#555555", f"Beall et al. card simulated in NGSpice (device RRMS {rr:.3f})", size=(10.6, 4.4),
+    fig_one_card(d, path, "paper", "#555555", f"Beall et al. card (NGSpice), device RRMS {rr:.3f}", size=(10.6, 4.4),
                  dpi=220)
 
 
@@ -601,15 +600,14 @@ def fig_starts(js, z, path):
         if kind == "idvg":
             ax.set_yscale("log")
             ax.set_xlabel("|Vgs| (V)")
-            ax.set_title("Id-Vg curve at |Vds| = 1.85 V (log scale)")
+            ax.set_title("Id-Vg, |Vds| = 1.85 V (log scale)")
         else:
             ax.set_xlabel("|Vds| (V)")
-            ax.set_title("Id-Vd curve at |Vgs| = 1.85 V")
+            ax.set_title("Id-Vd, |Vgs| = 1.85 V")
         ax.set_ylabel("|Id| (A)")
         ax.grid(alpha=0.25, lw=0.5)
     axes[0].legend(fontsize=12, frameon=False, loc="center right")
-    fig.suptitle("Three random start cards of the pMOS L 0.35 um x W 5 um simulated in NGSpice (45-parameter run)",
-                 fontsize=14)
+    fig.suptitle("Random start cards, pMOS L 0.35 um x W 5 um, 45 parameters", fontsize=14)
     fig.tight_layout()
     fig.savefig(path, facecolor="white")
     plt.close(fig)
@@ -624,13 +622,13 @@ def fig_cma(js, z, path):
         r = z[f"s{k}_log_rrms"][ph == "cma"]
         x = np.arange(1, len(r) + 1)
         a1.scatter(x, np.clip(r, None, 50), s=2, color=COLS3[k], alpha=0.12, lw=0)
-        a1.plot(x, np.minimum.accumulate(r), color=COLS3[k], lw=2.4, label=f"lowest RRMS so far, start {k + 1}")
+        a1.plot(x, np.minimum.accumulate(r), color=COLS3[k], lw=2.4, label=f"start {k + 1}, lowest so far")
     a1.set_yscale("log")
     a1.set_ylim(0.08, 60)
     a1.set_xlim(0, 8100)
     a1.set_xlabel("NGSpice runs in round 1, global search")
     a1.set_ylabel("device RRMS (log scale)")
-    a1.set_title("Device RRMS of every card sampled in round 1 (one dot per card)", fontsize=13)
+    a1.set_title("CMA-ES, round 1", fontsize=13)
     a1.grid(alpha=0.25, lw=0.5, which="both")
     a1.legend(fontsize=12, frameon=False, loc="upper right")
     k = 1
@@ -644,10 +642,10 @@ def fig_cma(js, z, path):
     a2.set_yscale("log")
     a2.set_xlabel("|VTH0| (V)")
     a2.set_ylabel("U0 (m^2/Vs), log scale")
-    a2.set_title("VTH0 and U0 of the cards sampled for start 2", fontsize=13)
+    a2.set_title("VTH0 and U0 samples, start 2", fontsize=13)
     cb = fig.colorbar(sc, ax=a2)
     cb.set_label("generation")
-    fig.suptitle("CMA-ES in round 1 for the pMOS L 0.35 um x W 5 um (45-parameter run)", fontsize=14)
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 45 parameters", fontsize=14)
     fig.tight_layout()
     fig.savefig(path, facecolor="white")
     plt.close(fig)
@@ -672,7 +670,7 @@ def fig_ls(js, z, path):
         a1.plot(np.arange(len(y)), y, "o-", color=COLS3[k], lw=2.2, ms=6, label=f"start {k + 1}")
     a1.set_xlabel(f"TRF iteration ({n} + 2 NGSpice runs each)")
     a1.set_ylabel("device RRMS")
-    a1.set_title("Device RRMS after each TRF iteration in round 1", fontsize=13)
+    a1.set_title("TRF iterations, round 1", fontsize=13)
     a1.grid(alpha=0.25, lw=0.5)
     a1.legend(fontsize=12, frameon=False, loc="center right")
     k = "1"
@@ -700,10 +698,10 @@ def fig_ls(js, z, path):
     a2.invert_yaxis()
     a2.set_xscale("log")
     a2.set_xlabel("curve RRMS (log scale)")
-    a2.set_title("RRMS of each curve of start 2 before and after TRF", fontsize=13)
+    a2.set_title("Curve RRMS, start 2", fontsize=13)
     a2.grid(alpha=0.25, lw=0.5, axis="x")
     a2.legend(fontsize=11, frameon=False, loc="lower right")
-    fig.suptitle("TRF fit in round 1 for the pMOS L 0.35 um x W 5 um (45-parameter run)", fontsize=14)
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 45 parameters", fontsize=14)
     fig.tight_layout()
     fig.savefig(path, facecolor="white")
     plt.close(fig)
@@ -750,7 +748,7 @@ def fig_rounds_example(d, path) -> dict:
         ax.set_xlabel(lab + ", log scale", fontsize=11.5)
         ax.grid(alpha=0.25, lw=0.5, axis="x")
         if j == 0:
-            ax.set_title(f"Allowed range (bar) and value found (dot) for start {sel + 1}", fontsize=13)
+            ax.set_title(f"Range (bar) and value (dot), start {sel + 1}", fontsize=13)
     ax = fig.add_subplot(gs[:, 1])
     st_names = ["r1", "r2", "r3"]
     xs = [1, 2, 3]
@@ -767,10 +765,10 @@ def fig_rounds_example(d, path) -> dict:
     ax.set_xticklabels(["round 1", "round 2", "round 3"], fontsize=12)
     ax.set_xlim(0.7, 3.6)
     ax.set_ylabel("device RRMS")
-    ax.set_title("Device RRMS of the three starts after each round", fontsize=12)
+    ax.set_title("Device RRMS per round", fontsize=13)
     ax.grid(alpha=0.25, lw=0.5)
     ax.legend(fontsize=11.5, frameon=False, loc="center right")
-    fig.suptitle("Rounds 1 to 3 for the pMOS L 0.35 um x W 5 um (45-parameter run)", fontsize=14)
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 45 parameters", fontsize=14)
     fig.subplots_adjust(left=0.08, right=0.98, top=0.86, bottom=0.12)
     fig.savefig(path, facecolor="white")
     plt.close(fig)
@@ -802,7 +800,7 @@ def fig_optimizers(js, z, path) -> dict:
     ax.set_yticklabels(["0.1", "0.2", "0.5", "1", "2", "5", "10", "20", "50"])
     ax.set_xlabel("NGSpice runs (log scale)")
     ax.set_ylabel("lowest device RRMS so far")
-    ax.set_title("CMA-ES and TRF started from the same three random cards (pMOS L 0.35 um x W 5 um, 45 parameters)",
+    ax.set_title("CMA-ES and TRF from the same start cards\npMOS L 0.35 um x W 5 um, 45 parameters",
                  fontsize=12.5)
     ax.grid(alpha=0.25, lw=0.5, which="both")
     ax.legend(fontsize=10.5, frameon=False, ncol=2, loc="upper right")
@@ -857,7 +855,7 @@ def fig_cma_2param(path) -> dict:
         ax.set_xlabel("|VTH0| (V)", fontsize=11)
         if j == 0:
             ax.set_ylabel("U0 (m^2/Vs)", fontsize=11)
-        ax.set_title(f"Generation {gi + 1} (lowest RRMS {min(L):.3f})", fontsize=11.5)
+        ax.set_title(f"Generation {gi + 1}", fontsize=12)
         if j == 0:
             from matplotlib.lines import Line2D
             hh = [Line2D([], [], marker="o", ls="", mfc="none", mec="#d9822b", label="sample"),
@@ -878,9 +876,9 @@ def fig_cma_2param(path) -> dict:
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
     ax.legend(h1 + h2, l1 + l2, fontsize=10, frameon=False, loc="upper right")
-    ax.set_title("Lowest device RRMS so far and step size", fontsize=11.5)
-    fig.suptitle("Two-parameter illustration with all other parameters fixed (pMOS L 0.35 um x W 5 um); the grey "
-                 "level is the device RRMS on a 30 x 30 grid, darker is lower", fontsize=12)
+    ax.set_title("Lowest RRMS and step size", fontsize=12)
+    fig.suptitle("2-parameter illustration, other parameters fixed; grey level = device RRMS (darker = lower)",
+                 fontsize=12)
     fig.subplots_adjust(left=0.05, right=0.955, top=0.82, bottom=0.17)
     fig.savefig(path, facecolor="white")
     plt.close(fig)
@@ -927,8 +925,7 @@ def fig_screen(path) -> dict:
     h, _ = ax.get_legend_handles_labels()
     ax.legend(handles=[Patch(color=C_45, label=f"kept ({sm['selected_count']})"),
                        Patch(color="#c9ced3", label="not kept")] + h, fontsize=12, frameon=False, loc="upper right")
-    ax.set_title("Current change when each of 115 BSIM4 parameters is changed by 10 % (largest over 18 devices)",
-                 fontsize=13)
+    ax.set_title("Sensitivity screen, 115 parameters", fontsize=13)
     ax.grid(alpha=0.25, lw=0.5, axis="y")
     fig.tight_layout()
     fig.savefig(path, facecolor="white")
@@ -964,9 +961,9 @@ def main() -> int:
         for k in range(3):
             fig_iv_page(d, tags[6 * k:6 * k + 6], FIGS / f"i25_iv_card_{SHORT[a]}_{k + 1}.png", a)
     fig_one_card(d, FIGS / "i25_goal_stock.png", "stock", sp.C_STOCK,
-                 "stock SkyWater card simulated in NGSpice at 77 K")
+                 "stock SkyWater card (NGSpice, 77 K)")
     fig_one_card(d, FIGS / "i25_start_card.png", "A_mult1", sp.C_ONE,
-                 "start card simulated in NGSpice", size=(11.6, 4.5), dpi=200)
+                 "start card (NGSpice)", size=(11.6, 4.5), dpi=200)
     tr = search_trace()
     spread = start_spread()
     js, z = load_trace()
