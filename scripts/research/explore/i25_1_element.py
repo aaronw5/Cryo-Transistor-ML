@@ -319,13 +319,34 @@ def stage_m2(rd: Path) -> dict:
     return out
 
 
+def vds0_values(arrays, j0: int, grid_vgs) -> dict:
+    """``m17.vds0_values`` without the all-NaN error (the I21-1 fix 3900f47):
+    an all-non-finite column gives elem_max inf and its non-finite count, so
+    ``m17.values_i17_rule`` fails the check as the rule states."""
+    out = {}
+    for tol in m17.TOLS:
+        el = np.abs(np.asarray(arrays[f"grid_fwd_{tol}_elem"], float)[:, j0])
+        cr = np.abs(np.asarray(arrays[f"grid_fwd_{tol}_card_rep"], float)[:, j0])
+        fin = np.isfinite(el)
+        if fin.any():
+            k = int(np.nanargmax(el))
+            emax, vgs = float(np.nanmax(el)), float(np.asarray(grid_vgs)[k])
+        else:
+            emax, vgs = float("inf"), float("nan")
+        out[tol] = {"elem_max": emax, "vgs_abs_at_max": vgs,
+                    "card_rep_max": float(np.nanmax(cr)) if np.isfinite(cr).any() else float("inf"),
+                    "n_above": int(np.sum(el[fin] > m17.VDS0_THR)), "n_points": int(el.size),
+                    "n_nonfinite": int(np.sum(~fin))}
+    return out
+
+
 def vds0_table(rd: Path) -> dict:
     q12 = jload(rd / "q12.json")["devices"]
     j0 = m17.vds0_column(m1.GRID_VDS)
     per = {}
     for tag in sorted(q12):
         z = np.load(rd / "arrays" / f"q12_{tag}.npz")
-        per[tag] = m17.vds0_values(z, j0, m1.GRID_VGS)
+        per[tag] = vds0_values(z, j0, m1.GRID_VGS)
     return {"per_device": per, "summary": m17.summarize_vds0(per)}
 
 
