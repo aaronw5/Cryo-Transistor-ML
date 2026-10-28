@@ -5,29 +5,35 @@
   "at": "2026-10-27T15:59:47Z"
  },
  "lists": "css",
- "title": "SKY130, 77 K: card fit from the stock card",
+ "title": "SKY130, 77 K: card fit from multiplier-1 cards, with correction g",
  "cover": "title",
  "order": [
   "title",
   "b1-transistor",
   "b2-model",
-  "s02-stock",
   "s01-measured",
+  "s02-stock",
   "s03-paper",
   "b3-fit",
+  "s04-setup",
+  "s04b-params",
   "s04-stepA",
   "s05-stepB",
-  "s05b-cardonly",
+  "s05c-whyg",
   "s06-stepC",
   "s07-stepD",
   "s09-results",
+  "s09b-gmr",
+  "s09c-stages",
   "s10-perdevice",
+  "s10b-nmos",
+  "s10c-pmos",
   "s11-iv7-1",
   "s11-iv7-2",
   "s11-iv7-3",
-  "s11-iv1",
-  "s12-iv2",
-  "s13-iv3",
+  "s12-iv45-1",
+  "s12-iv45-2",
+  "s12-iv45-3",
   "s14-element",
   "s14b-checks",
   "s15-cost",
@@ -40,23 +46,27 @@
    "start": "title"
   },
   "s2": {
-   "description": "Background: I-V curves, card, NGSpice, RRMS",
+   "description": "Background: I-V curves, card, NGSpice, RRMS; measured data",
    "start": "b1-transistor"
   },
   "s3": {
-   "description": "Stock card error at 77 K, measured data, paper card",
+   "description": "Stock card and multiplier-1 start card at 77 K, paper card",
    "start": "s02-stock"
   },
   "s4": {
-   "description": "Card fit in NGSpice, remaining error, correction g, penalty",
+   "description": "Card fit from multiplier-1 cards: setup, parameter sets, RRMS by round",
    "start": "b3-fit"
   },
   "s5": {
-   "description": "Results on 18 devices, per-device RRMS, I-V curves for 7 and 43 parameters",
-   "start": "s09-results"
+   "description": "Remaining error, pMOS low-|Vds| current, correction g, penalty and lambda",
+   "start": "s05-stepB"
   },
   "s6": {
-   "description": "Element deck, cost, paper inputs, limits",
+   "description": "Results on 18 devices: tables, GMR, per device, I-V curves for 7 and 45 parameters",
+   "start": "s09-results"
+  },
+  "s7": {
+   "description": "Verilog-A element, cost, paper inputs, limits",
    "start": "s14-element"
   }
  },

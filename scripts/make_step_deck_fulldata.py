@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Step-by-step deck, full-data revision (no held-out device): curves and
+"""SUPERSEDED for the deck by scripts/make_step_deck_i25.py (I25-1 revision, 2026-10-28: from-scratch
+multiplier-1 start, 7- and 45-parameter arms); kept to reproduce the fd_*.png figures of the 2026-10-27 revision.
+
+Step-by-step deck, full-data revision (no held-out device): curves and
 figures for the 7-parameter and 43-parameter card fits of all 18 sky130 77 K
 devices, and for the 43-parameter card + g fitted on all 18 devices.
 
