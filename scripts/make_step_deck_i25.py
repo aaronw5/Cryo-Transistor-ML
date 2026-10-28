@@ -398,12 +398,12 @@ def gmrs(d) -> dict:
     return out
 
 
-def fig_one_card(d, path, key, color, label):
+def fig_one_card(d, path, key, color, label, size=(15.5, 6.0), dpi=150):
     """One device (EXAMPLE): measured and one card (NGSpice), Id-Vd linear and Id-Vg log."""
     plt = sp._plt()
     cs = curves(d, EXAMPLE)
     series = [(key, color, "-", 2.0, label)]
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(15.5, 6.0), dpi=150)
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=size, dpi=dpi)
     sp.iv_axes(a1, a2, cs, series)
     a1.set_title("Id-Vd, one curve per |Vgs| (linear scale)")
     a2.set_title("Id-Vg, one curve per |Vds| (log scale)")
@@ -526,6 +526,283 @@ def fig_rounds_starts(d, spread, path):
     plt.close(fig)
 
 
+# ----------------------------------------------------------------- step figures, one example device (45 parameters)
+TRACE_DIR = OUT / "round1_trace"
+COLS3 = ["#2a6fdb", "#d9822b", "#7b5ea7"]
+
+
+def load_trace(tag=EXAMPLE):
+    js = jload(TRACE_DIR / f"{tag}.json")
+    z = dict(np.load(TRACE_DIR / f"{tag}.npz"))
+    return js, z
+
+
+def raw_curves(tag=EXAMPLE):
+    """Measured curves in NGSpice-run order (the order of the rerun's stored sims)."""
+    from cryoml.card_eval import device_by_tag
+    from cryoml.data_io import load_device_curves
+    return load_device_curves(device_by_tag(tag))
+
+
+def fig_paper_example(d, path):
+    rr = d["old"]["arms"]["published"][EXAMPLE]["rrms"]
+    fig_one_card(d, path, "paper", "#555555", f"paper card, NGSpice (device RRMS {rr:.3f})", size=(10.6, 4.4),
+                 dpi=220)
+
+
+def fig_starts(js, z, path):
+    """Measured vs the 3 random start cards (NGSpice): Id-Vd at |Vgs| 1.85 V and Id-Vg at |Vds| 1.85 V."""
+    plt = sp._plt()
+    cs = raw_curves()
+    pick = {"idvd": None, "idvg": None}
+    for i, c in enumerate(cs):
+        if abs(abs(float(c.fixed)) - 1.85) < 1e-6:
+            pick[c.kind] = i
+    fig, axes = plt.subplots(1, 2, figsize=(11.6, 4.5), dpi=200)
+    for ax, kind in zip(axes, ("idvd", "idvg")):
+        i = pick[kind]
+        c = cs[i]
+        x = np.abs(np.asarray(c.Vd if kind == "idvd" else c.Vg, float))
+        ax.scatter(x[::3], np.abs(np.asarray(c.Id, float))[::3], s=12, color=sp.C_MEAS, zorder=5, label="measured")
+        for k in range(3):
+            s = np.abs(z[f"s{k}_sims_start_{i}"])
+            ax.plot(x, s, color=COLS3[k], lw=[4, 2, 2][k], ls=["-", "--", "-"][k],
+                    label=f"start {k + 1} (device RRMS {js['starts'][str(k)]['start_score']:.2f})")
+        if kind == "idvg":
+            ax.set_yscale("log")
+            ax.set_xlabel("|Vgs| (V)")
+            ax.set_title("Id-Vg at |Vds| = 1.85 V (log scale)")
+        else:
+            ax.set_xlabel("|Vds| (V)")
+            ax.set_title("Id-Vd at |Vgs| = 1.85 V")
+        ax.set_ylabel("|Id| (A)")
+        ax.grid(alpha=0.25, lw=0.5)
+    axes[0].legend(fontsize=12, frameon=False, loc="center right")
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 45 parameters: 3 random start cards (NGSpice)", fontsize=14)
+    fig.tight_layout()
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def fig_cma(js, z, path):
+    """Round 1 CMA-ES only: every candidate (faint) and best so far per start; VTH0 / U0 samples by generation."""
+    plt = sp._plt()
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(12.4, 4.8), dpi=200, gridspec_kw={"width_ratios": [1.7, 1]})
+    for k in range(3):
+        ph = z[f"s{k}_log_phase"]
+        r = z[f"s{k}_log_rrms"][ph == "cma"]
+        x = np.arange(1, len(r) + 1)
+        a1.scatter(x, np.clip(r, None, 50), s=2, color=COLS3[k], alpha=0.12, lw=0)
+        a1.plot(x, np.minimum.accumulate(r), color=COLS3[k], lw=2.4, label=f"start {k + 1}: best so far")
+    a1.set_yscale("log")
+    a1.set_ylim(0.08, 60)
+    a1.set_xlim(0, 8100)
+    a1.set_xlabel("NGSpice runs in round 1, global search")
+    a1.set_ylabel("device RRMS (log scale)")
+    a1.set_title("Round 1, CMA-ES: each dot = one candidate card", fontsize=13)
+    a1.grid(alpha=0.25, lw=0.5, which="both")
+    a1.legend(fontsize=12, frameon=False, loc="upper right")
+    k = 1
+    ph = z[f"s{k}_log_phase"]
+    m = ph == "cma"
+    gen = z[f"s{k}_log_gen"][m]
+    sc = a2.scatter(np.abs(z[f"s{k}_log_vth0"][m]), z[f"s{k}_log_u0"][m], c=gen, s=3, cmap="viridis", lw=0)
+    b = js["starts"][str(k)]
+    a2.set_xlim(*sorted(abs(v) for v in b["box_vth0"]))
+    a2.set_ylim(*sorted(b["box_u0"]))
+    a2.set_yscale("log")
+    a2.set_xlabel("|VTH0| (V)")
+    a2.set_ylabel("U0 (m^2/Vs), log scale")
+    a2.set_title("Start 2: sampled VTH0, U0 (axes = allowed range)", fontsize=13)
+    cb = fig.colorbar(sc, ax=a2)
+    cb.set_label("generation")
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 45 parameters", fontsize=14)
+    fig.tight_layout()
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def fig_ls(js, z, path):
+    """Round 1 least squares only: device RRMS of every run after the CMA-ES result, best so far; one curve
+    before / after."""
+    plt = sp._plt()
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(13.0, 4.4), dpi=200, gridspec_kw={"width_ratios": [1.4, 1]})
+    n = js["starts"]["1"]["n_active"]
+    iters = {}
+    for k in range(3):
+        ph = z[f"s{k}_log_phase"]
+        r = z[f"s{k}_log_rrms"]
+        m = np.array([p.startswith("ls") for p in ph])
+        rr, pp = r[m], ph[m]
+        best = np.minimum.accumulate(rr)
+        it = list(np.flatnonzero(pp == "ls_jac_base")) + [len(rr) - 1]
+        y = [float(best[i]) for i in it]
+        iters[str(k)] = y
+        a1.plot(np.arange(len(y)), y, "o-", color=COLS3[k], lw=2.2, ms=6, label=f"start {k + 1}")
+    a1.set_xlabel(f"least-squares iteration (1 iteration = {n} + 2 NGSpice runs)")
+    a1.set_ylabel("device RRMS")
+    a1.set_title("Round 1: device RRMS after each iteration", fontsize=13)
+    a1.grid(alpha=0.25, lw=0.5)
+    a1.legend(fontsize=12, frameon=False, loc="center right")
+    k = "1"
+    cs = raw_curves()
+    from cryoml.metrics import curve_trim
+    from cryoml.card_eval import device_by_tag
+    dev = device_by_tag(EXAMPLE)
+    rows = {}
+    for i, c in enumerate(cs):
+        key = f"{c.kind}@{abs(float(c.fixed)):g}"
+        if key not in d_included(EXAMPLE):
+            continue
+        st, cleaned, den = curve_trim(dev.dev_type, dev.L_um, dev.W_um, c.kind, c.Id)
+        t = np.asarray(cleaned[st:], float)
+        rows[key] = [float(np.sqrt(np.mean((np.asarray(z[f"s{k}_sims_{lab}_{i}"], float)[st:] - t) ** 2)) / den)
+                     for lab in ("cma_best", "final")]
+    keys = sorted(rows, key=lambda q: (q.split("@")[0], float(q.split("@")[1])))
+    y = np.arange(len(keys))
+    a2.barh(y - 0.2, [rows[q][0] for q in keys], 0.4, color="#bbbbbb", label="after global search")
+    a2.barh(y + 0.2, [rows[q][1] for q in keys], 0.4, color=C_45, label="after least squares")
+    lab = {q: (f"Id-Vd, |Vgs| {q.split('@')[1]} V" if q.startswith("idvd") else f"Id-Vg, |Vds| {q.split('@')[1]} V")
+           for q in keys}
+    a2.set_yticks(y)
+    a2.set_yticklabels([lab[q] for q in keys], fontsize=11)
+    a2.invert_yaxis()
+    a2.set_xscale("log")
+    a2.set_xlabel("curve RRMS (log scale)")
+    a2.set_title("Start 2: RRMS of each scored curve", fontsize=13)
+    a2.grid(alpha=0.25, lw=0.5, axis="x")
+    a2.legend(fontsize=11, frameon=False, loc="lower right")
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 45 parameters", fontsize=14)
+    fig.tight_layout()
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+    big = max(keys, key=lambda q: rows[q][0] - rows[q][1])
+    return {"curve": big, "rrms_before_after": rows[big], "per_curve": rows, "iterations": iters}
+
+
+_INCL: dict = {}
+
+
+def d_included(tag):
+    if tag not in _INCL:
+        _INCL[tag] = {c["key"] for c in sp.stored_curves(tag) if c["included"]}
+    return _INCL[tag]
+
+
+def fig_rounds_example(d, path) -> dict:
+    """Left: allowed range per round (selected start) for VTH0, U0, RDSW with the value found in that round.
+    Right: device RRMS after rounds 1-3 for the 3 starts, final card marked."""
+    plt = sp._plt()
+    sel = d["dec"]["arms"]["B"]["multistart"]["starts_selected"][EXAMPLE]
+    pars = [("vth0", "|VTH0| (V)"), ("u0", "U0 (m^2/Vs)"), ("rdsw", "RDSW (ohm um)")]
+    fig = plt.figure(figsize=(12.6, 5.0), dpi=200)
+    gs = fig.add_gridspec(3, 2, width_ratios=[1.25, 1], hspace=1.0, wspace=0.25)
+    out = {"selected_start": sel, "ranges": {}, "rrms": {}}
+    for j, (p, lab) in enumerate(pars):
+        ax = fig.add_subplot(gs[j, 0])
+        for r in (1, 2, 3):
+            spec = jload(I25 / ("specs/full_r1.json" if r == 1 else f"specs/full_s{sel}_r{r}.json"))
+            lo, hi = sorted(abs(v) for v in spec["bounds_by_device"][EXAMPLE][p])
+            val = abs(jload(I25 / f"stepA/full_s{sel}_r{r}.json")["devices"][EXAMPLE]["params"][p])
+            ax.plot([lo, hi], [r, r], color="#9fb8e8", lw=9, solid_capstyle="butt")
+            ax.plot(val, r, "o", color=C_45, ms=8)
+            out["ranges"].setdefault(p, []).append([lo, hi, val])
+        ax.set_xscale("log")
+        if p == "vth0":
+            from matplotlib.ticker import NullFormatter
+            ax.set_xticks([0.2, 0.3, 0.5, 1, 2])
+            ax.set_xticklabels(["0.2", "0.3", "0.5", "1", "2"])
+            ax.xaxis.set_minor_formatter(NullFormatter())
+        ax.set_yticks([1, 2, 3])
+        ax.set_yticklabels(["round 1", "round 2", "round 3"], fontsize=11)
+        ax.set_ylim(3.6, 0.4)
+        ax.set_xlabel(lab + ", log scale", fontsize=11.5)
+        ax.grid(alpha=0.25, lw=0.5, axis="x")
+        if j == 0:
+            ax.set_title(f"Start {sel + 1}: allowed range (bar) and value found (dot)", fontsize=13)
+    ax = fig.add_subplot(gs[:, 1])
+    st_names = ["r1", "r2", "r3", "fd"]
+    xs = [1, 2, 3, 3.7]
+    for k in range(3):
+        y = [jload(I25 / f"stepA/full_s{k}_{s}.json")["devices"][EXAMPLE]["rrms"] for s in st_names]
+        out["rrms"][str(k)] = y
+        ax.plot(xs, y, "o-", color=COLS3[k], lw=2.2, ms=7, label=f"start {k + 1}")
+        ax.annotate(f"{y[-1]:.3f}", (xs[-1], y[-1]), xytext=(8, 0), textcoords="offset points", va="center",
+                    fontsize=12, color=COLS3[k])
+    fin = rrms_row(d, "B", "C0_refit", EXAMPLE)
+    out["final"] = fin
+    ax.plot(4.5, fin, "*", color="#c8384e", ms=16, label=f"final card (start {sel + 1}, refit): {fin:.3f}")
+    ax.set_xticks([1, 2, 3, 3.7, 4.5])
+    ax.set_xticklabels(["round 1", "round 2", "round 3", "+ least\nsquares", "final"], fontsize=11)
+    ax.set_xlim(0.7, 4.9)
+    ax.set_ylabel("device RRMS")
+    ax.set_title("Device RRMS after each round", fontsize=13)
+    ax.grid(alpha=0.25, lw=0.5)
+    ax.legend(fontsize=11.5, frameon=False, loc="center right")
+    fig.suptitle("pMOS L 0.35 um x W 5 um, 45 parameters", fontsize=14)
+    fig.subplots_adjust(left=0.08, right=0.98, top=0.86, bottom=0.12)
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+    return out
+
+
+def fig_screen(path) -> dict:
+    """Screen of 115 candidates: max response (RMS current change / mean measured current) per candidate,
+    threshold, kept / not kept, the 7 paper parameters, the changes vs the earlier 43."""
+    plt = sp._plt()
+    sm = jload(I25 / "screen_mult1/summary.json")
+    p = sm["parameters"]
+    thr = sm["effective_threshold"]
+    resp = {n: max(v["max_full_grid_response"] or 0.0, v["max_high_voltage_response"] or 0.0) for n, v in p.items()}
+    for n, v in p.items():
+        assert v["selected"] == (resp[n] > thr or v["mandatory_seven_parameter"]), n
+    nz = sorted([n for n in resp if resp[n] > 0], key=lambda n: -resp[n])
+    fig, ax = plt.subplots(figsize=(16.6, 6.4), dpi=150)
+    x = np.arange(len(nz))
+    cols = [C_45 if p[n]["selected"] else "#c9ced3" for n in nz]
+    ax.bar(x, [resp[n] for n in nz], color=cols, width=0.8)
+    ax.axhline(thr, color="#c8384e", lw=1.5, ls="--")
+    ax.text(len(nz) - 1, thr * 2.2, f"threshold {thr:g}", ha="right", fontsize=12, color="#c8384e")
+    seven = [n for n in nz if p[n]["mandatory_seven_parameter"]]
+    ax.plot([nz.index(n) for n in seven], [resp[n] * 3 for n in seven], "v", color="#2e9e6a", ms=9,
+            label="the paper's 7")
+    for n, lab in (("cdsc", "CDSC (added)"), ("dvt0w", "DVT0W (added)"), ("pdiblc1", "PDIBLC1 (added)"),
+                   ("cdscd", "CDSCD (dropped)")):
+        i = nz.index(n)
+        off = {"pdiblc1": (0, 40), "dvt0w": (90, 110), "cdsc": (120, 50), "cdscd": (30, -70)}[n]
+        ax.annotate(lab, (i, resp[n]), xytext=off, textcoords="offset points",
+                    ha="center", fontsize=11.5, arrowprops={"arrowstyle": "-", "color": "#555555"})
+    ax.set_yscale("log")
+    ax.set_ylim(1e-12, 1e5)
+    ax.set_xticks([])
+    ax.set_xlabel(f"{len(nz)} candidate parameters with a nonzero response, sorted "
+                  f"({len(resp) - len(nz)} of {len(resp)} with zero response not shown)")
+    ax.set_ylabel("RMS current change / mean |I_meas|")
+    from matplotlib.patches import Patch
+    h, _ = ax.get_legend_handles_labels()
+    ax.legend(handles=[Patch(color=C_45, label=f"kept ({sm['selected_count']})"),
+                       Patch(color="#c9ced3", label="not kept")] + h, fontsize=12, frameon=False, loc="upper right")
+    ax.set_title("Screen: each of 115 BSIM4 parameters changed by 10 %, largest change over 18 devices", fontsize=13)
+    ax.grid(alpha=0.25, lw=0.5, axis="y")
+    fig.tight_layout()
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+    return {"n_zero": len(resp) - len(nz), "n_nonzero": len(nz), "threshold": thr}
+
+
+def active_counts() -> dict:
+    """Parameters the fit can move per device in the 45-parameter round-1 box (ParameterBox.active: range wider
+    than 1e-14 x max(|bound|, 1)); zero values and values below about 1e-14 stay fixed."""
+    sys.path.insert(0, str(ROOT / "scripts" / "research"))
+    from cold_loop import box_for
+    spec = jload(I25 / "specs/full_r1.json")
+    out = {}
+    for t in spec["published_by_device"]:
+        b = box_for(spec, t)
+        out[t] = {"n": int(b.active.sum()), "fixed": [n for n, a in zip(b.names, b.active) if not a]}
+    return out
+
+
 def main() -> int:
     d = load()
     worst = check_per_curve(d)
@@ -541,17 +818,34 @@ def main() -> int:
         for k in range(3):
             fig_iv_page(d, tags[6 * k:6 * k + 6], FIGS / f"i25_iv_card_{SHORT[a]}_{k + 1}.png", a)
     fig_one_card(d, FIGS / "i25_goal_stock.png", "stock", sp.C_STOCK,
-                 "stock SkyWater card (fitted at room temperature), NGSpice at 77 K")
+                 "stock SkyWater card, NGSpice at 77 K")
     fig_one_card(d, FIGS / "i25_start_card.png", "A_mult1", sp.C_ONE,
-                 "start card: paper card file, tuned values removed (all multipliers = 1), NGSpice")
+                 "start card, NGSpice", size=(11.6, 4.5), dpi=200)
     tr = search_trace()
-    fig_trace(tr, FIGS / "i25_trace.png")
     spread = start_spread()
-    fig_rounds_starts(d, spread, FIGS / "i25_rounds_starts.png")
+    js, z = load_trace()
+    assert js["all_match"], "round-1 rerun does not match the stored round-1 records"
+    fig_paper_example(d, FIGS / "i25_ex_paper.png")
+    fig_starts(js, z, FIGS / "i25_ex_starts.png")
+    fig_cma(js, z, FIGS / "i25_ex_cma.png")
+    ls_info = fig_ls(js, z, FIGS / "i25_ex_ls.png")
+    rounds_info = fig_rounds_example(d, FIGS / "i25_ex_rounds.png")
+    screen_info = fig_screen(FIGS / "i25_screen.png")
     stock = jload(OUT / "stock_card.json")["devices"][EXAMPLE]
     wf = {"trace_tag": TRACE_TAG, "trace": tr, "spread_45p": spread,
           "spread_45p_gt10pct": int(sum(max(v) / min(v) > 1.1 for v in spread.values())),
-          "example_stock_rrms": stock["rrms"] if isinstance(stock, dict) else stock}
+          "example_stock_rrms": stock["rrms"] if isinstance(stock, dict) else stock,
+          "example": {"tag": EXAMPLE, "rerun_matches_stored": js["all_match"],
+                      "start_rrms": [js["starts"][str(k)]["start_score"] for k in range(3)],
+                      "cmaes_best": [js["starts"][str(k)]["cmaes_best"] for k in range(3)],
+                      "round1_rrms": [js["starts"][str(k)]["rrms"] for k in range(3)],
+                      "cmaes_evals": [js["starts"][str(k)]["cmaes_evals"] for k in range(3)],
+                      "ls_runs": [js["starts"][str(k)]["n_sim"] - js["starts"][str(k)]["cmaes_evals"] - 1
+                                  for k in range(3)],
+                      "n_active": js["starts"]["1"]["n_active"], "popsize": js["starts"]["1"]["popsize"],
+                      "ls_curve": ls_info, "rounds": rounds_info,
+                      "paper_rrms": d["old"]["arms"]["published"][EXAMPLE]["rrms"]},
+          "screen": screen_info, "active_45p": active_counts()}
     for t, v in spread.items():   # best start after round 3 + FD equals the stored selected start card
         assert abs(min(v) - d["dec"]["arms"]["B"]["per_device"]["start"][t]) < 1e-12, t
     out = {"per_curve_max_abs_diff": worst, "error_split": split, "lowvds": low, "gmr_extra": gmrs(d),
