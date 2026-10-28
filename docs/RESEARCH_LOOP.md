@@ -2856,3 +2856,37 @@ penalty. Rules: R1 redraw the random start (same seeded stream, j = 0 = the A3 d
 start card is finite; R2 a start is eligible only if its final card is finite, best eligible of starts 0-2, extra
 starts 3-9 only for devices with none; R3 each (device, start) chain runs as one pool task. Completed pairs with a
 finite j = 0 draw are reused (deterministic); the others rerun.
+
+## I25-1 outcome (2026-10-28): the paper's 77 K task with every multiplier set to 1, refitted from 3 random starts; 7-parameter and 45-parameter arms with and without g v2
+
+Pre-registration c82a9d0, amendments A3 265cc82 / e7c9da7 (user instructions) and A4 63665bc (non-finite starts);
+code abf4d5e, ddf4005, a62cdd7; runs 00a7508 (arm A Step A), c8257d5 (arm A g), dbc6a19 (arm B Step A), e118e01
+(outcome, report). Valid: 18 finite rows per arm and row type, final re-simulation reproduces every stored RRMS
+(V4 difference 0), records equal `score_card` (V5 0), nested lambda selection complete for 19 outer sets per arm,
+the multiplier-1 template has every multiplier = 1 on all 18 bins, the stock-card reference reproduces b299dc9 (0).
+Task: the released 77 K card files with every multiplier set to 1 (named `.param` multipliers of pmos bin 0
+included), released bins, tnom -196.15 C, temperature coefficients 0, paper RRMS with the released card's curve set.
+Screen around the multiplier-1 card: 45 of 115 selected (42 shared with the old 43; new cdsc, dvt0w, pdiblc1;
+dropped cdscd). Step A per (device, start): 3 random starts (A4 redraw: 19 pairs in arm A, 22 in arm B), rounds 1-3
+re-centered on the previous card + FD, per device the eligible start with the lowest training RRMS; no extra starts
+needed. Finite final cards per start: arm A 17 / 18 / 17, arm B 18 / 18 / 18.
+Per round, all-device / combined (selected start): arm A 0.1706 / 0.1602, 0.1546 / 0.1458, 0.1546 / 0.1458, FD
+0.1546 / 0.1458; arm B 0.1354 / 0.1273, 0.1170 / 0.1099, 0.1102 / 0.1034, FD 0.1096 / 0.1028; old 43p chain (state
+C) 0.1231 / 0.1161, 0.1151 / 0.1088, 0.1115 / 0.1055, 0.1109 / 0.1049. Arm A center-start reference chain 0.1575 /
+0.1484.
+Main table (primary curve set), full data all-device / combined, LODO all-device / combined, NGSpice calls per
+device: stock tt card at 77 K 3.4176 / 3.1077; multiplier-1 card without fit 12.1010 / 10.9593; paper card 0.2751 /
+0.2595; 7p card (C0_refit) 0.1546 / 0.1458 (28,953 calls); 7p card + g 0.0783 / 0.0757, LODO 0.0823 / 0.0795 (50,185);
+45p card 0.1094 / 0.1026 (77,696); 45p card + g 0.0667 / 0.0635, LODO 0.0693 / 0.0661 (106,986). lambda*_full 5 V in
+both arms. M-rule curve set: 7p card 0.1700 / 0.1596, + g 0.0969 / 0.0924; 45p card 0.1278 / 0.1192, + g 0.0867 /
+0.0815; paper 0.2877.
+GMR [95% device bootstrap], primary: arm A card + g vs card 0.519 [0.439, 0.611] 18/18 lower, vs paper 0.278 [0.227,
+0.347] lower, card vs paper 0.536 [0.467, 0.613] lower, LODO + g vs card 0.549 [0.469, 0.641] lower; arm B card + g
+vs card 0.633 [0.553, 0.721] lower, vs paper 0.231 [0.198, 0.274] lower, card vs paper 0.365 [0.318, 0.417] lower,
+LODO + g vs card 0.668 [0.581, 0.768] lower; 7p + g vs 45p + g 1.206 [1.097, 1.343] higher; 45p + g vs old 43p + g
+full data 0.996 [0.895, 1.106] and LODO 0.980 [0.871, 1.102] inconclusive. M-rule labels equal the primary labels.
+Element checks (prereg section 10, optional): not run. Report batch `out/research/report/2026-10-28_i25_1/`
+(`scripts/research/plot_explore_i25_1.py`; main tables, per-round table and figure, multistart spread, GMR table,
+forest, per-device tables for both arms, parameter set, 36 I-V figures in `iv/` for all 18 devices x 2 arms with
+measured points, paper card NGSpice, our card NGSpice and our card + g); deck `slides/i25_1_from_scratch.pptx` (not
+in git); site claim `i25-1`.

@@ -1,6 +1,6 @@
 # Method freeze and TEST plan: draft (2026-10-23)
 
-Status: **proposed, not frozen.** Updated 2026-10-23 after I20-1 (NIST rows in state C, NIST g v2 rows, frozen S3_D rule) and 2026-10-26 after I21-1 (NIST Part B, TU Delft v1 S3_D in state C, IHP 233 / 343 / 398 K g v2 rows) and I22-1 (matched-budget baselines, open item 12), and 2026-10-27 after I23-1 (IHP call-matched control, fixed-lambda g v2 arm, open item 12). The final freeze is planned for about 2026-12-10. This file is not a
+Status: **proposed, not frozen.** Updated 2026-10-23 after I20-1 (NIST rows in state C, NIST g v2 rows, frozen S3_D rule) and 2026-10-26 after I21-1 (NIST Part B, TU Delft v1 S3_D in state C, IHP 233 / 343 / 398 K g v2 rows) and I22-1 (matched-budget baselines, open item 12), and 2026-10-27 after I23-1 (IHP call-matched control, fixed-lambda g v2 arm, open item 12), and 2026-10-28 after I25-1 (section 0). The final freeze is planned for about 2026-12-10. This file is not a
 pre-registration. No TEST split was opened or evaluated for this draft; no NGSpice run and no training were done
 for it. Every number below is copied from a stored file named next to it or recomputed from stored per-device rows
 by `scripts/research/plot_freeze_draft.py` (117 values checked against the stored decision files after the I21-1 update; 99 after I20-1; 88 before).
@@ -8,6 +8,17 @@ by `scripts/research/plot_freeze_draft.py` (117 values checked against the store
 Sources read: `docs/RESEARCH_LOOP.md` (I3-2 to I19-1), `out/research/explore/I19_1/test_gate_decisions.md`,
 `out/research/explore/I8_2/prereg_test_predictions.md` (commit 08d23e3), `out/research/explore/real_split.json`,
 the split files of I5-1, I6-1, I8-1, I9-1, the decision files listed in section 2, and the code cited in section 1.
+
+## 0. I25-1 rerun without the released tuned values (2026-10-28)
+
+I25-1 (prereg c82a9d0, amendments A3 / A4) refitted the 18 sky130 77 K devices on the paper's card files with every
+released multiplier set to 1 (named multipliers included), from 3 random starts per device with the same multi-round
+direct NGSpice fit (rounds 1-3 + FD), and reran the selected g v2 recipe on those starting cards. Full data
+all-device / combined: 7 parameters 0.1546 / 0.1458, + g 0.0783 / 0.0757; 45 parameters (screen around the
+multiplier-1 card) 0.1094 / 0.1026, + g 0.0667 / 0.0635; LODO + g 0.0823 / 0.0795 and 0.0693 / 0.0661; paper card
+0.2751 / 0.2595. GMR(45p + g, old 43p + g) full data 0.996 [0.895, 1.106], LODO 0.980 [0.871, 1.102] (CI includes 1;
+the section 1.A cards used released-card centers and kept the released tuned values of pmos_L0p35_W1p6). Candidate replacement for 1.A: the I25-1 arm B cards (`out/research/explore/I25_1/stepA/
+full_best.json`, refit box `specs/full_r3_best.json`); user decision. Source: `out/research/explore/I25_1/decision.json`.
 
 ## 1. Method specification
 

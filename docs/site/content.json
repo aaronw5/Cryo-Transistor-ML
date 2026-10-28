@@ -9034,6 +9034,117 @@
     "out/research/report/2026-10-27_i23_1/"
    ],
    "updated": "2026-10-27"
+  },
+  {
+   "id": "i25-1",
+   "tab": "explore",
+   "statement": "I25-1: the paper's sky130 77 K fit redone with the direct NGSpice fit and g v2 without any released tuned value: released 77 K card files with every multiplier set to 1, 3 random starts per device, 7-parameter and 45-parameter arms.",
+   "status": "verified",
+   "headline": {
+    "value": "Full data all-device / combined: 7p card 0.1546 / 0.1458, 7p card + g 0.0783 / 0.0757; 45p card 0.1094 / 0.1026, 45p card + g 0.0667 / 0.0635; paper card 0.2751 / 0.2595; multiplier-1 card without fit 12.10 / 10.96. GMR(card + g, paper) 0.278 [0.227, 0.347] (7p), 0.231 [0.198, 0.274] (45p); 18/18 devices lower.",
+    "convention": "paper RRMS, released-card curve set; GMR = exp(mean ln RRMS ratio), 95% bootstrap CI (10,000, seed 0, device); full data = all 18 devices fitted (primary), LODO = g trained without the device (secondary)"
+   },
+   "numbers": [
+    {
+     "label": "GMR(card + g, card), full data",
+     "value": "7p 0.519 [0.439, 0.611]; 45p 0.633 [0.553, 0.721]",
+     "convention": "primary curve set",
+     "source": "out/research/explore/I25_1/decision.json"
+    },
+    {
+     "label": "LODO card + g",
+     "value": "7p 0.0823 / 0.0795; 45p 0.0693 / 0.0661",
+     "convention": "all-device / combined",
+     "source": "out/research/explore/I25_1/decision.json"
+    },
+    {
+     "label": "GMR(45p + g, old 43p + g)",
+     "value": "full data 0.996 [0.895, 1.106]; LODO 0.980 [0.871, 1.102]",
+     "convention": "old = released-card-centered chain, I16-1 / I15-2 rows",
+     "source": "out/research/explore/I25_1/decision.json"
+    },
+    {
+     "label": "RRMS after rounds 1 / 2 / 3 / FD (45p)",
+     "value": "0.1354 / 0.1170 / 0.1102 / 0.1096 (old chain 0.1231 / 0.1151 / 0.1115 / 0.1109)",
+     "convention": "all-device, selected start",
+     "source": "out/research/explore/I25_1/stepA/full_best.json"
+    },
+    {
+     "label": "NGSpice calls per device",
+     "value": "7p card 28,953; 7p + g 50,185; 45p card 77,696; 45p + g 106,986",
+     "convention": "3 starts + selection refits / 18 + own refit",
+     "source": "out/research/explore/I25_1/decision.json"
+    }
+   ],
+   "what": [
+    "Question: does the method reach the paper's 77 K result without any value the paper tuned (provenance audit b299dc9 found the earlier starting cards used released-card centers and kept the released tuned values of pmos_L0p35_W1p6)?",
+    "Pre-registered (c82a9d0); amendments A3 (user instructions: the paper's task with multipliers 1, random starts, multi-round fit, both parameter counts) and A4 (non-finite random starts) committed before the affected runs."
+   ],
+   "did": [
+    "Template mult1: released 77 K card files with every multiplier = 1, named .param multipliers included (cold_start fix, unit tests). Screen around the multiplier-1 card: 45 of 115 parameters. Step A per device and start: random start in the registered box (redrawn until finite), rounds 1-3 re-centered on the previous card (CMA-ES + TRF), FD polish; best of 3 by training RRMS. Selected g v2 recipe (nested lambda selection) with full-data in-sample refits and LODO held-out refits."
+   ],
+   "result": {
+    "text": [
+     "Both arms fit every device better than the paper card (18/18), with and without g; g lowers the card-fit RRMS by 37-48% (GMR 0.519 / 0.633).",
+     "The 45-parameter arm with g (0.0667 / 0.0635) is not distinguishable from the earlier released-card-centered 43-parameter result with g (GMR 0.996 [0.895, 1.106]).",
+     "Random starts: arm A finite final cards 17 / 18 / 17 of 18 per start (BSIM4 rejects cards whose effective u0 is negative); every device had a finite start."
+    ],
+    "figures": [
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "01_table_main_primary.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "04_table_stages.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "05_table_multistart.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "06_fig_stages.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "07_table_gmr.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "08_fig_forest.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "09_fig_per_device.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "10_table_per_device_armA.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "11_table_per_device_armB.png"
+     },
+     {
+      "batch": "2026-10-28_i25_1",
+      "file": "12_table_parameter_set.png"
+     }
+    ]
+   },
+   "caveats": [
+    "The box widths are the earlier cold-start rule, set in October with the released multiplier range known; not re-derived.",
+    "Card file structure (bins, tnom -196.15 C, temperature coefficients 0, version 4.82) is the paper's, by user instruction.",
+    "Verilog-A element checks of the new full-data g were not run."
+   ],
+   "sources": [
+    "out/research/explore/I25_1/prereg.md",
+    "out/research/explore/I25_1/amendment_A3.md",
+    "out/research/explore/I25_1/amendment_A4.md",
+    "out/research/explore/I25_1/decision.json",
+    "out/research/report/2026-10-28_i25_1/"
+   ],
+   "updated": "2026-10-28"
   }
  ]
 }
