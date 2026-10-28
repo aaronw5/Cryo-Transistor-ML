@@ -12,6 +12,7 @@ Outputs: out/research/explore/step_deck/round1_trace/<tag>.json (summary, compar
 not in git).
 
   PYTHONPATH=src .venv/bin/python scripts/research/explore/i25_1_round1_trace.py [--tag pmos_L0p35_W5]
+  ... --ls-from-start   (comparison: FD least squares from the same random starts, no CMA-ES; <tag>_ls_from_start.json)
 """
 from __future__ import annotations
 
@@ -166,11 +167,42 @@ def run(task):
     return out, arrays
 
 
+def run_ls_from_start(task):
+    """Comparison only: FD least squares (cryoml.ngspice_fit.polish settings of round 1, max 600 runs, 2 passes)
+    started directly from the random start card, without CMA-ES."""
+    tag, k = task
+    import i25_1_scratch as drv
+    from cold_loop import box_for
+    from cryoml.ngspice_fit import DeviceProblem
+    spec1 = drv.one_device_spec(json.loads((SPECS / "full_r1.json").read_text()), tag)
+    local0, _, _ = drv.draw_start(tag, spec1, k)
+    problem = DeviceProblem(tag, box_for(spec1, tag))
+    phase, rr = ["start"], []
+    orig = problem.simulate
+
+    def logged(local):
+        sims = orig(local)
+        rr.append(float(np.mean(problem.curve_rrms(sims))))
+        return sims
+    problem.simulate = logged
+    res = polish_logged(problem, local0, phase, max_nfev=POLISH_NFEV, irls_rounds=IRLS)
+    return {"k": k, "rrms_log": rr, "objective": float(res["objective"]), "history": res["history"],
+            "n_sim": problem.n_sim}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="pmos_L0p35_W5")
+    ap.add_argument("--ls-from-start", action="store_true",
+                    help="comparison run: FD least squares from each random start, no CMA-ES")
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
+    if a.ls_from_start:
+        with get_context("spawn").Pool(3) as pool:
+            rows = pool.map(run_ls_from_start, [(a.tag, k) for k in range(3)])
+        (OUT / f"{a.tag}_ls_from_start.json").write_text(json.dumps({"tag": a.tag, "starts": rows}, default=float))
+        print(json.dumps([{k: v for k, v in r.items() if k != "rrms_log"} for r in rows], default=float))
+        return 0
     with get_context("spawn").Pool(3) as pool:
         rows = pool.map(run, [(a.tag, k) for k in range(3)])
     summary, arrays = {"tag": a.tag, "starts": {}}, {}

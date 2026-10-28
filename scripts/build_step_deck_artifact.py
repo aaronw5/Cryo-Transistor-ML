@@ -35,32 +35,33 @@ BLOB = {  # asset ids in the artifact; LOCAL = the uploaded file
     "measured": ("1844405a05e791cedc2e08e8e320a132", FIG / "s01_measured.png"),
     "eq_rrms": ("42728e3500a3277bc0e28dbb5d75edc7", FIG / "eq_rrms.png"),
     "start": ("94d8dcf27e1e1ecb3c06b51b8b0d461f", FIG / "i25_start_card.png"),
-    "paper_ex": ("db3b79dceb6be9f0c2e1cc1e7b33aa61", FIG / "i25_ex_paper.png"),
+    "paper_ex": ("2ced443a287cf34fd2e0ab9b6d66295f", FIG / "i25_ex_paper.png"),
     "starts": ("48e34cebc391f0d4cd32a444ed3d7a23", FIG / "i25_ex_starts.png"),
     "cma": ("90ef5423cc737d41a66b67e21865d9ae", FIG / "i25_ex_cma.png"),
-    "ls": ("0d9d39c0810f7704af40fe475b196da8", FIG / "i25_ex_ls.png"),
-    "rounds_ex": ("febb23cdf0036fb4ef80be978f23c410", FIG / "i25_ex_rounds.png"),
+    "ls": ("6e6e5eb5d482d2834fa36b6fdeb92486", FIG / "i25_ex_ls.png"),
+    "rounds_ex": ("5f34ff7d93a4e4ad83061b9f566625bc", FIG / "i25_ex_rounds.png"),
+    "optimizers": ("7fdaa39dfd82d86b26154e1544d829c7", FIG / "i25_ex_optimizers.png"),
     "screen": ("0b3894a877f07e1a4d766d99e3553279", FIG / "i25_screen.png"),
-    "perdev": ("cc5157dee20ebc5a72e5119064b55397", FIG / "i25_per_device_card.png"),
-    "iv_7p_1": ("7e82729a0da6a0cc451b90109b917312", FIG / "i25_iv_card_7p_1.png"),
-    "iv_7p_2": ("674df2715072be671d840a25d40799c0", FIG / "i25_iv_card_7p_2.png"),
-    "iv_7p_3": ("ab51bb2e3b74a7155fa8b7b0e823bc44", FIG / "i25_iv_card_7p_3.png"),
-    "iv_45p_1": ("b74c6312641b315427349ba3818bfece", FIG / "i25_iv_card_45p_1.png"),
-    "iv_45p_2": ("ec4ebbda9a6d6e78909bc18e09a25f9f", FIG / "i25_iv_card_45p_2.png"),
-    "iv_45p_3": ("52914a90fb7c2bf54b9af407dbebb897", FIG / "i25_iv_card_45p_3.png"),
+    "perdev": ("d31f1cdb1f5cfd9b708df2e510854fd5", FIG / "i25_per_device_card.png"),
+    "iv_7p_1": ("0b524c16213b5bebea45f8b9cae84b4e", FIG / "i25_iv_card_7p_1.png"),
+    "iv_7p_2": ("2c223869301929f15353e49de144870f", FIG / "i25_iv_card_7p_2.png"),
+    "iv_7p_3": ("b8b8fd124e13e49b24162295158acac9", FIG / "i25_iv_card_7p_3.png"),
+    "iv_45p_1": ("3bef28518e314338e7efd15169f2f06d", FIG / "i25_iv_card_45p_1.png"),
+    "iv_45p_2": ("080f622d1773c1cd5d130c9f273b7037", FIG / "i25_iv_card_45p_2.png"),
+    "iv_45p_3": ("7097cb56c4cb709b0a57a9f4c3f01202", FIG / "i25_iv_card_45p_3.png"),
 }
-ORDER = ["title", "w01-goal", "w02-data", "w03-model", "w04-paper", "w05-workflow", "w05b-pseudo", "w05c-eval",
-         "w06-step1", "w07-step2",
-         "w08-step3", "w09-step4", "w10-step5", "w11-params45", "w12-results", "w13-perdevice",
+ORDER = ["title", "w01-goal", "w02-data", "w03-model", "w04-paper", "w05c-eval", "w05d-optimizers", "w05-workflow",
+         "w05b-pseudo", "w06-step1", "w07-step2", "w08-step3", "w09-step4", "w10-step5", "w11-step6", "w11b-step7",
+         "w12-params45", "w13-results", "w14-perdevice",
          "s11-iv7-1", "s11-iv7-2", "s11-iv7-3", "s12-iv45-1", "s12-iv45-2", "s12-iv45-3"]
-OLD = ["b1-transistor", "b2-model", "b3-fit", "s01-measured", "s02-stock", "s03-paper", "s04-setup", "s04-stepA",
+OLD = ["w11-params45", "w12-results", "w13-perdevice", "b1-transistor", "b2-model", "b3-fit", "s01-measured", "s02-stock", "s03-paper", "s04-setup", "s04-stepA",
        "s04b-params", "s04c-why", "s04d-45vs43", "s09-results", "s09b-gmr", "s09c-stages", "s10-perdevice",
        "s10b-nmos", "s10c-pmos", "s13-remaining", "s13b-lowvds", "s15-cost", "s16-sources", "s17-limits"]
 SECTIONS = {
     "s1": {"description": "Title", "start": "title"},
-    "s2": {"description": "Goal, measured data, model and error, the paper's card", "start": "w01-goal"},
-    "s3": {"description": "Our workflow: nested loops, pseudocode, one evaluation, steps 1-5", "start": "w05-workflow"},
-    "s4": {"description": "Results: table, per device, I-V curves", "start": "w12-results"},
+    "s2": {"description": "Stock card, measured data, card and RRMS, Beall et al. card", "start": "w01-goal"},
+    "s3": {"description": "NGSpice run, optimizers CMA-ES and TRF, fitting procedure, steps 1-7", "start": "w05c-eval"},
+    "s4": {"description": "Run 2 screen, results, per-device RRMS, I-V curves", "start": "w12-params45"},
 }
 
 INK, MUTED, PAPER, CARD, LINE = "#1f252b", "#5a6168", "#f6f5f1", "#ffffff", "#c9ced3"
@@ -194,104 +195,16 @@ def build() -> dict:
     assert wf["spread_45p_gt10pct"] == 15
     S = {}
 
-    S["title"] = sec("title", [
-        '<h1 style="font-size:80px;font-weight:600;line-height:1.12;color:#f1f0eb">Fitting BSIM4 parameters to '
-        'SKY130 transistors at 77 K</h1>',
-        '<div style="display:flex;flex-direction:column;gap:16px">' + "".join(
-            f'<p style="font-size:34px;line-height:1.3">{t}</p>' for t in [
-                "18 measured transistors (8 nMOS, 10 pMOS), simulated in NGSpice",
-                "Compared with the paper's published 77 K card",
-                '<span style="color:#b8bec4">2026-10-28</span>']) + "</div>"],
-        "This talk shows how we fit BSIM4 model parameters to measured 77 K data of 18 SkyWater 130 nm transistors. "
-        "The model and the simulator stay unchanged; only parameter values change. The result is compared with the "
-        "card published in the paper.",
-        style=f"background:{INK};color:#f1f0eb;{F};padding:128px 160px;display:flex;flex-direction:column;"
-              "justify-content:center;gap:56px")
-
-    S["w01-goal"] = sec("w01-goal", [
-        H2.format("Goal: simulated curves that match measurement"),
-        img("goal", "pMOS L 0.35 um x W 5 um at 77 K: measured points and the stock SkyWater card simulated in "
-                    "NGSpice", 1640, 636),
-        ul(["Card: file of BSIM4 parameter values, one set per transistor size",
-            "Stock SkyWater card was fitted at room temperature; here simulated at 77 K",
-            "Goal: parameter values so that NGSpice matches the 77 K measurement"])],
-        "A transistor model card is a list of parameter values for the BSIM4 equations. The stock SkyWater card was "
-        "made for room temperature. Simulated at 77 K, its current differs from the measurement, as in this pMOS. "
-        "The goal is to find parameter values that make the simulation match the 77 K data.", gap=24)
-
-    S["w02-data"] = sec("w02-data", [
-        H2.format("Measured data: 18 transistors at 77 K"),
-        img("measured", "Measured Id-Vd and Id-Vg of pMOS L 0.35 um x W 5 um at 77 K", 1640, 560),
-        ul(["8 nMOS, 10 pMOS; channel length L 0.15-100 um, width W 0.42-100 um",
-            "Id-Vd: drain current vs drain voltage, 5 gate voltages",
-            "Id-Vg: drain current vs gate voltage, 6 drain voltages",
-            "Faded points: below the paper's current floor, not used in the error"])],
-        "The data are the paper's 77 K measurements. Each transistor has five Id-Vd curves and six Id-Vg curves. "
-        "For pMOS the voltages and currents are negative; plots show absolute values. Points below the current floor "
-        "are not used.", gap=22)
-
-    model_svg = svg_boxes(
-        [(0, 20, 330, 130, [("Card", 30, True), ("BSIM4 parameter values", 26, False)], BLUE, CARD),
-         (430, 20, 330, 130, [("NGSpice", 30, True), ("circuit simulator", 26, False)], BLUE, CARD),
-         (860, 20, 360, 130, [("Simulated curves", 30, True), ("Id at measured voltages", 26, False)], BLUE, CARD),
-         (860, 200, 360, 110, [("Measured curves", 30, True), ("11 per device", 26, False)], INK, CARD),
-         (1330, 105, 398, 130, [("Error: RRMS", 30, True), ("simulated vs measured", 26, False)], "#c8384e",
-          "#fbe8de")],
-        [(330, 85, 426, 85), (760, 85, 856, 85), (1220, 85, 1326, 150), (1220, 255, 1326, 195)],
-        1728, 320, "Card to NGSpice to simulated curves; simulated and measured curves give the error RRMS")
-    S["w03-model"] = sec("w03-model", [
-        H2.format("Model and error measure"),
-        model_svg,
-        f'<div style="display:flex;flex-direction:row;gap:40px;align-items:center">'
-        f'<div style="background:{CARD};border:1px solid {LINE};padding:12px"><img src="/_blob/{BLOB["eq_rrms"][0]}" '
-        f'alt="RRMS of a curve and of a device" style="width:720px;height:156px;object-fit:contain"></div>'
-        + ul(["RRMS of curve c: RMS current error / mean measured current",
-              "Device RRMS: mean over its curves",
-              "All-device RRMS: mean over the 18 devices",
-              "Same definition and curves as the paper"], 28, extra=";width:960px") + "</div>"],
-        "The card goes into NGSpice, which simulates the drain current at the measured voltages. The error of one "
-        "curve is the RMS difference between simulated and measured current, divided by the mean measured current. "
-        "A device's RRMS is the mean over its curves, and the all-device RRMS is the mean over 18 devices. This is "
-        "the paper's definition, unchanged.", gap=36)
-
-    seven = [("VTH0", "threshold voltage"), ("U0", "low-field mobility"), ("NFACTOR", "subthreshold slope factor"),
-             ("VSAT", "saturation velocity"), ("DELTA", "linear-to-saturation smoothing"),
-             ("RDSW", "source/drain series resistance"), ("ETA0", "threshold shift with drain voltage")]
-    ex = wf["example"]
-    S["w04-paper"] = sec("w04-paper", [
-        H2.format("The paper's card: 7 tuned parameters"),
-        '<div style="display:flex;flex-direction:row;gap:32px;align-items:center">'
-        + table(["Parameter", "Meaning"], [36, 64], [[f"<b>{p}</b>", m] for p, m in seven], 24, width=600)
-        + img("paper_ex", "pMOS L 0.35 um x W 5 um: measured points and the paper card simulated in NGSpice",
-              1060, 410) + "</div>",
-        ul(["The paper changed these 7 parameters per device; all others unchanged",
-            f"Figure: one pMOS (L 0.35 um x W 5 um), paper card; device RRMS {ex['paper_rrms']:.3f}",
-            f"All 18 devices: all-device RRMS {f4(pap['all_device'])}",
-            "Our first run fits the same 7 parameters"], 28)],
-        "The paper's card changes seven BSIM4 parameters for each device and leaves the rest of the card file "
-        "unchanged. The figure shows the paper card on the pMOS that the step slides use as the example. Over the "
-        "18 devices the paper card has an all-device RRMS of 0.2751. Our first run fits the same seven parameters.",
-        gap=30)
-
-    # ---------------------------------------------------------------- run counts per box (means over devices)
-    def r10(v):
-        return f"{int(round(v / 10.0) * 10):,}"
-    cma = (rnd["A"]["cma_mean"], rnd["B"]["cma_mean"])
-    lsr = (rnd["A"]["ls_mean"], rnd["B"]["ls_mean"])
-    fdr = (rnd["A"]["fd_mean"], rnd["B"]["fd_mean"])
-    ref_ = (cA["C0_refit"] - cA["starting_card"], cB["C0_refit"] - cB["starting_card"])
-    runs = {"cma": f"{r10(cma[0])} / {r10(cma[1])} runs", "ls": f"{r10(lsr[0])} / {r10(lsr[1])} runs",
-            "fd": f"{r10(fdr[0])} / {r10(fdr[1])} runs", "ref": f"{r10(ref_[0])} / {r10(ref_[1])} runs"}
-
+    # ---------------------------------------------------------------- svg helpers
     def T(x, y, text, size=26, bold=False, anchor="start", color=INK):
         fw = ' font-weight="600"' if bold else ""
         return (f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-size="{size}"{fw} '
                 f'font-family="IBM Plex Sans, Arial, sans-serif" fill="{color}">{text}</text>')
 
     def R(x, y, w, h, stroke, fill=CARD, dash=False, rx=10):
-        d = ' stroke-dasharray="12 8"' if dash else ""
+        d_ = ' stroke-dasharray="12 8"' if dash else ""
         return (f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" fill="{fill}" stroke="{stroke}" '
-                f'stroke-width="3"{d}/>')
+                f'stroke-width="3"{d_}/>')
 
     def A_(x1, y1, x2, y2):
         import math
@@ -313,261 +226,357 @@ def build() -> dict:
         return (f'<svg aria-label="{label}" width="{w}" height="{h}" viewBox="0 0 {w} {h}" '
                 'xmlns="http://www.w3.org/2000/svg">' + "".join(parts) + "</svg>")
 
-    nest = svg(1728, 560, "Nested loops: for each device, for each of 3 starts, rounds 1-3 of range, CMA-ES and "
-                          "least squares, one more least-squares pass, keep the best start, final refit", [
-        R(2, 2, 1724, 556, INK),
-        T(24, 40, "For each of the 18 devices (fitted separately)", 28, True),
-        R(22, 62, 1120, 480, BLUE, "#f3f7fd", dash=True),
-        T(42, 98, "For each of 3 random starts", 26, True, color=BLUE),
-        B(42, 150, 250, 170, [("Random start", 26, True), ("in range R1;", 24, False),
-                              ("redraw if NGSpice", 24, False), ("fails", 24, False)]),
-        A_(292, 235, 334, 235),
-        R(338, 116, 784, 250, "#4a5259", "#ffffff"),
-        T(358, 150, "Rounds 1, 2, 3", 26, True),
-        B(358, 170, 220, 170, [("Set range", 26, True), ("R1; later:", 24, False), ("centred on last", 24, False),
-                               ("card, half width", 24, False)]),
-        A_(578, 255, 616, 255),
-        B(620, 170, 230, 170, [("Global search", 26, True), ("CMA-ES", 24, False), (runs["cma"], 24, False)]),
-        A_(850, 255, 884, 255),
-        B(888, 170, 220, 170, [("Least squares", 26, True), (runs["ls"], 24, False)]),
-        A_(730, 366, 730, 402),
-        B(560, 404, 340, 130, [("Least squares again", 26, True), ("after round 3", 24, False),
-                               (runs["fd"], 24, False)]),
-        A_(1142, 300, 1186, 300),
-        B(1190, 120, 516, 110, [("Keep the start with", 26, True), ("the lowest device RRMS", 26, True)], INK),
-        A_(1448, 230, 1448, 266),
-        B(1190, 270, 516, 110, [("Final refit: least squares", 26, True), (runs["ref"], 24, False)], INK),
-        A_(1448, 380, 1448, 416),
-        B(1190, 420, 516, 100, [("Final card", 28, True)], "#c8384e", "#fbe8de"),
-    ])
-    S["w05-workflow"] = sec("w05-workflow", [
-        H2.format("Our workflow: nested loops"),
-        nest,
-        ul(["Run counts: mean NGSpice runs per box, 7 / 45 parameters",
-            f"Total per device, 3 starts included: {kint(cA['C0_refit'])} / {kint(cB['C0_refit'])} NGSpice runs",
-            "Step slides use one pMOS (L 0.35 um x W 5 um), 45 parameters"], 28)],
-        "Each device is fitted on its own. For each device there are three random starts. Each start goes through "
-        "three rounds; a round sets the parameter range, runs the global search, then least squares. After round 3 "
-        "one more least-squares pass follows. Then the start with the lowest RRMS is kept and refitted once more by "
-        "least squares; the result is the final card. The numbers are mean NGSpice runs per box.", gap=22)
+    def r10(v):
+        return f"{int(round(v / 10.0) * 10):,}"
+    cma = (rnd["A"]["cma_mean"], rnd["B"]["cma_mean"])
+    lsr = (rnd["A"]["ls_mean"], rnd["B"]["ls_mean"])
+    fdr = (rnd["A"]["fd_mean"], rnd["B"]["fd_mean"])
+    ref_ = (cA["C0_refit"] - cA["starting_card"], cB["C0_refit"] - cB["starting_card"])
+    runs = {"cma": f"{r10(cma[0])} / {r10(cma[1])}", "ls": f"{r10(lsr[0])} / {r10(lsr[1])}",
+            "fd": f"{r10(fdr[0])} / {r10(fdr[1])}", "ref": f"{r10(ref_[0])} / {r10(ref_[1])}"}
+    assert runs == {"cma": "2,990 / 8,010", "ls": "160 / 480", "fd": "150 / 330", "ref": "120 / 300"}, runs
+    ex = wf["example"]
+    sr = ex["start_rrms"]
+    rr = ex["rounds"]
+    fd = rr["fd"]
+    n_ = ex["n_active"]
+    op = wf["optimizers"]
+    assert ex["popsize"] == 15 and n_ == 40
 
-    pc = [("for device in 18 devices:", "fitted separately"),
-          ("&nbsp;&nbsp;for start in 1, 2, 3:", ""),
-          ("&nbsp;&nbsp;&nbsp;&nbsp;range = R1 around the start card", "step 1"),
-          ("&nbsp;&nbsp;&nbsp;&nbsp;x = random card in range", "step 2; redraw if NGSpice fails"),
-          ("&nbsp;&nbsp;&nbsp;&nbsp;for round in 1, 2, 3:", ""),
-          ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x = CMA-ES(device RRMS, x, range)", f"step 3; {runs['cma']}"),
-          ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x = least_squares(residuals, x, range)", f"step 4; {runs['ls']}"),
-          ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if round &lt; 3: range = centred on x, half width", "step 5"),
-          ("&nbsp;&nbsp;&nbsp;&nbsp;x = least_squares(residuals, x, range)", runs["fd"]),
-          ("&nbsp;&nbsp;best = start with the lowest device RRMS", ""),
-          ("&nbsp;&nbsp;final card = least_squares(residuals, best, range)", runs["ref"])]
-    mono = "font-family:'Courier New', Courier, monospace"
-    code = (f'<div style="display:flex;flex-direction:column;gap:6px;background:{CARD};border:1px solid {LINE};'
-            f'padding:28px 32px">' + "".join(
-                f'<div style="display:flex;flex-direction:row"><p style="font-size:28px;line-height:1.3;{mono};'
-                f'width:1060px">{a}</p><p style="font-size:26px;line-height:1.3;color:{MUTED}">'
-                f'{"# " + b if b else ""}</p></div>' for a, b in pc) + "</div>")
-    S["w05b-pseudo"] = sec("w05b-pseudo", [
-        H2.format("The same procedure as pseudocode"),
-        code,
-        ul(["Run counts: mean NGSpice runs, 7 / 45 parameters",
-            "range: allowed interval of each parameter, on a log scale"], 26)],
-        "This is the same procedure line by line. The comments give the step number used on the following slides "
-        "and the mean number of NGSpice runs. The range is the allowed interval of each parameter; it is "
-        "narrowed in rounds 2 and 3.", gap=24)
+    # ---------------------------------------------------------------- title, background
+    S["title"] = sec("title", [
+        '<h1 style="font-size:80px;font-weight:600;line-height:1.12;color:#f1f0eb">BSIM4 parameter fit, SKY130, '
+        '77 K</h1>',
+        '<div style="display:flex;flex-direction:column;gap:16px">' + "".join(
+            f'<p style="font-size:34px;line-height:1.3">{t}</p>' for t in [
+                "18 measured transistors (8 nMOS, 10 pMOS), simulated in NGSpice",
+                "Reference: Beall et al. card (published 77 K card)",
+                '<span style="color:#b8bec4">2026-10-28</span>']) + "</div>"],
+        "BSIM4 parameters are fitted to 77 K measurements of 18 SkyWater 130 nm transistors. Model and simulator are "
+        "unchanged; only parameter values change.",
+        style=f"background:{INK};color:#f1f0eb;{F};padding:128px 160px;display:flex;flex-direction:column;"
+              "justify-content:center;gap:56px")
 
-    ev = svg(1728, 150, "One evaluation: parameter values, write card, NGSpice, 11 simulated curves, compare with "
-                        "measured, error", [
+    S["w01-goal"] = sec("w01-goal", [
+        H2.format("Stock card at 77 K"),
+        img("goal", "pMOS L 0.35 um x W 5 um at 77 K: measured points and the stock SkyWater card simulated in "
+                    "NGSpice", 1640, 636),
+        ul(["A card holds the BSIM4 parameter values of one transistor size.",
+            "The stock SkyWater card was fitted at room temperature.",
+            "The fit changes parameter values to reproduce the 77 K curves."])],
+        "Black points are the measured pMOS, L 0.35 um, W 5 um, at 77 K. Orange lines are the stock card simulated "
+        "in NGSpice at 77 K.", gap=24)
+
+    S["w02-data"] = sec("w02-data", [
+        H2.format("Measured data, 18 transistors"),
+        img("measured", "Measured Id-Vd and Id-Vg of pMOS L 0.35 um x W 5 um at 77 K", 1640, 560),
+        ul(["8 nMOS, 10 pMOS; L 0.15-100 um, W 0.42-100 um.",
+            "Each device has 5 Id-Vd and 6 Id-Vg curves.",
+            "Faded points lie below the current floor and are not scored."])],
+        "The example device is a pMOS with L 0.35 um and W 5 um. pMOS voltages and currents are negative; the plots "
+        "show absolute values.", gap=22)
+
+    model_svg = svg_boxes(
+        [(0, 20, 330, 130, [("Card", 30, True), ("BSIM4 parameter values", 26, False)], BLUE, CARD),
+         (430, 20, 330, 130, [("NGSpice", 30, True), ("circuit simulator", 26, False)], BLUE, CARD),
+         (860, 20, 360, 130, [("Simulated curves", 30, True), ("Id at measured voltages", 26, False)], BLUE, CARD),
+         (860, 200, 360, 110, [("Measured curves", 30, True), ("11 per device", 26, False)], INK, CARD),
+         (1330, 105, 398, 130, [("RRMS", 30, True), ("simulated vs measured", 26, False)], "#c8384e",
+          "#fbe8de")],
+        [(330, 85, 426, 85), (760, 85, 856, 85), (1220, 85, 1326, 150), (1220, 255, 1326, 195)],
+        1728, 320, "Card to NGSpice to simulated curves; simulated and measured curves give the RRMS")
+    S["w03-model"] = sec("w03-model", [
+        H2.format("Card, NGSpice, RRMS"),
+        model_svg,
+        f'<div style="display:flex;flex-direction:row;gap:40px;align-items:center">'
+        f'<div style="background:{CARD};border:1px solid {LINE};padding:12px"><img src="/_blob/{BLOB["eq_rrms"][0]}" '
+        f'alt="RRMS of a curve and of a device" style="width:720px;height:156px;object-fit:contain"></div>'
+        + ul(["Curve RRMS = RMS current error / mean |I_meas|.",
+              "Device RRMS = mean of its curve RRMS values.",
+              "All-device RRMS = mean over the 18 devices."], 28, extra=";width:960px") + "</div>"],
+        "Definition and scored curves are the same as used for the Beall et al. card.", gap=36)
+
+    seven = [("VTH0", "threshold voltage"), ("U0", "low-field mobility"), ("NFACTOR", "subthreshold slope factor"),
+             ("VSAT", "saturation velocity"), ("DELTA", "linear-saturation smoothing"),
+             ("RDSW", "source/drain resistance"), ("ETA0", "threshold shift with Vds")]
+    S["w04-paper"] = sec("w04-paper", [
+        H2.format("Beall et al. card: 7 multipliers"),
+        '<div style="display:flex;flex-direction:row;gap:32px;align-items:center">'
+        + table(["Parameter", "Meaning"], [36, 64], [[f"<b>{p}</b>", m] for p, m in seven], 24, width=600)
+        + img("paper_ex", "pMOS L 0.35 um x W 5 um: measured points and the Beall et al. card simulated in NGSpice",
+              1060, 410) + "</div>",
+        ul(["One fitted multiplier per parameter and device; other values unchanged.",
+            f"Device RRMS, example pMOS: {ex['paper_rrms']:.3f}. All-device RRMS: {f4(pap['all_device'])}.",
+            "Run 1 fits the same 7 parameters."], 28)],
+        "The figure shows the Beall et al. card on the example pMOS, simulated in NGSpice.", gap=30)
+
+    # ---------------------------------------------------------------- evaluation, optimizers, procedure
+    ev = svg(1728, 150, "One NGSpice run: parameter values, card file, NGSpice, 11 simulated curves, comparison with "
+                        "measured curves, error", [
         B(0, 20, 250, 110, [("Parameter", 26, True), ("values", 26, True)]),
         A_(250, 75, 282, 75),
-        B(286, 20, 230, 110, [("Write", 26, True), ("card file", 26, True)]),
+        B(286, 20, 230, 110, [("Card", 26, True), ("file", 26, True)]),
         A_(516, 75, 548, 75),
         B(552, 20, 250, 110, [("NGSpice", 26, True), ("1 run", 24, False)]),
         A_(802, 75, 834, 75),
         B(838, 20, 270, 110, [("11 simulated", 26, True), ("curves", 26, True)]),
         A_(1108, 75, 1140, 75),
-        B(1144, 20, 280, 110, [("Compare with", 26, True), ("measured curves", 26, True)], INK),
+        B(1144, 20, 280, 110, [("Minus measured", 26, True), ("curves", 26, True)], INK),
         A_(1424, 75, 1456, 75),
         B(1460, 20, 268, 110, [("Error", 28, True)], "#c8384e", "#fbe8de"),
     ])
     S["w05c-eval"] = sec("w05c-eval", [
-        H2.format("One evaluation, used by both optimizers"),
+        H2.format("One NGSpice run"),
         ev,
-        ul(["CMA-ES minimizes one number per card: the device RRMS",
-            "Least squares minimizes Σ r_i² over all scored points i of the device",
-            "r_i = w_c (I_sim,i − I_meas,i) / (den_c "
-            "√(n_c C)): den_c = mean |I_meas| of curve c, n_c its "
-            "points, C curves",
-            "w_c = 1 in pass 1; pass 2: w_c ∝ 1/√RRMS_c. "
-            "With w_c = 1, Σ r_i² = mean of RRMS_c²"], 28)],
-        "Every evaluation writes the parameter values into the card, runs NGSpice once for all measured biases of "
-        "the device, and compares the 11 simulated curves with the measured ones. CMA-ES uses the device RRMS, a "
-        "single number. Least squares uses the vector of point residuals; with unit weights its sum of squares is "
-        "the mean of the squared curve RRMS. Least squares runs two passes; the second weights each curve by one "
-        "over the square root of its RRMS. A curve NGSpice cannot simulate is given a fixed error of 10.", gap=30)
+        ul(["One run simulates all 11 curves of one device for one card.",
+            "CMA-ES uses one number per run: the device RRMS.",
+            "TRF uses one residual per measured point."], 30)],
+        "Point residual = (I_sim - I_meas) / mean |I_meas| of its curve, divided by the square root of (points in "
+        "the curve x curves of the device). The sum of squared residuals then equals the mean squared curve RRMS. "
+        "A curve NGSpice cannot simulate counts as RRMS 10.", gap=36)
 
-    # ---------------------------------------------------------------- step strip and input/does/output block
-    steps = ["1 Start card", "2 Random starts", "3 Global search", "4 Least squares", "5 Rounds, best start"]
+    S["w05d-optimizers"] = sec("w05d-optimizers", [
+        H2.format("Two optimizers: CMA-ES and TRF"),
+        table(["", "CMA-ES (Python cma)", "TRF (SciPy least_squares)"], [22, 37, 41], [
+            ["Loss", "device RRMS", "sum of squared point residuals"],
+            ["Derivatives", "none", "finite differences (FD): 1 run per parameter"],
+            ["Iteration", "sample 9 (7 p.) or 14-15 (45 p.) cards, simulate, move mean and covariance toward "
+                          "lowest loss",
+             "FD Jacobian, step inside a trust region, keep if loss drops"],
+            ["Runs per call, 7 / 45 p.", runs["cma"], runs["ls"]],
+            ["Starts from", "random card or previous card", "CMA-ES result"]], 23),
+        img("optimizers", "pMOS L 0.35 um x W 5 um, 45 parameters: lowest device RRMS against NGSpice runs for "
+                          "CMA-ES and FD least squares from the same 3 random start cards", 1080, 428),
+        ul(["FD least squares = TRF with FD Jacobian, 2 passes.",
+            "Pass 2 weights each curve by 1/√(curve RRMS).",
+            f"From the random starts: TRF {op['0']['ls_end']:.2f}, {op['1']['ls_end']:.2f}, "
+            f"{op['2']['ls_end']:.2f}; CMA-ES {op['0']['cma_end']:.3f}, {op['1']['cma_end']:.3f}, "
+            f"{op['2']['cma_end']:.3f}."], 24)],
+        "CMA-ES is the covariance matrix adaptation evolution strategy. TRF is the trust-region reflective "
+        "least-squares method; FD shifts each parameter by 0.01 in scaled units, 1/200 of its log range. The figure "
+        "is a separate run of TRF alone from the 3 random start cards of the example pMOS.", gap=14)
+
+    nest = svg(1728, 560, "Fitting procedure for one device: 3 random start cards; rounds 1-3 of CMA-ES, FD least "
+                          "squares and range update; FD polish; keep the best start; final FD refit; final card", [
+        R(2, 2, 1724, 556, INK),
+        T(24, 40, "One device; repeated for 18 devices", 28, True),
+        R(22, 62, 1120, 480, BLUE, "#f3f7fd", dash=True),
+        T(42, 98, "Each of 3 starts", 26, True, color=BLUE),
+        B(42, 150, 250, 170, [("Random start", 26, True), ("card in the", 24, False), ("round-1 range", 24, False)]),
+        A_(292, 235, 334, 235),
+        R(338, 116, 784, 250, "#4a5259", "#ffffff"),
+        T(358, 150, "Rounds 1, 2, 3", 26, True),
+        B(358, 170, 230, 170, [("CMA-ES", 26, True), (runs["cma"], 24, False)]),
+        A_(588, 255, 620, 255),
+        B(624, 170, 230, 170, [("FD least", 26, True), ("squares", 26, True), (runs["ls"], 24, False)]),
+        A_(854, 255, 886, 255),
+        B(890, 170, 216, 170, [("Range:", 26, True), ("centred on", 24, False), ("result, half", 24, False),
+                               ("width", 24, False)]),
+        A_(730, 366, 730, 402),
+        B(560, 406, 340, 120, [("FD polish", 26, True), (runs["fd"], 24, False)]),
+        A_(1142, 300, 1186, 300),
+        B(1190, 120, 516, 110, [("Keep the start with", 26, True), ("lowest device RRMS", 26, True)], INK),
+        A_(1448, 230, 1448, 266),
+        B(1190, 270, 516, 110, [("Final FD refit", 26, True), (runs["ref"], 24, False)], INK),
+        A_(1448, 380, 1448, 416),
+        B(1190, 420, 516, 100, [("Final card", 28, True)], "#c8384e", "#fbe8de"),
+    ])
+    S["w05-workflow"] = sec("w05-workflow", [
+        H2.format("Fitting procedure, one device"),
+        nest,
+        ul(["Mean NGSpice runs per call, 7 / 45 parameters.",
+            f"Total per device, 3 starts: {kint(cA['C0_refit'])} / {kint(cB['C0_refit'])}."], 28)],
+        "Run 1 fits the 7 Beall et al. parameters; run 2 fits 45. FD least squares runs inside each round, as the "
+        "FD polish after round 3, and as the final FD refit.", gap=22)
+
+    pc = [("for device in 18 devices:", ""),
+          ("&nbsp;&nbsp;for start in 1, 2, 3:", ""),
+          ("&nbsp;&nbsp;&nbsp;&nbsp;range = round-1 range", "step 1"),
+          ("&nbsp;&nbsp;&nbsp;&nbsp;x = random card in range", "step 2"),
+          ("&nbsp;&nbsp;&nbsp;&nbsp;for round in 1, 2, 3:", "round"),
+          ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x = cmaes(loss=device_rrms, x, range)", f"step 3; {runs['cma']}"),
+          ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x = trf(loss=sum_sq_residuals, jac=fd, x, range)",
+           f"step 4; {runs['ls']}"),
+          ("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if round &lt; 3: range = centred on x, half width", "step 5"),
+          ("&nbsp;&nbsp;&nbsp;&nbsp;x = trf(loss=sum_sq_residuals, jac=fd, x, range)",
+           f"step 6, FD polish; {runs['fd']}"),
+          ("&nbsp;&nbsp;best = start with lowest device_rrms", "step 7"),
+          ("&nbsp;&nbsp;card = trf(loss=sum_sq_residuals, jac=fd, best, range)",
+           f"step 7, final FD refit; {runs['ref']}")]
+    mono = "font-family:'Courier New', Courier, monospace"
+    code = (f'<div style="display:flex;flex-direction:column;gap:6px;background:{CARD};border:1px solid {LINE};'
+            f'padding:24px 28px">' + "".join(
+                f'<div style="display:flex;flex-direction:row"><p style="font-size:26px;line-height:1.3;{mono};'
+                f'width:1080px">{a}</p><p style="font-size:24px;line-height:1.3;color:{MUTED}">'
+                f'{"# " + b if b else ""}</p></div>' for a, b in pc) + "</div>")
+    S["w05b-pseudo"] = sec("w05b-pseudo", [
+        H2.format("Procedure as pseudocode"),
+        code,
+        ul(["Run counts: mean NGSpice runs per call, 7 / 45 parameters.",
+            "range: allowed interval per parameter, log scale."], 26)],
+        "fd: Jacobian by finite differences in NGSpice. trf: SciPy least_squares, method trf, 2 passes.", gap=24)
+
+    # ---------------------------------------------------------------- steps
+    steps = ["1 Start card", "2 Random starts", "3 CMA-ES", "4 FD least sq.", "5 Rounds 2, 3", "6 FD polish",
+             "7 Keep, refit"]
 
     def strip(cur):
-        parts, x, w = [], 0, 320
+        parts, x, w = [], 0, 222
         for i, lab in enumerate(steps, 1):
             on = i == cur
             parts.append(R(x, 4, w, 60, "#c8384e" if on else LINE, "#fbe8de" if on else CARD, rx=8))
-            parts.append(T(x + w / 2, 43, lab, 26, on, "middle", INK if on else MUTED))
-            if i < 5:
-                parts.append(A_(x + w + 2, 34, x + w + 26, 34))
-            x += w + 32
-        return svg(1728, 68, f"Workflow steps, step {cur} highlighted", parts)
+            parts.append(T(x + w / 2, 43, lab, 23, on, "middle", INK if on else MUTED))
+            if i < 7:
+                parts.append(A_(x + w + 2, 34, x + w + 22, 34))
+            x += w + 29
+        return svg(1728, 68, f"Steps 1 to 7, step {cur} highlighted", parts)
 
-    def io(inp, does, outp):
-        return (f'<div style="display:flex;flex-direction:column;gap:4px;background:{CARD};border:1px solid {LINE};'
-                f'padding:14px 24px">' + "".join(
-                    f'<p style="font-size:26px;line-height:1.3"><b>{k}:</b> {v}</p>'
-                    for k, v in (("Input", inp), ("Does", does), ("Output", outp))) + "</div>")
+    def io(inp, outp):
+        return (f'<table style="width:1728px;font-size:25px;color:{INK};background:{CARD};border:1px solid {LINE}">'
+                f'<tr><th style="width:12%">Input</th><td>{inp}</td></tr>'
+                f'<tr><th style="width:12%">Output</th><td>{outp}</td></tr></table>')
 
     STEP = SEC.format(g=14).replace("padding:64px 96px 56px", "padding:48px 96px 40px")
 
     S["w06-step1"] = sec("w06-step1", [
         H2.format("Step 1: start card"), strip(1),
-        io("paper card file with the tuned values removed (all multipliers = 1)",
-           "uses its parameter values as range centres; range R1 per parameter (step 2)",
-           f"start card; all-device RRMS {m1['all_device']:.1f}"),
-        img("start", "pMOS L 0.35 um x W 5 um: measured points and the start card simulated in NGSpice", 1400, 540),
-        ul(["Figure: one pMOS (L 0.35 um x W 5 um), start card vs measured"], 26)],
-        "The start card is the paper's card file with every tuned value set back to its base value, that is, all "
-        "multipliers equal to 1. It keeps the file's 77 K settings and contains no fitted value from the paper. "
-        f"Its all-device RRMS is {m1['all_device']:.1f}. Its values are the centres of the parameter ranges.",
-        style=STEP)
+        io("Beall et al. card file", "start card: same file, all multipliers = 1"),
+        img("start", "pMOS L 0.35 um x W 5 um: measured points and the start card simulated in NGSpice", 1400, 560),
+        ul(["The Beall et al. card file stores each fitted value as base value x multiplier.",
+            "All multipliers are set to 1; the 77 K settings of the file stay.",
+            "The start-card values are the centres of the round-1 ranges in step 2.",
+            f"All-device RRMS of the start card: {m1['all_device']:.1f}."], 25)],
+        "The figure shows the start card and the measurement for the example pMOS.", style=STEP)
 
-    sr = ex["start_rrms"]
     S["w07-step2"] = sec("w07-step2", [
-        H2.format("Step 2: three random start points"), strip(2),
-        io("start card and range R1: VTH0 and added parameters 1/3-3 x, other 6 of the 7: 1/100-100 x",
-           "draws each free parameter at random (uniform on a log scale); redraws if NGSpice fails",
-           "3 start cards per device"),
+        H2.format("Step 2: random start cards"), strip(2),
+        io("start card; range VTH0 and 38 added parameters 1/3-3x, other 6 of 7 1/100-100x",
+           "3 random start cards per device"),
         img("starts", "pMOS L 0.35 um x W 5 um: measured Id-Vd and Id-Vg at 1.85 V and the 3 random start cards "
                       "simulated in NGSpice", 1400, 540),
-        ul([f"Figure: starts 1 and 2 give almost no current (RRMS {sr[0]:.2f}); start 3: {sr[2]:.1f}",
-            "Reason for 3 starts: a search from one point can stop in a local minimum"], 26)],
-        "Each device gets three random start cards inside range R1. A parameter is drawn uniformly on a log scale "
-        "between its lower and upper limit. If NGSpice cannot simulate the card, for example because the effective "
-        "mobility becomes negative, a new card is drawn. In the example, starts 1 and 2 give almost no current and "
-        "start 3 gives a current with the wrong shape.", style=STEP)
+        ul(["Each free parameter gets a random value between its limits, uniform on a log scale.",
+            "NGSpice simulates the card; if a scored curve fails, a new card is drawn (mean 1.6 / 2.2 runs per "
+            "start).",
+            f"Example: starts 1 and 2 give currents below 1e-11 A (device RRMS {sr[0]:.2f}); start 3 has device RRMS "
+            f"{sr[2]:.1f}."], 25)],
+        "Starts 1 and 2 give currents below 1e-11 A on both curves shown.", style=STEP)
 
     S["w08-step3"] = sec("w08-step3", [
-        H2.format("Step 3: global search (CMA-ES)"), strip(3),
-        io("start card (round 1) or previous card (rounds 2, 3) and the range",
-           f"per generation: draws {ex['popsize']} cards (this pMOS), runs each, moves centre and spread toward "
-           "lower device RRMS",
-           f"lowest-RRMS card after {runs['cma'].replace(' runs', '')} runs (7 / 45 parameters)"),
+        H2.format("Step 3: CMA-ES, loss device RRMS"), strip(3),
+        io("start card or previous card; range", "card with the lowest device RRMS"),
         img("cma", "Round 1 CMA-ES on pMOS L 0.35 um x W 5 um: device RRMS of every candidate against NGSpice runs, "
-                   "best so far per start; sampled VTH0 and U0 by generation", 1400, 540),
-        ul(["Left: each dot one card (one run); line: lowest device RRMS so far",
-            "Right: VTH0 and U0 drawn for start 2; later generations (yellow) cluster"], 26)],
-        "The global search is CMA-ES. Each generation it draws a set of cards from a normal distribution in the "
-        "scaled range, runs NGSpice for each, and moves the centre and spread of the distribution toward the cards "
-        "with the lowest device RRMS. The left plot shows every card of round 1 and the lowest RRMS so far for the "
-        "three starts. The right plot shows the sampled values of two parameters, which contract over the "
-        f"generations. Lowest RRMS after round-1 CMA-ES: {ex['cmaes_best'][0]:.3f}, {ex['cmaes_best'][1]:.3f}, "
-        f"{ex['cmaes_best'][2]:.3f}.", style=STEP)
+                   "lowest so far per start; sampled VTH0 and U0 by generation", 1400, 540),
+        ul(["CMA-ES keeps a normal distribution (mean, covariance) over the scaled parameters.",
+            f"One generation: sample {ex['popsize']} cards, run NGSpice for each, compute each device RRMS.",
+            "The mean moves toward the lowest-RRMS cards; the covariance is re-estimated from them.",
+            f"Example, round 1, {ex['cmaes_evals'][0]:,} runs per start: device RRMS {sr[0]:.2f}, {sr[1]:.2f}, "
+            f"{sr[2]:.1f} to {ex['cmaes_best'][0]:.3f}, {ex['cmaes_best'][1]:.3f}, {ex['cmaes_best'][2]:.3f}."],
+           24)],
+        "The left plot shows the device RRMS of every sampled card and the lowest value so far. The right plot shows "
+        "the sampled VTH0 and U0 of start 2, coloured by generation.", style=STEP)
 
-    n_ = ex["n_active"]
-    jac = svg(1728, 96, "Least-squares iteration: card, n plus 1 NGSpice runs, slope matrix, step", [
+    jac = svg(1728, 96, "One TRF iteration: card, n plus 1 NGSpice runs, Jacobian, trial step", [
         B(0, 8, 300, 80, [("Card x", 26, True), (f"{n_} free parameters", 24, False)]),
         A_(300, 48, 336, 48),
-        B(340, 8, 470, 80, [(f"{n_} + 1 NGSpice runs", 26, True), ("x, and x with one parameter changed", 22, False)]),
+        B(340, 8, 470, 80, [(f"{n_} + 1 NGSpice runs", 26, True), ("x, and x with one parameter shifted", 22, False)]),
         A_(810, 48, 846, 48),
-        B(850, 8, 430, 80, [("Slope matrix", 26, True), ("change of each r_i per parameter", 22, False)]),
+        B(850, 8, 430, 80, [("Jacobian", 26, True), ("change of each residual", 22, False)]),
         A_(1280, 48, 1316, 48),
-        B(1320, 8, 408, 80, [("Step that lowers", 26, True), ("the sum of r_i² (+1 run)", 22, False)]),
+        B(1320, 8, 408, 80, [("Trial step, 1 run", 26, True), ("kept if the loss drops", 22, False)]),
     ])
     S["w09-step4"] = sec("w09-step4", [
-        H2.format("Step 4: local refinement (least squares)"), strip(4),
-        io("card from step 3 and the range",
-           "slopes from small changes of each parameter; steps that lower the sum of squared residuals; 2 passes",
-           f"refined card after {runs['ls'].replace(' runs', '')} runs (7 / 45 parameters)"),
+        H2.format("Step 4: FD least squares (TRF)"), strip(4),
+        io("card after CMA-ES; range", "card with the lowest device RRMS seen"),
         jac,
-        img("ls", "Round 1 least squares on pMOS L 0.35 um x W 5 um: device RRMS after each iteration for 3 starts; "
-                  "RRMS of each curve of start 2 before and after", 1300, 440),
-        ul([f"Left: device RRMS per iteration; 1 iteration = {n_} + 2 runs",
-            "Right: start 2, each curve before (grey) and after (blue)"], 26)],
-        "Least squares refines the card from the global search. Each iteration runs NGSpice once at the current "
-        "card and once with each free parameter changed by a small step, which gives the slope matrix, and then "
-        "tries a step; that is the number of free parameters plus two runs. Some curves go down and some go up, "
-        "because the method lowers the summed squared error over all points. Start 2 goes from "
-        f"{ex['cmaes_best'][1]:.3f} to {ex['round1_rrms'][1]:.3f} in round 1.", style=STEP)
+        img("ls", "Round 1 FD least squares on pMOS L 0.35 um x W 5 um: device RRMS per iteration for 3 starts; "
+                  "RRMS of each curve of start 2 before and after", 1180, 390),
+        ul(["Residual of a point: (simulated - measured current) / mean measured current of its curve.",
+            f"Loss: sum of squared residuals. Jacobian: NGSpice reruns with each of the {n_} parameters shifted by "
+            "1/200 of its log range.",
+            "TRF solves the linearized problem inside a trust region and tries the step; kept if the loss drops.",
+            "Two passes; pass 2 weights each curve by 1/√(curve RRMS). Example, start 2, round 1: "
+            f"{ex['cmaes_best'][1]:.3f} to {ex['round1_rrms'][1]:.3f} in {ex['ls_runs'][1]} runs."], 24)],
+        f"One iteration costs {n_} + 2 NGSpice runs: 1 at x, {n_} shifted, 1 trial step. The right plot shows each "
+        "curve RRMS of start 2 after CMA-ES and after FD least squares.", style=STEP)
 
-    rr = ex["rounds"]
-    sel = rr["selected_start"]
     S["w10-step5"] = sec("w10-step5", [
-        H2.format("Step 5: rounds 2, 3; keep the best start"), strip(5),
-        io("card after round r",
-           "range centred on it, half width on a log scale; repeat steps 3-4; after round 3 one more least "
-           "squares; keep the best start; refit",
-           f"final card; this pMOS: device RRMS {rr['final']:.3f}"),
+        H2.format("Step 5: rounds 2 and 3"), strip(5),
+        io("card after the previous round", "card after round 3"),
         img("rounds_ex", "pMOS L 0.35 um x W 5 um: allowed range and value found for VTH0, U0, RDSW in rounds 1-3; "
                          "device RRMS after each round for the 3 starts", 1400, 556),
-        ul([f"Left: range (bar) and value found (dot), start {sel + 1}; a value near the edge keeps the width",
-            f"Right: starts end at {rr['rrms']['0'][-1]:.3f}, {rr['rrms']['1'][-1]:.3f}, {rr['rrms']['2'][-1]:.3f};"
-            f" start {sel + 1} kept"], 26)],
-        "In rounds 2 and 3 each parameter's range is centred on the value found in the previous round and its "
-        "width is halved on a log scale; a parameter that ended within ten percent of a range edge keeps its "
-        "width. After round 3 one more least-squares pass runs. The start with the lowest device RRMS is kept and "
-        "refitted once more by least squares; that is the final card.", style=STEP)
+        ul(["Rounds 2 and 3 start CMA-ES from the card of the previous round.",
+            "Each range is re-centred on the previous card and halved in width on a log scale.",
+            "A parameter in the outer 5 % of its range keeps its width, so its range extends past the old limit.",
+            f"Example, start 2: device RRMS {rr['rrms']['1'][0]:.3f}, {rr['rrms']['1'][1]:.3f}, "
+            f"{rr['rrms']['1'][2]:.3f} after rounds 1, 2, 3."], 24)],
+        "Each round repeats steps 3 and 4 in the new range. The left plot shows the range and the value found for "
+        "VTH0, U0 and RDSW of start 2.", style=STEP)
+
+    S["w11-step6"] = sec("w11-step6", [
+        H2.format("Step 6: FD polish"), strip(6),
+        io("card after round 3, each start", "polished card, each start"),
+        table(["Device RRMS", "Example start 1", "start 2", "start 3", "All devices, 45 p.", "All devices, 7 p."],
+              [24, 16, 12, 12, 18, 18], [
+            ["After round 3", f"{rr['rrms']['0'][2]:.4f}", f"{rr['rrms']['1'][2]:.4f}", f"{rr['rrms']['2'][2]:.4f}",
+             f4(st["round 3"]["B_all"]), f"{st['round 3']['A_all']:.6f}"],
+            ["After FD polish", f"{fd['0']:.4f}", f"{fd['1']:.4f}", f"{fd['2']:.4f}",
+             f4(st["round 3 + FD"]["B_all"]), f"{st['round 3 + FD']['A_all']:.6f}"]], 28),
+        ul(["After round 3, each start gets one more FD least-squares call (TRF, 2 passes) in its round-3 range.",
+            f"Up to 400 NGSpice runs; mean {runs['fd']} (7 / 45 parameters)."], 26)],
+        "The FD polish is the same TRF routine as step 4, run once on the card from round 3.", style=STEP)
+
+    S["w11b-step7"] = sec("w11b-step7", [
+        H2.format("Step 7: best start, final FD refit"), strip(7),
+        io("3 polished cards", "final card"),
+        table(["Device RRMS", "Example start 1", "start 2", "start 3", "All devices, 45 p.", "All devices, 7 p."],
+              [24, 16, 12, 12, 18, 18], [
+            ["After FD polish", f"{fd['0']:.4f}", f"{fd['1']:.4f}", f"{fd['2']:.4f}",
+             f4(st["round 3 + FD"]["B_all"]), f"{st['round 3 + FD']['A_all']:.6f}"],
+            ["Final FD refit", "-", f"{rr['final']:.4f} (kept)", "-", f4(cB_["all_device"]),
+             f"{cA_['all_device']:.6f}"]], 28, hl=(1,)),
+        ul(["The start with the lowest device RRMS after the FD polish is kept.",
+            f"The kept card gets one more FD least-squares call (up to 400 runs, mean {runs['ref']}).",
+            f"Example: start 2 kept ({fd['1']:.4f}); final card {rr['final']:.4f}."], 26)],
+        "The final FD refit is the same TRF routine, run once on the kept card in its round-3 range.", style=STEP)
 
     sc = wf["screen"]
     act = [v["n"] for v in wf["active_45p"].values()]
     assert (min(act), max(act)) == (37, 41)
-    S["w11-params45"] = sec("w11-params45", [
-        H2.format("Second run: 45 parameters from a screen"),
+    S["w12-params45"] = sec("w12-params45", [
+        H2.format("Run 2: 45 screened parameters"),
         img("screen", "Screen of 115 BSIM4 parameters: current change for a 10 % parameter change, threshold, kept "
-                      "parameters, the paper's 7", 1660, 640),
-        ul([f"Reason: with the paper's 7 parameters the all-device RRMS stays at {f4(cA_['all_device'])}",
-            "Screen: change each of 115 parameters by 10 %; keep if the current changes by more than 0.01 %",
-            f"45 kept (blue); fitted per device: {min(act)}-{max(act)} (zero and values &lt; 1e-14, e.g. UB, "
-            "stay fixed)",
-            "Earlier 43-parameter screen: CDSC, DVT0W, PDIBLC1 added here, CDSCD dropped"], 28)],
-        "With the paper's seven parameters the error stops falling at 0.1546. For the second run we choose more "
-        "parameters with a screen: each of 115 BSIM4 parameters is changed by ten percent, and it is kept if the "
-        "simulated current changes by more than one part in ten thousand of the measured current. 45 pass. A "
-        "parameter whose value is zero in a device's card stays zero, and the fit code also keeps values below "
-        "about 1e-14 fixed: UB on all devices, B1 and CDSC on some. So 37 to 41 are fitted per device. Compared "
-        "with an earlier screen that gave 43, three parameters were added and one removed.", gap=22)
+                      "parameters, the 7 Beall et al. parameters", 1660, 640),
+        ul(["Each of 115 parameters changed by ±10 %, one at a time.",
+            "Kept if current change exceeds 1e-4 x mean measured current.",
+            f"{min(act)}-{max(act)} of 45 fitted per device; zero or tiny values fixed."], 26)],
+        f"With 7 parameters the all-device RRMS is {f4(cA_['all_device'])}. The current change is the RMS over each "
+        "curve divided by the curve's mean measured current, maximum over all curves and 18 devices. UB (values "
+        "near 1e-18) stays fixed in the fit.", gap=22)
 
-    S["w12-results"] = sec("w12-results", [
-        H2.format("Results: our cards and the paper card"),
+    # ---------------------------------------------------------------- results
+    S["w13-results"] = sec("w13-results", [
+        H2.format("Results, 18 devices"),
         table(["Card (NGSpice)", "All-device RRMS", "Combined RRMS", "NGSpice runs per device"],
               [40, 20, 20, 20], [
-            ["Paper card", f4(pap["all_device"]), f4(pap["combined"]), "-"],
-            ["Our card, 7 parameters", f4(cA_["all_device"]), f4(cA_["combined"]), kint(cA["C0_refit"])],
-            ["Our card, 45 parameters", f4(cB_["all_device"]), f4(cB_["combined"]), kint(cB["C0_refit"])]],
+            ["Beall et al. card", f4(pap["all_device"]), f4(pap["combined"]), "-"],
+            ["Fitted card, 7 parameters", f4(cA_["all_device"]), f4(cA_["combined"]), kint(cA["C0_refit"])],
+            ["Fitted card, 45 parameters", f4(cB_["all_device"]), f4(cB_["combined"]), kint(cB["C0_refit"])]],
               32, hl=(1, 2)),
-        ul(["All three: standard BSIM4 in NGSpice; only parameter values differ",
-            f"Per device, our RRMS divided by the paper card's RRMS: typical value "
-            f"{rA['ratio']:.2f} (7 parameters), {rB['ratio']:.2f} (45)",
-            f"Lower than the paper card on {rA['wins']} of 18 devices (7) and {rB['wins']} of 18 (45)",
-            "Combined RRMS: mean of the nMOS mean and the pMOS mean"]),
-        small("Typical value = geometric mean over the 18 devices. NGSpice runs include all 3 starts.")],
-        "This table compares the three cards on the same 18 devices and the same curves. With the same seven "
-        "parameters as the paper, our card has about half the paper card's error on a typical device, and it is "
-        "lower on every device. With 45 parameters it is about a third. All cards are the standard BSIM4 model in "
-        "NGSpice.", gap=30)
+        ul([f"Fitted / Beall et al. RRMS per device: {rA['ratio']:.2f} (7 p.), {rB['ratio']:.2f} (45 p.).",
+            f"Lower than the Beall et al. card on {rA['wins']} of 18 devices, both runs.",
+            "Combined RRMS = mean of nMOS mean and pMOS mean."]),
+        small("0.54, 0.36: geometric mean over 18 devices. Runs include all 3 starts.")],
+        "All three cards are BSIM4 in NGSpice with different parameter values.", gap=30)
 
     big = "pmos_L0p35_W0p55"
-    pdA = A["per_device"]["C0_refit"]
-    S["w13-perdevice"] = sec("w13-perdevice", [
-        H2.format("RRMS per device"),
+    S["w14-perdevice"] = sec("w14-perdevice", [
+        H2.format("Device RRMS, three cards"),
         '<div style="display:flex;flex-direction:row;gap:36px;align-items:center">'
-        + img("perdev", "Per-device RRMS, log scale: paper card, our 7-parameter card, our 45-parameter card",
-              1290, 800)
-        + ul([f"Both our cards lower than the paper card on 18 of 18 devices",
-              "Largest error: pMOS L 0.35 um x W 0.55 um"], 30, extra=";width:390px") + "</div>"],
-        "Each device has three bars: the paper card, our seven-parameter card, and our 45-parameter card. Our cards "
-        "are lower than the paper card on every device. The largest remaining error is the narrow pMOS with "
-        f"L 0.35 um and W 0.55 um (RRMS {pdA[big] if not isinstance(pdA[big], dict) else pdA[big]['rrms']:.2f} with "
-        "7 parameters).", gap=24)
+        + img("perdev", "Per-device RRMS, log scale: Beall et al. card, fitted 7-parameter card, fitted 45-parameter "
+                        "card", 1290, 800)
+        + ul(["Both fitted cards below the Beall et al. card on 18 of 18.",
+              "Largest RRMS: pMOS L 0.35 um x W 0.55 um."], 30, extra=";width:390px") + "</div>"],
+        "Bars are device RRMS on a log scale, three cards per device.", gap=24)
 
     grp = ["nMOS L 0.15-8 um", "nMOS L 20, 100 um; pMOS L 0.35, 0.5 um", "pMOS L 0.5-8 um"]
     for arm, short, pre, col in (("A", "7p", "s11-iv7", "green"), ("B", "45p", "s12-iv45", "blue")):
@@ -575,15 +584,13 @@ def build() -> dict:
         for k in range(3):
             sid = f"{pre}-{k + 1}"
             S[sid] = sec(sid, [
-                f'<h2 style="font-size:48px;font-weight:600;line-height:1.1;color:{INK}">I-V curves, {n} parameters: '
+                f'<h2 style="font-size:48px;font-weight:600;line-height:1.1;color:{INK}">I-V, {n} parameters, '
                 f'devices {6 * k + 1}-{6 * k + 6}</h2>',
-                img(f"iv_{short}_{k + 1}", f"Id-Vd and Id-Vg, {grp[k]}: measured, paper card (NGSpice), our "
+                img(f"iv_{short}_{k + 1}", f"Id-Vd and Id-Vg, {grp[k]}: measured, Beall et al. card (NGSpice), fitted "
                                            f"{n}-parameter card (NGSpice)", 1760, 836),
-                f'<p style="font-size:26px;line-height:1.3">{grp[k]}. Left of each pair: Id-Vd; right: Id-Vg, log '
-                f'scale. Black: measured; grey dashed: paper card; {col}: our card.</p>'],
-                f"These are devices {6 * k + 1} to {6 * k + 6} with our {n}-parameter card. Black points are "
-                f"measured; the grey dashed line is the paper card and the {col} line our card, both simulated in "
-                "NGSpice. The panel title gives each device's RRMS for both cards.",
+                f'<p style="font-size:26px;line-height:1.3">{grp[k]}. Each pair: Id-Vd left, Id-Vg right (log). '
+                f'Black measured, grey dashed Beall et al. card, {col} fitted card.</p>'],
+                "Panel titles give the device RRMS of both cards. Both cards are simulated in NGSpice.",
                 style=f"background:{PAPER};color:{INK};{F};padding:40px 64px 32px;display:flex;"
                       "flex-direction:column;gap:12px")
     return S
@@ -615,7 +622,7 @@ def main() -> int:
         if p.exists():
             p.unlink()
     deck = json.loads((REPO_PROJECT / "deck.json").read_text())
-    deck["title"] = "Fitting BSIM4 parameters to SKY130 transistors at 77 K"
+    deck["title"] = "BSIM4 parameter fit, SKY130, 77 K"
     deck["order"] = ORDER
     deck["sections"] = SECTIONS
     deck["cover"] = "title"

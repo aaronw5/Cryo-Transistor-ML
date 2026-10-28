@@ -1,6 +1,6 @@
 <section id="w01-goal" style="background:#f6f5f1;color:#1f252b;font-family:'IBM Plex Sans', Arial, sans-serif;padding:64px 96px 56px;display:flex;flex-direction:column;gap:24px">
-<h2 style="font-size:52px;font-weight:600;line-height:1.1;color:#1f252b">Goal: simulated curves that match measurement</h2>
+<h2 style="font-size:52px;font-weight:600;line-height:1.1;color:#1f252b">Stock card at 77 K</h2>
 <div style="display:flex;flex-direction:row;justify-content:center;background:#ffffff;border:1px solid #c9ced3"><img src="/_blob/0118aec709e8834e49204c883c014ab5" alt="pMOS L 0.35 um x W 5 um at 77 K: measured points and the stock SkyWater card simulated in NGSpice" style="width:1640px;height:636px;object-fit:contain"></div>
-<ul style="font-size:30px;line-height:1.35;color:#1f252b"><li>Card: file of BSIM4 parameter values, one set per transistor size</li><li>Stock SkyWater card was fitted at room temperature; here simulated at 77 K</li><li>Goal: parameter values so that NGSpice matches the 77 K measurement</li></ul>
-<aside>A transistor model card is a list of parameter values for the BSIM4 equations. The stock SkyWater card was made for room temperature. Simulated at 77 K, its current differs from the measurement, as in this pMOS. The goal is to find parameter values that make the simulation match the 77 K data.</aside>
+<ul style="font-size:30px;line-height:1.35;color:#1f252b"><li>A card holds the BSIM4 parameter values of one transistor size.</li><li>The stock SkyWater card was fitted at room temperature.</li><li>The fit changes parameter values to reproduce the 77 K curves.</li></ul>
+<aside>Black points are the measured pMOS, L 0.35 um, W 5 um, at 77 K. Orange lines are the stock card simulated in NGSpice at 77 K.</aside>
 </section>

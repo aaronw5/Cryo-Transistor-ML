@@ -5,7 +5,7 @@
   "at": "2026-10-27T15:59:47Z"
  },
  "lists": "css",
- "title": "Fitting BSIM4 parameters to SKY130 transistors at 77 K",
+ "title": "BSIM4 parameter fit, SKY130, 77 K",
  "cover": "title",
  "order": [
   "title",
@@ -13,17 +13,20 @@
   "w02-data",
   "w03-model",
   "w04-paper",
+  "w05c-eval",
+  "w05d-optimizers",
   "w05-workflow",
   "w05b-pseudo",
-  "w05c-eval",
   "w06-step1",
   "w07-step2",
   "w08-step3",
   "w09-step4",
   "w10-step5",
-  "w11-params45",
-  "w12-results",
-  "w13-perdevice",
+  "w11-step6",
+  "w11b-step7",
+  "w12-params45",
+  "w13-results",
+  "w14-perdevice",
   "s11-iv7-1",
   "s11-iv7-2",
   "s11-iv7-3",
@@ -37,16 +40,16 @@
    "start": "title"
   },
   "s2": {
-   "description": "Goal, measured data, model and error, the paper's card",
+   "description": "Stock card, measured data, card and RRMS, Beall et al. card",
    "start": "w01-goal"
   },
   "s3": {
-   "description": "Our workflow: nested loops, pseudocode, one evaluation, steps 1-5",
-   "start": "w05-workflow"
+   "description": "NGSpice run, optimizers CMA-ES and TRF, fitting procedure, steps 1-7",
+   "start": "w05c-eval"
   },
   "s4": {
-   "description": "Results: table, per device, I-V curves",
-   "start": "w12-results"
+   "description": "Run 2 screen, results, per-device RRMS, I-V curves",
+   "start": "w12-params45"
   }
  },
  "faces": {
