@@ -5,7 +5,7 @@
   "at": "2026-10-27T15:59:47Z"
  },
  "lists": "css",
- "title": "SKY130, 77 K: card fit from multiplier-1 cards, with correction g",
+ "title": "SKY130, 77 K: BSIM4 card parameters fitted from multiplier-1 cards",
  "cover": "title",
  "order": [
   "title",
@@ -16,12 +16,10 @@
   "s03-paper",
   "b3-fit",
   "s04-setup",
+  "s04c-why",
   "s04b-params",
+  "s04d-45vs43",
   "s04-stepA",
-  "s05-stepB",
-  "s05c-whyg",
-  "s06-stepC",
-  "s07-stepD",
   "s09-results",
   "s09b-gmr",
   "s09c-stages",
@@ -34,8 +32,8 @@
   "s12-iv45-1",
   "s12-iv45-2",
   "s12-iv45-3",
-  "s14-element",
-  "s14b-checks",
+  "s13-remaining",
+  "s13b-lowvds",
   "s15-cost",
   "s16-sources",
   "s17-limits"
@@ -54,20 +52,20 @@
    "start": "s02-stock"
   },
   "s4": {
-   "description": "Card fit from multiplier-1 cards: setup, parameter sets, RRMS by round",
+   "description": "Card fit: setup, design choices, parameter sets, RRMS by round",
    "start": "b3-fit"
   },
   "s5": {
-   "description": "Remaining error, pMOS low-|Vds| current, correction g, penalty and lambda",
-   "start": "s05-stepB"
-  },
-  "s6": {
-   "description": "Results on 18 devices: tables, GMR, per device, I-V curves for 7 and 45 parameters",
+   "description": "Results, card only: tables, GMR, per device, I-V curves for 7 and 45 parameters",
    "start": "s09-results"
   },
+  "s6": {
+   "description": "Where the card-only fit still differs from the measurement",
+   "start": "s13-remaining"
+  },
   "s7": {
-   "description": "Verilog-A element, cost, paper inputs, limits",
-   "start": "s14-element"
+   "description": "Cost, paper inputs, limits",
+   "start": "s15-cost"
   }
  },
  "faces": {
