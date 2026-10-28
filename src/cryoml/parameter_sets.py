@@ -13,6 +13,18 @@ PARAMS7 = (
     "vth0", "u0", "nfactor", "vsat", "delta", "rdsw", "eta0",
 )
 
+# The 45 parameters selected by the I25-1 sensitivity screen around the
+# multiplier-1 card (``out/research/explore/I25_1/screen_mult1/summary.json``,
+# ``selected_parameters``), in that order.  The order sets the coordinate order
+# of the search box, so it is part of the method.
+PARAMS45 = (
+    "toxe", "toxm", "xj", "ndep", "nsd", "dwg", "rsh", "vth0", "k1", "k2",
+    "k3", "dvt0", "dvt1", "dvt0w", "dvt1w", "w0", "k3b", "vfb", "lpe0",
+    "lpeb", "vsat", "ua", "ub", "rdsw", "prwg", "wr", "u0", "a0", "a2", "ags",
+    "b0", "b1", "voff", "nfactor", "cit", "cdsc", "eta0", "dsub", "pclm",
+    "pdiblc1", "pdiblc2", "drout", "delta", "alpha0", "beta0",
+)
+
 # Parameters represented in the linked upstream nominal library.  Its runnable
 # Monte Carlo script currently varies only PARAMS7, but this list documents the
 # author's broader extraction surface.

@@ -93,6 +93,16 @@ class DeviceProblem:
         return float(np.mean(self.curve_rrms(self.simulate(local))))
 
 
+def trf_pass_budget(max_nfev: int, passes: int, n_free: int) -> int:
+    """SciPy ``max_nfev`` of one TRF pass of ``polish``.
+
+    ``max_nfev`` is the nominal NGSpice budget of the whole call.  It is split
+    over the IRLS passes and divided by ``n_free + 2`` (one Jacobian of
+    ``n_free + 1`` runs plus one trial step per iteration); at least 2.
+    """
+    return max(2, max_nfev // max(1, passes) // (n_free + 2))
+
+
 def polish(problem: DeviceProblem, local0: np.ndarray, *, max_nfev: int = 200,
            diff_step: float = 0.01, irls_rounds: int = 3,
            active_only: bool = True) -> dict:
@@ -131,7 +141,7 @@ def polish(problem: DeviceProblem, local0: np.ndarray, *, max_nfev: int = 200,
                 columns[:, index] = (residual(shifted) - base) / step
             return columns
 
-        budget = max(2, max_nfev // max(1, irls_rounds) // (len(active) + 2))
+        budget = trf_pass_budget(max_nfev, irls_rounds, len(active))
         x0 = np.clip(local[active], -1 + 1e-9, 1 - 1e-9)
         try:
             least_squares(residual, x0, method="trf", jac=jacobian,
