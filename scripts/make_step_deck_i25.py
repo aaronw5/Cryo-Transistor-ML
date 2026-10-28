@@ -781,6 +781,85 @@ def fig_optimizers(js, z, path) -> dict:
     return out
 
 
+def fig_cma_2param(path) -> dict:
+    """2-parameter CMA-ES illustration (scripts/research/explore/i25_1_cmaes_2param.py): device RRMS contour over
+    the round-1 range of VTH0 and U0 (other parameters fixed at the round-1 card of start 2), generations 1, 3, 8
+    and the last: samples, the mu lowest-loss samples, mean before -> after, 1-sigma ellipse of sigma^2 C."""
+    plt = sp._plt()
+    from matplotlib.colors import LogNorm
+    js = jload(TRACE_DIR / f"{EXAMPLE}_cmaes_2param.json")
+    g = np.asarray(js["grid_local"])
+    zz = np.clip(np.asarray(js["grid_rrms"]), 1e-3, 10)
+    gens = js["generations"]
+    show = [0, 2, 7, len(gens) - 1]
+    mu = js["mu"]
+    fig = plt.figure(figsize=(16.0, 4.6), dpi=170)
+    gs = fig.add_gridspec(1, 5, width_ratios=[1, 1, 1, 1, 1.15], wspace=0.32)
+    vt = np.abs(np.asarray(js["grid_vth0"]))
+    u0 = np.asarray(js["grid_u0"])
+    tk = [0, 9, 19, 29]
+    cs = None
+    for j, gi in enumerate(show):
+        ax = fig.add_subplot(gs[0, j])
+        cs = ax.contourf(g, g, zz, levels=np.logspace(np.log10(0.1), 1, 15), norm=LogNorm(0.1, 10), cmap="Greys_r",
+                         extend="both")
+        G = gens[gi]
+        S = np.asarray(G["samples"])
+        L = np.asarray(G["loss"])
+        order = np.argsort(L)
+        m0, m1 = np.asarray(G["mean"]), np.asarray(G["new_mean"])
+        C = np.asarray(G["C"]) * G["sigma"] ** 2
+        w, v = np.linalg.eigh(C)
+        t = np.linspace(0, 2 * np.pi, 100)
+        ell = m0[:, None] + v @ (np.sqrt(np.maximum(w, 0))[:, None] * np.vstack([np.cos(t), np.sin(t)]))
+        ax.plot(ell[0], ell[1], color="#2a6fdb", lw=1.6)
+        ax.scatter(S[order[mu:], 0], S[order[mu:], 1], s=28, facecolors="none", edgecolors="#d9822b", lw=1.4)
+        ax.scatter(S[order[:mu], 0], S[order[:mu], 1], s=34, color="#d9822b", zorder=4)
+        ax.annotate("", xy=m1, xytext=m0, arrowprops={"arrowstyle": "->", "color": "#c8384e", "lw": 2})
+        ax.plot(*m0, "o", color="#c8384e", ms=5)
+        ax.set_xlim(-1, 1)
+        ax.set_ylim(-1, 1)
+        ax.set_xticks(g[tk])
+        ax.set_xticklabels([f"{vt[i]:.2f}" for i in tk], fontsize=10)
+        ax.set_yticks(g[tk])
+        ax.set_yticklabels([f"{u0[i]:.0e}" for i in tk], fontsize=10)
+        ax.set_xlabel("|VTH0| (V)", fontsize=11)
+        if j == 0:
+            ax.set_ylabel("U0 (m^2/Vs)", fontsize=11)
+        ax.set_title(f"generation {gi + 1}: lowest {min(L):.3f}", fontsize=11.5)
+        if j == 0:
+            from matplotlib.lines import Line2D
+            hh = [Line2D([], [], marker="o", ls="", mfc="none", mec="#d9822b", label="sample"),
+                  Line2D([], [], marker="o", ls="", color="#d9822b", label=f"{mu} lowest"),
+                  Line2D([], [], color="#c8384e", lw=2, label="mean step"),
+                  Line2D([], [], color="#2a6fdb", lw=1.6, label="1-sigma ellipse")]
+            ax.legend(handles=hh, fontsize=9, loc="lower right", framealpha=0.85)
+    ax = fig.add_subplot(gs[0, 4])
+    gen = np.arange(1, len(gens) + 1)
+    ax.plot(gen, [G["best_so_far"] for G in gens], color="#d9822b", lw=2, label="lowest device RRMS so far")
+    ax.set_yscale("log")
+    ax.set_xlabel("generation (6 NGSpice runs each)", fontsize=11)
+    ax.set_ylabel("device RRMS", fontsize=11)
+    ax2 = ax.twinx()
+    ax2.plot(gen, [G["sigma"] for G in gens], color="#2a6fdb", lw=2, label="step size sigma")
+    ax2.set_yscale("log")
+    ax2.set_ylabel("sigma (scaled units)", fontsize=11)
+    h1, l1 = ax.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax.legend(h1 + h2, l1 + l2, fontsize=10, frameon=False, loc="upper right")
+    ax.set_title("lowest device RRMS so far and sigma", fontsize=11.5)
+    fig.suptitle("2-parameter illustration, other parameters fixed (pMOS L 0.35 x W 5 um). Grey level: device "
+                 "RRMS on a 30 x 30 grid, darker = lower.", fontsize=12)
+    fig.subplots_adjust(left=0.05, right=0.955, top=0.82, bottom=0.17)
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+    return {"generations": len(gens), "evaluations": js["evaluations"], "fbest": js["fbest"],
+            "shown": [i + 1 for i in show], "best_shown": [min(gens[i]["loss"]) for i in show],
+            "sigma_shown": [gens[i]["sigma"] for i in show], "popsize": js["popsize"], "mu": mu,
+            "start_rrms": gens[0]["best_so_far"], "fixed_card_local": js["fixed_card_local"],
+            "grid_min": float(np.min(np.asarray(js["grid_rrms"]))), "weights": js["weights"]}
+
+
 def fig_screen(path) -> dict:
     """Screen of 115 candidates: max response (RMS current change / mean measured current) per candidate,
     threshold, kept / not kept, the 7 paper parameters, the changes vs the earlier 43."""
@@ -867,6 +946,7 @@ def main() -> int:
     rounds_info = fig_rounds_example(d, FIGS / "i25_ex_rounds.png")
     screen_info = fig_screen(FIGS / "i25_screen.png")
     opt_info = fig_optimizers(js, z, FIGS / "i25_ex_optimizers.png")
+    cma2_info = fig_cma_2param(FIGS / "i25_ex_cma_2param.png")
     stock = jload(OUT / "stock_card.json")["devices"][EXAMPLE]
     wf = {"trace_tag": TRACE_TAG, "trace": tr, "spread_45p": spread,
           "spread_45p_gt10pct": int(sum(max(v) / min(v) > 1.1 for v in spread.values())),
@@ -881,7 +961,7 @@ def main() -> int:
                       "n_active": js["starts"]["1"]["n_active"], "popsize": js["starts"]["1"]["popsize"],
                       "ls_curve": ls_info, "rounds": rounds_info,
                       "paper_rrms": d["old"]["arms"]["published"][EXAMPLE]["rrms"]},
-          "screen": screen_info, "active_45p": active_counts(), "optimizers": opt_info}
+          "screen": screen_info, "active_45p": active_counts(), "optimizers": opt_info, "cma_2param": cma2_info}
     for t, v in spread.items():   # best start after round 3 + FD equals the stored selected start card
         assert abs(min(v) - d["dec"]["arms"]["B"]["per_device"]["start"][t]) < 1e-12, t
     out = {"per_curve_max_abs_diff": worst, "error_split": split, "lowvds": low, "gmr_extra": gmrs(d),

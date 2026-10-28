@@ -40,6 +40,7 @@ BLOB = {  # asset ids in the artifact; LOCAL = the uploaded file
     "cma": ("90ef5423cc737d41a66b67e21865d9ae", FIG / "i25_ex_cma.png"),
     "ls": ("6e6e5eb5d482d2834fa36b6fdeb92486", FIG / "i25_ex_ls.png"),
     "rounds_ex": ("5f34ff7d93a4e4ad83061b9f566625bc", FIG / "i25_ex_rounds.png"),
+    "cma2": ("958cd7933c911f3117e88ad9f38c9a78", FIG / "i25_ex_cma_2param.png"),
     "optimizers": ("7fdaa39dfd82d86b26154e1544d829c7", FIG / "i25_ex_optimizers.png"),
     "screen": ("0b3894a877f07e1a4d766d99e3553279", FIG / "i25_screen.png"),
     "perdev": ("d31f1cdb1f5cfd9b708df2e510854fd5", FIG / "i25_per_device_card.png"),
@@ -51,7 +52,7 @@ BLOB = {  # asset ids in the artifact; LOCAL = the uploaded file
     "iv_45p_3": ("7097cb56c4cb709b0a57a9f4c3f01202", FIG / "i25_iv_card_45p_3.png"),
 }
 ORDER = ["title", "w01-goal", "w02-data", "w03-model", "w04-paper", "w05c-eval", "w05d-optimizers", "w05-workflow",
-         "w05b-pseudo", "w06-step1", "w07-step2", "w08-step3", "w09-step4", "w10-step5", "w11-step6", "w11b-step7",
+         "w05b-pseudo", "w06-step1", "w07-step2", "w08-step3", "w08b-cma-gen", "w09-step4", "w10-step5", "w11-step6", "w11b-step7",
          "w12-params45", "w13-results", "w14-perdevice",
          "s11-iv7-1", "s11-iv7-2", "s11-iv7-3", "s12-iv45-1", "s12-iv45-2", "s12-iv45-3"]
 OLD = ["w11-params45", "w12-results", "w13-perdevice", "b1-transistor", "b2-model", "b3-fit", "s01-measured", "s02-stock", "s03-paper", "s04-setup", "s04-stepA",
@@ -340,8 +341,8 @@ def build() -> dict:
         table(["", "CMA-ES (Python cma)", "TRF (SciPy least_squares)"], [22, 37, 41], [
             ["Loss", "device RRMS", "sum of squared point residuals"],
             ["Derivatives", "none", "finite differences (FD): 1 run per parameter"],
-            ["Iteration", "sample 9 (7 p.) or 14-15 (45 p.) cards, simulate, move mean and covariance toward "
-                          "lowest loss",
+            ["Iteration", "sample 9 (7 p.) or 14-15 (45 p.) cards, simulate, update mean and covariance from "
+                          "the lowest-loss cards",
              "FD Jacobian, step inside a trust region, keep if loss drops"],
             ["Runs per call, 7 / 45 p.", runs["cma"], runs["ls"]],
             ["Starts from", "random card or previous card", "CMA-ES result"]], 23),
@@ -468,12 +469,36 @@ def build() -> dict:
                    "lowest so far per start; sampled VTH0 and U0 by generation", 1400, 540),
         ul(["CMA-ES keeps a normal distribution (mean, covariance) over the scaled parameters.",
             f"One generation: sample {ex['popsize']} cards, run NGSpice for each, compute each device RRMS.",
-            "The mean moves toward the lowest-RRMS cards; the covariance is re-estimated from them.",
+            "New mean: weighted mean of the lowest-RRMS cards; covariance and step size updated (next slide).",
             f"Example, round 1, {ex['cmaes_evals'][0]:,} runs per start: device RRMS {sr[0]:.2f}, {sr[1]:.2f}, "
             f"{sr[2]:.1f} to {ex['cmaes_best'][0]:.3f}, {ex['cmaes_best'][1]:.3f}, {ex['cmaes_best'][2]:.3f}."],
            24)],
         "The left plot shows the device RRMS of every sampled card and the lowest value so far. The right plot shows "
         "the sampled VTH0 and U0 of start 2, coloured by generation.", style=STEP)
+
+    c2 = wf["cma_2param"]
+    S["w08b-cma-gen"] = sec("w08b-cma-gen", [
+        H2.format("CMA-ES: one generation"), strip(3),
+        ul(["CMA-ES keeps a mean m, a step size σ and a covariance C of the scaled parameters (-1 to 1).",
+            "1. Sample λ = 4 + ⌊3 ln n⌋ cards x = m + σ·N(0, C); cma's BoundTransform maps each into [-1, 1].",
+            "2. Run NGSpice for each card and compute its device RRMS; a curve NGSpice cannot simulate counts as 10.",
+            "3. Sort the λ cards by device RRMS; the update uses the ranks, not the RRMS values.",
+            "4. New m = weighted mean of the μ = ⌊λ/2⌋ lowest-RRMS cards; the weight decreases with rank.",
+            "5. C is updated from the steps of the μ lowest-RRMS cards and the evolution path; the other cards enter "
+            "with negative weights (active CMA).",
+            "6. σ increases when the evolution path (sum of recent mean steps) is longer than for random steps, and "
+            "decreases when it is shorter.",
+            "Stop after 3,000 / 8,000 evaluations (7 / 45 parameters) or at cma's own stop criteria; cma 4.4.4."],
+           23, 1.3),
+        img("cma2", "2-parameter illustration, other parameters fixed: device RRMS grid over VTH0 and U0 for pMOS L "
+                    "0.35 um x W 5 um; CMA-ES generations 1, 3, 8 and 101 with samples, mean step and 1-sigma "
+                    "ellipse; lowest device RRMS and sigma per generation", 1720, 494),
+        ul([f"Figure: VTH0 and U0 free, other parameters at the round-1 card of start 2; λ = {c2['popsize']}, "
+            f"μ = {c2['mu']}; lowest device RRMS {c2['best_shown'][0]:.3f} in generation 1, {c2['fbest']:.3f} after "
+            f"{c2['generations']} generations ({c2['evaluations']} runs)."], 23)],
+        "The figure is a separate run with only VTH0 and U0 free; the other parameters are fixed at the round-1 card "
+        "of start 2, and the grey level is the device RRMS on a 30 x 30 grid of NGSpice runs. The 40-parameter run "
+        "of the example device applies the same update to 40 coordinates with λ = 15 and μ = 7.", style=STEP)
 
     jac = svg(1728, 96, "One TRF iteration: card, n plus 1 NGSpice runs, Jacobian, trial step", [
         B(0, 8, 300, 80, [("Card x", 26, True), (f"{n_} free parameters", 24, False)]),
@@ -506,7 +531,7 @@ def build() -> dict:
                          "device RRMS after each round for the 3 starts", 1400, 556),
         ul(["Rounds 2 and 3 start CMA-ES from the card of the previous round.",
             "Each range is re-centred on the previous card and halved in width on a log scale.",
-            "A parameter in the outer 5 % of its range keeps its width, so its range extends past the old limit.",
+            "A parameter in the outer 5 % of its range keeps its width; its new range extends past the old limit.",
             f"Example, start 2: device RRMS {rr['rrms']['1'][0]:.3f}, {rr['rrms']['1'][1]:.3f}, "
             f"{rr['rrms']['1'][2]:.3f} after rounds 1, 2, 3."], 24)],
         "Each round repeats steps 3 and 4 in the new range. The left plot shows the range and the value found for "
