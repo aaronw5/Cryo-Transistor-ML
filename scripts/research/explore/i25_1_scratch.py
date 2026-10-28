@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """I25-1: sky130 77 K pipeline rerun without the released tuned values.
 
+Clean implementation of the main method (card fit): src/cryoml/extraction.py (CLI scripts/extract_cards.py).
+
 Pre-registration: out/research/explore/I25_1/prereg.md (prereg.json) and
 amendment A3 (amendment_A3.md): the released 77 K card files with every
 multiplier set to 1 (template ``mult1``), 3 random starts per device, best

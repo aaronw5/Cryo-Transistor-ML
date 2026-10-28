@@ -15,6 +15,69 @@ one-pass MLP remains the primary comparison. One fixed global foundation
 emulator and one high-voltage-preserving candidate-selection study are reported
 as exploratory series; none changes the canonical export.
 
+## Main method: NGSpice card extraction (I25-1)
+
+Since I25-1 (October 2026) the main method is a direct fit of the model card
+with NGSpice in the loop. It uses no surrogate and no learned correction.
+Implementation: `src/cryoml/extraction.py`; command line:
+`scripts/extract_cards.py`; tests: `tests/test_extraction.py`. The procedure
+is described in the step deck (slides w05-w11b) and in
+`out/research/explore/I25_1/amendment_A3.md` / `amendment_A4.md`.
+
+- Template: the Beall et al. 77 K card files with every multiplier set to 1
+  (`CRYOML_PDK_TEMPLATE=mult1`, `data/processed/pdk77k_mult1/`), with the
+  released bins, tnom and temperature coefficients. Parameters that are not
+  fitted keep the template values.
+- Parameter sets: 7 (`VTH0, U0, NFACTOR, VSAT, DELTA, RDSW, ETA0`) or 45
+  (`parameter_sets.PARAMS45`, the I25-1 sensitivity screen). A parameter whose
+  template value is 0 stays fixed.
+- Round-1 range per device: centre = template value (NGSpice `showmod`),
+  log half width ln 3 for VTH0 and the screened parameters, ln 100 for the
+  other six paper parameters.
+- Per start k = 0, 1, 2: random start card, uniform in local coordinates
+  (log-uniform between the bounds), seed `20261027 + 1000 k + device index`.
+  A card on which a scored curve does not simulate is redrawn (at most 200
+  draws). Then rounds 1-3, each: CMA-ES (`cma`, sigma0 0.3, bounds [-1, 1],
+  popsize `4 + floor(3 ln n)`, seed 20261015, loss = device RRMS with a failed
+  curve counted as 10), then TRF least squares (SciPy `least_squares`, method
+  `trf`; residual per point = (I_sim - I_meas) / (mean |I_meas| x
+  sqrt(points x curves)); forward-difference Jacobian with step 0.01 in local
+  units; 2 IRLS passes, pass 2 weights each curve by 1/sqrt(curve RRMS)).
+  Budgets per round: 7 parameters CMA-ES 3,000 evaluations + TRF 400;
+  45 parameters CMA-ES 8,000 + TRF 600. The TRF budget is a nominal NGSpice
+  count; each pass gets SciPy `max_nfev = max(2, budget // 2 // (n + 2))`.
+  Between rounds the range is re-centred on the round's card and every log
+  half width is halved, except where the card's local coordinate has
+  |u| >= 0.9 (the width is kept). After round 3: FD polish (the same TRF
+  routine, budget 400) in the round-3 range.
+- Kept start: among starts whose final card simulates every scored curve, the
+  lowest device RRMS; if none of starts 0-2 qualifies, starts 3, 4, ... (up to
+  9) run until one does.
+- Final card: one more TRF call (budget 400) from the kept card in its
+  round-3 range.
+- Score: the paper RRMS with the published card's frozen curve set; summaries
+  give the all-device mean and the combined value (mean of the nMOS and pMOS
+  family means), and the upstream dynamic-inclusion value as a secondary.
+
+```bash
+PYTHONPATH=src .venv/bin/python scripts/extract_cards.py --params 7 \
+    --workers 10 --out out/extraction/seven
+PYTHONPATH=src .venv/bin/python scripts/extract_cards.py --params 45 \
+    --workers 10 --out out/extraction/full45
+```
+
+Outputs: `devices/<tag>.json` (final card, device RRMS after each stage of
+the kept start, RRMS of every start, NGSpice run counts, all start records),
+`summary.json`, and `cards/` (corner card files with each device's fitted bin
+and `sky130_77k_extracted.lib.spice`; every device is re-simulated from that
+library and the RRMS is stored as `library_rrms`). Stored I25-1 results
+(final refit): 7 parameters all-device 0.15463 / combined 0.14580, about
+28,950 NGSpice runs per device; 45 parameters 0.10940 / 0.10263, about
+77,700 runs per device. `scripts/research/extraction_equivalence.py` reruns
+one 7-parameter device (whole procedure) and one 45-parameter round 1 with
+the new module and compares them with the stored records
+(`out/research/explore/extraction_equivalence/result.json`).
+
 ## Reproducibility inputs
 
 - Measured data and paper Table-6 device list: arXiv:2604.21625v1 companion

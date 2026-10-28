@@ -174,6 +174,17 @@ pFET corner. NGSpice must be installed separately.
 
 Run heavy stages sequentially and inspect `ps` before starting one.
 
+Main method (I25-1 NGSpice card fit, `src/cryoml/extraction.py`; see
+`docs/METHODS.md`): 3 random starts x 3 rounds of CMA-ES + TRF least squares,
+FD polish, best start, final FD refit, on the multiplier-1 Beall et al. card.
+
+```bash
+python scripts/extract_cards.py --params 7 --workers 10 --out out/extraction/seven
+python scripts/extract_cards.py --params 45 --workers 10 --out out/extraction/full45
+```
+
+Earlier July pipeline (surrogate search, direct MLP, FD studies):
+
 ```bash
 python scripts/verify_simulator.py
 python scripts/pdk_baseline.py

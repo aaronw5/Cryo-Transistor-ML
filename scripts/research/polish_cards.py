@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Finite-difference NGSpice polish of any method's predicted cards.
 
+Clean implementation of the main method (card fit): src/cryoml/extraction.py (CLI scripts/extract_cards.py).
+
 Each device's card (from a cold-loop extract dir + method, a posterior eval
 json, or an ngspice_direct summary) is the start of bounded TRF least squares
 on the fixed-inclusion per-curve residuals against the target curves

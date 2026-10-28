@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Non-ML reference: fit each device directly against NGSpice.
 
+Clean implementation of the main method (card fit): src/cryoml/extraction.py (CLI scripts/extract_cards.py).
+
 Every device gets the same procedure inside a cold-loop round box:
 
 1. starts: the box center plus the best ``--bank-starts`` diverse samples of
