@@ -1,0 +1,6 @@
+<section id="w10-step5" style="background:#f6f5f1;color:#1f252b;font-family:'IBM Plex Sans', Arial, sans-serif;padding:64px 96px 56px;display:flex;flex-direction:column;gap:22px">
+<h2 style="font-size:52px;font-weight:600;line-height:1.1;color:#1f252b">Step 5: repeat twice, keep the best start</h2>
+<div style="display:flex;flex-direction:row;justify-content:center;background:#ffffff;border:1px solid #c9ced3"><img src="/_blob/d5ebd30a930e6dc23707e73fa4597873" alt="Left: all-device RRMS after each round, 7 and 45 parameters. Right: RRMS of the 3 starts per device, 45 parameters" style="width:1660px;height:640px;object-fit:contain"></div>
+<ul style="font-size:28px;line-height:1.35;color:#1f252b"><li>Rounds 2 and 3: range centred on the previous card, half as wide (log scale)</li><li>Per device: keep the start with the lowest RRMS, refine it once more</li><li>45 parameters: the 3 starts differ by more than 10 % on 15 of 18 devices</li></ul>
+<aside>Steps 3 and 4 run three times. In rounds 2 and 3 the range is centred on the previous card and narrowed. After round 3, each device keeps the start with the lowest error, and that card is refined once more by least squares. With 45 parameters the all-device RRMS goes from 0.1354 after round 1 to 0.1094 for the final card; with 7 parameters it stops changing after round 2.</aside>
+</section>

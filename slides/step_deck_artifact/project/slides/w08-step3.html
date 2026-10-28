@@ -1,0 +1,6 @@
+<section id="w08-step3" style="background:#f6f5f1;color:#1f252b;font-family:'IBM Plex Sans', Arial, sans-serif;padding:64px 96px 56px;display:flex;flex-direction:column;gap:22px">
+<h2 style="font-size:52px;font-weight:600;line-height:1.1;color:#1f252b">Step 3: global search (CMA-ES)</h2>
+<div style="display:flex;flex-direction:row;justify-content:center;background:#ffffff;border:1px solid #c9ced3"><img src="/_blob/0d8e318e0c507dc6cdfd762b27d42f60" alt="One device, 45 parameters, 3 starts: device RRMS against NGSpice runs; circles after global search, squares after least squares" style="width:1640px;height:656px;object-fit:contain"></div>
+<ul style="font-size:28px;line-height:1.35;color:#1f252b"><li>CMA-ES: samples many parameter sets, moves the sampling toward lower error</li><li>Per start and round: about 3,000 NGSpice runs (7 parameters), 8,000 (45)</li><li>Figure: one pMOS, 45 parameters; circles = after global search</li></ul>
+<aside>The global search uses CMA-ES, an evolution strategy. It samples many parameter sets inside the range, and moves its sampling distribution toward the sets with the lowest error. It needs no slopes. In this pMOS example the first global search lowers the RRMS from about 1 to about 0.12 to 0.17.</aside>
+</section>

@@ -5,38 +5,29 @@
   "at": "2026-10-27T15:59:47Z"
  },
  "lists": "css",
- "title": "SKY130, 77 K: BSIM4 card parameters fitted from multiplier-1 cards",
+ "title": "Fitting BSIM4 parameters to SKY130 transistors at 77 K",
  "cover": "title",
  "order": [
   "title",
-  "b1-transistor",
-  "b2-model",
-  "s01-measured",
-  "s02-stock",
-  "s03-paper",
-  "b3-fit",
-  "s04-setup",
-  "s04c-why",
-  "s04b-params",
-  "s04d-45vs43",
-  "s04-stepA",
-  "s09-results",
-  "s09b-gmr",
-  "s09c-stages",
-  "s10-perdevice",
-  "s10b-nmos",
-  "s10c-pmos",
+  "w01-goal",
+  "w02-data",
+  "w03-model",
+  "w04-paper",
+  "w05-workflow",
+  "w06-step1",
+  "w07-step2",
+  "w08-step3",
+  "w09-step4",
+  "w10-step5",
+  "w11-params45",
+  "w12-results",
+  "w13-perdevice",
   "s11-iv7-1",
   "s11-iv7-2",
   "s11-iv7-3",
   "s12-iv45-1",
   "s12-iv45-2",
-  "s12-iv45-3",
-  "s13-remaining",
-  "s13b-lowvds",
-  "s15-cost",
-  "s16-sources",
-  "s17-limits"
+  "s12-iv45-3"
  ],
  "sections": {
   "s1": {
@@ -44,28 +35,16 @@
    "start": "title"
   },
   "s2": {
-   "description": "Background: I-V curves, card, NGSpice, RRMS; measured data",
-   "start": "b1-transistor"
+   "description": "Goal, measured data, model and error, the paper's card",
+   "start": "w01-goal"
   },
   "s3": {
-   "description": "Stock card and multiplier-1 start card at 77 K, paper card",
-   "start": "s02-stock"
+   "description": "Our workflow, step by step",
+   "start": "w05-workflow"
   },
   "s4": {
-   "description": "Card fit: setup, design choices, parameter sets, RRMS by round",
-   "start": "b3-fit"
-  },
-  "s5": {
-   "description": "Results, card only: tables, GMR, per device, I-V curves for 7 and 45 parameters",
-   "start": "s09-results"
-  },
-  "s6": {
-   "description": "Where the card-only fit still differs from the measurement",
-   "start": "s13-remaining"
-  },
-  "s7": {
-   "description": "Cost, paper inputs, limits",
-   "start": "s15-cost"
+   "description": "Results: table, per device, I-V curves",
+   "start": "w12-results"
   }
  },
  "faces": {

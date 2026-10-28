@@ -1,0 +1,6 @@
+<section id="w09-step4" style="background:#f6f5f1;color:#1f252b;font-family:'IBM Plex Sans', Arial, sans-serif;padding:64px 96px 56px;display:flex;flex-direction:column;gap:22px">
+<h2 style="font-size:52px;font-weight:600;line-height:1.1;color:#1f252b">Step 4: local refinement (least squares)</h2>
+<div style="display:flex;flex-direction:row;justify-content:center;background:#ffffff;border:1px solid #c9ced3"><img src="/_blob/0d8e318e0c507dc6cdfd762b27d42f60" alt="Same device: squares mark the result after each least-squares refinement" style="width:1640px;height:656px;object-fit:contain"></div>
+<ul style="font-size:28px;line-height:1.35;color:#1f252b"><li>Change each parameter slightly, run NGSpice, get the slope of the error</li><li>Step to parameter values with lower squared current error; repeat</li><li>Per start and round: about 165 NGSpice runs (7 parameters), 478 (45)</li></ul>
+<aside>After the global search, a least-squares method refines the best card. It changes each parameter by a small amount, runs NGSpice, and uses the change in error as a slope to pick the next step. This needs far fewer runs than the global search. The squares in the figure show the result after each refinement.</aside>
+</section>

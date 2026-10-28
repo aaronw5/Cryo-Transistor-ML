@@ -398,6 +398,134 @@ def gmrs(d) -> dict:
     return out
 
 
+def fig_one_card(d, path, key, color, label):
+    """One device (EXAMPLE): measured and one card (NGSpice), Id-Vd linear and Id-Vg log."""
+    plt = sp._plt()
+    cs = curves(d, EXAMPLE)
+    series = [(key, color, "-", 2.0, label)]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(15.5, 6.0), dpi=150)
+    sp.iv_axes(a1, a2, cs, series)
+    a1.set_title("Id-Vd, one curve per |Vgs| (linear scale)")
+    a2.set_title("Id-Vg, one curve per |Vds| (log scale)")
+    fig.legend(handles=sp.legend_handles(series, "measured, 77 K"), loc="upper center", ncol=2, frameon=False,
+               bbox_to_anchor=(0.5, 1.0), fontsize=13)
+    fig.tight_layout(rect=(0, 0, 1, 0.91))
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+TRACE_TAG = "pmos_L2_W5"
+
+
+def search_trace(tag=TRACE_TAG, pre="full") -> dict:
+    """Best-so-far RRMS after each search stage of the 3 starts of one device (stored Step A logs), with the
+    cumulative NGSpice runs.  Stages per round: CMA-ES (cmaes_evals runs), least squares (remaining runs)."""
+    out = {}
+    for s in range(3):
+        pts, runs, best = [], 0, None
+        for st in ("r1", "r2", "r3"):
+            v = jload(I25 / f"stepA/{pre}_s{s}_{st}.json")["devices"][tag]
+            draws = v.get("n_sim_start_draws") or 0
+            if st == "r1":
+                runs += draws
+                best = v["start_scores"][0]
+                pts.append({"stage": "start", "round": 0, "runs": runs, "rrms": best})
+            runs += v["cmaes_evals"]
+            best = min(best, v["cmaes_best"])
+            pts.append({"stage": "global", "round": int(st[1]), "runs": runs, "rrms": best})
+            runs += v["n_sim"] - v["cmaes_evals"] - draws
+            best = v["rrms"]
+            pts.append({"stage": "local", "round": int(st[1]), "runs": runs, "rrms": best})
+        v = jload(I25 / f"stepA/{pre}_s{s}_fd.json")["devices"][tag]
+        runs += v["n_sim"]
+        pts.append({"stage": "local", "round": 4, "runs": runs, "rrms": v["rrms"]})
+        out[str(s)] = pts
+    return out
+
+
+def fig_trace(tr, path):
+    plt = sp._plt()
+    fig, ax = plt.subplots(figsize=(15.5, 6.2), dpi=150)
+    cols = ["#2a6fdb", "#d9822b", "#7b5ea7"]
+    for k, (s, pts) in enumerate(tr.items()):
+        x = [p["runs"] for p in pts]
+        y = [p["rrms"] for p in pts]
+        ax.plot(x, y, "-", color=cols[k], lw=2, label=f"start {k + 1}: final RRMS {y[-1]:.3f}")
+        for p in pts:
+            mk = {"start": "*", "global": "o", "local": "s"}[p["stage"]]
+            ax.plot(p["runs"], p["rrms"], mk, color=cols[k], ms=12 if mk == "*" else 8, zorder=5)
+    for r, x0 in ((1, 0), (2, tr["0"][3]["runs"]), (3, tr["0"][5]["runs"])):
+        ax.axvline(x0, color="#999999", lw=0.8, ls=":")
+        ax.text(x0 + 300, 0.22, f"round {r}", fontsize=14, color="#555555")
+    ax.set_yscale("log")
+    from matplotlib.ticker import NullFormatter
+    ax.yaxis.set_minor_formatter(NullFormatter())
+    ax.set_yticks([0.1, 0.15, 0.2, 0.3, 0.5, 1, 2, 3])
+    ax.set_yticklabels(["0.10", "0.15", "0.20", "0.30", "0.50", "1", "2", "3"])
+    ax.set_ylim(0.09, 3.6)
+    ax.set_xlabel("NGSpice runs (cumulative, one start)")
+    ax.set_ylabel("device RRMS (log scale)")
+    ax.set_title(f"{sp.pretty(TRACE_TAG)}, 45 parameters: star = random start, circle = after global search, "
+                 "square = after least squares", fontsize=13)
+    ax.grid(alpha=0.25, lw=0.5, which="both")
+    ax.legend(loc="center right", frameon=False, fontsize=13)
+    fig.tight_layout()
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
+def start_spread(pre="full") -> dict:
+    """Device RRMS of each of the 3 starts after the last round + polish (stored Step A logs)."""
+    out = {}
+    for s in range(3):
+        for t, v in jload(I25 / f"stepA/{pre}_s{s}_fd.json")["devices"].items():
+            out.setdefault(t, [None] * 3)[s] = float(v["rrms"])
+    return out
+
+
+def fig_rounds_starts(d, spread, path):
+    plt = sp._plt()
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(16.6, 6.4), dpi=150, gridspec_kw={"width_ratios": [1, 1.5]})
+    st = {r["stage"]: r for r in d["dec"]["stage_table"]}
+    order, labels = ["round 1", "round 2", "round 3 + FD", "C0_refit"], ["round 1", "round 2", "round 3\n+ last polish", "final card"]
+    x = np.arange(len(order))
+    for a, col in (("A", C_7), ("B", C_45)):
+        y = [st[s][f"{a}_all"] for s in order]
+        a1.plot(x, y, "o-", color=col, lw=2.4, ms=8, label=f"{ARMS[a]} card")
+        for xi, yi in zip(x, y):
+            a1.annotate(f"{yi:.4f}", (xi, yi), xytext=(0, 10), textcoords="offset points", ha="center", fontsize=12,
+                        color=col)
+    a1.set_xticks(x)
+    a1.set_xticklabels(labels)
+    a1.set_ylim(0.09, 0.19)
+    a1.set_ylabel("all-device RRMS")
+    a1.set_title("All-device RRMS after each round (best start per device)", fontsize=13)
+    a1.grid(alpha=0.25, lw=0.5)
+    a1.legend(frameon=False, fontsize=12.5, loc="upper right")
+    tags = sp.dev_order(list(spread))
+    yy = np.arange(len(tags))
+    for i, t in enumerate(tags):
+        v = spread[t]
+        a2.plot([min(v), max(v)], [i, i], color="#bbbbbb", lw=1.5, zorder=1)
+        a2.scatter(v, [i] * 3, color="#8a8a8a", s=30, zorder=2)
+        a2.scatter([min(v)], [i], color=C_45, s=60, zorder=3)
+    a2.scatter([], [], color="#8a8a8a", s=30, label="each of the 3 starts")
+    a2.scatter([], [], color=C_45, s=60, label="best start (kept)")
+    a2.set_yticks(yy)
+    a2.set_yticklabels([sp.pretty(t) for t in tags], fontsize=10.5)
+    a2.invert_yaxis()
+    a2.set_xscale("log")
+    a2.set_xticks([0.02, 0.05, 0.1, 0.2, 0.5])
+    a2.set_xticklabels(["0.02", "0.05", "0.1", "0.2", "0.5"])
+    a2.set_xlabel("device RRMS after round 3 and last polish (log scale)")
+    a2.set_title("45 parameters: RRMS of the 3 starts per device", fontsize=13)
+    a2.grid(alpha=0.25, lw=0.5, axis="x")
+    a2.legend(frameon=False, fontsize=12, loc="lower right")
+    fig.tight_layout()
+    fig.savefig(path, facecolor="white")
+    plt.close(fig)
+
+
 def main() -> int:
     d = load()
     worst = check_per_curve(d)
@@ -412,7 +540,22 @@ def main() -> int:
     for a in "AB":
         for k in range(3):
             fig_iv_page(d, tags[6 * k:6 * k + 6], FIGS / f"i25_iv_card_{SHORT[a]}_{k + 1}.png", a)
+    fig_one_card(d, FIGS / "i25_goal_stock.png", "stock", sp.C_STOCK,
+                 "stock SkyWater card (fitted at room temperature), NGSpice at 77 K")
+    fig_one_card(d, FIGS / "i25_start_card.png", "A_mult1", sp.C_ONE,
+                 "start card: paper card file, tuned values removed (all multipliers = 1), NGSpice")
+    tr = search_trace()
+    fig_trace(tr, FIGS / "i25_trace.png")
+    spread = start_spread()
+    fig_rounds_starts(d, spread, FIGS / "i25_rounds_starts.png")
+    stock = jload(OUT / "stock_card.json")["devices"][EXAMPLE]
+    wf = {"trace_tag": TRACE_TAG, "trace": tr, "spread_45p": spread,
+          "spread_45p_gt10pct": int(sum(max(v) / min(v) > 1.1 for v in spread.values())),
+          "example_stock_rrms": stock["rrms"] if isinstance(stock, dict) else stock}
+    for t, v in spread.items():   # best start after round 3 + FD equals the stored selected start card
+        assert abs(min(v) - d["dec"]["arms"]["B"]["per_device"]["start"][t]) < 1e-12, t
     out = {"per_curve_max_abs_diff": worst, "error_split": split, "lowvds": low, "gmr_extra": gmrs(d),
+           "workflow": wf,
            "example": EXAMPLE, "example_rrms": {
                "mult1": rrms_row(d, "A", "mult1", EXAMPLE), "7p_card": rrms_row(d, "A", "C0_refit", EXAMPLE),
                "45p_card": rrms_row(d, "B", "C0_refit", EXAMPLE),
