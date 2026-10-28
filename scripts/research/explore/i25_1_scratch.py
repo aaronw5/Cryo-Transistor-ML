@@ -850,6 +850,7 @@ def stage_decide() -> dict:
                             "calls_per_device": calls[arm], "inner_complete": inner["complete"],
                             "V4": fin["V4"], "V4_pass": fin["V4_pass"],
                             "multistart": {"spread": best[arm]["spread"], "per_start": best[arm]["per_start"],
+                                           "per_start_finite": best[arm].get("per_start_finite"),
                                            "stage_aggregates_selected": best[arm]["stage_aggregates_selected"],
                                            "starts_selected": {t: r["start"] for t, r in best[arm]["devices"].items()}}}
         out["gmr"][arm] = g

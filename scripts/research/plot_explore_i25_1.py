@@ -44,6 +44,10 @@ ARM_NAME = {"A": "7 parameters", "B": "screened set"}
 C_PUB, C_CARD, C_G, C_STOCK = GREY, BLUE, RED, ORANGE
 
 
+def devlab(t: str) -> str:
+    return ("nMOS " if t.startswith("nmos") else "pMOS ") + rf.device_label(t)
+
+
 def jload(p):
     return json.loads(Path(p).read_text())
 
@@ -178,15 +182,18 @@ def t_stages(d) -> rf.Table:
 def t_spread(d) -> rf.Table:
     rows = []
     for t in sorted(d["dec"]["arms"]["A"]["multistart"]["spread"], key=rf.device_key):
-        r = {"dev": rf.device_label(t)}
+        r = {"dev": devlab(t)}
         for a in "AB":
             sp_ = d["dec"]["arms"][a]["multistart"]["spread"][t]
             r[a] = f"{sp_['min']:.4f} / {sp_['median']:.4f} / {sp_['max']:.4f} (s{sp_['start']})"
         rows.append(r)
     for a in "AB":
         ps = d["dec"]["arms"][a]["multistart"]["per_start"]
+        fin = d["dec"]["arms"][a]["multistart"].get("per_start_finite") or [18] * len(ps)
         rows.append({"dev": f"all-device, start 0 / 1 / 2 (arm {a})",
-                     "A" if a == "A" else "B": " / ".join(f4(x["all_device_mean_rrms"]) for x in ps)})
+                     "A" if a == "A" else "B": " / ".join(
+                         f4(x["all_device_mean_rrms"]) if np.isfinite(x["all_device_mean_rrms"])
+                         else f"non-finite ({n}/18 finite)" for x, n in zip(ps, fin))})
     nb = len(d["specs"]["selected"])
     return rf.Table("table_multistart", "Spread over the 3 random starts per device after round 3 + FD: "
                     "min / median / max training RRMS (selected start)",
@@ -228,7 +235,7 @@ def t_per_device(d, a) -> rf.Table:
     st = d["dec"]["reference"]
     rows = []
     for t in sorted(fin["C0_refit"], key=rf.device_key):
-        rows.append({"dev": rf.device_label(t), "m1": f4(fin["mult1"][t]["rrms"]), "pub": f4(pub[t]["rrms"]),
+        rows.append({"dev": devlab(t), "m1": f4(fin["mult1"][t]["rrms"]), "pub": f4(pub[t]["rrms"]),
                      "start": f4(fin["start"][t]["rrms"]), "c0": f4(fin["C0_refit"][t]["rrms"]),
                      "fg": f4(fin["full_g"][t]["rrms"]), "lg": f4(fin["lodo_g"][t]["rrms"]),
                      "lam": f"{lam.get(t, lam['full']):g}"})
@@ -317,7 +324,7 @@ def fig_per_device(d):
                               ("C0_refit", C_CARD, "o", "card fit"), ("full_g", C_G, "D", "card + g (full data)")):
             vals = [pub[t]["rrms"] if k is None else fin[k][t]["rrms"] for t in tags]
             ax.plot(x, vals, mk, color=c, label=lab, ms=5)
-        ax.set_xticks(x, [rf.device_label(t) for t in tags], rotation=70, fontsize=7)
+        ax.set_xticks(x, [devlab(t) for t in tags], rotation=70, fontsize=7)
         ax.set_yscale("log")
         ax.set_title(f"arm {a}: {ARM_NAME[a]}", fontsize=10)
         style(ax)
@@ -365,7 +372,7 @@ def fig_iv(d, a, tag):
         axs[j].axis("off")
     h, lab = axs[0].get_legend_handles_labels()
     axs[-1].legend(h, lab, loc="center", fontsize=9, frameon=False)
-    s = (f"{rf.device_label(tag)}, arm {a} ({ARM_NAME[a]}): RRMS paper {pub['rrms']:.4f}, our card fit "
+    s = (f"{devlab(tag)}, arm {a} ({ARM_NAME[a]}): RRMS paper {pub['rrms']:.4f}, our card fit "
          f"{fin['C0_refit'][tag]['rrms']:.4f}, our card + g {fin['full_g'][tag]['rrms']:.4f} (full data); "
          f"multipliers 1 without fit {fin['mult1'][tag]['rrms']:.3f}")
     fig.suptitle(s, fontsize=10)
@@ -450,7 +457,7 @@ def deck(batch: Batch, d: dict, iv_files: dict, path: Path):
                 slide(title, batch.out / f)
     for a in "AB":
         for t in sorted(iv_files[a], key=rf.device_key):
-            slide(f"I-V, {rf.device_label(t)}, {ARM_NAME[a]}", iv_files[a][t])
+            slide(f"I-V, {devlab(t)}, {ARM_NAME[a]}", iv_files[a][t])
     path.parent.mkdir(parents=True, exist_ok=True)
     prs.save(path)
 

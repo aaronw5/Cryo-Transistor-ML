@@ -2,6 +2,17 @@
 
 Newest batch first. Each batch folder holds the PNGs, `tables.md` and a `README.md` that names the result files behind every figure and table. Batches are written by `scripts/research/report_figs.py --topic <topic> --date <YYYY-MM-DD>`.
 
+## 2026-10-28 · i25_1
+
+Folder: [2026-10-28_i25_1/](2026-10-28_i25_1/) · [tables.md](2026-10-28_i25_1/tables.md) · [README.md](2026-10-28_i25_1/README.md)
+
+- I25-1 the paper's task (released 77 K card files, every multiplier = 1, paper RRMS) fitted from 3 random starts per device with the multi-round direct NGSpice fit; arm A 7 parameters, arm B 45 parameters.
+- arm A (7 parameters): card fit 0.1546 / 0.1458; card + g full data 0.0783 / 0.0757, LODO 0.0823 / 0.0795 (all-device / combined); GMR(card + g, card) full data 0.519 [0.439, 0.611]; GMR(card + g, paper) 0.278 [0.227, 0.347]; GMR(card, paper) 0.536 [0.467, 0.613].
+- arm B (screened set): card fit 0.1094 / 0.1026; card + g full data 0.0667 / 0.0635, LODO 0.0693 / 0.0661 (all-device / combined); GMR(card + g, card) full data 0.633 [0.553, 0.721]; GMR(card + g, paper) 0.231 [0.198, 0.274]; GMR(card, paper) 0.365 [0.318, 0.417].
+- references: paper card 0.2751 / 0.2595; multipliers 1 no fit 12.1010 / 10.9593; stock tt card at 77 K 3.4176 / 3.1077.
+
+Figures and tables: [01_table_main_primary.png](2026-10-28_i25_1/01_table_main_primary.png) · [02_table_main_primary_full.png](2026-10-28_i25_1/02_table_main_primary_full.png) · [03_table_main_m_rule.png](2026-10-28_i25_1/03_table_main_m_rule.png) · [04_table_stages.png](2026-10-28_i25_1/04_table_stages.png) · [05_table_multistart.png](2026-10-28_i25_1/05_table_multistart.png) · [06_fig_stages.png](2026-10-28_i25_1/06_fig_stages.png) · [07_table_gmr.png](2026-10-28_i25_1/07_table_gmr.png) · [08_fig_forest.png](2026-10-28_i25_1/08_fig_forest.png) · [09_fig_per_device.png](2026-10-28_i25_1/09_fig_per_device.png) · [10_table_per_device_armA.png](2026-10-28_i25_1/10_table_per_device_armA.png) · [11_table_per_device_armB.png](2026-10-28_i25_1/11_table_per_device_armB.png) · [12_table_parameter_set.png](2026-10-28_i25_1/12_table_parameter_set.png)
+
 ## 2026-10-27 · i23_1
 
 Folder: [2026-10-27_i23_1/](2026-10-27_i23_1/) · [tables.md](2026-10-27_i23_1/tables.md) · [README.md](2026-10-27_i23_1/README.md)
